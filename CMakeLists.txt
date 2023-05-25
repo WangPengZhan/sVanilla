@@ -17,6 +17,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
 cmake_policy(SET CMP0087 NEW)
 
 # qt
@@ -36,10 +37,12 @@ endif()
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-file(GLOB_RECURSE QTS "translate/*.ts")
-file(GLOB_RECURSE QRC "resource/*.qrc")
-file(GLOB_RECURSE SOURCES "include/*.h" "src/*.cpp")
 
+file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
+file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
+file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp")
+
+message(STATUS "${SOURCES}")
 set(ui ${CMAKE_SOURCE_DIR}/ui)
 set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
 
@@ -60,7 +63,7 @@ add_executable(${PROJECT_NAME}
 )
 
 
-qt_add_translations(${PROJECT_NAME} TS_FILES QTS)
+qt_add_translations(${PROJECT_NAME} TS_FILES ${QTS})
 
 foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
@@ -84,11 +87,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
 # add_dependencies(${PROJECT_NAME} SARibbonBar)
 
-add_custom_command(TARGET ${PROJECT_NAME}
-    POST_BUILD
-        # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:ads::qt6advanceddocking> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/public $<TARGET_FILE_DIR:${PROJECT_NAME}>/public
-)
+# add_custom_command(TARGET ${PROJECT_NAME}
+#     POST_BUILD
+#         # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:ads::qt6advanceddocking> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+#         # COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/public $<TARGET_FILE_DIR:${PROJECT_NAME}>/public
+# )
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)

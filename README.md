@@ -13,6 +13,10 @@ TOP
  |      |
  |      |-- <*.h files>
  |
+ |-- doc
+ |    |
+ |    |-- <*.md files>
+ |
  |--sVanilla
  |      |
  |      |-- src
