@@ -21,6 +21,10 @@
         {
             "name": "simpleini",
             "version>=": "4.19"
+        },
+        {
+            "name": "breakpad",
+            "version-date": "2022-07-12"
         }
     ]
 }

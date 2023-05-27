@@ -34,6 +34,14 @@ if (NOT CMAKE_HOST_WIN32)
     find_package(ZLIB)
 endif()
 
+find_package(unofficial-breakpad CONFIG REQUIRED)
+
+# json
+find_package(nlohmann_json CONFIG REQUIRED)
+set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+# spdlog
+find_package(spdlog CONFIG REQUIRED)
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
@@ -63,7 +71,11 @@ add_executable(${PROJECT_NAME}
 )
 
 
-qt_add_translations(${PROJECT_NAME} TS_FILES ${QTS})
+if(${QT_VERSION_MAJOR} EQUAL 5)
+    qt5_add_translation(${PROJECT_NAME} TS_FILES ${QTS})
+else()
+    qt_add_translations(${PROJECT_NAME} TS_FILES ${QTS})
+endif()
 
 foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
@@ -73,6 +85,10 @@ endforeach ()
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
+        nlohmann_json::nlohmann_json
+        curl
+        spdlog::spdlog
+        unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
 )
 
 
@@ -89,9 +105,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # add_custom_command(TARGET ${PROJECT_NAME}
 #     POST_BUILD
-#         # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:ads::qt6advanceddocking> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-#         # COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/public $<TARGET_FILE_DIR:${PROJECT_NAME}>/public
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:ads::qt6advanceddocking> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+#         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/public $<TARGET_FILE_DIR:${PROJECT_NAME}>/public
 # )
+
+include(cmake/qtdeploy.cmake)
+deployqt(${PROJECT_NAME})
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
@@ -99,13 +118,6 @@ install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 # install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/public DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-qt_generate_deploy_app_script(
-    TARGET ${PROJECT_NAME}
-    OUTPUT_SCRIPT deploy_script
-    NO_TRANSLATIONS
-    NO_UNSUPPORTED_PLATFORM_ERROR
-)
-install(SCRIPT ${deploy_script})
+
 # install(FILES "$<TARGET_FILE:ads::qt6advanceddocking>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
-qt_finalize_executable(${PROJECT_NAME})
