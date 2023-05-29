@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(sVanilla VERSION 1.0.0 LANGUAGES CXX)
-
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/scripts/buildsystems/vcpkg.cmake"
       CACHE STRING "")
 set(VCPKG_APPLOCAL_DEPS ON)
+
+
+project(sVanilla VERSION 1.0.0 LANGUAGES CXX)
 
 # if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -14,7 +15,6 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -85,10 +85,10 @@ endforeach ()
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
-        nlohmann_json::nlohmann_json
-        curl
-        spdlog::spdlog
-        unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
+        # nlohmann_json::nlohmann_json
+        # curl
+        # spdlog::spdlog
+        # unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
 )
 
 
