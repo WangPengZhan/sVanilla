@@ -48,7 +48,7 @@ include_directories(
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
 file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
-file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp")
+file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h" "sVanilla/src/*.ui")
 
 message(STATUS "${SOURCES}")
 set(ui ${CMAKE_SOURCE_DIR}/ui)
