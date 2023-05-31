@@ -1,31 +1,18 @@
 {
-    "name": "r0x1",
-    "version-string": "1.0.0",
-    "builtin-baseline": "657bfe23f401f234d2bea75c36f79777ad944d21",
-    "dependencies": [
-        {
-            "name": "nlohmann-json",
-            "version>=": "3.11.2",
-            "$comment": "    find_package(nlohmann_json CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)\n"
-        },
-        {
-            "name": "curl",
-            "version>=": "8.0.1",
-            "$comment": "    # this is heuristically generated, and may not be correct\n\n    find_package(CURL CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE CURL::libcurl)\n"
-        },
-        {
-            "name": "spdlog",
-            "version>=": "1.11.0",
-            "$comment": "    # this is heuristically generated, and may not be correct\n\n    find_package(spdlog CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE spdlog::spdlog spdlog::spdlog_header_only)\n"
-        },
-        {
-            "name": "simpleini",
-            "version>=": "4.19"
-            }
-        // },
-        // {
-        //     "name": "breakpad",
-        //     "version-date": "2022-07-12"
-        // }
-    ]
+  "name" : "svanilla",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "2718aa52a31977b792af7e9c2f83eaf4ddcd932d",
+  "dependencies" : [ {
+    "name" : "breakpad",
+    "version>=" : "2022-07-12#4"
+  }, {
+    "name" : "curl",
+    "version>=" : "8.0.1"
+  }, {
+    "name" : "nlohmann-json",
+    "version>=" : "3.11.2"
+  }, {
+    "name" : "spdlog",
+    "version>=" : "1.11.0#1"
+  } ]
 }
