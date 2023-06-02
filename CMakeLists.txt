@@ -39,8 +39,9 @@ find_package(unofficial-breakpad CONFIG REQUIRED)
 # json
 find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
-# spdlog
 find_package(spdlog CONFIG REQUIRED)
+find_package(CURL REQUIRED)
+
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -85,10 +86,10 @@ endforeach ()
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
-        # nlohmann_json::nlohmann_json
-        # curl
-        # spdlog::spdlog
-        # unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
+        nlohmann_json::nlohmann_json
+        CURL::libcurl
+        spdlog::spdlog
+        unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
 )
 
 
@@ -117,7 +118,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
 install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/public DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
 # install(FILES "$<TARGET_FILE:ads::qt6advanceddocking>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
