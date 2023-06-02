@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QMainWindow>
+#include <QFile>
 
 #include <client/windows/handler/exception_handler.h>
 
@@ -8,13 +9,14 @@ bool callback(const wchar_t *dump_path, const wchar_t *id,
 	MDRawAssertionInfo *assertion,
 	bool succeeded)
 {
-	if (succeeded) {
-		printf("dump guid is %ws\n", id);
-	}
-	else {
-		printf("dump failed\n");
-	}
-	system("pause");
+	QFile file("test.txt");
+	file.open(QIODevice::WriteOnly);
+	std::wstring wstr = dump_path;
+	wstr += L":";
+	wstr += L":";
+	wstr += id;
+	file.write(QString::fromStdWString(wstr).toLocal8Bit());
+	file.close();
 	return succeeded;
 }
 
