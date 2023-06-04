@@ -21,6 +21,7 @@ void Logger::InitLog()
     RegisterLogger("Network");
     RegisterLogger("Aria");
     RegisterLogger("FFmpeg");
+    RegisterLogger("SQLite");
 }
 
 Logger::Logger()
