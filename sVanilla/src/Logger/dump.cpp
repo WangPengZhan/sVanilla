@@ -9,7 +9,7 @@
 #include <QApplication>
 #include <QDir>
 
-#include "dump.h"
+#include "Dump.h"
 
 #ifdef _WIN32
 
