@@ -13,6 +13,10 @@ TOP
  |      |
  |      |-- <*.h files>
  |
+ |-- cmake
+ |    |
+ |    |-- <*.cmake files>
+ |
  |-- doc
  |    |
  |    |-- <*.md files>

@@ -12,7 +12,7 @@
 #include <QApplication>
 #include <QDebug>
 
-#include "MainWindow/TitleWidget.h"
+#include "TitleWidget.h"
 
 
 class PrivateFramelessWidgetData;
@@ -384,15 +384,15 @@ bool PrivateFramelessWidgetData::handleMousePressEvent(QMouseEvent* event)
         m_bLeftButtonTitlePressed = event->pos().y() < m_moveMousePos.m_nTitleHeight;
 
         QRect frameRect = m_pWidget->frameGeometry();
-        m_pressedMousePos.recalculate(event->globalPosition().toPoint(), frameRect);
+        m_pressedMousePos.recalculate(event->globalPos(), frameRect);
 
-        m_ptDragPos = event->globalPosition().toPoint() - frameRect.topLeft();
+        m_ptDragPos = event->globalPos() - frameRect.topLeft();
         if(!m_pWidget->isWindow())
         {
             QRect frameRectGlobal(m_pWidget->parentWidget()->mapToGlobal(m_pWidget->frameGeometry().topLeft()),
                         m_pWidget->frameGeometry().size());
             QRect frameRect = m_pWidget->frameGeometry();
-            m_pressedMousePos.recalculate(event->globalPosition().toPoint(), frameRectGlobal);
+            m_pressedMousePos.recalculate(event->globalPos(), frameRectGlobal);
 
             // m_ptDragPos = event->globalPosition().toPoint() - frameRectGlobal.topLeft();
         }
@@ -444,14 +444,14 @@ bool PrivateFramelessWidgetData::handleMouseMoveEvent(QMouseEvent* event)
                 //窗口在最大化状态时，点击边界不做任何处理
                 return (false);
             }
-            resizeWidget(event->globalPosition().toPoint());
+            resizeWidget(event->globalPos());
             return (true);
         } else if (d->m_bWidgetMovable && m_bLeftButtonTitlePressed) {
             if (m_pWidget->isMaximized()) {
                 //先求出窗口到鼠标的相对位置
                 QRect normalGeometry = m_pWidget->normalGeometry();
                 m_pWidget->showNormal();
-                QPoint p = event->globalPosition().toPoint();
+                QPoint p = event->globalPos();
                 // if(!m_pWidget->isWindow())
                 // {
                 //     p = m_pWidget->parentWidget()->mapFromGlobal(p);
@@ -466,12 +466,12 @@ bool PrivateFramelessWidgetData::handleMouseMoveEvent(QMouseEvent* event)
                 m_ptDragPos = QPoint(normalGeometry.width() / 2, 10);
                 return (true);
             }
-            moveWidget(event->globalPosition().toPoint());
+            moveWidget(event->globalPos());
             return (true);
         }
         return (false);
     } else if (d->m_bWidgetResizable) {
-        updateCursorShape(event->globalPosition().toPoint());
+        updateCursorShape(event->globalPos());
     }
     return (false);
 }
@@ -489,7 +489,7 @@ bool PrivateFramelessWidgetData::handleLeaveEvent(QEvent* event)
 bool PrivateFramelessWidgetData::handleHoverMoveEvent(QHoverEvent* event)
 {
     if (d->m_bWidgetResizable) {
-        updateCursorShape(m_pWidget->mapToGlobal(event->position().toPoint()));
+        updateCursorShape(m_pWidget->mapToGlobal(event->pos()));
     }
     return (false);
 }
@@ -501,7 +501,7 @@ bool PrivateFramelessWidgetData::handleDoubleClickedMouseEvent(QMouseEvent* even
             QWidget* mainwindow = m_pWidget->window();
             if (mainwindow) {
                 //在最大化按钮显示时才进行shownormal处理
-                bool titlePressed = event->position().toPoint().y() < m_moveMousePos.m_nTitleHeight;
+                bool titlePressed = event->pos().y() < m_moveMousePos.m_nTitleHeight;
                 if (titlePressed && d->m_bIsMaximum) {
                     if (m_pWidget->isMaximized()) {
                         m_pWidget->showNormal();

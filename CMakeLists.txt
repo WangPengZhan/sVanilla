@@ -17,6 +17,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 17)
 
 cmake_policy(SET CMP0087 NEW)
 
@@ -25,30 +26,28 @@ set(QT_COMPONENTS
     Core
     Gui
     Widgets
+    Network
 )
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
-
-if (NOT CMAKE_HOST_WIN32)
-    find_package(ZLIB)
-endif()
-
+find_package(ZLIB)
 find_package(unofficial-breakpad CONFIG REQUIRED)
-
-# json
 find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
-# spdlog
 find_package(spdlog CONFIG REQUIRED)
+find_package(CURL REQUIRED)
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
 )
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
 file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
-file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp")
+file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h" "sVanilla/src/*.ui")
 
 message(STATUS "${SOURCES}")
 set(ui ${CMAKE_SOURCE_DIR}/ui)
@@ -85,10 +84,11 @@ endforeach ()
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
-        # nlohmann_json::nlohmann_json
-        # curl
-        # spdlog::spdlog
-        # unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
+        nlohmann_json::nlohmann_json
+        CURL::libcurl
+        spdlog::spdlog
+        unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
+        unofficial::sqlite3::sqlite3
 )
 
 
@@ -117,7 +117,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
 install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/public DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
 # install(FILES "$<TARGET_FILE:ads::qt6advanceddocking>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 

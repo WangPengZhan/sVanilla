@@ -1,4 +1,4 @@
-#include "Loger.h"
+#include "Logger.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
@@ -21,6 +21,7 @@ void Logger::InitLog()
     RegisterLogger("Network");
     RegisterLogger("Aria");
     RegisterLogger("FFmpeg");
+    RegisterLogger("SQLite");
 }
 
 Logger::Logger()
