@@ -39,7 +39,7 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
-
+add_subdirectory(ThirdParty/FramelessHelper)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
@@ -87,8 +87,11 @@ target_link_libraries(${PROJECT_NAME}
         nlohmann_json::nlohmann_json
         CURL::libcurl
         spdlog::spdlog
-        unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
+        unofficial::breakpad::libbreakpad
+        unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
+        FramelessHelper::Core
+        FramelessHelper::Widgets
 )
 
 
