@@ -1,6 +1,6 @@
 #ifdef _WIN32
-#    include <DbgHelp.h>
 #    include <Windows.h>
+#    include <DbgHelp.h>
 #    include <client/windows/handler/exception_handler.h>
 #elif __linux__  //
 #    include "client/linux/handler/exception_handler.h"
