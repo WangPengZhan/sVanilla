@@ -10,7 +10,7 @@ namespace BiliApi
 {
     
 
-BilibiliClient& BilibiliClient::GetInstance()
+BilibiliClient& BilibiliClient::globalClient()
 {
     static BilibiliClient bilibilClient;
     return bilibilClient;

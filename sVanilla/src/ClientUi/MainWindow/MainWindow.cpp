@@ -2,7 +2,7 @@
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-
+#include "MainWindowlog.h"
 #include "Util/UrlProcess.h"
 #include "BiliApi/BilibiliClient.h"
 #include "Sqlite/SQLiteManager.h"
@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     SetUi();
 
-    // SingleConfigRander::getInstance();
+    MAINWINDOW_LOG_INFO("test");
     SQLite::SQLiteManager::getInstance();
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     setWindowTitle(tr("Bili Downloader"));
@@ -45,7 +45,7 @@ void MainWindow::SearchUrl()
 
     std::string bvid = util::UrlProcess::GetVideoId(input).toLocal8Bit().toStdString();
 
-    BiliApi::BilibiliClient& biliClient = BiliApi::BilibiliClient::GetInstance();
+    BiliApi::BilibiliClient& biliClient = BiliApi::BilibiliClient::globalClient();
     BiliApi::VideoView videoView = biliClient.GetVideoView(bvid);
     BiliApi::PlayUrl playUrl = biliClient.GetPlayUrl(videoView.GetCid(), 125, videoView.GetBvid());
 

@@ -759,9 +759,9 @@ bool TitleWidget::eventFilter(QObject* obj, QEvent* event)
 
 void TitleWidget::resizeEvent(QResizeEvent* event)
 {
-    m_pBtnMin->setGeometry(QRect(width() - 8 - 34 * 3, 0, 33, 28));
-    m_pBtnMax->setGeometry(QRect(width() - 8 - 34 * 2, 0, 33, 28));
-    m_pBtnClose->setGeometry(QRect(width() - 8 - 34 * 1, 0, 33, 28));
+    m_pBtnMin->setGeometry(QRect(width() - height() * 3, 0, height(), height()));
+    m_pBtnMax->setGeometry(QRect(width() - height() * 2, 0, height(), height()));
+    m_pBtnClose->setGeometry(QRect(width() - height() * 1, 0, height(), height()));
     m_pFramelessHelper->setTitleHeight(height());
     return QWidget::resizeEvent(event);
 }
