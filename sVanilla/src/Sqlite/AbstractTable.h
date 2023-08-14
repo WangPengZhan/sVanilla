@@ -12,7 +12,6 @@ public:
 
     virtual void initTable() = 0;
 
-    const std::string name();
     const std::string& name() const;
     void setName(const std::string& name);
 
@@ -22,4 +21,3 @@ protected:
 };
 
 }  // namespace SQLite
-

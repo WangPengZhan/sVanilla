@@ -4,10 +4,10 @@
 #include "Logger/Dump.h"
 #include "Logger/Logger.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-	DumpColletor::registerDumpHandle();
-	Logger::GetInstance();
+    DumpColletor::registerDumpHandle();
+    Logger::GetInstance();
 
     QApplication app(argc, argv);
 
@@ -16,5 +16,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-
-
