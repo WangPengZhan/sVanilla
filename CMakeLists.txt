@@ -11,6 +11,16 @@ project(sVanilla VERSION 1.0.0 LANGUAGES CXX)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # endif()
 
+# set(CMAKE_CXX_FLAGS "-U__FILE__ -D__FILE__='\"$(subst $(dir $<),,$<)\"'")
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-Wno-builtin-macro-redefined SUPPORT_CXX_WNO_BUILTIN_MACRO_REDEFINED)
+if (SUPPORT_CXX_WNO_BUILTIN_MACRO_REDEFINED)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-builtin-macro-redefined")
+else()
+    message("CXXCompiler can't support Wno-builtin-macro-redefined")
+endif (SUPPORT_CXX_WNO_BUILTIN_MACRO_REDEFINED)
+
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -39,7 +49,6 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
-
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
@@ -47,9 +56,9 @@ include_directories(
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
 file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
-file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h" "sVanilla/src/*.ui")
+file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h")
+file(GLOB_RECURSE UI "sVanilla/src/*.ui")
 
-message(STATUS "${SOURCES}")
 set(ui ${CMAKE_SOURCE_DIR}/ui)
 set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
 
@@ -64,11 +73,13 @@ endif()
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${QT_MOC}
-    ${UI_WRAP}
+    ${UI}
     ${UIS}
     ${QRC}
 )
 
+include(cmake/filemarco.cmake)
+redefine_file_macro(${PROJECT_NAME})
 
 if(${QT_VERSION_MAJOR} EQUAL 5)
     qt5_add_translation(${PROJECT_NAME} TS_FILES ${QTS})
@@ -87,7 +98,8 @@ target_link_libraries(${PROJECT_NAME}
         nlohmann_json::nlohmann_json
         CURL::libcurl
         spdlog::spdlog
-        unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
+        unofficial::breakpad::libbreakpad
+        unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
 )
 

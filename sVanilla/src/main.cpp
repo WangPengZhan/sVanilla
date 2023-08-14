@@ -8,12 +8,13 @@ int main(int argc, char *argv[])
 {
 	DumpColletor::registerDumpHandle();
 	Logger::GetInstance();
-    QApplication a(argc, argv);
 
-    MainWindow w;
-    w.show();
-    
-    return a.exec();
+    QApplication app(argc, argv);
+
+    MainWindow maimWindow;
+    maimWindow.show();
+
+    return app.exec();
 }
 
 

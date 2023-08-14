@@ -1,3 +1,6 @@
 [submodule "ThirdParty/vcpkg"]
 	path = ThirdParty/vcpkg
 	url = https://gitee.com/mirrors/vcpkg.git
+[submodule "ThirdParty/framelesshelper"]
+	path = ThirdParty/framelesshelper
+	url = https://github.com/wangwenx190/framelesshelper.git

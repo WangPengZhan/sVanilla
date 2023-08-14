@@ -18,6 +18,7 @@ Logger& Logger::GetInstance()
 
 void Logger::InitLog()
 {
+    RegisterLogger("MainWindow");
     RegisterLogger("Network");
     RegisterLogger("Aria");
     RegisterLogger("FFmpeg");
@@ -43,7 +44,7 @@ void Logger::RegisterLogger(const std::string& logName)
 
 void Logger::SetLog()
 {
-    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][thread %t][%@,%!][%l] : %v");
+    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][thread %t][%g:%#,%!][%l] : %v");
     spdlog::set_level(spdlog::level::trace);
     spdlog::flush_on(spdlog::level::err);
     spdlog::flush_every(std::chrono::seconds(5));

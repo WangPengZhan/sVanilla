@@ -7,29 +7,31 @@
 
 namespace
 {
-    size_t OnWriteDate(void* data, size_t size, size_t nmemb, void* stream)
-    {
-        if (!stream)
-        {
-            return 0;
-        }
 
-        std::string* str = static_cast<std::string*>(stream);
-        (*str).append(static_cast<char*>(data), size * nmemb);
-        return size * nmemb;
+size_t OnWriteDate(void* data, size_t size, size_t nmemb, void* stream)
+{
+    if (!stream)
+    {
+        return 0;
     }
 
-    constexpr char chrome[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
-    constexpr char firefox[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0";
-    constexpr char edge[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
-    constexpr char opera[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
-    constexpr char ie[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
-    constexpr char safari[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+    std::string* str = static_cast<std::string*>(stream);
+    (*str).append(static_cast<char*>(data), size * nmemb);
+    return size * nmemb;
+}
 
-    constexpr char const accept[] = "Accept: application/json";
-    constexpr char const accept_encoding[] = "Accept-Encoding: gzip, deflate, br";
-    constexpr char const accept_language[] = "Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
-    constexpr char const connect_type[] = "Connection: keep-alive";
+constexpr char chrome[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
+constexpr char firefox[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0";
+constexpr char edge[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
+constexpr char opera[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+constexpr char ie[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
+constexpr char safari[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+
+constexpr char const accept[] = "Accept: application/json";
+constexpr char const accept_encoding[] = "Accept-Encoding: gzip, deflate, br";
+constexpr char const accept_language[] = "Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
+constexpr char const connect_type[] = "Connection: keep-alive";
+
 }
 
 CNetWork::CurlHelp::CurlHelp()
@@ -138,7 +140,7 @@ void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& r
     //    listParams.emplace_back(param.first + " " + param.second);
     //}
 
-     nlohmann::json jsonParam = params;
+    nlohmann::json jsonParam = params;
  
     
     HttpPost(url, jsonParam.dump(), response);
@@ -209,125 +211,3 @@ void CNetWork::InitDefaultHeadersLogin()
     m_headers             = curl_slist_append(m_headers, referer.c_str());
 }
 
-
-#include "Logger/Logger.h"
-
-#include <QEventLoop>
-
-namespace
-{
-
-    const QString GetRpcUri(int listenPort = 6800)
-    {
-        return QString("http://localhost:%1/jsonrpc").arg(listenPort);
-    }
-
-} // namespace aria2net
-
-
-
-AriaClient::AriaClient(QObject* parent)
-    : QThread(parent)
-    , m_syncNetworkAccessManager(new QNetworkAccessManager(this))
-    , m_asyncNetworkAccessManager(nullptr)
-{
-    start();
-}
-
-AriaClient::~AriaClient()
-{
-    quit();
-    wait();
-}
-
-QByteArray AriaClient::Request(const QString& url, const QString& parameters, int retry, ResponseType responseType)
-{
-    QByteArray result;
-
-    switch (responseType)
-    {
-    case AriaClient::Async:
-        RequestAsync(url, parameters, retry);
-        break;
-    case AriaClient::Sync:
-        result = RequestSync(url, parameters, retry);
-        break;
-    default:
-        break;
-    }
-
-    return result;
-}
-
-QByteArray AriaClient::RequestAsync(const QString& url, const QString& parameters, int retry)
-{
-    QByteArray sendData = parameters.toLocal8Bit();
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setHeader(QNetworkRequest::ContentLengthHeader, sendData.size());
-
-    QNetworkReply* reply = m_asyncNetworkAccessManager->post(request, sendData);
-
-    return QByteArray();
-}
-
-QByteArray AriaClient::RequestSync(const QString& url, const QString& parameters, int retry)
-{
-    QByteArray sendData = parameters.toLocal8Bit();
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setHeader(QNetworkRequest::ContentLengthHeader, sendData.size());
-
-
-    QNetworkReply* reply = m_syncNetworkAccessManager->post(request, sendData);
-
-    QEventLoop eventLoop;
-    connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
-    eventLoop.exec(QEventLoop::ExcludeUserInputEvents);      // 阻塞请求
-
-    return Response(reply);
-}
-
-
-QByteArray AriaClient::Request(const std::string& parameters, int retry)
-{
-    return Request(GetRpcUri(), QString::fromLocal8Bit(parameters.data()), retry);
-}
-
-QByteArray AriaClient::Response(QNetworkReply* reply)
-{
-
-    if (reply == nullptr)
-    {
-
-        return QByteArray();
-    }
-    if (reply->error() == QNetworkReply::OperationCanceledError)
-    {
-        reply->abort();
-        return QByteArray();
-    }
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        return QByteArray();
-    }
-
-    QByteArray rep = reply->readAll();
-
-    reply->deleteLater();
-    reply = nullptr;
-
-    return rep;
-}
-
-void AriaClient::SetDataStream(QDataStream& dataStream)
-{
-    // m_asyncDataStream = dataStream;
-}
-
-void AriaClient::run()
-{
-    m_asyncNetworkAccessManager = new QNetworkAccessManager(this);
-    connect(m_asyncNetworkAccessManager, &QNetworkAccessManager::finished, this, &AriaClient::Response);
-    exec();
-}
