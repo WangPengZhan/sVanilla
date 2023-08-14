@@ -5,6 +5,8 @@
 #include "CNetWork.h"
 #include "NetworkLog.h"
 
+namespace
+{
 
 size_t OnWriteDate(void* data, size_t size, size_t nmemb, void* stream)
 {
@@ -29,6 +31,8 @@ constexpr char const accept[] = "Accept: application/json";
 constexpr char const accept_encoding[] = "Accept-Encoding: gzip, deflate, br";
 constexpr char const accept_language[] = "Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
 constexpr char const connect_type[] = "Connection: keep-alive";
+
+}
 
 CNetWork::CurlHelp::CurlHelp()
 {
