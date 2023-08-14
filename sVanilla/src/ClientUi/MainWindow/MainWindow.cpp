@@ -27,8 +27,6 @@ MainWindow::~MainWindow()
 void MainWindow::SearchUrl()
 {
 
-
-
 }
 
 void MainWindow::SetUi()
