@@ -2,15 +2,17 @@
 
 #include <QLineEdit>
 
-namespace Ui { class SearchLineEdit; };
-
+namespace Ui
+{
+class SearchLineEdit;
+};
 
 class SearchLineEdit : public QLineEdit
 {
     Q_OBJECT
 
 public:
-    SearchLineEdit(QWidget *parent = nullptr);
+    SearchLineEdit(QWidget* parent = nullptr);
     ~SearchLineEdit();
     void SetEditFinishedSearch(bool enabled);
 
@@ -25,5 +27,5 @@ private:
     void SignalsAndSlots();
 
 private:
-    Ui::SearchLineEdit *ui;
+    Ui::SearchLineEdit* ui;
 };

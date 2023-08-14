@@ -9,11 +9,6 @@ AbstractTable::AbstractTable(SQLiteDatabase& db, const std::string& nameTable)
 {
 }
 
-const std::string AbstractTable::name()
-{
-    return m_name;
-}
-
 const std::string& AbstractTable::name() const
 {
     return m_name;
