@@ -8,11 +8,9 @@
 struct sqlite3;
 struct sqlite3_stmt;
 
-namespace SQLite 
+namespace SQLite
 {
-
-
-class SQLiteDatabase 
+class SQLiteDatabase
 {
 private:
     SQLiteDatabase(const SQLiteDatabase& other) = delete;
@@ -31,8 +29,12 @@ public:
     bool next();
     bool execute(const std::string& sql);
 
+    bool transaction();
+    bool commit();
+    bool rollback();
+
     std::any value(int index) const;
-    bool     bind(int index, int type, const std::any& value);
+    bool bind(int index, int type, const std::any& value);
 
     std::string lastError() const;
 
@@ -43,10 +45,9 @@ protected:
     void finalize();
     void updateLastError();
 
-    sqlite3*      m_db;
+    sqlite3* m_db;
     sqlite3_stmt* m_stmt;
-    std::string   m_lastError;
+    std::string m_lastError;
 };
 
 }  // namespace SQLite
-

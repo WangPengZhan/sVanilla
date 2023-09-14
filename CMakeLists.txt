@@ -52,6 +52,7 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
+  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
 )
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
@@ -67,7 +68,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
 endif()
 
-# add_subdirectory(ThirdParty/ads EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
 
 add_executable(${PROJECT_NAME}
@@ -101,6 +102,7 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::breakpad::libbreakpad
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
+        minizip
 )
 
 

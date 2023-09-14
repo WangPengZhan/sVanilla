@@ -16,5 +16,4 @@ SQLiteManager::~SQLiteManager()
 {
 }
 
-} // namespace SQLite
-
+}  // namespace SQLite

@@ -61,8 +61,7 @@ QStringList SQLiteDatabase::tables()
 
     QStringList list;
     char* errmsg = nullptr;
-    const int rc =
-        sqlite3_exec(m_db, ListTablesSql, ListCallback, &list, &errmsg);
+    const int rc = sqlite3_exec(m_db, ListTablesSql, ListCallback, &list, &errmsg);
 
     if (rc != SQLITE_OK)
     {
@@ -88,8 +87,7 @@ QStringList SQLiteDatabase::views()
 
     QStringList list;
     char* errmsg = nullptr;
-    const int rc =
-        sqlite3_exec(m_db, ListViewsSql, ListCallback, &list, &errmsg);
+    const int rc = sqlite3_exec(m_db, ListViewsSql, ListCallback, &list, &errmsg);
 
     if (rc != SQLITE_OK)
     {
@@ -122,8 +120,7 @@ bool SQLiteDatabase::prepare(const std::string& sql)
 
     sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
     const char* pzTail = nullptr;
-    const int res =
-        sqlite3_prepare_v2(m_db, sql.data(), sql.size(), &m_stmt, &pzTail);
+    const int res = sqlite3_prepare_v2(m_db, sql.data(), sql.size(), &m_stmt, &pzTail);
     sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
 
     if (res != SQLITE_OK)
@@ -188,13 +185,27 @@ bool SQLiteDatabase::execute(const std::string& sql)
         {
             m_lastError = errmsg;
             sqlite3_free(errmsg);
-            SQLITE_LOG_ERROR("sqlite3_exec error: {}, sql:{} ",
-                             m_lastError.c_str(), sql.c_str());
+            SQLITE_LOG_ERROR("sqlite3_exec error: {}, sql:{} ", m_lastError.c_str(), sql.c_str());
         }
         return false;
     }
 
     return true;
+}
+
+bool SQLiteDatabase::transaction()
+{
+    return execute("BEGIN;");
+}
+
+bool SQLiteDatabase::commit()
+{
+    return execute("COMMIT;");
+}
+
+bool SQLiteDatabase::rollback()
+{
+    return execute("ROLLBACK;");
 }
 
 std::any SQLiteDatabase::value(int index) const
@@ -240,8 +251,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
 
     if (type != SQLITE_NULL && !value.has_value())
     {
-        SQLITE_LOG_WARN("bind value is empty, index: {}, type: {}", index,
-                        type);
+        SQLITE_LOG_WARN("bind value is empty, index: {}, type: {}", index, type);
         return false;
     }
 
@@ -250,8 +260,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     switch (type)
     {
     case SQLITE_INTEGER:
-        nRet = sqlite3_bind_int64(m_stmt, index,
-                                  std::any_cast<sqlite_int64>(value));
+        nRet = sqlite3_bind_int64(m_stmt, index, std::any_cast<sqlite_int64>(value));
         break;
     case SQLITE_FLOAT:
         nRet = sqlite3_bind_double(m_stmt, index, std::any_cast<double>(value));
@@ -260,9 +269,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
         nRet = sqlite3_bind_null(m_stmt, index);
         break;
     default:
-        nRet = sqlite3_bind_text(m_stmt, index,
-                                 std::any_cast<std::string>(value).c_str(), -1,
-                                 SQLITE_TRANSIENT);
+        nRet = sqlite3_bind_text(m_stmt, index, std::any_cast<std::string>(value).c_str(), -1, SQLITE_TRANSIENT);
         break;
     }
     sqlite3_mutex_leave(sqlite3_db_mutex(m_db));

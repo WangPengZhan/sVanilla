@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Sqlite/SQLiteDatabase.h"
+#include "SQLiteDatabase.h"
 
 namespace SQLite
 {
@@ -22,5 +22,4 @@ private:
     SQLiteDatabase m_db;
 };
 
-} // namespace SQLite
-
+}  // namespace SQLite
