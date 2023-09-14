@@ -5,17 +5,17 @@
 namespace util
 {
 
-// ½âÎöÊäÈëµÄ×Ö·û´®<para/>
-// Ö§³ÖµÄ¸ñÊ½ÓĞ£º<para/>
-// avºÅ£ºav170001, AV170001, https://www.bilibili.com/video/av170001 <para/>
-// BVºÅ£ºBV17x411w7KC, https://www.bilibili.com/video/BV17x411w7KC, https://b23.tv/BV17x411w7KC <para/>
-// ·¬¾ç£¨µçÓ°¡¢µçÊÓ¾ç£©ssºÅ£ºss32982, SS32982, https://www.bilibili.com/bangumi/play/ss32982 <para/>
-// ·¬¾ç£¨µçÓ°¡¢µçÊÓ¾ç£©epºÅ£ºep317925, EP317925, https://www.bilibili.com/bangumi/play/ep317925 <para/>
-// ·¬¾ç£¨µçÓ°¡¢µçÊÓ¾ç£©mdºÅ£ºmd28228367, MD28228367, https://www.bilibili.com/bangumi/media/md28228367 <para/>
-// ¿Î³ÌssºÅ£ºhttps://www.bilibili.com/cheese/play/ss205 <para/>
-// ¿Î³ÌepºÅ£ºhttps://www.bilibili.com/cheese/play/ep3489 <para/>
-// ÊÕ²Ø¼Ğ£ºml1329019876, ML1329019876, https://www.bilibili.com/medialist/detail/ml1329019876, https://www.bilibili.com/medialist/play/ml1329019876/ <para/>
-// ÓÃ»§¿Õ¼ä£ºuid928123, UID928123, uid:928123, UID:928123, https://space.bilibili.com/928123
+// è§£æè¾“å…¥çš„å­—ç¬¦ä¸²
+// æ”¯æŒçš„æ ¼å¼æœ‰ï¼š
+// avå·ï¼šav170001, AV170001, https://www.bilibili.com/video/av170001
+// BVå·ï¼šBV17x411w7KC, https://www.bilibili.com/video/BV17x411w7KC, https://b23.tv/BV17x411w7KC
+// ç•ªå‰§ï¼ˆç”µå½±ã€ç”µè§†å‰§ï¼‰sså·ï¼šss32982, SS32982, https://www.bilibili.com/bangumi/play/ss32982
+// ç•ªå‰§ï¼ˆç”µå½±ã€ç”µè§†å‰§ï¼‰epå·ï¼šep317925, EP317925, https://www.bilibili.com/bangumi/play/ep317925
+// ç•ªå‰§ï¼ˆç”µå½±ã€ç”µè§†å‰§ï¼‰mdå·ï¼šmd28228367, MD28228367, https://www.bilibili.com/bangumi/media/md28228367
+// è¯¾ç¨‹sså·ï¼šhttps://www.bilibili.com/cheese/play/ss205
+// è¯¾ç¨‹epå·ï¼šhttps://www.bilibili.com/cheese/play/ep3489
+// æ”¶è—å¤¹ï¼šml1329019876, ML1329019876, https://www.bilibili.com/medialist/detail/ml1329019876, https://www.bilibili.com/medialist/play/ml1329019876/
+// ç”¨æˆ·ç©ºé—´ï¼šuid928123, UID928123, uid:928123, UID:928123, https://space.bilibili.com/928123
 
 static const std::string WwwUrl = "https://www.bilibili.com";
 static const std::string ShareWwwUrl = "https://www.bilibili.com/s";
@@ -43,7 +43,7 @@ public:
     static QString EnableHttps(const QString& url);
 };
 
-static constexpr char splicalChars[] = "?¡°¡±/\\<>*|:";
+static constexpr char splicalChars[] = "?ï¿½ï¿½ï¿½ï¿½/\\<>*|:";
 
 class FileHelp
 {
@@ -51,6 +51,4 @@ public:
     static QString RemoveSpicalChar(const QString& path);
 };
 
-} // namespace util
-
-
+}  // namespace util
