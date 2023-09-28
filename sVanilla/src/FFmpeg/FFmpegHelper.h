@@ -14,4 +14,3 @@ public:
     void StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& destionVideo);
     void CloseFFmpeg();
 };
-

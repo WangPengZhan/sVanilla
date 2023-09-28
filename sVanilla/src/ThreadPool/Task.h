@@ -24,4 +24,3 @@ public:
 signals:
     void result(const std::any& ret);
 };
-

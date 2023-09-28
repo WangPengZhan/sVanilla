@@ -43,7 +43,7 @@ protected:
     void InitDefaultHeaders();
     void InitDefaultHeadersLogin();
 
-    curl_slist* m_headers; // 请求头
+    curl_slist* m_headers;  // 请求头
     class CurlHelp
     {
     public:

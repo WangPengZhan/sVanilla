@@ -1,7 +1,7 @@
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
 
-SearchLineEdit::SearchLineEdit(QWidget *parent)
+SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
     , ui(new Ui::SearchLineEdit())
 {
@@ -40,7 +40,6 @@ void SearchLineEdit::resizeEvent(QResizeEvent* event)
 
 void SearchLineEdit::SetUi()
 {
-    
 }
 
 void SearchLineEdit::SignalsAndSlots()

@@ -1,18 +1,17 @@
 #include <chrono>
-#include <thread>
 #include <future>
+#include <thread>
 
-#include <QString>
+#include <QApplication>
 #include <QDebug>
 #include <QProcess>
-#include <QApplication>
+#include <QString>
 
 #include "FFmpegHelper.h"
 
-
-namespace 
+namespace
 {
-    constexpr char ffmpegCommand[] = "-i \"%1\" -i \"%2\" -acodec copy -vcodec copy -f mp4 \"%3\"";
+constexpr char ffmpegCommand[] = "-i \"%1\" -i \"%2\" -acodec copy -vcodec copy -f mp4 \"%3\"";
 }
 
 FFmpegHelper::FFmpegHelper()
@@ -33,14 +32,14 @@ bool FFmpegHelper::MegerVideo(const std::string& audio, const std::string& video
 
 void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& destionVideo)
 {
-    std::future<bool> result = std::async(std::launch::async, [&]()->bool {
-        STARTUPINFO si;              
+    std::future<bool> result = std::async(std::launch::async, [&]() -> bool {
+        STARTUPINFO si;
         ZeroMemory(&si, sizeof(si));
         si.cb = sizeof(si);
         QString ffmpegExeFilename;
         ffmpegExeFilename = QApplication::applicationDirPath() + "/ffmpeg.exe ";
         QString ffmpegArg(ffmpegCommand);
-        ffmpegArg =  ffmpegArg.arg(audio.c_str()).arg(video.c_str()).arg(destionVideo.c_str());
+        ffmpegArg = ffmpegArg.arg(audio.c_str()).arg(video.c_str()).arg(destionVideo.c_str());
         qDebug() << ffmpegArg;
 
         QProcess process;

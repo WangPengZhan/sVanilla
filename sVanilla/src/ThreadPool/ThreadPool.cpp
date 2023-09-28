@@ -1,32 +1,34 @@
 #include "ThreadPool.h"
 
-ThreadPool::ThreadPool(size_t threads) : m_stop(false), m_numThreads(threads)
+ThreadPool::ThreadPool(size_t threads)
+    : m_stop(false)
+    , m_numThreads(threads)
 {
-	if (threads == 0)
-	{
-		return;
-	}
+    if (threads == 0)
+    {
+        return;
+    }
 
-	for (size_t i = 0; i < threads; ++i)
-	{
-		m_workers.emplace_back(std::thread(&ThreadPool::workLoop, this));
-	}
+    for (size_t i = 0; i < threads; ++i)
+    {
+        m_workers.emplace_back(std::thread(&ThreadPool::workLoop, this));
+    }
 
-	size_t thread_count = 0;
-	for (std::thread& worker : m_workers)
-	{
-		m_idMap[worker.get_id()] = thread_count;
-		thread_count++;
-	}
+    size_t thread_count = 0;
+    for (std::thread& worker : m_workers)
+    {
+        m_idMap[worker.get_id()] = thread_count;
+        thread_count++;
+    }
 }
 
 ThreadPool::~ThreadPool()
 {
-	stop();
-	for (std::thread& worker : m_workers)
-	{
-		worker.join();
-	}
+    stop();
+    for (std::thread& worker : m_workers)
+    {
+        worker.join();
+    }
 }
 
 ThreadPool& ThreadPool::instance()
@@ -52,34 +54,33 @@ size_t ThreadPool::numThreads()
 
 void ThreadPool::stop()
 {
-	m_stop = true;
-	m_condition.notify_all();
+    m_stop = true;
+    m_condition.notify_all();
 }
 
 void ThreadPool::drop()
 {
-	{
-		std::lock_guard<std::mutex> lock(m_tasksMutex);
-		m_tasks.clear();
-	}
+    {
+        std::lock_guard<std::mutex> lock(m_tasksMutex);
+        m_tasks.clear();
+    }
 }
 
 void ThreadPool::workLoop()
 {
-	while (true)
-	{
-		std::function<void()> task;
-		{
-			std::unique_lock<std::mutex> lock(m_tasksMutex);
-			m_condition.wait(lock,
-				[&] { return m_stop || !m_tasks.empty(); });
-			if (m_stop && m_tasks.empty())
-			{
-				return;
-			}
-			task = std::move(m_tasks.front());
-			m_tasks.pop_front();
-		}
-		task();
-	}
+    while (true)
+    {
+        std::function<void()> task;
+        {
+            std::unique_lock<std::mutex> lock(m_tasksMutex);
+            m_condition.wait(lock, [&] { return m_stop || !m_tasks.empty(); });
+            if (m_stop && m_tasks.empty())
+            {
+                return;
+            }
+            task = std::move(m_tasks.front());
+            m_tasks.pop_front();
+        }
+        task();
+    }
 }

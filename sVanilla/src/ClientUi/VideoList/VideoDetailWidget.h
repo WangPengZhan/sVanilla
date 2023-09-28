@@ -2,15 +2,17 @@
 
 #include <QDialog>
 
-namespace Ui { class VideoDetailWidget; };
-
+namespace Ui
+{
+class VideoDetailWidget;
+};
 
 class VideoDetailWidget : public QDialog
 {
     Q_OBJECT
 
 public:
-    VideoDetailWidget(QWidget *parent = nullptr);
+    VideoDetailWidget(QWidget* parent = nullptr);
     ~VideoDetailWidget();
 
 private:

@@ -1,7 +1,7 @@
 #include "VideoListWidget.h"
 #include "ui_VideoListWidget.h"
 
-VideoListItemWidget::VideoListItemWidget(QWidget *parent)
+VideoListItemWidget::VideoListItemWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoListItemWidget())
 {

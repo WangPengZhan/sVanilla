@@ -1,13 +1,13 @@
 #include <QDir>
 
-#include "MainWindow.h"
-#include "ui_MainWindow.h"
-#include "MainWindowlog.h"
-#include "Util/UrlProcess.h"
 #include "BiliApi/BilibiliClient.h"
+#include "MainWindow.h"
+#include "MainWindowlog.h"
 #include "Sqlite/SQLiteManager.h"
+#include "Util/UrlProcess.h"
+#include "ui_MainWindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -26,7 +26,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::SearchUrl()
 {
-
 }
 
 void MainWindow::SetUi()
@@ -36,5 +35,4 @@ void MainWindow::SetUi()
 
 void MainWindow::SignalsAndSlots()
 {
-
 }

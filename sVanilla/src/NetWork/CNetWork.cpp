@@ -23,16 +23,18 @@ size_t OnWriteDate(void* data, size_t size, size_t nmemb, void* stream)
 constexpr char chrome[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
 constexpr char firefox[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0";
 constexpr char edge[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
-constexpr char opera[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+constexpr char opera[] =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
 constexpr char ie[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
-constexpr char safari[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+constexpr char safari[] =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
 
 constexpr char const accept[] = "Accept: application/json";
 constexpr char const accept_encoding[] = "Accept-Encoding: gzip, deflate, br";
 constexpr char const accept_language[] = "Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
 constexpr char const connect_type[] = "Connection: keep-alive";
 
-}
+}  // namespace
 
 CNetWork::CurlHelp::CurlHelp()
 {
@@ -100,7 +102,7 @@ void CNetWork::HttpGet(const std::string& url, ParamType params, std::string& re
         strParam = "?" + strParam;
     }
 
-    strParam.erase(strParam.end() -1);
+    strParam.erase(strParam.end() - 1);
 
     return HttpGet(url, strParam, response);
 }
@@ -123,7 +125,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
     curl_easy_setopt(curlHandle, CURLOPT_TIMEOUT, 5000);
     curl_easy_setopt(curlHandle, CURLOPT_ACCEPT_ENCODING, "gzip");
     curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYHOST, false); 
+    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYHOST, false);
     CURLcode retCode = curl_easy_perform(curlHandle);
     if (retCode != CURLE_OK)
     {
@@ -134,15 +136,14 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
 
 void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& response)
 {
-    //std::list<std::string> listParams;
-    //for (const auto& param : params) 
+    // std::list<std::string> listParams;
+    // for (const auto& param : params)
     //{
-    //    listParams.emplace_back(param.first + " " + param.second);
-    //}
+    //     listParams.emplace_back(param.first + " " + param.second);
+    // }
 
     nlohmann::json jsonParam = params;
- 
-    
+
     HttpPost(url, jsonParam.dump(), response);
 }
 
@@ -193,7 +194,6 @@ void CNetWork::HttpPost(const std::string& url, std::string& response)
     curl_easy_cleanup(curlHandle);
 }
 
-
 void CNetWork::InitDefaultHeaders()
 {
     std::string userAgent = std::string("user-agent: ") + chrome;
@@ -202,12 +202,11 @@ void CNetWork::InitDefaultHeaders()
     m_headers = curl_slist_append(m_headers, userAgent.c_str());
 }
 
-void CNetWork::InitDefaultHeadersLogin() 
+void CNetWork::InitDefaultHeadersLogin()
 {
     std::string userAgent = std::string("user-agent: ") + chrome;
-    std::string referer   = "referer: https://passport.bilibili.com/login";
-    m_headers             = curl_slist_append(m_headers, accept_language);
-    m_headers             = curl_slist_append(m_headers, userAgent.c_str());
-    m_headers             = curl_slist_append(m_headers, referer.c_str());
+    std::string referer = "referer: https://passport.bilibili.com/login";
+    m_headers = curl_slist_append(m_headers, accept_language);
+    m_headers = curl_slist_append(m_headers, userAgent.c_str());
+    m_headers = curl_slist_append(m_headers, referer.c_str());
 }
-

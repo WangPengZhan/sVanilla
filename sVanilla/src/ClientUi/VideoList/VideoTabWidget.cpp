@@ -21,14 +21,11 @@ void VideoTabItemWidget::SignalsAndSlots()
 {
 }
 
-
-VideoTabWidget::VideoTabWidget(QWidget *parent)
+VideoTabWidget::VideoTabWidget(QWidget* parent)
     : QListWidget(parent)
 {
-
 }
 
 VideoTabWidget::~VideoTabWidget()
 {
-
 }

@@ -60,8 +60,8 @@ file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
 file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h")
 file(GLOB_RECURSE UI "sVanilla/src/*.ui")
 
-set(ui ${CMAKE_SOURCE_DIR}/ui)
-set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
+# set(ui ${CMAKE_SOURCE_DIR}/ui)
+# set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
 
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -117,11 +117,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
 # add_dependencies(${PROJECT_NAME} SARibbonBar)
 
-# add_custom_command(TARGET ${PROJECT_NAME}
-#     POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:ads::qt6advanceddocking> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-#         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/public $<TARGET_FILE_DIR:${PROJECT_NAME}>/public
-# )
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
 
 include(cmake/qtdeploy.cmake)
 deployqt(${PROJECT_NAME})
@@ -132,6 +131,5 @@ install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-
-# install(FILES "$<TARGET_FILE:ads::qt6advanceddocking>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 

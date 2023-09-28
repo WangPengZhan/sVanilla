@@ -1,14 +1,11 @@
-#include <QFile>
 #include <QApplication>
+#include <QFile>
 
-#include "Logger/Logger.h"
 #include "BilibiliClient.h"
-
-
+#include "Logger/Logger.h"
 
 namespace BiliApi
 {
-    
 
 BilibiliClient& BilibiliClient::globalClient()
 {
@@ -27,8 +24,7 @@ VideoView BilibiliClient::GetVideoView(const std::string& bvid)
 PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
 {
     // "https://api.bilibili.com/x/player/playurl?cid=%s&qn=125&fourk=1&fnver=0&fnval=4048&bvid=%s";
-    std::string url = videoPlayUrl + std::string("?cid=") + std::to_string(cid) +
-        "&qn=" + std::to_string(qn) + "&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
+    std::string url = videoPlayUrl + std::string("?cid=") + std::to_string(cid) + "&qn=" + std::to_string(qn) + "&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
     std::string response;
     HttpGet(url, response);
     return PlayUrl(GetDataFromRespones(response));
@@ -48,11 +44,11 @@ LoginUrlOrigin BilibiliClient::GetLoginUrl()
     InitDefaultHeaders();
 
     nlohmann::json json;
-    try 
+    try
     {
         json = nlohmann::json::parse(response);
     }
-    catch (std::exception& e) 
+    catch (std::exception& e)
     {
     }
     return LoginUrlOrigin(json);
@@ -67,8 +63,8 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& oauthKey)
     m_headers = nullptr;
     InitDefaultHeadersLogin();
     ParamType param{
-        {"oauthKey", oauthKey}, 
-        {"gourl", "https://www.bilibili.com"},
+        {"oauthKey", oauthKey                  },
+        {"gourl",    "https://www.bilibili.com"},
     };
     url = url + "?oauthKey=" + oauthKey + "&gourl=https://www.bilibili.com";
     HttpPost(url, param, response);
@@ -77,18 +73,18 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& oauthKey)
     InitDefaultHeaders();
 
     nlohmann::json json;
-    try 
+    try
     {
         json = nlohmann::json::parse(response);
     }
-    catch (std::exception& e) 
+    catch (std::exception& e)
     {
         return {};
     }
     return LoginStatusScanning(json);
 }
 
-void BilibiliClient::SetLogined(bool logined) 
+void BilibiliClient::SetLogined(bool logined)
 {
     m_logined = logined;
 }
@@ -105,9 +101,8 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     {
         json = nlohmann::json::parse(respones);
     }
-    catch(std::exception& e)
+    catch (std::exception& e)
     {
-
     }
     return json["data"];
 }
@@ -121,4 +116,4 @@ BilibiliClient::BilibiliClient()
     AppendHeaders("Content-Type: application/json;");
 }
 
-} // BiliApi
+}  // namespace BiliApi

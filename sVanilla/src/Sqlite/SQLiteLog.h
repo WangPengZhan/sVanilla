@@ -10,4 +10,3 @@
 #define SQLITE_LOG_ERROR(...) SPDLOG_LOGGER_CALL(spdlog::get("SQLite"), spdlog::level::err, __VA_ARGS__)
 #define SQLITE_LOG_CRITICAL(...) SPDLOG_LOGGER_CALL(spdlog::get("SQLite"), spdlog::level::critical, __VA_ARGS__)
 #define SQLITE_LOG_OFF(...) SPDLOG_LOGGER_CALL(spdlog::get("SQLite"), spdlog::level::off, __VA_ARGS__)
-

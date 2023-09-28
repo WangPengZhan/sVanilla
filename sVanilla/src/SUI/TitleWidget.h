@@ -10,22 +10,21 @@ class QPushButton;
  * @def   模仿Q_DECLARE_PRIVATE，但不用前置声明而是作为一个内部类
  */
 #ifndef QTLIKE_DECLARE_PRIVATE
-#define QTLIKE_DECLARE_PRIVATE(classname) \
-    class PrivateData; \
-    friend class classname::PrivateData; \
-    std::unique_ptr< PrivateData > d_ptr;
+#    define QTLIKE_DECLARE_PRIVATE(classname)                                                                                                                  \
+        class PrivateData;                                                                                                                                     \
+        friend class classname::PrivateData;                                                                                                                   \
+        std::unique_ptr<PrivateData> d_ptr;
 #endif
 /**
  * @def   模仿Q_DECLARE_PUBLIC
  */
 #ifndef QTLIKE_DECLARE_PUBLIC
-#define QTLIKE_DECLARE_PUBLIC(classname) \
-    friend class classname; \
-    classname* q_ptr { nullptr };
+#    define QTLIKE_DECLARE_PUBLIC(classname)                                                                                                                   \
+        friend class classname;                                                                                                                                \
+        classname* q_ptr{nullptr};
 #endif
 
-
-class  FramelessHelper : public QObject
+class FramelessHelper : public QObject
 {
     Q_OBJECT
     QTLIKE_DECLARE_PRIVATE(FramelessHelper)
@@ -73,7 +72,7 @@ protected:
     virtual bool eventFilter(QObject* obj, QEvent* event);
 };
 
-class TitleWidget : public QWidget 
+class TitleWidget : public QWidget
 {
     Q_OBJECT
 public:

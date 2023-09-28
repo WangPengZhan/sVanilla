@@ -3,7 +3,6 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
-
 namespace BiliApi
 {
 // 协议基类
@@ -18,14 +17,14 @@ public:
 // // 支持json转任意类型
 // template<typename ProtocolType,
 //     typename std::enable_if<std::is_convertible<const ProtocolType&, Protocol>::value, int>::type = 0>
-// void to_json(nlohmann::json& j, const ProtocolType& p) 
+// void to_json(nlohmann::json& j, const ProtocolType& p)
 // {
 //     j = p.GetJson();
 // }
 
 // template<typename ProtocolType,
 //     typename std::enable_if<std::is_convertible<const ProtocolType&, Protocol>::value, int>::type = 0>
-// void from_json(const nlohmann::json& j, ProtocolType& p) 
+// void from_json(const nlohmann::json& j, ProtocolType& p)
 // {
 //     p.SetJson(j);
 // }
@@ -73,10 +72,8 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoStat, aid, view, danmaku, favorite,\
-        coin, share, now_rank, his_rank, like, dislike, evaluation, argue_msg)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoStat, aid, view, danmaku, favorite, coin, share, now_rank, his_rank, like, dislike, evaluation, argue_msg)
 };
-
 
 class Dimension : public Protocol
 {
@@ -122,9 +119,8 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcArc, aid, videos, type_id, type_name, copyright,\
-        pic, title, pubdate, ctime, desc, state, duration, author, stat, dynamic, dimension)
-
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcArc, aid, videos, type_id, type_name, copyright, pic, title, pubdate, ctime, desc, state, duration, author, stat, dynamic,
+                                   dimension)
 };
 
 class VideoPage : public Protocol
@@ -147,8 +143,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoPage, cid, page, from, part, duration, vid,\
-        weblink, dimension, first_frame)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoPage, cid, page, from, part, duration, vid, weblink, dimension, first_frame)
 };
 
 class SubtitleAuthor : public Protocol
@@ -188,9 +183,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Subtitle, id, lan, author_doc, is_lock, author_mid,\
-        subtitle_url, author)
-
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Subtitle, id, lan, author_doc, is_lock, author_mid, subtitle_url, author)
 };
 
 class VideoSubtitle : public Protocol
@@ -230,8 +223,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcStat, season_id, view, danmaku, relay, \
-        favorite, coin, share, nowRank, hisRank, like)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcStat, season_id, view, danmaku, relay, favorite, coin, share, nowRank, hisRank, like)
 };
 
 class UgcEpisode : public Protocol
@@ -255,8 +247,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcEpisode, season_id, section_id, id, mid, \
-        cid, title, attribute, arc, page, bvid)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcEpisode, season_id, section_id, id, mid, cid, title, attribute, arc, page, bvid)
 };
 
 class UgcSection : public Protocol
@@ -278,8 +269,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcSection, season_id, id, title, attribute, \
-        arc, page, type, arc, episodes)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcSection, season_id, id, title, attribute, arc, page, type, arc, episodes)
 };
 
 class UgcSeason : public Protocol
@@ -304,11 +294,8 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcSeason, id, title, cover, mid, \
-        intro, signState, attribute, sections, stat, ep_count, season_type)
-
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcSeason, id, title, cover, mid, intro, signState, attribute, sections, stat, ep_count, season_type)
 };
-
 
 class VideoView : public Protocol
 {
@@ -346,10 +333,8 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title,\
-        pubdate, ctime, desc, state, duration, redirect_url, mission_id, owener, stat, dynamic, cid,\
-        dimension, season_id, festival_jump_url, pages, subtitle, ugc_season)
- 
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title, pubdate, ctime, desc, state, duration, redirect_url,
+                                   mission_id, owener, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle, ugc_season)
 };
 
 class SubtitleInfo : public Protocol
@@ -368,7 +353,6 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(SubtitleInfo, allow_submit, lan, lan_doc, subtitles)
- 
 };
 
 class PlayerV2 : public Protocol
@@ -387,7 +371,6 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayerV2, aid, bvid, cid, subtitle)
-
 };
 
 class PlayUrlDurl : public Protocol
@@ -407,7 +390,6 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDurl, order, length, size, backup_url)
-
 };
 
 class PlayUrlDashVideo : public Protocol
@@ -429,8 +411,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDashVideo, id, base_url, backup_url, mimeType,\
-        codecs, width, height, frameRate)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDashVideo, id, base_url, backup_url, mimeType, codecs, width, height, frameRate)
 };
 
 class PlayUrlDashDolby : public Protocol
@@ -465,7 +446,6 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDash, video, audio, dolby)
 };
 
-
 class PlayUrlSupportFormat : public Protocol
 {
 public:
@@ -482,8 +462,7 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlSupportFormat, quality, format, new_description, superscript)
-
-}; 
+};
 
 class PlayUrl : public Protocol
 {
@@ -494,7 +473,6 @@ public:
     PlayUrlDash dash;
     std::list<PlayUrlSupportFormat> support_formats;
 
-    
     std::string toString() override
     {
         nlohmann::json json;
@@ -503,11 +481,10 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
-
 };
 
 // https://passport.bilibili.com/qrcode/getLoginUrl
-class LoginUrl : public Protocol 
+class LoginUrl : public Protocol
 {
 public:
     std::string oauthKey;
@@ -539,9 +516,8 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginUrlOrigin, data, status)
 };
 
-
 // https://passport.bilibili.com/qrcode/getLoginInfo
-class LoginStatusData : public Protocol 
+class LoginStatusData : public Protocol
 {
 public:
     std::string url;
@@ -556,7 +532,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatusData, url)
 };
 
-class LoginStatusScanning : public Protocol 
+class LoginStatusScanning : public Protocol
 {
 public:
     LoginStatusData data;
@@ -573,7 +549,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatusScanning, data, status, message)
 };
 
-class LoginStatus : public Protocol 
+class LoginStatus : public Protocol
 {
 public:
     int code;
@@ -590,7 +566,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatus, code, status, message)
 };
 
-class LoginStatusReady : public Protocol 
+class LoginStatusReady : public Protocol
 {
 public:
     int code;
@@ -605,11 +581,6 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatusReady, code, status, data)
-
 };
 
-} // namespace BiliApi
-
-
-
-
+}  // namespace BiliApi

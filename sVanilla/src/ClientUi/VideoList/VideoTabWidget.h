@@ -1,9 +1,11 @@
 #pragma once
 
-
 #include <QWidget>
 #include <QListWidget>
-namespace Ui { class VideoTabItemWidget; };
+namespace Ui
+{
+class VideoTabItemWidget;
+};
 
 class VideoTabItemWidget : public QWidget
 {
@@ -26,7 +28,6 @@ class VideoTabWidget : public QListWidget
     Q_OBJECT
 
 public:
-    VideoTabWidget(QWidget *parent = nullptr);
+    VideoTabWidget(QWidget* parent = nullptr);
     ~VideoTabWidget();
-
 };

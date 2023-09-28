@@ -1,7 +1,7 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
 #include <spdlog/common.h>
+#include <spdlog/spdlog.h>
 
 #define FFMPEG_LOG_TRACE(...) SPDLOG_LOGGER_CALL(spdlog::get("FFmpeg"), spdlog::level::trace, __VA_ARGS__)
 #define FFMPEG_LOG_DEBUG(...) SPDLOG_LOGGER_CALL(spdlog::get("FFmpeg"), spdlog::level::debug, __VA_ARGS__)
