@@ -301,7 +301,6 @@ bool Unzipper::unzip()
 
             // 读取文件
             uLong uFilesize = pFileInfo->uncompressed_size;
-            ;
             std::unique_ptr<char[]> szReadBuffer(new char[uFilesize]);
             while (true)
             {
