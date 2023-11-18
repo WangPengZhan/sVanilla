@@ -20,6 +20,11 @@ else()
     message("CXXCompiler can't support Wno-builtin-macro-redefined")
 endif (SUPPORT_CXX_WNO_BUILTIN_MACRO_REDEFINED)
 
+# MSVC并行编译 cmake -j xxx 对于MSVC没有作用
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/Gm->) #高版本已被废弃，但是低版本的Gm会影响并行
+cmake_host_system_information(RESULT CPU_NUMBER_OF_LOGICAL_CORES QUERY NUMBER_OF_LOGICAL_CORES)
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP${CPU_NUMBER_OF_LOGICAL_CORES}>)
+
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -80,7 +85,7 @@ add_executable(${PROJECT_NAME}
 )
 
 include(cmake/filemarco.cmake)
-redefine_file_macro(${PROJECT_NAME})
+# redefine_file_macro(${PROJECT_NAME})
 
 if(${QT_VERSION_MAJOR} EQUAL 5)
     qt5_add_translation(${PROJECT_NAME} TS_FILES ${QTS})
