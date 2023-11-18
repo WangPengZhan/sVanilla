@@ -76,6 +76,13 @@ endif()
 add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
 
+option(ENABLE_TEST "Enable Test" OFF)
+
+if (ENABLE_TEST)
+    enable_testing()
+    add_subdirectory(test)
+endif()
+
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${QT_MOC}

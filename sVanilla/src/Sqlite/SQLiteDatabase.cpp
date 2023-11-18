@@ -19,7 +19,7 @@ constexpr char ListViewsSql[] = "SELECT name"
                                 "  ORDER BY name";
 
 auto ListCallback = [](void* ptr, int, char** data, char**) {
-    static_cast<QStringList*>(ptr)->append(QString::fromUtf8(data[0]));
+    static_cast<std::set<std::string>*>(ptr)->insert(data[0]);
     return 0;
 };
 
@@ -53,14 +53,14 @@ bool SQLiteDatabase::isOpen() const
     return m_db != nullptr;
 }
 
-QStringList SQLiteDatabase::tables()
+std::set<std::string> SQLiteDatabase::tables()
 {
     if (m_db == nullptr)
     {
         return {};
     }
 
-    QStringList list;
+    std::set<std::string> list;
     char* errmsg = nullptr;
     const int rc = sqlite3_exec(m_db, ListTablesSql, ListCallback, &list, &errmsg);
 
@@ -79,14 +79,14 @@ QStringList SQLiteDatabase::tables()
     return list;
 }
 
-QStringList SQLiteDatabase::views()
+std::set<std::string> SQLiteDatabase::views()
 {
     if (m_db == nullptr)
     {
         return {};
     }
 
-    QStringList list;
+    std::set<std::string> list;
     char* errmsg = nullptr;
     const int rc = sqlite3_exec(m_db, ListViewsSql, ListCallback, &list, &errmsg);
 
@@ -348,7 +348,16 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     {
     case SQLITE_INTEGER:
     {
-        nRet = sqlite3_bind_int64(m_stmt, index, std::any_cast<sqlite_int64>(value));
+        std::any newValueAny;
+        if (typeid(sqlite_int64) != value.type())
+        {
+            sqlite_int64 newValue = std::any_cast<bool>(value);
+            nRet = sqlite3_bind_int64(m_stmt, index, newValue);
+        }
+        else
+        {
+            nRet = sqlite3_bind_int64(m_stmt, index, std::any_cast<sqlite_int64>(value));
+        }
         break;
     };
     case SQLITE_FLOAT:

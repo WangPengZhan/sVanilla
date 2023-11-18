@@ -111,7 +111,7 @@ std::string AbstractTable::createTableSql()
 
 std::string AbstractTable::createTableInsertSql()
 {
-    if (m_name.empty() || m_headers.empty() || m_primary.empty())
+    if (m_name.empty() || m_headers.empty())
     {
         return std::string();
     }

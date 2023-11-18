@@ -1,9 +1,7 @@
 #pragma once
-
-#include <QString>
-#include <QVariant>
-
+#include <string>
 #include <any>
+#include <set>
 
 #include "SQLiteUtility.h"
 
@@ -32,8 +30,8 @@ public:
 
     bool isOpen() const;
 
-    QStringList tables();
-    QStringList views();
+    std::set<std::string> tables();
+    std::set<std::string> views();
 
     bool prepare(const std::string& sql);
     NextStatus next();
