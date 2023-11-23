@@ -1,7 +1,9 @@
+#include <iostream>
+#include <sqlite3.h>
+
 #include "SQLiteDatabase.h"
 #include "SQLiteLog.h"
 
-#include <sqlite3.h>
 
 namespace SQLite
 {
@@ -19,7 +21,7 @@ constexpr char ListViewsSql[] = "SELECT name"
                                 "  ORDER BY name";
 
 auto ListCallback = [](void* ptr, int, char** data, char**) {
-    static_cast<QStringList*>(ptr)->append(QString::fromUtf8(data[0]));
+    static_cast<std::set<std::string>*>(ptr)->insert(data[0]);
     return 0;
 };
 
@@ -29,6 +31,7 @@ SQLiteDatabase::SQLiteDatabase(const std::string& path)
 {
     if (sqlite3_initialize() != SQLITE_OK)
     {
+        updateLastError();
         SQLITE_LOG_ERROR("sqlite3_initialize error: {}", m_lastError.c_str());
         return;
     }
@@ -52,14 +55,14 @@ bool SQLiteDatabase::isOpen() const
     return m_db != nullptr;
 }
 
-QStringList SQLiteDatabase::tables()
+std::set<std::string> SQLiteDatabase::tables()
 {
     if (m_db == nullptr)
     {
         return {};
     }
 
-    QStringList list;
+    std::set<std::string> list;
     char* errmsg = nullptr;
     const int rc = sqlite3_exec(m_db, ListTablesSql, ListCallback, &list, &errmsg);
 
@@ -78,14 +81,14 @@ QStringList SQLiteDatabase::tables()
     return list;
 }
 
-QStringList SQLiteDatabase::views()
+std::set<std::string> SQLiteDatabase::views()
 {
     if (m_db == nullptr)
     {
         return {};
     }
 
-    QStringList list;
+    std::set<std::string> list;
     char* errmsg = nullptr;
     const int rc = sqlite3_exec(m_db, ListViewsSql, ListCallback, &list, &errmsg);
 
@@ -140,11 +143,11 @@ bool SQLiteDatabase::prepare(const std::string& sql)
     return true;
 }
 
-bool SQLiteDatabase::next()
+SQLiteDatabase::NextStatus SQLiteDatabase::next()
 {
     if (m_stmt == nullptr)
     {
-        return false;
+        return Error;
     }
 
     sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
@@ -154,8 +157,9 @@ bool SQLiteDatabase::next()
     switch (res)
     {
     case SQLITE_ROW:
-        return true;
+        return Row;
     case SQLITE_DONE:
+        return Done;
     case SQLITE_CONSTRAINT:
     case SQLITE_ERROR:
     case SQLITE_MISUSE:
@@ -164,7 +168,7 @@ bool SQLiteDatabase::next()
         updateLastError();
     }
 
-    return false;
+    return Error;
 }
 
 bool SQLiteDatabase::execute(const std::string& sql)
@@ -193,6 +197,87 @@ bool SQLiteDatabase::execute(const std::string& sql)
     return true;
 }
 
+bool SQLiteDatabase::reset()
+{
+    if (m_stmt == nullptr)
+    {
+        return false;
+    }
+
+    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
+    const int res = sqlite3_reset(m_stmt);
+    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
+
+    if (res != SQLITE_OK)
+    {
+        updateLastError();
+        return false;
+    }
+
+    return true;
+}
+
+bool SQLiteDatabase::prepare(const std::string& sql, SQLiteStmtPtr& stmt)
+{
+    if (m_db == nullptr)
+    {
+        return false;
+    }
+
+
+    m_lastError.clear();
+
+    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
+    const char* pzTail = nullptr;
+    sqlite3_stmt* pStmt = nullptr;
+    const int res = sqlite3_prepare_v2(m_db, sql.data(), sql.size(), &pStmt, &pzTail);
+    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
+
+    if (res != SQLITE_OK)
+    {
+        updateLastError();
+        sqlite3_finalize(pStmt);
+        return false;
+    }
+
+    if (pzTail && !std::string(pzTail).empty())
+    {
+        updateLastError();
+        sqlite3_finalize(pStmt);
+        return false;
+    }
+
+    stmt = SQLiteStmtPtr(pStmt);
+
+    return true;
+}
+
+SQLiteDatabase::NextStatus SQLiteDatabase::next(SQLiteStmtPtr stmt)
+{
+    if (stmt.get() == nullptr)
+    {
+        return Error;
+    }
+
+    const int res = sqlite3_step(stmt.get());
+
+    switch (res)
+    {
+    case SQLITE_ROW:
+        return Row;
+    case SQLITE_DONE:
+        return Done;
+    case SQLITE_CONSTRAINT:
+    case SQLITE_ERROR:
+    case SQLITE_MISUSE:
+    case SQLITE_BUSY:
+    default:
+        updateLastError();
+    }
+
+    return Error;
+}
+
 bool SQLiteDatabase::transaction()
 {
     return execute("BEGIN;");
@@ -212,29 +297,47 @@ std::any SQLiteDatabase::value(int index) const
 {
     assert(index >= 0);
 
+    if (m_stmt == nullptr)
+    {
+        SQLITE_LOG_WARN("stmt is nullptr");
+        return std::any();
+    }
+
     if (index >= sqlite3_data_count(m_stmt))
     {
         SQLITE_LOG_WARN("value index out of range: {}", index);
         return std::any();
     }
 
-    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
     const int type = sqlite3_column_type(m_stmt, index);
     std::any ret;
 
     switch (type)
     {
     case SQLITE_INTEGER:
+    {
         ret = sqlite3_column_int64(m_stmt, index);
         break;
-    case SQLITE_NULL:
-        ret = std::string();
+    }
+    case SQLITE_FLOAT:
+    {
+        ret = sqlite3_column_double(m_stmt, index);
         break;
-    default:
+    }
+    case SQLITE_BLOB:
+    {
+        const int size = sqlite3_column_bytes(m_stmt, index);
+        ret = std::string((const char*)(sqlite3_column_blob(m_stmt, index)), size);
+        break;
+    }
+    case SQLITE_TEXT:
+    {
         ret = std::string((const char*)(sqlite3_column_text(m_stmt, index)));
         break;
     }
-    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
+    default:
+        break;
+    }
 
     return ret;
 }
@@ -243,7 +346,13 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
 {
     assert(index >= 0);
 
-    if (index >= sqlite3_bind_parameter_count(m_stmt))
+    if (m_stmt == nullptr)
+    {
+        SQLITE_LOG_WARN("stmt is nullptr");
+        return false;
+    }
+
+    if (index > sqlite3_bind_parameter_count(m_stmt))
     {
         SQLITE_LOG_WARN("bind index out of range: {}", index);
         return false;
@@ -260,17 +369,149 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     switch (type)
     {
     case SQLITE_INTEGER:
-        nRet = sqlite3_bind_int64(m_stmt, index, std::any_cast<sqlite_int64>(value));
+    {
+        std::any newValueAny;
+        if (typeid(sqlite_int64) != value.type())
+        {
+            sqlite_int64 newValue = std::any_cast<bool>(value);
+            nRet = sqlite3_bind_int64(m_stmt, index, newValue);
+        }
+        else
+        {
+            nRet = sqlite3_bind_int64(m_stmt, index, std::any_cast<sqlite_int64>(value));
+            auto result = int(std::any_cast<sqlite_int64>(value));
+            SQLITE_LOG_WARN("bind value is {}", result);
+        }
         break;
+    };
     case SQLITE_FLOAT:
+    {
         nRet = sqlite3_bind_double(m_stmt, index, std::any_cast<double>(value));
+        break; 
+    }
+    case SQLITE_BLOB:
+    {
+        std::string str = std::any_cast<std::string>(value);
+        nRet = sqlite3_bind_blob(m_stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT);
         break;
+    }
     case SQLITE_NULL:
+    {
         nRet = sqlite3_bind_null(m_stmt, index);
         break;
+    }
     default:
+    {
         nRet = sqlite3_bind_text(m_stmt, index, std::any_cast<std::string>(value).c_str(), -1, SQLITE_TRANSIENT);
         break;
+    }
+    }
+    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
+
+    return nRet == SQLITE_OK;
+}
+
+std::any SQLiteDatabase::value(int index, SQLiteStmtPtr stmt) const
+{
+    assert(index >= 0);
+
+    if (stmt.get() == nullptr)
+    {
+        SQLITE_LOG_WARN("stmt is nullptr");
+        return std::any();
+    }
+
+    if (index >= sqlite3_data_count(stmt.get()))
+    {
+        SQLITE_LOG_WARN("value index out of range: {}", index);
+        return std::any();
+    }
+
+    const int type = sqlite3_column_type(stmt.get(), index);
+    std::any ret;
+
+    switch (type)
+    {
+    case SQLITE_INTEGER:
+    {
+        ret = sqlite3_column_int64(stmt.get(), index);
+        break;
+    }
+    case SQLITE_FLOAT:
+    {
+        ret = sqlite3_column_double(stmt.get(), index);
+        break;
+    }
+    case SQLITE_BLOB:
+    {
+        const int size = sqlite3_column_bytes(stmt.get(), index);
+        ret = std::string((const char*)(sqlite3_column_blob(stmt.get(), index)), size);
+        break;
+    }
+    case SQLITE_TEXT:
+    {
+        ret = std::string((const char*)(sqlite3_column_text(stmt.get(), index)));
+        break;
+    }
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStmtPtr stmt)
+{
+    assert(index >= 0);
+
+    if (stmt.get() == nullptr)
+    {
+        SQLITE_LOG_WARN("stmt is nullptr");
+        return false;
+    }
+
+    if (index >= sqlite3_bind_parameter_count(stmt.get()))
+    {
+        SQLITE_LOG_WARN("bind index out of range: {}", index);
+        return false;
+    }
+
+    if (type != SQLITE_NULL && !value.has_value())
+    {
+        SQLITE_LOG_WARN("bind value is empty, index: {}, type: {}", index, type);
+        return false;
+    }
+
+    int nRet = SQLITE_ERROR;
+    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
+    switch (type)
+    {
+    case SQLITE_INTEGER:
+    {
+        nRet = sqlite3_bind_int64(stmt.get(), index, std::any_cast<sqlite_int64>(value));
+        break;
+    };
+    case SQLITE_FLOAT:
+    {
+        nRet = sqlite3_bind_double(stmt.get(), index, std::any_cast<double>(value));
+        break; 
+    }
+    case SQLITE_BLOB:
+    {
+        std::string str = std::any_cast<std::string>(value);
+        nRet = sqlite3_bind_blob(stmt.get(), index, str.c_str(), str.size(), SQLITE_TRANSIENT);
+        break;
+    }
+    case SQLITE_NULL:
+    {
+        nRet = sqlite3_bind_null(stmt.get(), index);
+        break;
+    }
+    default:
+    {
+        nRet = sqlite3_bind_text(stmt.get(), index, std::any_cast<std::string>(value).c_str(), -1, SQLITE_TRANSIENT);
+        break;
+    }
     }
     sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
 

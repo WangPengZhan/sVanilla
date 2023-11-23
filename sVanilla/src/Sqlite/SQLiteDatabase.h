@@ -1,15 +1,16 @@
 #pragma once
-
-#include <QString>
-#include <QVariant>
-
+#include <string>
 #include <any>
+#include <set>
+
+#include "SQLiteUtility.h"
 
 struct sqlite3;
 struct sqlite3_stmt;
 
 namespace SQLite
 {
+
 class SQLiteDatabase
 {
 private:
@@ -17,17 +18,28 @@ private:
     SQLiteDatabase& operator=(const SQLiteDatabase& other) = delete;
 
 public:
+    enum NextStatus
+    {
+        Row,
+        Done,
+        Error,
+    };
+
     explicit SQLiteDatabase(const std::string& path);
     virtual ~SQLiteDatabase();
 
     bool isOpen() const;
 
-    QStringList tables();
-    QStringList views();
+    std::set<std::string> tables();
+    std::set<std::string> views();
 
     bool prepare(const std::string& sql);
-    bool next();
+    NextStatus next();
     bool execute(const std::string& sql);
+    bool reset();
+
+    bool prepare(const std::string& sql, SQLiteStmtPtr& stmt);
+    NextStatus next(SQLiteStmtPtr stmt);
 
     bool transaction();
     bool commit();
@@ -35,6 +47,9 @@ public:
 
     std::any value(int index) const;
     bool bind(int index, int type, const std::any& value);
+
+    std::any value(int index, SQLiteStmtPtr stmt) const;
+    bool bind(int index, int type, const std::any& value, SQLiteStmtPtr stmt);
 
     std::string lastError() const;
 

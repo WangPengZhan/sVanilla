@@ -23,6 +23,7 @@ void Logger::InitLog()
     RegisterLogger("Aria");
     RegisterLogger("FFmpeg");
     RegisterLogger("SQLite");
+    RegisterLogger("ThreadPool");
 }
 
 Logger::Logger()

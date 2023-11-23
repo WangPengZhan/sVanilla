@@ -14,9 +14,12 @@ public:
         Text,
         Double,
         Boolean,
+        Blob,
     };
+    static std::string fieldType(FieldType eType);
+    static int sqliteType(FieldType eType);
 
-    using HeadType = std::unordered_map<std::string, FieldType>;
+    using HeadType = std::vector<std::pair<std::string, FieldType>>;
     AbstractTable(SQLiteDatabase& db, const std::string& nameTable);
     virtual ~AbstractTable() = default;
 
@@ -30,10 +33,19 @@ public:
     void setHeaders(const HeadType& headers);
     const HeadType& headers() const;
 
+    void setPrimary(const std::vector<std::string>& primary);
+    const std::vector<std::string>& primary() const;
+
+    std::string createTableSql();
+    std::string createTableInsertSql();
+    std::string createTableSelectAllSql();
+
 protected:
     SQLiteDatabase& m_db;
     std::string m_name;
     HeadType m_headers;
+    std::vector<std::string> m_primary;
 };
+
 
 }  // namespace SQLite
