@@ -1,7 +1,9 @@
+#include <iostream>
+#include <sqlite3.h>
+
 #include "SQLiteDatabase.h"
 #include "SQLiteLog.h"
 
-#include <sqlite3.h>
 
 namespace SQLite
 {
@@ -195,6 +197,26 @@ bool SQLiteDatabase::execute(const std::string& sql)
     return true;
 }
 
+bool SQLiteDatabase::reset()
+{
+    if (m_stmt == nullptr)
+    {
+        return false;
+    }
+
+    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
+    const int res = sqlite3_reset(m_stmt);
+    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
+
+    if (res != SQLITE_OK)
+    {
+        updateLastError();
+        return false;
+    }
+
+    return true;
+}
+
 bool SQLiteDatabase::prepare(const std::string& sql, SQLiteStmtPtr& stmt)
 {
     if (m_db == nullptr)
@@ -330,7 +352,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
         return false;
     }
 
-    if (index >= sqlite3_bind_parameter_count(m_stmt))
+    if (index > sqlite3_bind_parameter_count(m_stmt))
     {
         SQLITE_LOG_WARN("bind index out of range: {}", index);
         return false;
@@ -357,6 +379,8 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
         else
         {
             nRet = sqlite3_bind_int64(m_stmt, index, std::any_cast<sqlite_int64>(value));
+            auto result = int(std::any_cast<sqlite_int64>(value));
+            SQLITE_LOG_WARN("bind value is {}", result);
         }
         break;
     };

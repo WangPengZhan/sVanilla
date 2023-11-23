@@ -12,3 +12,18 @@ if(SQLite_test)
     add_subdirectory(SQLite)
 endif()
 
+option(ThreadPool_test "ENABLE TheadPool_test test" ON)
+if(ThreadPool_test)
+    add_subdirectory(ThreadPool)
+endif()
+
+option(Aria2Net_test "ENABLE Aria2Net_test test" ON)
+if(Aria2Net_test)
+    add_subdirectory(Aria2Net)
+endif()
+
+option(NetWork_test "ENABLE NetWork_test test" ON)
+if(NetWork_test)
+    add_subdirectory(NetWork)
+endif()
+

@@ -8,7 +8,10 @@ class Task
 public:
     virtual ~Task() = default;
     virtual void Run() = 0;
-    virtual void Destory() = 0;
+    virtual void Destory()
+    {
+        delete this;
+    }
 };
 
 class SignalReturnTask : public QObject, public Task

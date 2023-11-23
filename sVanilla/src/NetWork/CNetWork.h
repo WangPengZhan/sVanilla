@@ -1,10 +1,7 @@
 #pragma once
 
 #include <string>
-
-#include <QThread>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
+#include <unordered_map>
 
 struct curl_slist;
 

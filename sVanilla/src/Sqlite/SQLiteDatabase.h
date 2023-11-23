@@ -36,6 +36,7 @@ public:
     bool prepare(const std::string& sql);
     NextStatus next();
     bool execute(const std::string& sql);
+    bool reset();
 
     bool prepare(const std::string& sql, SQLiteStmtPtr& stmt);
     NextStatus next(SQLiteStmtPtr stmt);

@@ -21,7 +21,8 @@ public:
     ThreadPool(size_t num);
     ~ThreadPool();
 
-    template <class F, class... Args> auto enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>;
+    template <class F, class... Args> 
+    auto enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>;
     template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type = 0>
     std::future<void> enqueue(T* pTask);
 
@@ -36,16 +37,17 @@ public:
     void workLoop();
 
 private:
-    std::vector<std::thread> m_workers;
     std::list<std::function<void()>> m_tasks;
     std::mutex m_tasksMutex;
     std::condition_variable m_condition;
-    volatile bool m_stop;
+    std::atomic_bool m_stop;
     std::unordered_map<std::thread::id, int> m_idMap;
     size_t m_numThreads;
+    std::vector<std::thread> m_workers;
 };
 
-template <class F, class... Args> auto ThreadPool::enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>
+template <class F, class... Args> 
+auto ThreadPool::enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>
 {
     using return_type = typename std::invoke_result<F, Args...>::type;
 
