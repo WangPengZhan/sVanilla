@@ -33,9 +33,6 @@ bool FFmpegHelper::MegerVideo(const std::string& audio, const std::string& video
 void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& destionVideo)
 {
     std::future<bool> result = std::async(std::launch::async, [&]() -> bool {
-        STARTUPINFO si;
-        ZeroMemory(&si, sizeof(si));
-        si.cb = sizeof(si);
         QString ffmpegExeFilename;
         ffmpegExeFilename = QApplication::applicationDirPath() + "/ffmpeg.exe ";
         QString ffmpegArg(ffmpegCommand);

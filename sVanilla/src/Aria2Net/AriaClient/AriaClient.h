@@ -24,12 +24,18 @@ public:
 
     using ListString = std::list<std::string>;
 
-    static AriaClient& GetInstance();
+    AriaClient() = default;
+    ~AriaClient() = default;
+
+    AriaClient(const AriaClient& other) = delete;
+    AriaClient& operator=(const AriaClient& other) = delete;
+
+    static AriaClient& globalClient();
 
     SystemListNotifications listNotificationsAsync();
-    SystemListMethods ListMethodsAsync();
-    std::list<SystemMulticall> MulticallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods);
-    AriaSaveSession SaveSessionAsync();
+    SystemListMethods listMethodsAsync();
+    std::list<SystemMulticall> multicallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods);
+    AriaSaveSession saveSessionAsync();
     AriaShutdown ForceShutdownAsync();
     AriaShutdown ShutdownAsync();
     AriaGetSessionInfo GetSessionInfoAsync();
@@ -49,15 +55,8 @@ public:
 
 private:
     static constexpr char JSONRPC[] = "2.0";
-    static constexpr char TOKEN[] = "downkyi";
+    static constexpr char TOKEN[] = "sVanila";
 
-    AriaClient() = default;
-    ~AriaClient() = default;
-
-    AriaClient(const AriaClient& other) = delete;
-    AriaClient& operator=(const AriaClient& other) = delete;
-    AriaClient(AriaClient&& other) = delete;
-    AriaClient& operator=(AriaClient&& other) = delete;
 
     template <typename Result> Result GetResult(const AriaSendData& sendData);
 

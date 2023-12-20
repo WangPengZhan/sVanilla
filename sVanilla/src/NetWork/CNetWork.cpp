@@ -56,7 +56,10 @@ CNetWork::CNetWork()
 
 CNetWork::~CNetWork()
 {
-    curl_slist_free_all(m_headers);
+    if (m_headers)
+    {
+        curl_slist_free_all(m_headers);
+    }
 }
 
 void CNetWork::SetHeaders(curl_slist* headers)

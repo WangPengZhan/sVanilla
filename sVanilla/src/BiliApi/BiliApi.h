@@ -49,6 +49,23 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoOwner, mid, name, face)
 };
 
+class ArgueInfo : public Protocol
+{
+public:
+    std::string argue_link;
+    std::string argue_msg;
+    int argue_type;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump();
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ArgueInfo, argue_link, argue_msg, argue_type)
+};
+
 class VideoStat : public Protocol
 {
 public:
@@ -63,7 +80,7 @@ public:
     long long like;
     long long dislike;
     std::string evaluation;
-    std::string argue_msg;
+    ArgueInfo argue_info;
 
     std::string toString() override
     {
@@ -72,7 +89,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoStat, aid, view, danmaku, favorite, coin, share, now_rank, his_rank, like, dislike, evaluation, argue_msg)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoStat, aid, view, danmaku, favorite, coin, share, now_rank, his_rank, like, dislike, evaluation, argue_info)
 };
 
 class Dimension : public Protocol
@@ -89,7 +106,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dimension, width, height, rotate)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Dimension, width, height, rotate)
 };
 
 class UgcArc : public Protocol
@@ -119,7 +136,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcArc, aid, videos, type_id, type_name, copyright, pic, title, pubdate, ctime, desc, state, duration, author, stat, dynamic,
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcArc, aid, videos, type_id, type_name, copyright, pic, title, pubdate, ctime, desc, state, duration, author, stat, dynamic,
                                    dimension)
 };
 
@@ -143,7 +160,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoPage, cid, page, from, part, duration, vid, weblink, dimension, first_frame)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoPage, cid, page, from, part, duration, vid, weblink, dimension, first_frame)
 };
 
 class SubtitleAuthor : public Protocol
@@ -162,7 +179,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SubtitleAuthor, mid, name, sex, face, sign)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SubtitleAuthor, mid, name, sex, face, sign)
 };
 
 class Subtitle : public Protocol
@@ -183,7 +200,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Subtitle, id, lan, author_doc, is_lock, author_mid, subtitle_url, author)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Subtitle, id, lan, author_doc, is_lock, author_mid, subtitle_url, author)
 };
 
 class VideoSubtitle : public Protocol
@@ -199,7 +216,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoSubtitle, allow_submit, list)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoSubtitle, allow_submit, list)
 };
 
 class UgcStat : public Protocol
@@ -223,7 +240,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcStat, season_id, view, danmaku, relay, favorite, coin, share, nowRank, hisRank, like)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcStat, season_id, view, danmaku, relay, favorite, coin, share, nowRank, hisRank, like)
 };
 
 class UgcEpisode : public Protocol
@@ -247,7 +264,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcEpisode, season_id, section_id, id, mid, cid, title, attribute, arc, page, bvid)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcEpisode, season_id, section_id, id, mid, cid, title, attribute, arc, page, bvid)
 };
 
 class UgcSection : public Protocol
@@ -269,7 +286,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcSection, season_id, id, title, attribute, arc, page, type, arc, episodes)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSection, season_id, id, title, attribute, arc, page, type, arc, episodes)
 };
 
 class UgcSeason : public Protocol
@@ -294,7 +311,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(UgcSeason, id, title, cover, mid, intro, signState, attribute, sections, stat, ep_count, season_type)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSeason, id, title, cover, mid, intro, signState, attribute, sections, stat, ep_count, season_type)
 };
 
 class VideoView : public Protocol
@@ -333,7 +350,8 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title, pubdate, ctime, desc, state, duration, redirect_url,
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title, pubdate, ctime, desc, state, duration,
+                                                redirect_url,
                                    mission_id, owener, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle, ugc_season)
 };
 
@@ -352,7 +370,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SubtitleInfo, allow_submit, lan, lan_doc, subtitles)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SubtitleInfo, allow_submit, lan, lan_doc, subtitles)
 };
 
 class PlayerV2 : public Protocol
@@ -370,7 +388,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayerV2, aid, bvid, cid, subtitle)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayerV2, aid, bvid, cid, subtitle)
 };
 
 class PlayUrlDurl : public Protocol
@@ -389,7 +407,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDurl, order, length, size, backup_url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDurl, order, length, size, backup_url)
 };
 
 class PlayUrlDashVideo : public Protocol
@@ -411,7 +429,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDashVideo, id, base_url, backup_url, mimeType, codecs, width, height, frameRate)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDashVideo, id, base_url, backup_url, mimeType, codecs, width, height, frameRate)
 };
 
 class PlayUrlDashDolby : public Protocol
@@ -426,7 +444,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDashDolby, audio)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDashDolby, audio)
 };
 
 class PlayUrlDash : public Protocol
@@ -443,7 +461,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlDash, video, audio, dolby)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDash, video, audio, dolby)
 };
 
 class PlayUrlSupportFormat : public Protocol
@@ -461,7 +479,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlSupportFormat, quality, format, new_description, superscript)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlSupportFormat, quality, format, new_description, superscript)
 };
 
 class PlayUrl : public Protocol
@@ -480,7 +498,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
 };
 
 // https://passport.bilibili.com/qrcode/getLoginUrl
@@ -497,7 +515,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginUrl, oauthKey, url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrl, oauthKey, url)
 };
 
 class LoginUrlOrigin : public Protocol
@@ -513,7 +531,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginUrlOrigin, data, status)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrlOrigin, data, status)
 };
 
 // https://passport.bilibili.com/qrcode/getLoginInfo
@@ -529,7 +547,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatusData, url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusData, url)
 };
 
 class LoginStatusScanning : public Protocol
@@ -546,7 +564,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatusScanning, data, status, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, status, message)
 };
 
 class LoginStatus : public Protocol
@@ -563,7 +581,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatus, code, status, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatus, code, status, message)
 };
 
 class LoginStatusReady : public Protocol
@@ -580,7 +598,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(LoginStatusReady, code, status, data)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusReady, code, status, data)
 };
 
 }  // namespace BiliApi

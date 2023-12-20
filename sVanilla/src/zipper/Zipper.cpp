@@ -268,7 +268,7 @@ bool Unzipper::unzip()
             return false;
         }
 
-        std::cout << "ZipName: " << szZipFName << "Extra: " << szExtraName << "Comm: " << szCommName << std::endl;
+        std::cout << "ZipName: " << szZipFName << "; Extra: " << szExtraName << "; Comm: " << szCommName << std::endl;
         std::string strZipFileName = szZipFName;
         if (strZipFileName.empty())
         {

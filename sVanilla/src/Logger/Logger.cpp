@@ -20,7 +20,7 @@ void Logger::InitLog()
 {
     RegisterLogger("MainWindow");
     RegisterLogger("Network");
-    RegisterLogger("Aria");
+    RegisterLogger("Aria2Net");
     RegisterLogger("FFmpeg");
     RegisterLogger("SQLite");
     RegisterLogger("ThreadPool");
