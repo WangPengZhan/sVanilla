@@ -57,7 +57,7 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
-  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
+#  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
 )
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
@@ -73,7 +73,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
 endif()
 
-add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
+#add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
 
 option(ENABLE_TEST "Enable Test" OFF)
@@ -114,7 +114,7 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::breakpad::libbreakpad
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
-        minizip
+#        minizip
 )
 
 
@@ -129,10 +129,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
 # add_dependencies(${PROJECT_NAME} SARibbonBar)
 
-add_custom_command(TARGET ${PROJECT_NAME}
-    POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
+#add_custom_command(TARGET ${PROJECT_NAME}
+#    POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+#)
 
 include(cmake/qtdeploy.cmake)
 deployqt(${PROJECT_NAME})
@@ -143,5 +143,5 @@ install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+#install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
