@@ -27,34 +27,12 @@ AriaServer::~AriaServer()
 
 void AriaServer::startServerAsync()
 {
-    forceCloseServer();
+    QString ariaPath = QApplication::applicationDirPath() + "/aria/";
+    QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
+    QString sessionFile = ariaPath + "aira.session";
+    QString logFile = ariaPath + "log.txt";
 
-    m_future = std::async(std::launch::async, [&]() -> bool {
-        QString ariaPath = QApplication::applicationDirPath() + "/aria/";
-        QString sessionFile = ariaPath + "aira.session";
-        QString logFile = ariaPath + "log.txt";
-
-        QDir airDir = QDir(ariaPath);
-        bool exist = airDir.exists();
-        if (!exist)
-        {
-            //            return ok;
-        }
-    }
-
-    if (!QFile::exists(sessionFile))
-    {
-        QFile file(sessionFile);
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
-        file.close();
-    }
-
-    if (!QFile::exists(logFile))
-    {
-        QFile file(logFile);
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
-        file.close();
-    }
+    QDir airDir = QDir(ariaPath);
 
     aria2Process->setProgram(ariaExecutable);
     aria2Process->setArguments(QStringList() << "--enable-rpc"
