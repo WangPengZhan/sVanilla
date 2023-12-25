@@ -19,13 +19,12 @@
 #include "BiliApi/BiliApi.h"
 #include "FFmpeg/FFmpegHelper.h"
 
-TEST(Aria2Net_Test, STARTSERVER)
+int main(int argc, char *argv[])
 {
     spdlog::rotating_logger_mt<spdlog::async_factory>("Aria2Net", "log/Aria2Net.log", 1024 * 1024 * 10, 100);
-}
+    spdlog::rotating_logger_mt<spdlog::async_factory>("Network", "log/Network.log", 1024 * 1024 * 10, 100);
 
-TEST(Aria2Net_Test, AriaClient)
-{
+
     using namespace aria2net;
     using namespace BiliApi;
     using namespace ffmpeg;
@@ -103,4 +102,6 @@ TEST(Aria2Net_Test, AriaClient)
         } });
 
     future.get();
+
+    return app.exec();
 }

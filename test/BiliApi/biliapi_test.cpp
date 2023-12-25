@@ -21,7 +21,7 @@ TEST(Aria2Net_Test, STARTSERVER)
     spdlog::rotating_logger_mt<spdlog::async_factory>("Aria2Net", "log/Aria2Net.log", 1024 * 1024 * 10, 100);
 
     aria2net::AriaServer server;
-    server.StartServerAsync();
+    server.startServerAsync();
 }
 
 TEST(Aria2Net_Test, EN)

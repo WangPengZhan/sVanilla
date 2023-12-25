@@ -1,16 +1,35 @@
 #pragma once
-
 #include <string>
+#include <future>
+#include <functional>
 
-#include <Windows.h>
+namespace ffmpeg
+{
+
+struct MergeInfo
+{
+    std::string audio;
+    std::string video;
+    std::string destionVideo;
+};
+
 
 class FFmpegHelper
 {
 public:
     FFmpegHelper();
     ~FFmpegHelper();
-    static bool MegerVideo(const std::string& audio, const std::string& video, const std::string& destionVideo);
 
-    void StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& destionVideo);
-    void CloseFFmpeg();
+    static void megerVideo(const MergeInfo& mergeInfo);
+    static void megerVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc);
+    static FFmpegHelper& globalInstance();
+
+    void startFFpmegAsync(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc);
+    void closeFFmpeg();
+
+
+private:
+    std::list<std::future<bool>> m_futures;
 };
+
+} // namespace ffmpeg

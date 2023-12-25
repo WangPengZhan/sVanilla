@@ -47,3 +47,8 @@ if(FFmpeg_test)
     add_subdirectory(FFmpeg)
 endif()
 
+option(Example_test "ENABLE Example test" ON)
+if(Example_test)
+    add_subdirectory(Example)
+endif()
+
