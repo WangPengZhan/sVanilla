@@ -27,36 +27,12 @@ AriaServer::~AriaServer()
 
 void AriaServer::StartServerAsync()
 {
-
     QString ariaPath = QApplication::applicationDirPath() + "/aria/";
     QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
     QString sessionFile = ariaPath + "aira.session";
     QString logFile = ariaPath + "log.txt";
 
     QDir airDir = QDir(ariaPath);
-
-    if (!ariaExecutable.isEmpty())
-    {
-        bool ok = airDir.mkpath(ariaPath);
-        if (!ok)
-        {
-//            return ok;
-        }
-    }
-
-    if (!QFile::exists(sessionFile))
-    {
-        QFile file(sessionFile);
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
-        file.close();
-    }
-
-    if (!QFile::exists(logFile))
-    {
-        QFile file(logFile);
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
-        file.close();
-    }
 
     aria2Process->setProgram(ariaExecutable);
     aria2Process->setArguments(QStringList() << "--enable-rpc"
@@ -94,7 +70,7 @@ void AriaServer::StartServerAsync()
     if (!aria2Process->waitForStarted())
     {
         //            qDebug() << "Error starting aria2 process:" << aria2Process->errorString();
-        ARIA_LOG_INFO({aria2Process->errorString().toStdString()},"Error starting aria2 process: {1}");
+        ARIA_LOG_INFO({aria2Process->errorString().toStdString()}, "Error starting aria2 process: {1}");
     }
     else
     {
@@ -110,6 +86,5 @@ void AriaServer::CloseServer()
         aria2Process->waitForFinished();
     }
 }
-
 
 }  // namespace aria2net
