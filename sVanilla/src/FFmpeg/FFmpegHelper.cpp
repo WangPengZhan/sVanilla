@@ -58,6 +58,11 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
         ffmpegProcess.setArguments(ffmpegArg.split("-"));
         ffmpegProcess.start();
         ffmpegProcess.waitForFinished(-1);
+        QProcess ffmpegProcess;
+        ffmpegProcess.setProgram(ffmpegExecutable);
+        ffmpegProcess.setArguments(ffmpegArg.split("-"));
+        ffmpegProcess.start();
+        ffmpegProcess.waitForFinished(-1);
 
         if (ffmpegProcess.exitStatus() == QProcess::NormalExit && ffmpegProcess.exitCode() == 0)
         {

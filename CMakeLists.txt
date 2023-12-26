@@ -72,7 +72,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
 endif()
 
-add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
+#add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
 
 option(ENABLE_TEST "Enable Test" OFF)
@@ -113,6 +113,7 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::breakpad::libbreakpad
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
+        minizip
 )
 
 
@@ -143,5 +144,5 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tools/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+#install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
