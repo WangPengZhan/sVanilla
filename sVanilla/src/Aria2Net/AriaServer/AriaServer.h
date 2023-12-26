@@ -1,10 +1,11 @@
 #pragma once
 #include <future>
 
+class QProcess;
+
 namespace aria2net
 {
 
-class QProcess;
 class AriaServer
 {
 public:

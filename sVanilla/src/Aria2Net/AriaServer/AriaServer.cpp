@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
+#include <QProcess>
 
 #include <memory>
 
@@ -10,7 +11,7 @@
 namespace aria2net
 {
 
-AriaServer::AriaServer() : m_aria2Process(std::make_unique<QProcess>(this))
+AriaServer::AriaServer() : m_aria2Process(std::make_unique<QProcess>())
 {
 }
 

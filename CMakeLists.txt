@@ -72,7 +72,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
 endif()
 
-#add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
 
 option(ENABLE_TEST "Enable Test" OFF)
