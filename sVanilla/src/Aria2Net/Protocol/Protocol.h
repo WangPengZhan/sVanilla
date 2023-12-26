@@ -28,7 +28,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaError, code, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaError, code, message)
 };
 
 // http://aria2.github.io/manual/en/html/aria2c.html
@@ -45,10 +45,11 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaUri, status, uri)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaUri, status, uri)
 };
 
-template <typename Result> class AriaBasicJson : public Protocol
+template <typename Result> 
+class AriaBasicJson : public Protocol
 {
 public:
     std::string id;
@@ -60,10 +61,10 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaBasicJson<Result>, id, jsonrpc, result, error)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaBasicJson<Result>, id, jsonrpc, result, error)
 };
 
 using AriaAddMetalink = AriaBasicJson<std::string>;
@@ -91,7 +92,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaGetFilesResult, completedLength, index, length, path, selected, uris)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetFilesResult, completedLength, index, length, path, selected, uris)
 };
 
 class AriaGetGlobalStatResult : public Protocol
@@ -111,7 +112,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaGetGlobalStatResult, downloadSpeed, numActive, numStopped, numStoppedTotal, numWaiting, uploadSpeed)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetGlobalStatResult, downloadSpeed, numActive, numStopped, numStoppedTotal, numWaiting, uploadSpeed)
 };
 using AriaGetGlobalStat = AriaBasicJson<AriaGetGlobalStatResult>;
 
@@ -567,7 +568,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaPeer, amChoking, bitfield, downloadSpeed, ip, peerChoking, peerId, port, seeder, uploadSpeed)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaPeer, amChoking, bitfield, downloadSpeed, ip, peerChoking, peerId, port, seeder, uploadSpeed)
 };
 using AriaGetPeers = AriaBasicJson<std::list<AriaPeer>>;
 
@@ -585,7 +586,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaResultServer, currentUri, downloadSpeed, uri)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaResultServer, currentUri, downloadSpeed, uri)
 };
 
 class AriaGetServersResult : public Protocol
@@ -601,7 +602,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaGetServersResult, index, servers)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetServersResult, index, servers)
 };
 
 using AriaGetServers = AriaBasicJson<std::list<AriaGetServersResult>>;
@@ -618,7 +619,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaGetSessionInfoResult, sessionId)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetSessionInfoResult, sessionId)
 };
 
 using AriaGetSessionInfo = AriaBasicJson<AriaGetSessionInfoResult>;
@@ -640,7 +641,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaVersionResult, enabledFeatures, servers)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaVersionResult, enabledFeatures, servers)
 };
 using AriaVersion = AriaBasicJson<AriaVersionResult>;
 
@@ -660,7 +661,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemMulticallMathod, method, params)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SystemMulticallMathod, method, params)
 };
 
 class AriaSendData : public Protocol
@@ -678,7 +679,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaSendData, id, jsonrpc, method, params)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaSendData, id, jsonrpc, method, params)
 };
 
 class AriaSendOption : public Protocol
@@ -738,7 +739,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaTellStatusResultFile, completedLength, index, length, path, selected, uris)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaTellStatusResultFile, completedLength, index, length, path, selected, uris)
 };
 
 class AriaTellStatusResult : public Protocol
@@ -767,7 +768,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AriaTellStatusResult, bitfield, completedLength, connections, dir, downloadSpeed, errorCode, errorMessage, files, gid,
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaTellStatusResult, bitfield, completedLength, connections, dir, downloadSpeed, errorCode, errorMessage, files, gid,
                                    numPieces, pieceLength, status, totalLength, uploadLength, uploadSpeed)
 };
 

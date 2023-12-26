@@ -24,6 +24,8 @@ public:
     }
     ~SignalReturnTask() = default;
 
+
+    
 signals:
     void result(const std::any& ret);
 };

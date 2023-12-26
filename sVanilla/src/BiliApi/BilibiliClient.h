@@ -15,7 +15,7 @@ namespace BiliApi
 {
 
 constexpr char const mainUrl[] = "https://www.bilibili.com/";
-constexpr char const videoViewUrl[] = "http://api.bilibili.com/x/web-interface/view";
+constexpr char const videoViewUrl[] = "https://api.bilibili.com/x/web-interface/view";
 constexpr char const videoPlayUrl[] = "https://api.bilibili.com/x/player/playurl";
 
 class BilibiliClient : public CNetWork

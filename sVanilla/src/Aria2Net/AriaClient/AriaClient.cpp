@@ -18,7 +18,7 @@ const std::string GetGuid()
     return strGuid;
 }
 
-AriaClient& AriaClient::GetInstance()
+AriaClient& AriaClient::globalClient()
 {
     static AriaClient ariaClient;
     return ariaClient;
@@ -36,7 +36,7 @@ SystemListNotifications AriaClient::listNotificationsAsync()
     return GetResult<SystemListNotifications>(ariaSend);
 }
 
-SystemListMethods AriaClient::ListMethodsAsync()
+SystemListMethods AriaClient::listMethodsAsync()
 {
     AriaSendData ariaSend;
 
@@ -48,7 +48,7 @@ SystemListMethods AriaClient::ListMethodsAsync()
     return GetResult<SystemListMethods>(ariaSend);
 }
 
-std::list<SystemMulticall> AriaClient::MulticallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods)
+std::list<SystemMulticall> AriaClient::multicallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods)
 {
     std::list<std::string> listMethod;
     for (const auto method : systemMulticallMathods)
@@ -73,7 +73,7 @@ std::list<SystemMulticall> AriaClient::MulticallAsync(const std::list<SystemMult
     return result;
 }
 
-AriaSaveSession AriaClient::SaveSessionAsync()
+AriaSaveSession AriaClient::saveSessionAsync()
 {
     ListString listString;
     listString.emplace_back(std::string("token:") + TOKEN);
@@ -319,7 +319,6 @@ AriaTellStatus AriaClient::TellStatus(const std::string& gid)
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.tellStatus";
     ariaSend.params = listString;
-    ;
 
     return GetResult<AriaTellStatus>(ariaSend);
 }

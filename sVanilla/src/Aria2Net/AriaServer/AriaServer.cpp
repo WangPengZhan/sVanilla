@@ -15,26 +15,26 @@
 namespace aria2net
 {
 
-AriaServer::AriaServer(QObject* parent)
-    : QObject(parent)
-    , m_pi{0}
+AriaServer::AriaServer()
+    : m_pi{0}
 {
 }
 
 AriaServer::~AriaServer()
 {
-    ForceCloseServer();
+    forceCloseServer();
 }
 
-void AriaServer::StartServerAsync()
+void AriaServer::startServerAsync()
 {
-    ForceCloseServer();
+    forceCloseServer();
 
-    QString ariaPath = QApplication::applicationDirPath() + "/aria/";
-    QString sessionFile = ariaPath + "aira.session";
-    QString logFile = ariaPath + "log.txt";
 
-    std::future<bool> result = std::async(std::launch::async, [&]() -> bool {
+    m_future = std::async(std::launch::async, [&]() -> bool {
+        QString ariaPath = QApplication::applicationDirPath() + "/aria/";
+        QString sessionFile = ariaPath + "aira.session";
+        QString logFile = ariaPath + "log.txt";
+        
         QDir airDir = QDir(ariaPath);
         bool exist = airDir.exists();
         if (!exist)
@@ -103,7 +103,7 @@ void AriaServer::StartServerAsync()
     });
 }
 
-void AriaServer::CloseServer()
+void AriaServer::closeServer()
 {
     if (m_pi.hThread != nullptr && m_pi.hThread != INVALID_HANDLE_VALUE)
     {
@@ -117,14 +117,19 @@ void AriaServer::CloseServer()
     ARIA_LOG_INFO("close aria2c.exe handle");
 }
 
-void AriaServer::ForceCloseServer()
+void AriaServer::forceCloseServer()
 {
     if (m_pi.hProcess != nullptr && m_pi.hProcess != INVALID_HANDLE_VALUE)
     {
         ::TerminateProcess(m_pi.hProcess, 0);
     }
 
-    CloseServer();
+    closeServer();
+}
+
+void AriaServer::setErrorFunc(std::function<void()> func)
+{
+    m_errorFunc = std::move(func);
 }
 
 }  // namespace aria2net

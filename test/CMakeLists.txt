@@ -27,3 +27,28 @@ if(NetWork_test)
     add_subdirectory(NetWork)
 endif()
 
+option(Zipper_test "ENABLE Zipper_test test" ON)
+if(Zipper_test)
+    add_subdirectory(Zipper)
+endif()
+
+option(BiliApi_test "ENABLE BiliApi_test test" ON)
+if(BiliApi_test)
+    add_subdirectory(BiliApi)
+endif()
+
+option(Download_test "ENABLE Download_test test" ON)
+if(Download_test)
+    add_subdirectory(Download)
+endif()
+
+option(FFmpeg_test "ENABLE Download_test test" ON)
+if(FFmpeg_test)
+    add_subdirectory(FFmpeg)
+endif()
+
+option(Example_test "ENABLE Example test" ON)
+if(Example_test)
+    add_subdirectory(Example)
+endif()
+

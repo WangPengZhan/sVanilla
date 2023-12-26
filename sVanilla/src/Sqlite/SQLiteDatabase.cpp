@@ -365,7 +365,6 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     }
 
     int nRet = SQLITE_ERROR;
-    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
     switch (type)
     {
     case SQLITE_INTEGER:
@@ -406,7 +405,6 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
         break;
     }
     }
-    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
 
     return nRet == SQLITE_OK;
 }
@@ -483,7 +481,6 @@ bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStm
     }
 
     int nRet = SQLITE_ERROR;
-    sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
     switch (type)
     {
     case SQLITE_INTEGER:
@@ -513,7 +510,6 @@ bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStm
         break;
     }
     }
-    sqlite3_mutex_leave(sqlite3_db_mutex(m_db));
 
     return nRet == SQLITE_OK;
 }
