@@ -8,7 +8,7 @@
 #include <QString>
 
 #include "FFmpegHelper.h"
-#include "Aria2Net/AriaLog.h"
+#include "FFmpegLog.h"
 
 namespace ffmpeg
 {
@@ -73,7 +73,7 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
             // 否则，表示ffmpeg执行失败
             std::string errorString = ffmpegProcess.errorString().toStdString();
             int exitCode = ffmpegProcess.exitCode();
-            ARIA_LOG_ERROR("{}:Error starting ffmpeg process: {}", exitCode, errorString);
+            FFMPEG_LOG_ERROR("starting ffmpeg process error, errorCode: {}, msg: {}", exitCode, errorString);
             if (errorFunc)
             {
                 errorFunc();

@@ -78,12 +78,10 @@ set(MINIZIP_PUBLIC_HDRS
 )
 set(MINIZIP_PRIVATE_HDRS
     mztools.h
-    iowin32.h
     crypt.h
 )
 set(MINIZIP_SRCS
     ioapi.c
-    iowin32.c
     miniunz.c
     minizip.c
     mztools.c
