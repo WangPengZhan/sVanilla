@@ -1,10 +1,10 @@
-#include <unzip.h>
-#include <zip.h>
-
+#include <minizip/unzip.h>
+#include <minizip/zip.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <list>
 
 #include "Zipper.h"
 
@@ -108,10 +108,12 @@ bool Zipper::addFileToZip(zipFile zfile, const std::string& fileNameinZip, const
     }
 
     std::time_t t_time = time(nullptr);
-    tm s_time;
-    localtime_s(&s_time, &t_time);
+//    tm s_time{};
+    //localtime_s并不是POSIX标准的一部分,不支持Linux和macOS
+//    localtime_s(&s_time, &t_time);
+    std::tm* s_time = std::localtime(&t_time);
     zip_fileinfo zinfo = {0};
-    tm_zip tmz = {s_time.tm_sec, s_time.tm_min, s_time.tm_hour, s_time.tm_mday, s_time.tm_mon, s_time.tm_year};
+    tm_zip tmz = {s_time->tm_sec, s_time->tm_min, s_time->tm_hour, s_time->tm_mday, s_time->tm_mon, s_time->tm_year};
     zinfo.tmz_date = tmz;
     zinfo.dosDate = 0;
     zinfo.internal_fa = 0;

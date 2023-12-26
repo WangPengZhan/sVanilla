@@ -80,7 +80,7 @@ public:
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
-    void resizeEvent(QResizeEvent* event);
+    void resizeEvent(QResizeEvent* event) override;
 
 public:
     QLabel* m_pLabelIcon;

@@ -1,13 +1,14 @@
 #include <chrono>
 #include <future>
 #include <thread>
-
+#include <QStandardPaths>
 #include <QApplication>
 #include <QDebug>
 #include <QProcess>
 #include <QString>
 
 #include "FFmpegHelper.h"
+#include "Aria2Net/AriaLog.h"
 
 namespace
 {
@@ -23,30 +24,41 @@ FFmpegHelper::~FFmpegHelper()
     CloseFFmpeg();
 }
 
-bool FFmpegHelper::MegerVideo(const std::string& audio, const std::string& video, const std::string& destionVideo)
+bool FFmpegHelper::MergeVideo(const std::string& audio, const std::string& video, const std::string& targetVideo)
 {
     FFmpegHelper ffmpegHelper;
-    ffmpegHelper.StartFFpmegAsync(audio, video, destionVideo);
+    FFmpegHelper::StartFFpmegAsync(audio, video, targetVideo);
     return true;
 }
 
-void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& destionVideo)
+void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& targetVideo)
 {
     std::future<bool> result = std::async(std::launch::async, [&]() -> bool {
-        STARTUPINFO si;
-        ZeroMemory(&si, sizeof(si));
-        si.cb = sizeof(si);
-        QString ffmpegExeFilename;
-        ffmpegExeFilename = QApplication::applicationDirPath() + "/ffmpeg.exe ";
+        QString executablePath = QApplication::applicationDirPath();
+        QString ffmpegExecutable = QStandardPaths::findExecutable("ffmpeg", QStringList() << executablePath);
         QString ffmpegArg(ffmpegCommand);
-        ffmpegArg = ffmpegArg.arg(audio.c_str()).arg(video.c_str()).arg(destionVideo.c_str());
+        ffmpegArg = ffmpegArg.arg(audio.c_str()).arg(video.c_str()).arg(targetVideo.c_str());
         qDebug() << ffmpegArg;
 
-        QProcess process;
-        process.start(ffmpegExeFilename, ffmpegArg.split("-"));
-        process.waitForFinished(-1);
+        QProcess ffmpegProcess;
+        ffmpegProcess.setProgram(ffmpegExecutable);
+        ffmpegProcess.setArguments(ffmpegArg.split("-"));
+        ffmpegProcess.start();
+        ffmpegProcess.waitForFinished(-1);
 
-        return true;
+        if (ffmpegProcess.exitStatus() == QProcess::NormalExit && ffmpegProcess.exitCode() == 0)
+        {
+            // ffmpeg正常结束且返回值为0，表示执行成功
+            return true;
+        }
+        else
+        {
+            // 否则，表示ffmpeg执行失败
+            std::string errorString = ffmpegProcess.errorString().toStdString();
+            int exitCode = ffmpegProcess.exitCode();
+            ARIA_LOG_ERROR("{}:Error starting ffmpeg process: {}", exitCode, errorString);
+            return false;
+        }
     });
 }
 

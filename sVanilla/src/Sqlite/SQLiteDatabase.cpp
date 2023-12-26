@@ -32,11 +32,12 @@ SQLiteDatabase::SQLiteDatabase(const std::string& path)
     if (sqlite3_initialize() != SQLITE_OK)
     {
         updateLastError();
-        SQLITE_LOG_ERROR("sqlite3_initialize error: {}", m_lastError.c_str());
+        SQLITE_LOG_ERROR("sqlite3_initialize error: {}", m_lastError);
+
         return;
     }
 
-    SQLITE_LOG_INFO("sqlite3 path: {}", path.c_str());
+    SQLITE_LOG_INFO("sqlite3 path: {}", path);
     if (sqlite3_open(path.c_str(), &m_db) != SQLITE_OK)
     {
         updateLastError();
@@ -72,7 +73,7 @@ std::set<std::string> SQLiteDatabase::tables()
         {
             m_lastError = errmsg;
             sqlite3_free(errmsg);
-            SQLITE_LOG_ERROR("tables error: {}", m_lastError.c_str());
+            SQLITE_LOG_ERROR("tables error: {}", m_lastError);
         }
 
         return {};
@@ -98,7 +99,7 @@ std::set<std::string> SQLiteDatabase::views()
         {
             m_lastError = errmsg;
             sqlite3_free(errmsg);
-            SQLITE_LOG_ERROR("views error: {}", m_lastError.c_str());
+            SQLITE_LOG_ERROR("views error: {}", m_lastError);
         }
 
         return {};
@@ -189,7 +190,7 @@ bool SQLiteDatabase::execute(const std::string& sql)
         {
             m_lastError = errmsg;
             sqlite3_free(errmsg);
-            SQLITE_LOG_ERROR("sqlite3_exec error: {}, sql:{} ", m_lastError.c_str(), sql.c_str());
+            SQLITE_LOG_ERROR("sqlite3_exec error: {}, sql:{} ", m_lastError, sql);
         }
         return false;
     }
@@ -543,7 +544,7 @@ void SQLiteDatabase::updateLastError()
     }
 
     m_lastError = sqlite3_errmsg(m_db);
-    SQLITE_LOG_ERROR("sqlite3 errmsg: {}", m_lastError.c_str());
+    SQLITE_LOG_ERROR("sqlite3 errmsg: {}", m_lastError);
 }
 
 sqlite3* SQLiteDatabase::handle() const

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QObject>
-
+#include <QProcess>
 #include <chrono>
 #include <thread>
 #include <future>

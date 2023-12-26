@@ -2,7 +2,6 @@
 // #include <QFile>
 #include <QDir>
 // #include <QDebug>
-#include <QProcess>
 // #include <chrono>
 // #include <thread>
 // #include <future>
@@ -34,6 +33,7 @@ void AriaServer::StartServerAsync()
 
     QDir airDir = QDir(ariaPath);
 
+    // 设置启动的程序名和命令行参数
     aria2Process->setProgram(ariaExecutable);
     aria2Process->setArguments(QStringList() << "--enable-rpc"
                                              << "--rpc-listen-all=true"
@@ -60,7 +60,6 @@ void AriaServer::StartServerAsync()
                                              << "--header=\"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
                                                 "like Gecko) Chrome/97.0.4692.99 Safari/537.36\"");
 
-    // 设置启动的程序名和命令行参数
     if (aria2Process->state() != QProcess::Running)
     {
         aria2Process->start();
@@ -69,8 +68,8 @@ void AriaServer::StartServerAsync()
     // 检查是否成功启动
     if (!aria2Process->waitForStarted())
     {
-        //            qDebug() << "Error starting aria2 process:" << aria2Process->errorString();
-        ARIA_LOG_INFO({aria2Process->errorString().toStdString()}, "Error starting aria2 process: {1}");
+        std::string errorString = aria2Process->errorString().toStdString();
+        ARIA_LOG_ERROR("Error starting aria2 process: {}", errorString);
     }
     else
     {
