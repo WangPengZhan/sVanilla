@@ -65,7 +65,8 @@ void AriaServer::startServerAsync()
         // 检查是否成功启动
         if (!m_aria2Process->waitForStarted())
         {
-            ARIA_LOG_INFO("error starting aria2 process: {}", m_aria2Process->errorString().toStdString());
+            ARIA_LOG_INFO(fmt::format("error starting aria2 process: {}", m_aria2Process->errorString().toStdString()));
+
             return false;
         }
         else
