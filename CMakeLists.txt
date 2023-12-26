@@ -53,7 +53,7 @@ set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 find_package(spdlog CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
-
+find_package(unofficial-minizip REQUIRED)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
@@ -114,7 +114,7 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::breakpad::libbreakpad
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
-#        minizip
+        unofficial::minizip::minizip
 )
 
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 
-#include <zip.h>
+#include <minizip/unzip.h>
 
 class ResourceHelper
 {

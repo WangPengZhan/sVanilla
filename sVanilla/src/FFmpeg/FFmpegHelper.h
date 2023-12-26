@@ -10,9 +10,8 @@ struct MergeInfo
 {
     std::string audio;
     std::string video;
-    std::string destionVideo;
+    std::string targetVideo;
 };
-
 
 class FFmpegHelper
 {
@@ -27,9 +26,8 @@ public:
     void startFFpmegAsync(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc);
     void closeFFmpeg();
 
-
 private:
     std::list<std::future<bool>> m_futures;
 };
 
-} // namespace ffmpeg
+}  // namespace ffmpeg

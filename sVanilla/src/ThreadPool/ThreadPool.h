@@ -67,7 +67,7 @@ auto ThreadPool::enqueue(F&& f, Args&&... args) -> std::future<typename std::inv
     return res;
 }
 
-template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type = 0>
+template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type>
 std::future<void> ThreadPool::enqueue(T* pTask)
 {
     auto task = [pTask]() {
@@ -76,3 +76,15 @@ std::future<void> ThreadPool::enqueue(T* pTask)
     };
     return enqueue(task);
 }
+
+//template <typename T>
+//typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, std::future<void>>::type
+//ThreadPool::enqueue(T* pTask)
+//{
+//    auto task = [pTask]() {
+//        pTask->Run();
+//        pTask->Destory();
+//    };
+//    return enqueue(task);
+//}
+

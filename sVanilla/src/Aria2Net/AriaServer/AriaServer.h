@@ -1,11 +1,10 @@
 #pragma once
 #include <future>
 
-// #include <Windows.h>
-
 namespace aria2net
 {
 
+class QProcess;
 class AriaServer
 {
 public:
@@ -23,6 +22,7 @@ private:
     std::future<bool> m_future;
     std::function<void()> m_errorFunc;
     std::function<void()> m_closeFunc;
+    std::unique_ptr<QProcess> m_aria2Process;
 };
 
 }  // namespace aria2net
