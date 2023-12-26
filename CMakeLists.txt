@@ -75,7 +75,7 @@ endif()
 
 #add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
-
+add_subdirectory(ThirdParty/qwindowkit)
 option(ENABLE_TEST "Enable Test" OFF)
 
 if (ENABLE_TEST)
@@ -115,6 +115,7 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
         unofficial::minizip::minizip
+        QWindowKit::Widgets
 )
 
 

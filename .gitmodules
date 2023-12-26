@@ -7,3 +7,6 @@
 [submodule "ThirdParty/googletest"]
 	path = ThirdParty/googletest
 	url = https://github.com/google/googletest.git
+[submodule "ThirdParty/qwindowkit"]
+	path = ThirdParty/qwindowkit
+	url = https://github.com/stdware/qwindowkit.git
