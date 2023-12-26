@@ -23,6 +23,7 @@ public:
         IconButton,
         MenuWidget,
         TitleLabel,
+        BarWidget,
         MinimumButton,
         MaximumButton,
         CloseButton,

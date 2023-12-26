@@ -1,4 +1,4 @@
-#include "ui_SearchLineEdit.h"
+#include "SearchLineEditUi.h"
 #include "SearchLineEdit.h"
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)

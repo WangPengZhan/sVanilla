@@ -128,6 +128,19 @@ void WindowBar::setTitleLabel(QLabel* label)
     label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 }
 
+void WindowBar::setBarWidget(QWidget* widget)
+{
+    Q_D(WindowBar);
+    auto org = takeBarWidget();
+    if (org)
+        org->deleteLater();
+    if (!widget)
+        return;
+    d->setWidgetAt(WindowBarPrivate::BarWidget, widget);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+}
+
 void WindowBar::setIconButton(QAbstractButton* btn)
 {
     Q_D(WindowBar);
@@ -188,6 +201,12 @@ QLabel* WindowBar::takeTitleLabel()
 {
     Q_D(WindowBar);
     return static_cast<QLabel*>(d->takeWidgetAt(WindowBarPrivate::TitleLabel));
+}
+
+QWidget* WindowBar::takeBarWidget()
+{
+    Q_D(WindowBar);
+    return static_cast<QWidget*>(d->takeWidgetAt(WindowBarPrivate::BarWidget));
 }
 
 QAbstractButton* WindowBar::takeIconButton()

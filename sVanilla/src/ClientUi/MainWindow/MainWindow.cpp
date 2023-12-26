@@ -21,6 +21,7 @@
 #include "MainWindowlog.h"
 #include "Sqlite/SQLiteManager.h"
 #include "Util/UrlProcess.h"
+#include "SUI/SearchLineEdit.h"
 // #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
@@ -31,7 +32,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     installStyleAgent();
 
     //    SetUi();
-    //    loadStyleSheet(Dark);
+    loadStyleSheet(Light);
     //    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     //    setWindowTitle(tr("Bili Downloader"));
     SignalsAndSlots();
@@ -103,8 +104,6 @@ void MainWindow::installWindowAgent()
 {
     windowAgent = new QWK::WidgetWindowAgent(this);
     windowAgent->setup(this);
-
-
 
     // 2. Construct your title bar
     auto menuBar = [this]() {
@@ -226,15 +225,17 @@ void MainWindow::installWindowAgent()
 
     windowBar->setMenuBar(menuBar);
 
-    auto titleLabel = new QLabel();
+    auto titleLabel = new QLabel("sVanilla");
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setObjectName(QStringLiteral("win-title-label"));
 
+    auto searchLineEdit = new SearchLineEdit();
+    windowBar->setBarWidget(searchLineEdit);
     windowBar->setTitleLabel(titleLabel);
     windowBar->setHostWidget(this);
 
     windowAgent->setTitleBar(windowBar);
-//    windowAgent->setHitTestVisible(menuBar, false);
+    //    windowAgent->setHitTestVisible(menuBar, false);
 
     setMenuWidget(windowBar);
 
@@ -282,7 +283,6 @@ void MainWindow::installWindowAgent()
     });
     connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
 #endif
-
 }
 
 void MainWindow::installStyleAgent()
@@ -309,7 +309,7 @@ void MainWindow::loadStyleSheet(Theme theme)
         return;
     currentTheme = theme;
 
-    if (QFile qss(theme == Dark ? QStringLiteral(":/dark-style.qss") : QStringLiteral(":/light-style.qss")); qss.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (QFile qss(theme == Dark ? QStringLiteral(":/MainWindow/dark-style.qss") : QStringLiteral(":/MainWindow/light-style.qss")); qss.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         setStyleSheet(QString::fromUtf8(qss.readAll()));
         Q_EMIT themeChanged();

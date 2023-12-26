@@ -23,6 +23,7 @@ public:
 
     void setMenuBar(QMenuBar *menuBar);
     void setTitleLabel(QLabel *label);
+    void setBarWidget(QWidget *widget);
     void setIconButton(QAbstractButton *btn);
     void setMinButton(QAbstractButton *btn);
     void setMaxButton(QAbstractButton *btn);
@@ -30,6 +31,7 @@ public:
 
     QMenuBar *takeMenuBar();
     QLabel *takeTitleLabel();
+    QWidget *takeBarWidget();
     QAbstractButton *takeIconButton();
     QAbstractButton *takeMinButton();
     QAbstractButton *takeMaxButton();
