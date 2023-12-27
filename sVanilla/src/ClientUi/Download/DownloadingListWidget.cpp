@@ -27,5 +27,4 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 }
 
 DownloadingListWidget::~DownloadingListWidget()
-{
-}
+= default;

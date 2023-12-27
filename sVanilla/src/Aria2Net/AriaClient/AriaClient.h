@@ -9,8 +9,8 @@
 
 namespace aria2net
 {
-const std::string GetRpcUri(int listenPort = 6800);
-const std::string GetGuid();
+std::string GetRpcUri(int listenPort = 6800);
+std::string GetGuid();
 
 class AriaClient : public CNetWork
 {
@@ -34,7 +34,7 @@ public:
 
     SystemListNotifications listNotificationsAsync();
     SystemListMethods listMethodsAsync();
-    std::list<SystemMulticall> multicallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods);
+    std::list<SystemMulticall> multicallAsync(const std::list<SystemMulticallMathod>& systemMulticallMethods);
     AriaSaveSession saveSessionAsync();
     AriaShutdown ForceShutdownAsync();
     AriaShutdown ShutdownAsync();
@@ -50,12 +50,12 @@ public:
     AriaChangeUri ChangeUriAsync(const std::string& gid, int fileIndex, ListString delUris, ListString addUris, int position = -1);
     AriaChangePosition ChangePositionAsync(const std::string& gid, int pos, HowChangePosition how);
     // AriaTellStatusList TellStoppedAsync(int offset, int num);
-    AriaAddUri AddUriAsync(ListString uris, AriaSendOption option, int position = -1);
+    AriaAddUri AddUriAsync(const ListString& uris, AriaSendOption option, int position = -1);
     AriaTellStatus TellStatus(const std::string& gid);
 
 private:
     static constexpr char JSONRPC[] = "2.0";
-    static constexpr char TOKEN[] = "sVanila";
+    static constexpr char TOKEN[] = "sVanilla";
 
 
     template <typename Result> Result GetResult(const AriaSendData& sendData);

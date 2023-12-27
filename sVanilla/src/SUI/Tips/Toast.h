@@ -19,8 +19,8 @@ public:
         Error,
     };
 
-    Toast(QWidget* parent = nullptr);
-    ~Toast();
+    explicit Toast(QWidget* parent = nullptr);
+    ~Toast() override;
 
 private:
     void SetUi();

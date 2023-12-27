@@ -19,7 +19,7 @@ public:
 class AriaError : public Protocol
 {
 public:
-    int code;
+    int code{};
     std::string message;
 
     std::string toString() const override

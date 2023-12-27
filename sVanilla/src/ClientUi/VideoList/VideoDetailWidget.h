@@ -5,15 +5,15 @@
 namespace Ui
 {
 class VideoDetailWidget;
-};
+}
 
 class VideoDetailWidget : public QDialog
 {
     Q_OBJECT
 
 public:
-    VideoDetailWidget(QWidget* parent = nullptr);
-    ~VideoDetailWidget();
+    explicit VideoDetailWidget(QWidget* parent = nullptr);
+    ~VideoDetailWidget() override;
 
 private:
     void SetUi();

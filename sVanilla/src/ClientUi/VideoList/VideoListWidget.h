@@ -6,15 +6,15 @@
 namespace Ui
 {
 class VideoListItemWidget;
-};
+}
 
 class VideoListItemWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    VideoListItemWidget(QWidget* parent = nullptr);
-    ~VideoListItemWidget();
+    explicit VideoListItemWidget(QWidget* parent = nullptr);
+    ~VideoListItemWidget() override;
 
 private:
     void SetUi();
@@ -29,6 +29,6 @@ class VideoListWidget : public QListWidget
     Q_OBJECT
 
 public:
-    VideoListWidget(QWidget* parent = nullptr);
-    ~VideoListWidget();
+    explicit VideoListWidget(QWidget* parent = nullptr);
+    ~VideoListWidget() override;
 };

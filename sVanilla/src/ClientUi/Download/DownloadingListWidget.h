@@ -5,15 +5,15 @@
 namespace Ui
 {
 class DownloadingItemWidget;
-};
+}
 
 class DownloadingItemWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    DownloadingItemWidget(QWidget* parent = nullptr);
-    ~DownloadingItemWidget();
+    explicit DownloadingItemWidget(QWidget* parent = nullptr);
+    ~DownloadingItemWidget() override;
 
 private:
     void SetUi();
@@ -28,6 +28,6 @@ class DownloadingListWidget : public QListWidget
     Q_OBJECT
 
 public:
-    DownloadingListWidget(QWidget* parent = nullptr);
-    ~DownloadingListWidget();
+    explicit DownloadingListWidget(QWidget* parent = nullptr);
+    ~DownloadingListWidget() override;
 };

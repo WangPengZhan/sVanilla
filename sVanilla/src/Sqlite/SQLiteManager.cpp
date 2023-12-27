@@ -13,7 +13,6 @@ SQLiteManager::SQLiteManager()
 {
 }
 SQLiteManager::~SQLiteManager()
-{
-}
+= default;
 
 }  // namespace SQLite

@@ -5,10 +5,11 @@
 #include <QWidget>
 #include <QStyle>
 
-namespace QWK {
+namespace QWK
+{
 class WidgetWindowAgent;
 class StyleAgent;
-}
+}  // namespace QWK
 
 namespace Ui
 {
@@ -23,7 +24,8 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-    enum Theme {
+    enum Theme
+    {
         Dark,
         Light,
     };
@@ -33,7 +35,7 @@ Q_SIGNALS:
     void themeChanged();
 
 protected:
-    bool event(QEvent *event) override;
+    bool event(QEvent* event) override;
 
     void SearchUrl();
 
@@ -42,13 +44,13 @@ private:
     void SignalsAndSlots();
 
 private:
-//    Ui::MainWindow* ui;
+    //    Ui::MainWindow* ui;
     void installWindowAgent();
     void installStyleAgent();
     void loadStyleSheet(Theme theme);
 
     Theme currentTheme{};
 
-    QWK::WidgetWindowAgent *windowAgent{};
-    QWK::StyleAgent *styleAgent{};
+    QWK::WidgetWindowAgent* windowAgent{};
+    QWK::StyleAgent* styleAgent{};
 };

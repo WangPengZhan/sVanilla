@@ -5,15 +5,15 @@
 namespace Ui
 {
 class VideoTabItemWidget;
-};
+}
 
 class VideoTabItemWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    VideoTabItemWidget(QWidget* parent = nullptr);
-    ~VideoTabItemWidget();
+    explicit VideoTabItemWidget(QWidget* parent = nullptr);
+    ~VideoTabItemWidget() override;
 
 private:
     void SetUi();

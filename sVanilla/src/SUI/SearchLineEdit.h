@@ -12,8 +12,8 @@ class SearchLineEdit : public QLineEdit
     Q_OBJECT
 
 public:
-    SearchLineEdit(QWidget* parent = nullptr);
-    ~SearchLineEdit();
+    explicit SearchLineEdit(QWidget* parent = nullptr);
+    ~SearchLineEdit() override;
     void SetEditFinishedSearch(bool enabled);
 
 protected:
