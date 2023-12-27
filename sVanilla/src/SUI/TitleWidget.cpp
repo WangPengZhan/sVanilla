@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
-#include <qt_windows.h>
+//#include <qt_windows.h>
 #include <QRect>
 #include <QRubberBand>
 #include <QMouseEvent>

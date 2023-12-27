@@ -8,7 +8,7 @@
 int main(int argc, char* argv[])
 {
     DumpColletor::registerDumpHandle();
-    Logger::GetInstance();
+    Logger::getInstance();
 
     QApplication app(argc, argv);
 

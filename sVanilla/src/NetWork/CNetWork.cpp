@@ -61,8 +61,7 @@ CNetWork::CurlHelp::~CurlHelp()
 
 CNetWork::CurlHelp CNetWork::m_curlHelp;
 
-CNetWork::CNetWork()
-    : m_headers(nullptr)
+CNetWork::CNetWork() : m_headers(nullptr)
 {
     InitDefaultHeaders();
 }
@@ -145,7 +144,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     if (retCode != CURLE_OK)
     {
-        NETWORK_LOG_ERROR("HttpGet occured error: {}", int(retCode));
+        //        NETWORK_LOG_ERROR("HttpGet occurred error: {}", int(retCode));
     }
 }
 
@@ -182,7 +181,7 @@ void CNetWork::HttpPost(const std::string& url, const std::string& params, std::
 
     if (retCode != CURLE_OK)
     {
-        NETWORK_LOG_ERROR("HttpPost occured error: {}", int(retCode));
+        //        NETWORK_LOG_ERROR("HttpPost occured error: {}", int(retCode));
     }
     curl_easy_cleanup(curlHandle);
 }
@@ -204,7 +203,8 @@ void CNetWork::HttpPost(const std::string& url, std::string& response)
     CURLcode retCode = curl_easy_perform(curlHandle);
     if (retCode != CURLE_OK)
     {
-        NETWORK_LOG_ERROR("HttpPost occured error: {}", int(retCode));
+//        NETWORK_LOG_ERROR("HttpPost occured error: {}", int(retCode));
+
     }
     curl_easy_cleanup(curlHandle);
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <future>
 
-#include <Windows.h>
+class QProcess;
 
 namespace aria2net
 {
@@ -23,7 +23,7 @@ private:
     std::future<bool> m_future;
     std::function<void()> m_errorFunc;
     std::function<void()> m_closeFunc;
-    PROCESS_INFORMATION m_pi;
+    std::unique_ptr<QProcess> m_aria2Process;
 };
 
 }  // namespace aria2net

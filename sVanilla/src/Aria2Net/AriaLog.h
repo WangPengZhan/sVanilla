@@ -1,7 +1,8 @@
 #pragma once
-
 #include <spdlog/spdlog.h>
 #include <spdlog/common.h>
+#include <spdlog/fmt/fmt.h>
+
 
 #define ARIA_LOG_TRACE(...) SPDLOG_LOGGER_CALL(spdlog::get("Aria2Net"), spdlog::level::trace, __VA_ARGS__)
 #define ARIA_LOG_DEBUG(...) SPDLOG_LOGGER_CALL(spdlog::get("Aria2Net"), spdlog::level::debug, __VA_ARGS__)

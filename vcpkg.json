@@ -25,6 +25,10 @@
         },
         {
             "name": "zlib"
+        },
+        {
+            "name": "minizip",
+            "version>=": "1.2.13#2"
         }
     ]
 }

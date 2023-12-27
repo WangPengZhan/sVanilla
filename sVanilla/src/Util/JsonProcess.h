@@ -1,10 +1,10 @@
 #pragma once
 
+//class nlohmann::json;
 
 namespace util
 {
 
-class nlohmann::json;
 class JsonProcess
 {
 public:
