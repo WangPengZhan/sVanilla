@@ -10,31 +10,26 @@
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #    include <QtGui/QActionGroup>
+#    include <QHBoxLayout>
 #else
 #    include <QtWidgets/QActionGroup>
 #endif
 
-#include "windowbar.h"
-#include "windowbutton.h"
+#include "sVanilla/src/SUI/windowbar.h"
+#include "sVanilla/src/SUI/windowbutton.h"
 #include "BiliApi/BilibiliClient.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"
 #include "Sqlite/SQLiteManager.h"
 #include "Util/UrlProcess.h"
 #include "SUI/SearchLineEdit.h"
-// #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
-//    , ui(new Ui::MainWindow)
 {
-    //    ui->setupUi(this);
     installWindowAgent();
     installStyleAgent();
 
-    //    SetUi();
     loadStyleSheet(Light);
-    //    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    //    setWindowTitle(tr("Bili Downloader"));
     SignalsAndSlots();
     resize(800, 600);
 }
@@ -102,6 +97,7 @@ bool MainWindow::event(QEvent* event)
 
 void MainWindow::installWindowAgent()
 {
+    // 1. Setup window agent
     windowAgent = new QWK::WidgetWindowAgent(this);
     windowAgent->setup(this);
 
@@ -193,6 +189,9 @@ void MainWindow::installWindowAgent()
 
     menuBar->setObjectName(QStringLiteral("win-menu-bar"));
 
+    auto windowBar = new Ui::WindowBar();
+
+    // for windows button
 #ifndef Q_OS_MAC
     auto iconButton = new Ui::WindowButton();
     iconButton->setObjectName(QStringLiteral("icon-button"));
@@ -213,10 +212,7 @@ void MainWindow::installWindowAgent()
     closeButton->setObjectName(QStringLiteral("close-button"));
     closeButton->setProperty("system-button", true);
     closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-#endif
 
-    auto windowBar = new Ui::WindowBar();
-#ifndef Q_OS_MAC
     windowBar->setIconButton(iconButton);
     windowBar->setMinButton(minButton);
     windowBar->setMaxButton(maxButton);
@@ -225,17 +221,20 @@ void MainWindow::installWindowAgent()
 
     windowBar->setMenuBar(menuBar);
 
-    auto titleLabel = new QLabel("sVanilla");
-    titleLabel->setAlignment(Qt::AlignCenter);
-    titleLabel->setObjectName(QStringLiteral("win-title-label"));
+    auto BarMainWidget = new QWidget();
+    BarMainWidget->setObjectName(QStringLiteral("BarMainWidget"));
+    auto BarMainLayout = new QHBoxLayout();
+    BarMainWidget->setLayout(BarMainLayout);
+    BarMainLayout->setObjectName(QStringLiteral("BarMainLayout"));
+    BarMainLayout->setContentsMargins(100, 5, 50, 0);
 
     auto searchLineEdit = new SearchLineEdit();
-    windowBar->setBarWidget(searchLineEdit);
-    windowBar->setTitleLabel(titleLabel);
+    BarMainLayout->addWidget(searchLineEdit);
+    windowBar->setBarWidget(BarMainWidget);
     windowBar->setHostWidget(this);
 
     windowAgent->setTitleBar(windowBar);
-    //    windowAgent->setHitTestVisible(menuBar, false);
+    windowAgent->setHitTestVisible(searchLineEdit, true);
 
     setMenuWidget(windowBar);
 
@@ -294,10 +293,6 @@ void MainWindow::SearchUrl()
 {
 }
 
-// void MainWindow::SetUi()
-//{
-//     installEventFilter(ui->widgetTitle);
-// }
 
 void MainWindow::SignalsAndSlots()
 {
@@ -309,7 +304,8 @@ void MainWindow::loadStyleSheet(Theme theme)
         return;
     currentTheme = theme;
 
-    if (QFile qss(theme == Dark ? QStringLiteral(":/MainWindow/dark-style.qss") : QStringLiteral(":/MainWindow/light-style.qss")); qss.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (QFile qss(theme == Dark ? QStringLiteral(":/MainWindow/dark-style.qss") : QStringLiteral(":/MainWindow/light-style.qss"));
+        qss.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         setStyleSheet(QString::fromUtf8(qss.readAll()));
         Q_EMIT themeChanged();

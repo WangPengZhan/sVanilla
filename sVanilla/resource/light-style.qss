@@ -62,14 +62,14 @@ QWK--WindowBar>QAbstractButton#close-button:pressed {
 
 /* Icon button */
 
-QWK--WindowBar>QAbstractButton#icon-button {
+/* QWK--WindowBar>QAbstractButton#icon-button {
     qproperty-iconNormal: url(":/MainWindow/example.png");
     qproperty-iconSize: 18px 18px;
     min-width: 40px;
     border: none;
     padding: 0;
     background-color: transparent;
-}
+} */
 
 
 /* Menu Bar */
@@ -149,31 +149,30 @@ MainWindow[custom-style=true] {
 }
 
 /* LineEdit */
-.QLineEdit#SearchLineEdit {
+QLineEdit#SearchLineEdit {
     border-radius: 3px;
     border: 1px solid #e0e4e7;
-    padding: 5px 15px;
+    padding: 0px 5px;
 }
 
-.QLineEdit:focus#SearchLineEdit {
+QLineEdit:focus#SearchLineEdit {
     border: 1px solid #d0e3ff;
 }
 
-.QLineEdit::placeholder#SearchLineEdit {
+QLineEdit::placeholder#SearchLineEdit {
     color: #767e89;
 }
 
-.QPushButton#btnSearch {
-    background-color: #0d6efd;
+QPushButton#btnSearch {
+    background-color: #FAEED1;
     color: #fff;
     font-weight: 600;
-    border-radius: 8px;
-    border: 1px solid #0d6efd;
-    padding: 5px 15px;
+    border-radius: 5px;
+    border: 1px solid #607274;
 }
 
-.QPushButton:hover#btnSearch,
-.QPushButton:focus#btnSearch {
-    background-color: #0b5ed7;
-    border: 3px solid #9ac3fe;
+QPushButton:hover#btnSearch,
+QPushButton:focus#btnSearch {
+    background-color: #B2A59B;
+    border: 3px solid #607274;
 }

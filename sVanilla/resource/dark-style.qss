@@ -31,7 +31,7 @@ QWK--WindowBar>QAbstractButton[system-button=true] {
 }
 
 QWK--WindowBar>QAbstractButton#min-button {
-    qproperty-iconNormal: url(":/window-bar/minimize.svg");
+    qproperty-iconNormal: url(":/MainWindow/minimize.svg");
     qproperty-iconSize: 12px 12px;
 }
 
@@ -41,8 +41,8 @@ QWK--WindowBar>QAbstractButton#min-button:pressed {
 }
 
 QWK--WindowBar>QAbstractButton#max-button {
-    qproperty-iconNormal: url(":/window-bar/maximize.svg");
-    qproperty-iconChecked: url(":/window-bar/restore.svg");
+    qproperty-iconNormal: url(":/MainWindow/maximize.svg");
+    qproperty-iconChecked: url(":/MainWindow/restore.svg");
 }
 
 QWK--WindowBar>QAbstractButton#max-button:hover,
@@ -51,7 +51,7 @@ QWK--WindowBar>QAbstractButton#max-button:pressed {
 }
 
 QWK--WindowBar>QAbstractButton#close-button {
-    qproperty-iconNormal: url(":/window-bar/close.svg");
+    qproperty-iconNormal: url(":/MainWindow/close.svg");
 }
 
 QWK--WindowBar>QAbstractButton#close-button:hover,
@@ -62,14 +62,14 @@ QWK--WindowBar>QAbstractButton#close-button:pressed {
 
 /* Icon button */
 
-QWK--WindowBar>QAbstractButton#icon-button {
+/* QWK--WindowBar>QAbstractButton#icon-button {
     qproperty-iconNormal: url(":/app/example.png");
     qproperty-iconSize: 18px 18px;
     min-width: 40px;
     border: none;
     padding: 0;
     background-color: transparent;
-}
+} */
 
 
 /* Menu Bar */
@@ -80,7 +80,7 @@ QMenuBar {
 }
 
 QMenuBar>QToolButton#qt_menubar_ext_button {
-    qproperty-icon: url(":/window-bar/more-line.svg");
+    qproperty-icon: url(":/MainWindow/more-line.svg");
 }
 
 QMenuBar>QToolButton#qt_menubar_ext_button:hover,
@@ -155,4 +155,34 @@ QWidget#clock-widget {
     color: #FEFEFE;
     font-weight: bold;
     background-color: transparent;
+}
+
+/* LineEdit */
+QLineEdit#SearchLineEdit {
+    border-radius: 3px;
+    border: 1px solid #3b3d3f;
+    background-color: #505050;
+    padding: 10px;
+}
+
+QLineEdit:focus#SearchLineEdit {
+    border: 1px solid #627188;
+}
+
+QLineEdit::placeholder#SearchLineEdit {
+    color: #767e89;
+}
+
+QPushButton#btnSearch {
+    background-color: #0d6efd;
+    color: #2a2828;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid #0d6efd;
+}
+
+QPushButton:hover#btnSearch,
+QPushButton:focus#btnSearch {
+    background-color: #0b5ed7;
+    border: 3px solid #9ac3fe;
 }
