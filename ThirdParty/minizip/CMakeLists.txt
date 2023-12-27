@@ -58,6 +58,7 @@ check_include_file(unistd.h Z_HAVE_UNISTD_H)
 
 if(MSVC)
     set(CMAKE_DEBUG_POSTFIX "d")
+    set(WIN_FILES iowin32.h iowin32.c)
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -77,12 +78,10 @@ set(MINIZIP_PUBLIC_HDRS
 )
 set(MINIZIP_PRIVATE_HDRS
     mztools.h
-    iowin32.h
     crypt.h
 )
 set(MINIZIP_SRCS
     ioapi.c
-    iowin32.c
     miniunz.c
     minizip.c
     mztools.c
@@ -90,8 +89,8 @@ set(MINIZIP_SRCS
     zip.c
 )
 
-add_library(minizip SHARED ${MINIZIP_SRCS} ${MINIZIP_DLL_SRCS} ${MINIZIP_PUBLIC_HDRS} ${MINIZIP_PRIVATE_HDRS})
-add_library(minizipstatic STATIC ${MINIZIP_SRCS} ${MINIZIP_PUBLIC_HDRS} ${MINIZIP_PRIVATE_HDRS})
+add_library(minizip SHARED ${MINIZIP_SRCS} ${MINIZIP_DLL_SRCS} ${MINIZIP_PUBLIC_HDRS} ${MINIZIP_PRIVATE_HDRS} ${WIN_FILES})
+add_library(minizipstatic STATIC ${MINIZIP_SRCS} ${MINIZIP_PUBLIC_HDRS} ${MINIZIP_PRIVATE_HDRS} ${WIN_FILES})
 set_target_properties(minizipstatic PROPERTIES DEFINE_SYMBOL MZ_LOCAL)
 set_target_properties(minizip PROPERTIES SOVERSION 1)
 set_target_properties(minizip PROPERTIES DEFINE_SYMBOL MZ_DLL_EXPORTS)

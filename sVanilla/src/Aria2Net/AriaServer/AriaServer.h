@@ -1,36 +1,29 @@
 #pragma once
-
-#include <QObject>
-#include <QProcess>
-#include <chrono>
-#include <thread>
 #include <future>
 
-//#include <Windows.h>
+class QProcess;
 
 namespace aria2net
 {
 
-class AriaServer : public QObject
+class AriaServer
 {
-    Q_OBJECT
-
 public:
-    explicit AriaServer(QObject* parent = nullptr);
-    ~AriaServer() override;
-    void StartServerAsync();
-    void CloseServer();
+    AriaServer();
+    ~AriaServer();
 
-//    PROCESS_INFORMATION m_pi;
+    void startServerAsync();
+    void closeServer();
+    void forceCloseServer();
 
-    AriaServer(const AriaServer& other) = delete;
-    AriaServer& operator=(const AriaServer& other) = delete;
-    AriaServer(AriaServer&& other) = delete;
-    AriaServer& operator=(AriaServer&& other) = delete;
+    void setErrorFunc(std::function<void()> func);
+    void setCloseFunc(std::function<void()> func);
 
 private:
-    std::unique_ptr<QProcess> aria2Process;
-
+    std::future<bool> m_future;
+    std::function<void()> m_errorFunc;
+    std::function<void()> m_closeFunc;
+    std::unique_ptr<QProcess> m_aria2Process;
 };
 
 }  // namespace aria2net

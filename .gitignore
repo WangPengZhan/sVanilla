@@ -455,3 +455,10 @@ fabric.properties
 /.idea/
 /vcpkg_installed/
 
+# CMake configure
+CMakeLists.txt.user
+CMakeProject.json
+CMakePresets.json
+CMakeSettings.json
+CMakeUserPresets.json
+ 

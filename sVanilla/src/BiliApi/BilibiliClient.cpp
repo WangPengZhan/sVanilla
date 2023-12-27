@@ -3,6 +3,7 @@
 
 #include "BilibiliClient.h"
 #include "Logger/Logger.h"
+#include "util/JsonProcess.h"
 
 namespace BiliApi
 {
@@ -43,15 +44,7 @@ LoginUrlOrigin BilibiliClient::GetLoginUrl()
     m_headers = nullptr;
     InitDefaultHeaders();
 
-    nlohmann::json json;
-    try
-    {
-        json = nlohmann::json::parse(response);
-    }
-    catch (std::exception& e)
-    {
-    }
-    return LoginUrlOrigin(json);
+    return LoginUrlOrigin(GetDataFromRespones(response));
 }
 
 LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& oauthKey)
@@ -100,10 +93,13 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     try
     {
         json = nlohmann::json::parse(respones);
+        util::JsonProcess::removeNullValues(json);
     }
     catch (std::exception& e)
     {
+        return json;
     }
+
     return json["data"];
 }
 

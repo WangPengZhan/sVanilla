@@ -8,12 +8,11 @@
 #include <QString>
 
 #include "FFmpegHelper.h"
-#include "Aria2Net/AriaLog.h"
+#include "FFmpegLog.h"
 
-namespace
+namespace ffmpeg
 {
 constexpr char ffmpegCommand[] = "-i \"%1\" -i \"%2\" -acodec copy -vcodec copy -f mp4 \"%3\"";
-}
 
 FFmpegHelper::FFmpegHelper()
 {
@@ -21,23 +20,37 @@ FFmpegHelper::FFmpegHelper()
 
 FFmpegHelper::~FFmpegHelper()
 {
-    CloseFFmpeg();
+    closeFFmpeg();
 }
 
-bool FFmpegHelper::MergeVideo(const std::string& audio, const std::string& video, const std::string& targetVideo)
+void FFmpegHelper::megerVideo(const MergeInfo& mergeInfo)
 {
-    FFmpegHelper ffmpegHelper;
-    FFmpegHelper::StartFFpmegAsync(audio, video, targetVideo);
-    return true;
+    FFmpegHelper::megerVideo(
+        mergeInfo, [] {}, [] {});
 }
 
-void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string& video, const std::string& targetVideo)
+void FFmpegHelper::megerVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
 {
-    std::future<bool> result = std::async(std::launch::async, [&]() -> bool {
+    FFmpegHelper::globalInstance().startFFpmegAsync(mergeInfo, errorFunc, finishedFunc);
+}
+
+FFmpegHelper& FFmpegHelper::globalInstance()
+{
+    static FFmpegHelper ffmpegHelper;
+    return ffmpegHelper;
+}
+
+void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
+{
+    // 检测上一次已经完成的合并移除
+    m_futures.remove_if([](const std::future<bool>& future) { return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready; });
+
+    // 启动新的合并
+    std::future<bool> result = std::async(std::launch::async, [mergeInfo, errorFunc = std::move(errorFunc), finishedFunc = std::move(finishedFunc)]() -> bool {
         QString executablePath = QApplication::applicationDirPath();
         QString ffmpegExecutable = QStandardPaths::findExecutable("ffmpeg", QStringList() << executablePath);
         QString ffmpegArg(ffmpegCommand);
-        ffmpegArg = ffmpegArg.arg(audio.c_str()).arg(video.c_str()).arg(targetVideo.c_str());
+        ffmpegArg = ffmpegArg.arg(mergeInfo.audio.c_str()).arg(mergeInfo.video.c_str()).arg(mergeInfo.targetVideo.c_str());
         qDebug() << ffmpegArg;
 
         QProcess ffmpegProcess;
@@ -49,6 +62,10 @@ void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string&
         if (ffmpegProcess.exitStatus() == QProcess::NormalExit && ffmpegProcess.exitCode() == 0)
         {
             // ffmpeg正常结束且返回值为0，表示执行成功
+            if (finishedFunc)
+            {
+                finishedFunc();
+            }
             return true;
         }
         else
@@ -56,13 +73,26 @@ void FFmpegHelper::StartFFpmegAsync(const std::string& audio, const std::string&
             // 否则，表示ffmpeg执行失败
             std::string errorString = ffmpegProcess.errorString().toStdString();
             int exitCode = ffmpegProcess.exitCode();
-            ARIA_LOG_ERROR("{}:Error starting ffmpeg process: {}", exitCode, errorString);
+            FFMPEG_LOG_ERROR("starting ffmpeg process error, errorCode: {}, msg: {}", exitCode, errorString);
+            if (errorFunc)
+            {
+                errorFunc();
+            }
             return false;
         }
+
+        return true;
     });
+    m_futures.push_back(std::move(result));
 }
 
-void FFmpegHelper::CloseFFmpeg()
+void FFmpegHelper::closeFFmpeg()
 {
-    // to do
+    for (auto& future : m_futures)
+    {
+        future.wait();
+    }
+    m_futures.clear();
 }
+
+}  // namespace ffmpeg

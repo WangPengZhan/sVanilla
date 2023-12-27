@@ -36,6 +36,19 @@ constexpr char const connect_type[] = "Connection: keep-alive";
 
 }  // namespace
 
+struct CURLDeleter
+{
+    void operator()(CURL* curl)
+    {
+        if (curl)
+        {
+            curl_easy_cleanup(curl);
+        }
+    }
+};
+
+using CURLPtr = std::unique_ptr<CURL, CURLDeleter>;
+
 CNetWork::CurlHelp::CurlHelp()
 {
     curl_global_init(CURL_GLOBAL_ALL);
@@ -55,7 +68,10 @@ CNetWork::CNetWork() : m_headers(nullptr)
 
 CNetWork::~CNetWork()
 {
-    curl_slist_free_all(m_headers);
+    if (m_headers)
+    {
+        curl_slist_free_all(m_headers);
+    }
 }
 
 void CNetWork::SetHeaders(curl_slist* headers)
@@ -113,24 +129,23 @@ void CNetWork::HttpGet(const std::string& url, const std::string& params, std::s
 
 void CNetWork::HttpGet(const std::string& url, std::string& response)
 {
-    CURL* curlHandle = curl_easy_init();
-    curl_easy_setopt(curlHandle, CURLOPT_CUSTOMREQUEST, "GET");
-    curl_easy_setopt(curlHandle, CURLOPT_HTTPHEADER, m_headers);
-    curl_easy_setopt(curlHandle, CURLOPT_HEADER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_VERBOSE, 0);
-    curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, OnWriteDate);
-    curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(curlHandle, CURLOPT_TIMEOUT, 5000);
-    curl_easy_setopt(curlHandle, CURLOPT_ACCEPT_ENCODING, "gzip");
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYHOST, false);
-    CURLcode retCode = curl_easy_perform(curlHandle);
+    CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    CURLcode retCode = curl_easy_perform(curlHandle.get());
     if (retCode != CURLE_OK)
     {
         //        NETWORK_LOG_ERROR("HttpGet occurred error: {}", int(retCode));
     }
-    curl_easy_cleanup(curlHandle);
 }
 
 void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& response)

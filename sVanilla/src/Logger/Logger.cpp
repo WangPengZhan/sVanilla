@@ -6,30 +6,30 @@
 
 namespace
 {
-    constexpr int logFileMaxSize = 20 * 1024 * 1024; // 20M
+constexpr int logFileMaxSize = 100 * 1024 * 1024;  // 20M
 }
 
 Logger Logger::m_logger;
 
-Logger& Logger::GetInstance()
+Logger& Logger::getInstance()
 {
     return m_logger;
 }
 
-void Logger::InitLog()
+void Logger::initLog()
 {
-    RegisterLogger("MainWindow");
-    RegisterLogger("Network");
-    RegisterLogger("Aria");
-    RegisterLogger("FFmpeg");
-    RegisterLogger("SQLite");
-    RegisterLogger("ThreadPool");
+    registerLogger("MainWindow");
+    registerLogger("Network");
+    registerLogger("Aria2Net");
+    registerLogger("FFmpeg");
+    registerLogger("SQLite");
+    registerLogger("ThreadPool");
 }
 
 Logger::Logger()
 {
-    SetLog();
-    InitLog();
+    setLog();
+    initLog();
 }
 
 Logger::~Logger()
@@ -37,17 +37,21 @@ Logger::~Logger()
     spdlog::shutdown();
 }
 
-void Logger::RegisterLogger(const std::string& logName)
+void Logger::registerLogger(const std::string& logName)
 {
     spdlog::rotating_logger_mt<spdlog::async_factory>(logName, "log/" + logName + ".log", logFileMaxSize, 100);
     // spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(logName, "log/" + logName + ".log", logFileMaxSize, 100);
 }
 
-void Logger::SetLog()
+void Logger::setLog()
 {
+    spdlog::init_thread_pool(32768, 1);
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][thread %t][%g:%#,%!][%l] : %v");
+#ifdef _DEBUG
     spdlog::set_level(spdlog::level::trace);
+#else
+    spdlog::set_level(spdlog::level::info);
+#endif
     spdlog::flush_on(spdlog::level::err);
     spdlog::flush_every(std::chrono::seconds(5));
-    spdlog::init_thread_pool(32768, 6);
 }
