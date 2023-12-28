@@ -22,7 +22,7 @@ public:
     ~ThreadPool();
 
     template <class F, class... Args> auto enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>;
-    template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type = 0>
+    template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type* = nullptr>
     std::future<void> enqueue(T* pTask);
 
     static ThreadPool& instance();
@@ -65,7 +65,7 @@ template <class F, class... Args> auto ThreadPool::enqueue(F&& f, Args&&... args
     return res;
 }
 
-template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type>
+template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type* = nullptr>
 std::future<void> ThreadPool::enqueue(T* pTask)
 {
     auto task = [pTask]() {

@@ -1,5 +1,7 @@
 #include <QUuid>
 
+#include <fstream>
+
 #include "AriaClient.h"
 #include "Logger/Logger.h"
 
@@ -237,11 +239,16 @@ AriaAddUri AriaClient::AddUriAsync(ListString uris, AriaSendOption option, int p
     AriaSendData ariaSend;
 
     ariaSend.id = GetGuid();
+
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.addUri";
     ariaSend.params[0] = std::string("token:") + TOKEN;
     ariaSend.params[1] = uris;
     ariaSend.params[2] = option;
+
+    std::ofstream o("test.json");
+    o << ariaSend.toString();
 
     return GetResult<AriaAddUri>(ariaSend);
 }
