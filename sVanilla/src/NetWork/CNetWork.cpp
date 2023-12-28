@@ -144,7 +144,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     if (retCode != CURLE_OK)
     {
-        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", int(retCode), url);
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 
@@ -181,7 +181,7 @@ void CNetWork::HttpPost(const std::string& url, const std::string& params, std::
 
     if (retCode != CURLE_OK)
     {
-        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", int(retCode), url);
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 
@@ -202,7 +202,7 @@ void CNetWork::HttpPost(const std::string& url, std::string& response)
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     if (retCode != CURLE_OK)
     {
-        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", int(retCode), url);
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 
