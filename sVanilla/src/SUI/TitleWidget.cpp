@@ -3,7 +3,6 @@
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
-//#include <qt_windows.h>
 #include <QRect>
 #include <QRubberBand>
 #include <QMouseEvent>
@@ -35,8 +34,7 @@ public:
     bool m_bIsMaximum : true;
 };
 
-FramelessHelper::PrivateData::PrivateData(FramelessHelper* p)
-    : q_ptr(p)
+FramelessHelper::PrivateData::PrivateData(FramelessHelper* p) : q_ptr(p)
 {
 }
 
@@ -591,9 +589,7 @@ bool PrivateFramelessWidgetData::handleDoubleClickedMouseEvent(QMouseEvent* even
 //===================================================
 // FramelessHelper
 //===================================================
-FramelessHelper::FramelessHelper(QObject* parent)
-    : QObject(parent)
-    , d_ptr(new FramelessHelper::PrivateData(this))
+FramelessHelper::FramelessHelper(QObject* parent) : QObject(parent), d_ptr(new FramelessHelper::PrivateData(this))
 {
     d_ptr->m_bWidgetMovable = true;
     d_ptr->m_bWidgetResizable = true;
@@ -755,13 +751,8 @@ uint FramelessHelper::titleHeight()
 }
 
 TitleWidget::TitleWidget(QWidget* parent)
-    : QWidget(parent)
-    , m_pLabelIcon(new QLabel(this))
-    , m_pLabelTitle(new QLabel(this))
-    , m_pBtnMin(new QPushButton(this))
-    , m_pBtnMax(new QPushButton(this))
-    , m_pBtnClose(new QPushButton(this))
-    , m_pFramelessHelper(new FramelessHelper(topLevelWidget()))
+    : QWidget(parent), m_pLabelIcon(new QLabel(this)), m_pLabelTitle(new QLabel(this)), m_pBtnMin(new QPushButton(this)), m_pBtnMax(new QPushButton(this)),
+      m_pBtnClose(new QPushButton(this)), m_pFramelessHelper(new FramelessHelper(topLevelWidget()))
 {
     setAttribute(Qt::WA_StyledBackground);
 

@@ -1,5 +1,7 @@
 #include <QUuid>
 
+#include <fstream>
+
 #include "AriaClient.h"
 #include "Logger/Logger.h"
 
@@ -28,8 +30,7 @@ SystemListNotifications AriaClient::listNotificationsAsync()
 {
     AriaSendData ariaSend;
 
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "system.listNotifications";
 
@@ -40,8 +41,7 @@ SystemListMethods AriaClient::listMethodsAsync()
 {
     AriaSendData ariaSend;
 
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "system.listMethods";
 
@@ -50,18 +50,12 @@ SystemListMethods AriaClient::listMethodsAsync()
 
 std::list<SystemMulticall> AriaClient::multicallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods)
 {
-    std::list<std::string> listMethod;
-    for (const auto method : systemMulticallMathods)
-    {
-        listMethod.emplace_back(method.toString());
-    }
 
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "system.multicall";
-    ariaSend.params = listMethod;
+    ariaSend.params[0] = systemMulticallMathods;
 
     nlohmann::json jsonResult = GetResult<nlohmann::json>(ariaSend);
     std::list<SystemMulticall> result;
@@ -79,163 +73,122 @@ AriaSaveSession AriaClient::saveSessionAsync()
     listString.emplace_back(std::string("token:") + TOKEN);
 
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.saveSession";
-    ariaSend.params = listString;
+    ariaSend.params[0] = listString;
     return GetResult<AriaSaveSession>(ariaSend);
 }
 
 AriaShutdown AriaClient::ForceShutdownAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.forceShutdown";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaShutdown>(ariaSend);
 }
 
 AriaShutdown AriaClient::ShutdownAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.shutdown";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaShutdown>(ariaSend);
 }
 
 AriaGetSessionInfo AriaClient::GetSessionInfoAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getSessionInfo";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaGetSessionInfo>(ariaSend);
 }
 
 AriaVersion AriaClient::GetAriaVersionAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getVersion";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaVersion>(ariaSend);
 }
 
 AriaRemove AriaClient::RemoveDownloadResultAsync(const std::string& gid)
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-    listString.emplace_back(gid);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.removeDownloadResult";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = gid;
 
     return GetResult<AriaRemove>(ariaSend);
 }
 
 AriaRemove AriaClient::PurgeDownloadResultAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.purgeDownloadResult";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaRemove>(ariaSend);
 }
 
 AriaGetGlobalStat AriaClient::GetGlobalStatAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getGlobalStat";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaGetGlobalStat>(ariaSend);
 }
 
 AriaChangeOption AriaClient::ChangeGlobalOptionAsync(const ListString& option)
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-    listString.insert(listString.end(), option.begin(), option.end());
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getGlobalStat";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = option;
 
     return GetResult<AriaChangeOption>(ariaSend);
 }
 
 AriaGetOption AriaClient::GetGlobalOptionAsync()
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getGlobalOption";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
 
     return GetResult<AriaGetOption>(ariaSend);
 }
 
 AriaGetOption AriaClient::GetOptionAsync(const std::string& gid)
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-    listString.emplace_back(gid);
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getOption";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = gid;
 
     return GetResult<AriaGetOption>(ariaSend);
 }
@@ -250,11 +203,14 @@ AriaChangeUri AriaClient::ChangeUriAsync(const std::string& gid, int fileIndex, 
     listString.insert(listString.end(), addUris.begin(), addUris.end());
 
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.changePosition";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = gid;
+    ariaSend.params[2] = std::to_string(fileIndex);
+    ariaSend.params[3] = delUris;
+    ariaSend.params[4] = addUris;
 
     return GetResult<AriaChangeUri>(ariaSend);
 }
@@ -268,74 +224,55 @@ AriaChangePosition AriaClient::ChangePositionAsync(const std::string& gid, int p
     listString.emplace_back(std::to_string(how));
 
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.changePosition";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = gid;
+    ariaSend.params[2] = std::to_string(pos);
+    ariaSend.params[3] = std::to_string(how);
 
     return GetResult<AriaChangePosition>(ariaSend);
 }
 
 AriaAddUri AriaClient::AddUriAsync(ListString uris, AriaSendOption option, int position)
 {
-    nlohmann::json params;
-    nlohmann::json listJson;
-    listJson = uris;
-
-    params[0] = std::string("token:") + TOKEN;
-    params[1] = listJson;
-    params[2] = option;
-
-    std::list<std::string> listString;
-    listString.emplace_back(params[0].dump());
-    listString.emplace_back(params[1].dump());
-    listString.emplace_back(params[2].dump());
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.addUri";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = uris;
+    ariaSend.params[2] = option;
+
+    std::ofstream o("test.json");
+    o << ariaSend.toString();
 
     return GetResult<AriaAddUri>(ariaSend);
 }
 
 AriaTellStatus AriaClient::TellStatus(const std::string& gid)
 {
-    nlohmann::json params;
-
-    params[0] = std::string("token:") + TOKEN;
-    params[1] = gid;
-
-    std::list<std::string> listString;
-    listString.emplace_back(params[0].dump());
-    listString.emplace_back(params[1].dump());
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.tellStatus";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = gid;
 
     return GetResult<AriaTellStatus>(ariaSend);
 }
 
 AriaChangeOption AriaClient::ChangeOptionAsync(const std::string& gid, const ListString& option)
 {
-    ListString listString;
-    listString.emplace_back(std::string("token:") + TOKEN);
-    listString.emplace_back(gid);
-    listString.insert(listString.end(), option.begin(), option.end());
-
     AriaSendData ariaSend;
-    QUuid id = QUuid::createUuid();
-    ariaSend.id = id.toString().toStdString();
+    ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.getGlobalStat";
-    ariaSend.params = listString;
+    ariaSend.params[0] = std::string("token:") + TOKEN;
+    ariaSend.params[1] = gid;
+    ariaSend.params[2] = option;
 
     return GetResult<AriaChangeOption>(ariaSend);
 }

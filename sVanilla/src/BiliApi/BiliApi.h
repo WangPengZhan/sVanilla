@@ -14,21 +14,6 @@ public:
     virtual std::string toString() = 0;
 };
 
-// // 支持json转任意类型
-// template<typename ProtocolType,
-//     typename std::enable_if<std::is_convertible<const ProtocolType&, Protocol>::value, int>::type = 0>
-// void to_json(nlohmann::json& j, const ProtocolType& p)
-// {
-//     j = p.GetJson();
-// }
-
-// template<typename ProtocolType,
-//     typename std::enable_if<std::is_convertible<const ProtocolType&, Protocol>::value, int>::type = 0>
-// void from_json(const nlohmann::json& j, ProtocolType& p)
-// {
-//     p.SetJson(j);
-// }
-
 // BiliApi文档
 // https://github.com/SocialSisterYi/bilibili-API-collect
 
@@ -43,7 +28,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoOwner, mid, name, face)
@@ -60,7 +45,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ArgueInfo, argue_link, argue_msg, argue_type)
@@ -86,7 +71,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoStat, aid, view, danmaku, favorite, coin, share, now_rank, his_rank, like, dislike, evaluation, argue_info)
@@ -103,7 +88,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Dimension, width, height, rotate)
@@ -133,11 +118,11 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcArc, aid, videos, type_id, type_name, copyright, pic, title, pubdate, ctime, desc, state, duration, author, stat, dynamic,
-                                   dimension)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcArc, aid, videos, type_id, type_name, copyright, pic, title, pubdate, ctime, desc, state, duration, author,
+                                                stat, dynamic, dimension)
 };
 
 class VideoPage : public Protocol
@@ -157,7 +142,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoPage, cid, page, from, part, duration, vid, weblink, dimension, first_frame)
@@ -176,7 +161,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SubtitleAuthor, mid, name, sex, face, sign)
@@ -197,7 +182,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Subtitle, id, lan, author_doc, is_lock, author_mid, subtitle_url, author)
@@ -213,7 +198,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoSubtitle, allow_submit, list)
@@ -237,7 +222,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcStat, season_id, view, danmaku, relay, favorite, coin, share, nowRank, hisRank, like)
@@ -261,7 +246,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcEpisode, season_id, section_id, id, mid, cid, title, attribute, arc, page, bvid)
@@ -283,7 +268,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSection, season_id, id, title, attribute, arc, page, type, arc, episodes)
@@ -308,7 +293,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSeason, id, title, cover, mid, intro, signState, attribute, sections, stat, ep_count, season_type)
@@ -347,12 +332,12 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title, pubdate, ctime, desc, state, duration,
-                                                redirect_url,
-                                   mission_id, owener, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle, ugc_season)
+                                                redirect_url, mission_id, owener, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle,
+                                                ugc_season)
 };
 
 class SubtitleInfo : public Protocol
@@ -367,7 +352,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SubtitleInfo, allow_submit, lan, lan_doc, subtitles)
@@ -385,7 +370,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayerV2, aid, bvid, cid, subtitle)
@@ -404,7 +389,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDurl, order, length, size, backup_url)
@@ -426,7 +411,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDashVideo, id, base_url, backup_url, mimeType, codecs, width, height, frameRate)
@@ -441,7 +426,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDashDolby, audio)
@@ -458,7 +443,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDash, video, audio, dolby)
@@ -476,7 +461,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlSupportFormat, quality, format, new_description, superscript)
@@ -495,7 +480,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
@@ -512,7 +497,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrl, oauthKey, url)
@@ -528,7 +513,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrlOrigin, data, status)
@@ -544,7 +529,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusData, url)
@@ -561,7 +546,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, status, message)
@@ -578,7 +563,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatus, code, status, message)
@@ -595,7 +580,7 @@ public:
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusReady, code, status, data)

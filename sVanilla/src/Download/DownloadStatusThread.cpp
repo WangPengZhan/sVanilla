@@ -1,12 +1,10 @@
 #include "DownloadStatusThread.h"
-#include "ClientUi/Download/DownloadManager.h"
+#include "AbstractDownloader.h"
 
 namespace download
 {
 
-DownloadStatusThread::DownloadStatusThread()
-   : m_running(true)
-   , m_thread(&DownloadStatusThread::downloadThread, this)
+DownloadStatusThread::DownloadStatusThread() : m_running(true), m_thread(&DownloadStatusThread::downloadThread, this)
 {
 }
 
@@ -26,36 +24,31 @@ void DownloadStatusThread::downloadThread()
     while (m_running.load())
     {
         std::lock_guard<std::mutex> lock(m_mutex);
-        std::vector<std::string> removeKeys; 
+        std::vector<std::string> removeKeys;
         for (auto& [key, value] : m_downloadTasks)
         {
             switch (value->status())
             {
-            case AbstractDownloader::Ready:
-            {
+            case AbstractDownloader::Ready: {
                 value->start();
                 break;
             }
-            case AbstractDownloader::Downloading:
-            {
+            case AbstractDownloader::Downloading: {
                 value->downloadStatus();
                 break;
             }
-            case AbstractDownloader::Paused:
-            {
+            case AbstractDownloader::Paused: {
                 value->pause();
                 removeKeys.push_back(key);
                 break;
             }
-            case AbstractDownloader::Stopped:
-            {
+            case AbstractDownloader::Stopped: {
                 value->stop();
                 removeKeys.push_back(key);
                 break;
             }
             case AbstractDownloader::Finished:
-            case AbstractDownloader::Error:
-            {
+            case AbstractDownloader::Error: {
                 removeKeys.push_back(key);
                 break;
             }
@@ -73,6 +66,4 @@ void DownloadStatusThread::downloadThread()
     }
 }
 
-
-
-} // namespace download
+}  // namespace download
