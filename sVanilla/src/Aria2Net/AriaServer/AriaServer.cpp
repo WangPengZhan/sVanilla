@@ -26,7 +26,7 @@ void AriaServer::startServerAsync()
         QString ariaPath = QApplication::applicationDirPath() + "/aria/";
         QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
         QString sessionFile = ariaPath + "aira.session";
-        QString logFile = ariaPath + "log.txt";
+        QString logFile = ariaPath + "aira.log";
 
         QDir airDir = QDir(ariaPath);
 
@@ -36,9 +36,9 @@ void AriaServer::startServerAsync()
                                                    << "--rpc-listen-all=true"
                                                    << "--rpc-allow-origin-all=true"
                                                    << "--rpc-listen-port=6800"
-                                                   << "--rpc-secret=downkyi"
+                                                   << "--rpc-secret=sVanila"
                                                    << "--input-file=" + sessionFile << "--save-session=" + sessionFile << "--save-session-interval=30"
-                                                   << "--log=" + logFile << "--log-level=info"
+                                                   << "--log=" + logFile << "--log-level=debug"
                                                    << "--max-concurrent-downloads=3"
                                                    << "--max-connection-per-server=16"
                                                    << "--split=5"

@@ -670,13 +670,13 @@ public:
     std::string id;
     std::string jsonrpc;
     std::string method;
-    std::list<std::string> params;
+    nlohmann::json params;
 
     std::string toString() const override
     {
         nlohmann::json json;
         to_json(json, *this);
-        return json.dump();
+        return json.dump(4);
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaSendData, id, jsonrpc, method, params)
@@ -698,11 +698,18 @@ public:
 
     friend void to_json(nlohmann::json& json, const AriaSendOption& ariaSendOption)
     {
-        json = nlohmann::json{
-            {"all-proxy", ariaSendOption.all_proxy},
-            {"out",       ariaSendOption.out      },
-            {"dir",       ariaSendOption.dir      },
-        };
+        if (!ariaSendOption.all_proxy.empty())
+        {
+            json["all-proxy"] = ariaSendOption.all_proxy;
+        }
+        if (!ariaSendOption.out.empty())
+        {
+            json["out"] = ariaSendOption.out;
+        }
+        if (!ariaSendOption.dir.empty())
+        {
+            json["dir"] = ariaSendOption.dir;
+        }
     }
 
     friend void from_json(const nlohmann::json& json, AriaSendOption& ariaSendOption)
