@@ -1,7 +1,5 @@
 #include <QUuid>
 
-#include <fstream>
-
 #include "AriaClient.h"
 #include "Logger/Logger.h"
 
@@ -50,7 +48,6 @@ SystemListMethods AriaClient::listMethodsAsync()
 
 std::list<SystemMulticall> AriaClient::multicallAsync(const std::list<SystemMulticallMathod>& systemMulticallMathods)
 {
-
     AriaSendData ariaSend;
     ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
@@ -245,9 +242,6 @@ AriaAddUri AriaClient::AddUriAsync(ListString uris, AriaSendOption option, int p
     ariaSend.params[0] = std::string("token:") + TOKEN;
     ariaSend.params[1] = uris;
     ariaSend.params[2] = option;
-
-    std::ofstream o("test.json");
-    o << ariaSend.toString();
 
     return GetResult<AriaAddUri>(ariaSend);
 }
