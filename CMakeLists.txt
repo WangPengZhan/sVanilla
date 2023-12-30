@@ -74,7 +74,7 @@ endif()
 
 add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 # add_subdirectory(ThirdParty/SARibbon)
-add_subdirectory(ThirdParty/qwindowkit)
+add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 option(ENABLE_TEST "Enable Test" OFF)
 set(ENABLE_TEST ON)
 if (ENABLE_TEST)
@@ -133,6 +133,8 @@ add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tools $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
 
 include(cmake/qtdeploy.cmake)
@@ -145,5 +147,7 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tools/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-#install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:QWindowKit::Widgets>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:QWindowKit::Core>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
