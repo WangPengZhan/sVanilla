@@ -33,7 +33,7 @@ jobs:
         run: |
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive
 
       - name: Install linuxdeploy
         uses: miurahr/install-linuxdeploy-action@v1
@@ -83,4 +83,4 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         run: ctest --build-config ${{ matrix.build_type }}
-        
+
