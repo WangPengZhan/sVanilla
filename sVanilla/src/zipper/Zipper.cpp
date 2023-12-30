@@ -1,5 +1,5 @@
-#include <minizip/unzip.h>
-#include <minizip/zip.h>
+#include <unzip.h>
+#include <zip.h>
 
 #include <filesystem>
 #include <fstream>
