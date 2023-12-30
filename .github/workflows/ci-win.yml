@@ -1,4 +1,4 @@
-name: ci-linux
+name: CI-Windows
 
 on:
   push:
@@ -6,58 +6,52 @@ on:
   pull_request:
     branches: [ "WangPengZhan-patch-1" ]
 
+
   # Allows you to run this workflow manually from the Actions tab.
   workflow_dispatch:
 
 jobs:
-  build-linux:
-    name: Build On Ubuntu
-    runs-on: ubuntu-20.04
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: windows-2019
     timeout-minutes: 120
 
     strategy:
       matrix:
-        build_type: [Release]
-        c_compiler: [gcc]
-        cpp_compiler: [g++]
-
-
+          build_type: [Release]
+          c_compiler: [cl]
+          cpp_compiler: [cl]
+          arch: win64_msvc2019_64,
+          platform: x64,
+          qt: 6.5.2,
+          qt_modules: "qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat",
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
       - name: Init Submodules
+        shell: bash
         run: |
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive
-
-      - name: Install linuxdeploy
-        uses: miurahr/install-linuxdeploy-action@v1
-        with:
-          plugins: qt appimage
-
-      - name: Install Dependencies
-        run: |
-          sudo DEBIAN_FRONTEND=noninteractive apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libfcitx5-qt-dev tree
 
       - name: Cache Qt
         id: cache-qt
         uses: actions/cache@v1  # not v2!
         with:
           path: ../Qt
-          key: ${{ runner.os }}-QtCache-6.5
+          key: ${{runner.os}}-${{matrix.arch}}-QtCache-${{matrix.qt}}
 
-      - name: Install Qt
+      - name: Install Qt Official Build
         uses: jurplel/install-qt-action@v3
         with:
-          version: 6.5.2
+          version: ${{matrix.qt}}
           target: desktop
-          modules: 'qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat'
+          arch: ${{matrix.arch}}
+          modules: ${{matrix.qt_modules}}
           cache: 'true'
 
       - name: Configure CMake
@@ -68,6 +62,15 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
 
+      - name: Configure and Build Project
+        shell: cmd
+        run: |
+          qmake --version
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.config.platform}}
+          qmake -r -spec win32-msvc CONFIG-=debug CONFIG+=release %GITHUB_WORKSPACE%\vnote.pro
+          ${{runner.temp}}\jom\jom
+        working-directory: ${{runner.workspace}}/build
+
       - name:  Build Project
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all --
         
@@ -77,4 +80,3 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         run: ctest --build-config ${{ matrix.build_type }}
-
