@@ -15,8 +15,7 @@ ResourceHelper::ResourceHelper(const std::function<void(void)>& fn)
     m_fns.push_back(fn);
 }
 
-ResourceHelper::ResourceHelper(const std::list<std::function<void(void)>>& fns)
-    : m_fns(fns)
+ResourceHelper::ResourceHelper(const std::list<std::function<void(void)>>& fns) : m_fns(fns)
 {
 }
 
@@ -37,15 +36,12 @@ void ResourceHelper::addFn(const std::function<void(void)>& fn)
 }
 
 Zipper::Zipper(const std::vector<std::string>& vectZipFiles, const std::string& strOutputFileName)
-    : m_vectZipFiles(vectZipFiles)
-    , m_strOutputFileName(strOutputFileName)
+    : m_vectZipFiles(vectZipFiles), m_strOutputFileName(strOutputFileName)
 {
 }
 
 Zipper::Zipper(const std::string& strZipPath, const std::string& strOutputFileName, const std::string& strRelativePath)
-    : m_strZipPath(strZipPath)
-    , m_strOutputFileName(strOutputFileName)
-    , m_strRelativePath(strRelativePath)
+    : m_strZipPath(strZipPath), m_strOutputFileName(strOutputFileName), m_strRelativePath(strRelativePath)
 {
 }
 
@@ -108,9 +104,6 @@ bool Zipper::addFileToZip(zipFile zfile, const std::string& fileNameinZip, const
     }
 
     std::time_t t_time = time(nullptr);
-//    tm s_time{};
-    //localtime_s并不是POSIX标准的一部分,不支持Linux和macOS
-//    localtime_s(&s_time, &t_time);
     std::tm* s_time = std::localtime(&t_time);
     zip_fileinfo zinfo = {0};
     tm_zip tmz = {s_time->tm_sec, s_time->tm_min, s_time->tm_hour, s_time->tm_mday, s_time->tm_mon, s_time->tm_year};
@@ -191,9 +184,7 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
     return true;
 }
 
-Unzipper::Unzipper(const std::string& strUnzipperFile, const std::string& strPath)
-    : m_strUnzippedFile(strUnzipperFile)
-    , m_strOutputPath(strPath)
+Unzipper::Unzipper(const std::string& strUnzipperFile, const std::string& strPath) : m_strUnzippedFile(strUnzipperFile), m_strOutputPath(strPath)
 {
 }
 

@@ -144,7 +144,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     if (retCode != CURLE_OK)
     {
-        //        NETWORK_LOG_ERROR("HttpGet occurred error: {}", int(retCode));
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 
@@ -163,50 +163,47 @@ void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& r
 
 void CNetWork::HttpPost(const std::string& url, const std::string& params, std::string& response)
 {
-    CURL* curlHandle = curl_easy_init();
-    curl_easy_setopt(curlHandle, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_easy_setopt(curlHandle, CURLOPT_HTTPHEADER, m_headers);
-    curl_easy_setopt(curlHandle, CURLOPT_HEADER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_VERBOSE, 0);
-    curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, OnWriteDate);
-    curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(curlHandle, CURLOPT_TIMEOUT, 5);
-    curl_easy_setopt(curlHandle, CURLOPT_POSTFIELDS, params.c_str());
-    curl_easy_setopt(curlHandle, CURLOPT_ACCEPT_ENCODING, "gzip");
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYHOST, false);
-    curl_easy_setopt(curlHandle, CURLOPT_COOKIEFILE, "cookie.txt");
-    CURLcode retCode = curl_easy_perform(curlHandle);
+    CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "POST");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_POSTFIELDS, params.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIEFILE, "cookie.txt");
+    CURLcode retCode = curl_easy_perform(curlHandle.get());
 
     if (retCode != CURLE_OK)
     {
-        //        NETWORK_LOG_ERROR("HttpPost occured error: {}", int(retCode));
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
-    curl_easy_cleanup(curlHandle);
 }
 
 void CNetWork::HttpPost(const std::string& url, std::string& response)
 {
-    CURL* curlHandle = curl_easy_init();
-    curl_easy_setopt(curlHandle, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_easy_setopt(curlHandle, CURLOPT_HTTPHEADER, m_headers);
-    curl_easy_setopt(curlHandle, CURLOPT_HEADER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_VERBOSE, 0);
-    curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, OnWriteDate);
-    curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(curlHandle, CURLOPT_TIMEOUT, 5);
-    curl_easy_setopt(curlHandle, CURLOPT_ACCEPT_ENCODING, "gzip");
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYHOST, false);
-    CURLcode retCode = curl_easy_perform(curlHandle);
+    CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "POST");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    CURLcode retCode = curl_easy_perform(curlHandle.get());
     if (retCode != CURLE_OK)
     {
-//        NETWORK_LOG_ERROR("HttpPost occured error: {}", int(retCode));
-
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
-    curl_easy_cleanup(curlHandle);
 }
 
 void CNetWork::InitDefaultHeaders()

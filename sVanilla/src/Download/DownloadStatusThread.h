@@ -6,9 +6,10 @@
 
 class AbstractDownloader;
 
-namespace download 
+namespace download
 {
 
+class AbstractDownloader;
 class DownloadStatusThread
 {
 public:
@@ -21,7 +22,7 @@ public:
 
 private:
     void downloadThread();
-    
+
 private:
     std::atomic_bool m_running;
     std::mutex m_mutex;
@@ -29,4 +30,4 @@ private:
     std::thread m_thread;
 };
 
-} // namespace download
+}  // namespace download
