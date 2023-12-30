@@ -7,6 +7,7 @@
 #include <QtWidgets/QApplication>
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
+#include <QHBoxLayout>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #    include <QtGui/QActionGroup>
@@ -257,7 +258,7 @@ void MainWindow::installWindowAgent()
             windowAgent->showSystemMenu(iconButton->mapToGlobal(QPoint{0, iconButton->height()}));
         });
     });
-    connect(iconButton, &QWK::WindowButton::doubleClicked, this, [iconButton, this]() {
+    connect(iconButton, &Ui::WindowButton::doubleClicked, this, [iconButton, this]() {
         iconButton->setProperty("double-click-close", true);
         close();
     });
@@ -292,7 +293,6 @@ void MainWindow::installStyleAgent()
 void MainWindow::SearchUrl()
 {
 }
-
 
 void MainWindow::SignalsAndSlots()
 {
