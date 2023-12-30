@@ -73,12 +73,10 @@ jobs:
           -S ${{ github.workspace }}
 
       - name:  Build Project
-        run: |
-          run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all --
+        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all --
         
       - name:  Install Project
-        run: |
-          run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
+        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
 
       - name: Test
         working-directory: ${{ github.workspace }}/build
