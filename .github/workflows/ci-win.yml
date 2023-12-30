@@ -21,10 +21,10 @@ jobs:
         build_type: [Release]
         c_compiler: [cl]
         cpp_compiler: [cl]
-        arch: win64_msvc2019_64,
-        platform: x64,
-        qt: 6.5.2,
-        qt_modules: "qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat",
+        arch: [win64_msvc2019_64]
+        platform: [x64]
+        qt: [6.5.2]
+        qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat]
 
     steps:
       - uses: actions/checkout@v2
