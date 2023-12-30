@@ -1,0 +1,85 @@
+name: CI-Linux
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    name: Build On Ubuntu
+    runs-on: ubuntu-20.04
+    timeout-minutes: 120
+
+    strategy:
+      matrix:
+        build_type: [Release]
+        c_compiler: gcc
+        cpp_compiler: g++
+
+
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Init Submodules
+        run: |
+          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+          git submodule sync --recursive
+          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+
+      - name: Install linuxdeploy
+        uses: miurahr/install-linuxdeploy-action@v1
+        with:
+          plugins: qt appimage
+
+      - name: Install Dependencies
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libfcitx5-qt-dev tree
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1  # not v2!
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache-6.5
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.5.2
+          target: desktop
+          modules: 'qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat'
+          cache: 'true'
+
+      - name: Create Build Dir
+        run: mkdir build
+        working-directory: ${{runner.workspace}}
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ github.workspace }}/build
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -S ${{ github.workspace }}
+
+      - name:  Build Project
+        run: |
+          run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all --
+        
+      - name:  Install Project
+        run: |
+          run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
+
+      - name: Test
+        working-directory: ${{ github.workspace }}/build
+        run: ctest --build-config ${{ matrix.build_type }}
