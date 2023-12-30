@@ -7,5 +7,12 @@
         <file>search.svg</file>
         <file>settings.svg</file>
         <file>sort.svg</file>
+        <file>dark-style.qss</file>
+        <file>light-style.qss</file>
+        <file>close.svg</file>
+        <file>fullscreen.svg</file>
+        <file>maximize.svg</file>
+        <file>more-line.svg</file>
+        <file>restore.svg</file>
     </qresource>
 </RCC>

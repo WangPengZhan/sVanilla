@@ -21,16 +21,22 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 
 add_executable(${Aria2Net_test} ${SOURCES})
-add_test(NAME ${Aria2Net_test} COMMAND ${Aria2Net_test})
-add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
-add_dependencies(${Aria2Net_test} GTest::gtest_main)
+#add_test(NAME ${Aria2Net_test} COMMAND ${Aria2Net_test})
+#add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
+#add_dependencies(${Aria2Net_test} gtest gmock gtest_main gmock_main)
+
+gtest_discover_tests(${Aria2Net_test}
+        # set a working directory so your project root so that you can find test data via paths relative to the project root
+        WORKING_DIRECTORY ${PROJECT_DIR}
+        PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_DIR}"
+)
 
 foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
 target_link_libraries(${Aria2Net_test}
     PRIVATE
-        GTest::gtest_main
+        gtest gmock gtest_main gmock_main
         spdlog::spdlog
         nlohmann_json::nlohmann_json
         CURL::libcurl
