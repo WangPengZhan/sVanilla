@@ -12,104 +12,103 @@
 
 #include <sqlite3.h>
 
-#include "SQLite/SQLiteDatabase.h"
-#include "SQLite/SQLiteUtility.h"
+#include "Sqlite/SQLiteDatabase.h"
+#include "Sqlite/SQLiteUtility.h"
 #include "Sqlite/AbstractTable.h"
 
 namespace SQLite
 {
 
-    struct TestStruct
+struct TestStruct
+{
+    int nTestInt;
+    std::string strTest;
+    double dTest;
+    bool bTest;
+    std::vector<uint8_t> bBlob;
+
+    bool operator==(const TestStruct& other) const
     {
-        int nTestInt;
-        std::string strTest;
-        double dTest;
-        bool bTest;
-        std::vector<uint8_t> bBlob;
+        return nTestInt == other.nTestInt && strTest == other.strTest && dTest == other.dTest && bTest == other.bTest && bBlob == other.bBlob;
+    }
+};
 
-        bool operator==(const TestStruct &other) const
-        {
-            return nTestInt == other.nTestInt && strTest == other.strTest && dTest == other.dTest && bTest == other.bTest && bBlob == other.bBlob;
-        }
-    };
-
-    class TestTable : public AbstractTable
+class TestTable : public AbstractTable
+{
+public:
+    TestTable(SQLiteDatabase& db, const std::string& nameTable) : AbstractTable(db, nameTable)
     {
-    public:
-        TestTable(SQLiteDatabase &db, const std::string &nameTable)
-            : AbstractTable(db, nameTable)
+        setHeaders(m_testHeader);
+        setPrimary({"FieldInteger"});
+    }
+
+    void bind(TestStruct* test)
+    {
+        int col = 1;
+        m_db.bind(col++, sqliteType(Integer), sqlite_int64(test->nTestInt));
+        m_db.bind(col++, sqliteType(Text), test->strTest);
+        m_db.bind(col++, sqliteType(Double), test->dTest);
+        m_db.bind(col++, sqliteType(Boolean), test->bTest);
+        m_db.bind(col++, sqliteType(Blob), std::string((const char*)test->bBlob.data(), test->bBlob.size()));
+    }
+
+    void value(TestStruct* test)
+    {
+        int col = 0;
+        test->nTestInt = std::any_cast<sqlite_int64>(m_db.value(col++));
+        test->strTest = std::any_cast<std::string>(m_db.value(col++));
+        test->dTest = std::any_cast<double>(m_db.value(col++));
+        test->bTest = std::any_cast<sqlite_int64>(m_db.value(col++));
+        std::string buff = std::any_cast<std::string>(m_db.value(col++));
+        test->bBlob.resize(buff.size());
+        memcpy(test->bBlob.data(), buff.data(), buff.size());
+    }
+
+    void initTable() override
+    {
+        m_db.execute(createTableSql());
+    }
+
+    void insert(const std::vector<TestStruct>& datas)
+    {
+        m_db.transaction();
+        m_db.prepare(createTableInsertSql());
+
+        for (auto& data : datas)
         {
-            setHeaders(m_testHeader);
-            setPrimary({"FieldInteger"});
+            bind((TestStruct*)(&data));
+            m_db.next();
+            m_db.reset();
         }
+        m_db.commit();
+    }
 
-        void bind(TestStruct *test)
+    void read(std::vector<TestStruct>& datas)
+    {
+        TestStruct data;
+
+        m_db.prepare(createTableSelectAllSql());
+
+        while (m_db.next() != SQLiteDatabase::Done)
         {
-            int col = 1;
-            m_db.bind(col++, sqliteType(Integer), sqlite_int64(test->nTestInt));
-            m_db.bind(col++, sqliteType(Text), test->strTest);
-            m_db.bind(col++, sqliteType(Double), test->dTest);
-            m_db.bind(col++, sqliteType(Boolean), test->bTest);
-            m_db.bind(col++, sqliteType(Blob), std::string((const char *)test->bBlob.data(), test->bBlob.size()));
+            value(&data);
+            datas.emplace_back(data);
         }
+    }
 
-        void value(TestStruct *test)
-        {
-            int col = 0;
-            test->nTestInt = std::any_cast<sqlite_int64>(m_db.value(col++));
-            test->strTest = std::any_cast<std::string>(m_db.value(col++));
-            test->dTest = std::any_cast<double>(m_db.value(col++));
-            test->bTest = std::any_cast<sqlite_int64>(m_db.value(col++));
-            std::string buff = std::any_cast<std::string>(m_db.value(col++));
-            test->bBlob.resize(buff.size());
-            memcpy(test->bBlob.data(), buff.data(), buff.size());
-        }
+private:
+    static HeadType m_testHeader;
+};
 
-        void initTable() override
-        {
-            m_db.execute(createTableSql());
-        }
+TestTable::HeadType TestTable::m_testHeader = {
+    {"FieldInteger", Integer},
+    {"FieldText",    Text   },
+    {"FieldDouble",  Double },
+    {"FieldBoolean", Boolean},
+    {"FieldBlob",    Blob   },
+};
 
-        void insert(const std::vector<TestStruct> &datas)
-        {
-            m_db.transaction();
-            m_db.prepare(createTableInsertSql());
-
-            for (auto &data : datas)
-            {
-                bind((TestStruct *)(&data));
-                m_db.next();
-                m_db.reset();
-            }
-            m_db.commit();
-        }
-
-        void read(std::vector<TestStruct> &datas)
-        {
-            TestStruct data;
-
-            m_db.prepare(createTableSelectAllSql());
-
-            while (m_db.next() != SQLiteDatabase::Done)
-            {
-                value(&data);
-                datas.emplace_back(data);
-            }
-        }
-
-    private:
-        static HeadType m_testHeader;
-    };
-
-    TestTable::HeadType TestTable::m_testHeader = {
-        {"FieldInteger", Integer},
-        {"FieldText", Text},
-        {"FieldDouble", Double},
-        {"FieldBoolean", Boolean},
-        {"FieldBlob", Blob},
-    };
-
-} // namespace SQLite
+}  // namespace SQLite
 
 TEST(SQLiteDatabaseTest, Open)
 {
