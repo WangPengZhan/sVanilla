@@ -631,8 +631,8 @@ using AriaShutdown = AriaBasicJson<std::string>;
 class AriaVersionResult : public Protocol
 {
 public:
-    std::string enabledFeatures;
-    std::list<AriaResultServer> servers;
+    std::list<std::string> enabledFeatures;
+    std::string version;
 
     std::string toString() const override
     {
@@ -641,7 +641,7 @@ public:
         return json.dump();
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaVersionResult, enabledFeatures, servers)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaVersionResult, enabledFeatures, version)
 };
 using AriaVersion = AriaBasicJson<AriaVersionResult>;
 
