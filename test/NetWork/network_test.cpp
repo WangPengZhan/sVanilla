@@ -10,7 +10,7 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/async.h>
 
-#include "Network/CNetwork.h"
+#include "NetWork/CNetwork.h"
 
 TEST(Network_Test, HttpGet)
 {
