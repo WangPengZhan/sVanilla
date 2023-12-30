@@ -62,15 +62,6 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
 
-      - name: Configure and Build Project
-        shell: cmd
-        run: |
-          qmake --version
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.config.platform}}
-          qmake -r -spec win32-msvc CONFIG-=debug CONFIG+=release %GITHUB_WORKSPACE%\vnote.pro
-          ${{runner.temp}}\jom\jom
-        working-directory: ${{runner.workspace}}/build
-
       - name:  Build Project
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all --
         
