@@ -23,7 +23,7 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 
     // 从 "DbgHelp.dll" 库中获取 "MiniDumpWriteDump" 函数
     MiniDumpWriteDumpT pfnMiniDumpWriteDump = nullptr;
-    HMODULE hDbgHelp = LoadLibrary(LPCSTR(L"DbgHelp.dll"));
+    HMODULE hDbgHelp = LoadLibrary(LPWSTR(L"DbgHelp.dll"));
     if (nullptr == hDbgHelp)
     {
         return EXCEPTION_CONTINUE_EXECUTION;
@@ -48,9 +48,9 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
     std::wstring appName = QApplication::applicationName().toStdWString();
     SYSTEMTIME stLocalTime;
     ::GetLocalTime(&stLocalTime);
-    ::wsprintf(LPSTR(szFileName), LPCSTR(L"%s%s-%04d%02d%02d-%02d%02d%02d.dmp"), dirPath.toStdWString().c_str(), appName.c_str(), stLocalTime.wYear,
+    ::wsprintf(LPWSTR(szFileName), LPCWSTR(L"%s%s-%04d%02d%02d-%02d%02d%02d.dmp"), dirPath.toStdWString().c_str(), appName.c_str(), stLocalTime.wYear,
                stLocalTime.wMonth, stLocalTime.wDay, stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
-    HANDLE hDumpFile = ::CreateFile(LPCSTR(szFileName), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+    HANDLE hDumpFile = ::CreateFile(LPCWSTR(szFileName), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
     if (INVALID_HANDLE_VALUE == hDumpFile)
     {
         ::FreeLibrary(hDbgHelp);
