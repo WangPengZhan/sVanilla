@@ -58,7 +58,7 @@ jobs:
           version: ${{ matrix.qt }}
           target: desktop
           modules:  ${{ matrix.qt_modules }}
-          cached: true
+          cached: 'true'
           setup-python: 'false'
 
       - name: Configure CMake
