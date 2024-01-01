@@ -22,7 +22,7 @@ jobs:
         c_compiler: [clang]
         cpp_compiler: [clang++]
         qt: [5.15.2]
-        qt_modules: [qtpdf qtimageformats]
+        qt_modules: [qtwebengine]
 
     steps:
       - uses: actions/checkout@v2
