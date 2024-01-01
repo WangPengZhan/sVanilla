@@ -138,8 +138,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 #         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 # )
 
-include(cmake/qtdeploy.cmake)
-deployqt(${PROJECT_NAME})
+# include(cmake/qtdeploy.cmake)
+# deployqt(${PROJECT_NAME})
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
