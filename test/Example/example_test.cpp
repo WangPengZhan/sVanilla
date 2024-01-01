@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     server.startServerAsync();
 
     auto biliClient = BilibiliClient::globalClient();
-    std::string bvid = "BV1zv4y1T7NT";
+    std::string bvid = "BV1pc41127hu";
 
     VideoView videoView = biliClient.GetVideoView(bvid);
     PlayUrl playUrl = biliClient.GetPlayUrl(videoView.cid, 125, videoView.bvid);
@@ -65,6 +65,8 @@ int main(int argc, char* argv[])
     auto ariaAddUriVideo = ariaClient.AddUriAsync(video_urls, ariaSendOption);
     ariaSendOption.out = (bvid + ".mp3");
     auto ariaAddUriAudio = ariaClient.AddUriAsync(audio_urls, ariaSendOption);
+    
+    //auto ariaAddUriVideo = ariaClient.AddUriAsync({"https://dldir1.qq.com/qqfile/qq/PCQQ9.7.1/QQ9.7.1.28940.exe"}, ariaSendOption);
 
     auto future = std::async(std::launch::async, [&, ariaAddUriVideo, ariaAddUriAudio]() {
         bool videoOk = false, audioOk = false;

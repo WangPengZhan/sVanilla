@@ -142,6 +142,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
     curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
     curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     CURLcode retCode = curl_easy_perform(curlHandle.get());
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);

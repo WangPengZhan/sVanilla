@@ -130,13 +130,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
 # add_dependencies(${PROJECT_NAME} SARibbonBar)
 
-# add_custom_command(TARGET ${PROJECT_NAME}
-#     POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tools $<TARGET_FILE_DIR:${PROJECT_NAME}>
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-# )
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tools $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
 
 # include(cmake/qtdeploy.cmake)
 # deployqt(${PROJECT_NAME})
