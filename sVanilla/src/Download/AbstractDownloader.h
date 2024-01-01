@@ -1,8 +1,4 @@
-
-#include <thread>
-#include <unordered_map>
-#include <mutex>
-#include <atomic>
+#pragma once
 
 namespace download
 {

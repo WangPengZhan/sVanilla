@@ -1,5 +1,7 @@
 #pragma once
 #include <unordered_map>
+#include <string>
+#include <vector>
 
 #include "Sqlite/SQLiteDatabase.h"
 
@@ -46,6 +48,5 @@ protected:
     HeadType m_headers;
     std::vector<std::string> m_primary;
 };
-
 
 }  // namespace SQLite

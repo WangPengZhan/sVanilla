@@ -1,7 +1,8 @@
 #pragma once
+#include <vector>
+#include <list>
 
 #include <nlohmann/json.hpp>
-#include <vector>
 
 namespace aria2net
 {
@@ -48,8 +49,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaUri, status, uri)
 };
 
-template <typename Result> 
-class AriaBasicJson : public Protocol
+template <typename Result> class AriaBasicJson : public Protocol
 {
 public:
     std::string id;
@@ -775,8 +775,8 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaTellStatusResult, bitfield, completedLength, connections, dir, downloadSpeed, errorCode, errorMessage, files, gid,
-                                   numPieces, pieceLength, status, totalLength, uploadLength, uploadSpeed)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaTellStatusResult, bitfield, completedLength, connections, dir, downloadSpeed, errorCode, errorMessage,
+                                                files, gid, numPieces, pieceLength, status, totalLength, uploadLength, uploadSpeed)
 };
 
 using AriaTellStatusList = AriaBasicJson<std::list<AriaTellStatusResult>>;

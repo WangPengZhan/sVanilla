@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "DownloadStatusThread.h"
 #include "AbstractDownloader.h"
 

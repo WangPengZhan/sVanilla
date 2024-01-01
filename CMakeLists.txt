@@ -25,6 +25,7 @@ add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/Gm->) #高版本已被废弃，�
 cmake_host_system_information(RESULT CPU_NUMBER_OF_LOGICAL_CORES QUERY NUMBER_OF_LOGICAL_CORES)
 add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP${CPU_NUMBER_OF_LOGICAL_CORES}>)
 
+add_compile_definitions(UNICODE)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -137,8 +138,10 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
 
+
 include(cmake/qtdeploy.cmake)
 deployqt(${PROJECT_NAME})
+
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)

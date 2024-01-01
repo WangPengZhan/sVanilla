@@ -4,8 +4,6 @@
 #include <map>
 #include <any>
 
-#include <gtest/gtest.h>
-
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/async.h>
@@ -19,11 +17,10 @@
 #include "BiliApi/BiliApi.h"
 #include "FFmpeg/FFmpegHelper.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     spdlog::rotating_logger_mt<spdlog::async_factory>("Aria2Net", "log/Aria2Net.log", 1024 * 1024 * 10, 100);
     spdlog::rotating_logger_mt<spdlog::async_factory>("Network", "log/Network.log", 1024 * 1024 * 10, 100);
-
 
     using namespace aria2net;
     using namespace BiliApi;
@@ -35,7 +32,7 @@ int main(int argc, char *argv[])
     server.startServerAsync();
 
     auto biliClient = BilibiliClient::globalClient();
-    std::string bvid = "BV1zv4y1T7NT";
+    std::string bvid = "BV1pc41127hu";
 
     VideoView videoView = biliClient.GetVideoView(bvid);
     PlayUrl playUrl = biliClient.GetPlayUrl(videoView.cid, 125, videoView.bvid);
@@ -43,12 +40,12 @@ int main(int argc, char *argv[])
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
     auto videos = playUrl.dash.video;
-    for (const auto &video : videos)
+    for (const auto& video : videos)
     {
         video_urls.push_back(video.base_url);
     }
     auto audioes = playUrl.dash.audio;
-    for (const auto &audio : audioes)
+    for (const auto& audio : audioes)
     {
         audio_urls.push_back(audio.base_url);
     }
@@ -64,13 +61,14 @@ int main(int argc, char *argv[])
     ariaSendOption.dir = dirPath.toLocal8Bit().toStdString();
     ariaSendOption.out = (bvid + ".mp4");
 
-    AriaClient &ariaClient = AriaClient::globalClient();
+    AriaClient& ariaClient = AriaClient::globalClient();
     auto ariaAddUriVideo = ariaClient.AddUriAsync(video_urls, ariaSendOption);
     ariaSendOption.out = (bvid + ".mp3");
     auto ariaAddUriAudio = ariaClient.AddUriAsync(audio_urls, ariaSendOption);
+    
+    //auto ariaAddUriVideo = ariaClient.AddUriAsync({"https://dldir1.qq.com/qqfile/qq/PCQQ9.7.1/QQ9.7.1.28940.exe"}, ariaSendOption);
 
-    auto future = std::async(std::launch::async, [&, ariaAddUriVideo, ariaAddUriAudio]()
-                             {
+    auto future = std::async(std::launch::async, [&, ariaAddUriVideo, ariaAddUriAudio]() {
         bool videoOk = false, audioOk = false;
         while (true)
         {
@@ -92,14 +90,14 @@ int main(int argc, char *argv[])
             if (audioOk && videoOk)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                FFmpegHelper::megerVideo({ dirPath.toStdString() + "/" + bvid + ".mp3",
-                    dirPath.toStdString() + "/" + bvid + ".mp4",
-                    dirPath.toStdString() + "/" + bvid + "all.mp4" });
+                FFmpegHelper::megerVideo(
+                    {dirPath.toStdString() + "/" + bvid + ".mp3", dirPath.toStdString() + "/" + bvid + ".mp4", dirPath.toStdString() + "/" + bvid + "all.mp4"});
                 break;
             }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        } });
+        }
+    });
 
     future.get();
 

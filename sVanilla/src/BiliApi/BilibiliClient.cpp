@@ -1,9 +1,11 @@
 #include <QApplication>
 #include <QFile>
 
+#include <fstream>
+
 #include "BilibiliClient.h"
 #include "Logger/Logger.h"
-#include "util/JsonProcess.h"
+#include "Util/JsonProcess.h"
 
 namespace BiliApi
 {
@@ -99,13 +101,14 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     {
         return json;
     }
-
+    std::ofstream stream("response.json", std::ios_base::out | std::ios_base::app);
+    stream << json;
+    stream.flush();
+    stream.close();
     return json["data"];
 }
 
-BilibiliClient::BilibiliClient()
-    : CNetWork()
-    , m_logined(false)
+BilibiliClient::BilibiliClient() : CNetWork(), m_logined(false)
 {
     std::string origin = "origin: ";
     AppendHeaders(origin + mainUrl);

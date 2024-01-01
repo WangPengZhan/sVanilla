@@ -1,8 +1,9 @@
-
+#pragma once
 #include <thread>
 #include <unordered_map>
 #include <mutex>
 #include <atomic>
+#include <string>
 
 class AbstractDownloader;
 

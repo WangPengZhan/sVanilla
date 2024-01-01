@@ -235,9 +235,6 @@ AriaChangePosition AriaClient::ChangePositionAsync(const std::string& gid, int p
 AriaAddUri AriaClient::AddUriAsync(ListString uris, AriaSendOption option, int position)
 {
     AriaSendData ariaSend;
-
-    ariaSend.id = GetGuid();
-
     ariaSend.id = GetGuid();
     ariaSend.jsonrpc = JSONRPC;
     ariaSend.method = "aria2.addUri";

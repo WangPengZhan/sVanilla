@@ -1,10 +1,12 @@
-#include <minizip/unzip.h>
-#include <minizip/zip.h>
+#include <unzip.h>
+#include <zip.h>
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <list>
+#include <cstring>
 
 #include "Zipper.h"
 
