@@ -4,7 +4,6 @@ file(GLOB_RECURSE TESTED_SOURCES LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_D
 set(SOURCES ${TEST_SOURCES} ${TESTED_SOURCES})
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
 
 add_executable(${SQLite_test} ${SOURCES})
 add_test(NAME ${SQLite_test} COMMAND ${SQLite_test})
@@ -13,6 +12,6 @@ add_dependencies(${SQLite_test} GTest::gtest_main)
 target_link_libraries(${SQLite_test}
     PRIVATE
         GTest::gtest_main
-        spdlog::spdlog
+        spdlog
         unofficial::sqlite3::sqlite3
 )

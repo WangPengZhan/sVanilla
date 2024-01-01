@@ -12,7 +12,6 @@ set(QT_COMPONENTS
     Network
 )
 
-find_package(spdlog CONFIG REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 
@@ -27,6 +26,6 @@ endforeach ()
 target_link_libraries(${TheadPool_test}
     PRIVATE
         GTest::gtest_main
-        spdlog::spdlog
+        spdlog
         ${QT_LIBS}
 )

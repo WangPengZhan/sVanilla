@@ -6,8 +6,6 @@ set(SOURCES ${TEST_SOURCES} ${TESTED_SOURCES})
 set(CMAKE_AUTOMOC ON)
 
 
-find_package(spdlog CONFIG REQUIRED)
-
 
 add_executable(${NetWork_test} ${SOURCES})
 add_test(NAME ${NetWork_test} COMMAND ${NetWork_test})
