@@ -20,7 +20,7 @@ public:
     };
 
     explicit TipDialog(QWidget* parent = nullptr);
-    ~TipDialog() override;
+    ~TipDialog();
 
 private:
     void SetUi();

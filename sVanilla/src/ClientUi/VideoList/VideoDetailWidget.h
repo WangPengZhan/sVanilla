@@ -13,7 +13,7 @@ class VideoDetailWidget : public QDialog
 
 public:
     explicit VideoDetailWidget(QWidget* parent = nullptr);
-    ~VideoDetailWidget() override;
+    ~VideoDetailWidget();
 
 private:
     void SetUi();

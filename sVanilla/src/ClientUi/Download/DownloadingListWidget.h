@@ -13,7 +13,7 @@ class DownloadingItemWidget : public QWidget
 
 public:
     explicit DownloadingItemWidget(QWidget* parent = nullptr);
-    ~DownloadingItemWidget() override;
+    ~DownloadingItemWidget();
 
 private:
     void SetUi();
@@ -29,5 +29,5 @@ class DownloadingListWidget : public QListWidget
 
 public:
     explicit DownloadingListWidget(QWidget* parent = nullptr);
-    ~DownloadingListWidget() override;
+    ~DownloadingListWidget();
 };

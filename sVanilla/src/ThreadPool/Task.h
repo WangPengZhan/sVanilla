@@ -18,14 +18,11 @@ class SignalReturnTask : public QObject, public Task
 {
     Q_OBJECT
 public:
-    explicit SignalReturnTask(QObject* parent = nullptr)
-        : QObject(parent)
+    explicit SignalReturnTask(QObject* parent = nullptr) : QObject(parent)
     {
     }
-    ~SignalReturnTask() override = default;
+    ~SignalReturnTask() = default;
 
-
-    
 signals:
     void result(const std::any& ret);
 };

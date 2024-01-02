@@ -14,7 +14,7 @@ class VideoListItemWidget : public QWidget
 
 public:
     explicit VideoListItemWidget(QWidget* parent = nullptr);
-    ~VideoListItemWidget() override;
+    ~VideoListItemWidget();
 
 private:
     void SetUi();
@@ -30,5 +30,5 @@ class VideoListWidget : public QListWidget
 
 public:
     explicit VideoListWidget(QWidget* parent = nullptr);
-    ~VideoListWidget() override;
+    ~VideoListWidget();
 };

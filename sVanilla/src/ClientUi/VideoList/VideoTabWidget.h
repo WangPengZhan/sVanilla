@@ -13,7 +13,7 @@ class VideoTabItemWidget : public QWidget
 
 public:
     explicit VideoTabItemWidget(QWidget* parent = nullptr);
-    ~VideoTabItemWidget() override;
+    ~VideoTabItemWidget();
 
 private:
     void SetUi();

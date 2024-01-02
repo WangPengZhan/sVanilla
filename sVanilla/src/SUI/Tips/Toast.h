@@ -20,7 +20,7 @@ public:
     };
 
     explicit Toast(QWidget* parent = nullptr);
-    ~Toast() override;
+    ~Toast();
 
 private:
     void SetUi();
