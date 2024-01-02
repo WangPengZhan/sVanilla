@@ -12,8 +12,8 @@ namespace BiliApi
 
 BilibiliClient& BilibiliClient::globalClient()
 {
-    static BilibiliClient bilibilClient;
-    return bilibilClient;
+    static BilibiliClient bilibiliClient;
+    return bilibiliClient;
 }
 
 VideoView BilibiliClient::GetVideoView(const std::string& bvid)

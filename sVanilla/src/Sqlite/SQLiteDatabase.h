@@ -48,8 +48,8 @@ public:
     std::any value(int index) const;
     bool bind(int index, int type, const std::any& value);
 
-    std::any value(int index, SQLiteStmtPtr stmt) const;
-    bool bind(int index, int type, const std::any& value, SQLiteStmtPtr stmt);
+    static std::any value(int index, SQLiteStmtPtr stmt) ;
+    static bool bind(int index, int type, const std::any& value, SQLiteStmtPtr stmt);
 
     std::string lastError() const;
 

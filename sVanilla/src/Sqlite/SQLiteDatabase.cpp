@@ -301,13 +301,13 @@ std::any SQLiteDatabase::value(int index) const
     if (m_stmt == nullptr)
     {
         SQLITE_LOG_WARN("stmt is nullptr");
-        return std::any();
+        return {};
     }
 
     if (index >= sqlite3_data_count(m_stmt))
     {
         SQLITE_LOG_WARN("value index out of range: {}", index);
-        return std::any();
+        return {};
     }
 
     const int type = sqlite3_column_type(m_stmt, index);
@@ -383,7 +383,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
             SQLITE_LOG_WARN("bind value is {}", result);
         }
         break;
-    };
+    }
     case SQLITE_FLOAT:
     {
         nRet = sqlite3_bind_double(m_stmt, index, std::any_cast<double>(value));
@@ -391,7 +391,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     }
     case SQLITE_BLOB:
     {
-        std::string str = std::any_cast<std::string>(value);
+        auto str = std::any_cast<std::string>(value);
         nRet = sqlite3_bind_blob(m_stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT);
         break;
     }
@@ -410,20 +410,20 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     return nRet == SQLITE_OK;
 }
 
-std::any SQLiteDatabase::value(int index, SQLiteStmtPtr stmt) const
+std::any SQLiteDatabase::value(int index, SQLiteStmtPtr stmt)
 {
     assert(index >= 0);
 
     if (stmt.get() == nullptr)
     {
         SQLITE_LOG_WARN("stmt is nullptr");
-        return std::any();
+        return {};
     }
 
     if (index >= sqlite3_data_count(stmt.get()))
     {
         SQLITE_LOG_WARN("value index out of range: {}", index);
-        return std::any();
+        return {};
     }
 
     const int type = sqlite3_column_type(stmt.get(), index);
@@ -488,7 +488,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStm
     {
         nRet = sqlite3_bind_int64(stmt.get(), index, std::any_cast<sqlite_int64>(value));
         break;
-    };
+    }
     case SQLITE_FLOAT:
     {
         nRet = sqlite3_bind_double(stmt.get(), index, std::any_cast<double>(value));
@@ -496,7 +496,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStm
     }
     case SQLITE_BLOB:
     {
-        std::string str = std::any_cast<std::string>(value);
+        auto str = std::any_cast<std::string>(value);
         nRet = sqlite3_bind_blob(stmt.get(), index, str.c_str(), str.size(), SQLITE_TRANSIENT);
         break;
     }

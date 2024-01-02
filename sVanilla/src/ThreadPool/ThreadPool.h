@@ -70,7 +70,7 @@ std::future<void> ThreadPool::enqueue(T* pTask)
 {
     auto task = [pTask]() {
         pTask->Run();
-        pTask->Destory();
+        pTask->Destroy();
     };
     return enqueue(task);
 }

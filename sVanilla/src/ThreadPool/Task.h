@@ -8,7 +8,7 @@ class Task
 public:
     virtual ~Task() = default;
     virtual void Run() = 0;
-    virtual void Destory()
+    virtual void Destroy()
     {
         delete this;
     }
@@ -18,14 +18,11 @@ class SignalReturnTask : public QObject, public Task
 {
     Q_OBJECT
 public:
-    SignalReturnTask(QObject* parent = nullptr)
-        : QObject(parent)
+    explicit SignalReturnTask(QObject* parent = nullptr) : QObject(parent)
     {
     }
     ~SignalReturnTask() = default;
 
-
-    
 signals:
     void result(const std::any& ret);
 };

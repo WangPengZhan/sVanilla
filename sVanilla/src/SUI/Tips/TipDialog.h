@@ -5,7 +5,7 @@
 namespace Ui
 {
 class TipDialog;
-};
+}
 
 class TipDialog : public QDialog
 {
@@ -19,7 +19,7 @@ public:
         Error,
     };
 
-    TipDialog(QWidget* parent = nullptr);
+    explicit TipDialog(QWidget* parent = nullptr);
     ~TipDialog();
 
 private:

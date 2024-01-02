@@ -208,3 +208,6 @@ UseTab:    Never
 
 IncludeBlocks: Preserve 
 FixNamespaceComments: true
+BreakConstructorInitializers: BeforeComma
+BreakBeforeTernaryOperators: true
+AllowShortLambdasOnASingleLine: Empty

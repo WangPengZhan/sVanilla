@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <list>
+#include <utility>
 #include <cstring>
 
 #include "Zipper.h"
@@ -37,17 +38,17 @@ void ResourceHelper::addFn(const std::function<void(void)>& fn)
     m_fns.push_back(fn);
 }
 
-Zipper::Zipper(const std::vector<std::string>& vectZipFiles, const std::string& strOutputFileName)
-    : m_vectZipFiles(vectZipFiles), m_strOutputFileName(strOutputFileName)
+Zipper::Zipper(const std::vector<std::string>& vectZipFiles, std::string strOutputFileName)
+    : m_vectZipFiles(vectZipFiles), m_strOutputFileName(std::move(strOutputFileName))
 {
 }
 
-Zipper::Zipper(const std::string& strZipPath, const std::string& strOutputFileName, const std::string& strRelativePath)
-    : m_strZipPath(strZipPath), m_strOutputFileName(strOutputFileName), m_strRelativePath(strRelativePath)
+Zipper::Zipper(std::string strZipPath, std::string strOutputFileName, std::string strRelativePath)
+    : m_strZipPath(std::move(strZipPath)), m_strOutputFileName(std::move(strOutputFileName)), m_strRelativePath(std::move(strRelativePath))
 {
 }
 
-void Zipper::setZipFiles(const std::vector<std::string> vectImportFiles)
+void Zipper::setZipFiles(const std::vector<std::string>& vectImportFiles)
 {
     m_strZipPath.clear();
     m_strRelativePath.clear();
@@ -59,7 +60,7 @@ const std::vector<std::string>& Zipper::zipFiles() const
     return m_vectZipFiles;
 }
 
-void Zipper::setZipPath(const std::string strZipPath)
+void Zipper::setZipPath(const std::string& strZipPath)
 {
     m_strZipPath = strZipPath;
 }
@@ -93,7 +94,7 @@ bool Zipper::zip()
         return false;
     }
 
-    ResourceHelper resurceHelper([zFile]() { zipClose(zFile, NULL); });
+    ResourceHelper resurceHelper([zFile]() { zipClose(zFile, nullptr); });
 
     return collectFileInDirToZip(zFile, m_strZipPath, m_strZipPath);
 }
@@ -120,7 +121,7 @@ bool Zipper::addFileToZip(zipFile zfile, const std::string& fileNameinZip, const
         strFileName += "/";
     }
 
-    int nErr = zipOpenNewFileInZip(zfile, strFileName.c_str(), &zinfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+    int nErr = zipOpenNewFileInZip(zfile, strFileName.c_str(), &zinfo, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
     if (nErr != ZIP_OK)
     {
         return false;
@@ -159,7 +160,7 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
         return false;
     }
 
-    std::filesystem::path filePath = filePath;
+    const std::filesystem::path& filePath = filePath;
     if (parentdirName.empty())
     {
         std::filesystem::current_path(filePath.parent_path());
@@ -186,7 +187,7 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
     return true;
 }
 
-Unzipper::Unzipper(const std::string& strUnzipperFile, const std::string& strPath) : m_strUnzippedFile(strUnzipperFile), m_strOutputPath(strPath)
+Unzipper::Unzipper(std::string strUnzipperFile, std::string strPath) : m_strUnzippedFile(std::move(strUnzipperFile)), m_strOutputPath(std::move(strPath))
 {
 }
 
@@ -238,7 +239,7 @@ bool Unzipper::unzip()
     resource.addFn([unzfile]() { unzCloseCurrentFile(unzfile); });
 
     // 获取zip文件的信息
-    unz_global_info* pGlobalInfo = new unz_global_info;
+    auto* pGlobalInfo = new unz_global_info;
     int nReturnValue = unzGetGlobalInfo(unzfile, pGlobalInfo);
     if (nReturnValue != UNZ_OK)
     {
@@ -247,7 +248,7 @@ bool Unzipper::unzip()
     resource.addFn([pGlobalInfo]() { delete pGlobalInfo; });
 
     // 解析zip文件
-    unz_file_info* pFileInfo = new unz_file_info;
+    auto* pFileInfo = new unz_file_info;
     char szZipFName[nMaxPath] = {0};
     char szExtraName[nMaxPath] = {0};
     char szCommName[nMaxPath] = {0};

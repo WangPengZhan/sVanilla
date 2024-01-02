@@ -19,8 +19,8 @@ public:
     FFmpegHelper();
     ~FFmpegHelper();
 
-    static void megerVideo(const MergeInfo& mergeInfo);
-    static void megerVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc);
+    static void mergeVideo(const MergeInfo& mergeInfo);
+    static void mergeVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc);
     static FFmpegHelper& globalInstance();
 
     void startFFpmegAsync(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc);

@@ -36,7 +36,7 @@ void AriaServer::startServerAsync()
                                                    << "--rpc-listen-all=true"
                                                    << "--rpc-allow-origin-all=true"
                                                    << "--rpc-listen-port=6800"
-                                                   << "--rpc-secret=sVanila"
+                                                   << "--rpc-secret=sVanilla"
                                                    << "--input-file=" + sessionFile << "--save-session=" + sessionFile << "--save-session-interval=30"
                                                    << "--log=" + logFile << "--log-level=debug"
                                                    << "--max-concurrent-downloads=3"

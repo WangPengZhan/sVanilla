@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
             if (audioOk && videoOk)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                FFmpegHelper::megerVideo(
+                FFmpegHelper::mergeVideo(
                     {dirPath.toStdString() + "/" + bvid + ".mp3", dirPath.toStdString() + "/" + bvid + ".mp4", dirPath.toStdString() + "/" + bvid + "all.mp4"});
                 break;
             }

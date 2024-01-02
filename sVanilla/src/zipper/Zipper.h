@@ -26,14 +26,14 @@ class Zipper
 {
 public:
     Zipper() = default;
-    Zipper(const std::vector<std::string>& vectZipFiles, const std::string& strOutputFileName);
-    Zipper(const std::string& strZipPath, const std::string& strOutputFileName, const std::string& strRelativePath = "");
+    Zipper(const std::vector<std::string>& vectZipFiles, std::string  strOutputFileName);
+    Zipper(std::string  strZipPath, std::string  strOutputFileName, std::string  strRelativePath = "");
     ~Zipper() = default;
 
-    void setZipFiles(const std::vector<std::string> vectImportFiles);
+    void setZipFiles(const std::vector<std::string>& vectImportFiles);
     const std::vector<std::string>& zipFiles() const;
 
-    void setZipPath(const std::string strZipPath);
+    void setZipPath(const std::string& strZipPath);
     const std::string& zipPath() const;
 
     void setOutputFileName(const std::string& filename);
@@ -55,7 +55,7 @@ class Unzipper
 {
 public:
     Unzipper() = default;
-    Unzipper(const std::string& strUnzipperFile, const std::string& strPath);
+    Unzipper(std::string  strUnzipperFile, std::string  strPath);
     ~Unzipper() = default;
 
     void setUnzippedFile(const std::string& strUnzippedFile);

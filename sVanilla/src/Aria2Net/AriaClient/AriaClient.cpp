@@ -6,12 +6,12 @@
 namespace aria2net
 {
 
-const std::string GetRpcUri(int listenPort)
+std::string GetRpcUri(int listenPort)
 {
     return QString("http://localhost:%1/jsonrpc").arg(listenPort).toStdString();
 }
 
-const std::string GetGuid()
+std::string GetGuid()
 {
     QUuid id = QUuid::createUuid();
     std::string strGuid = id.toString(QUuid::Id128).toStdString();
@@ -54,7 +54,7 @@ std::list<SystemMulticall> AriaClient::multicallAsync(const std::list<SystemMult
     ariaSend.method = "system.multicall";
     ariaSend.params[0] = systemMulticallMathods;
 
-    nlohmann::json jsonResult = GetResult<nlohmann::json>(ariaSend);
+    auto jsonResult = GetResult<nlohmann::json>(ariaSend);
     std::list<SystemMulticall> result;
     for (const auto& sigleJson : jsonResult)
     {
@@ -232,7 +232,7 @@ AriaChangePosition AriaClient::ChangePositionAsync(const std::string& gid, int p
     return GetResult<AriaChangePosition>(ariaSend);
 }
 
-AriaAddUri AriaClient::AddUriAsync(ListString uris, AriaSendOption option, int position)
+AriaAddUri AriaClient::AddUriAsync(const ListString& uris, AriaSendOption option, int position)
 {
     AriaSendData ariaSend;
     ariaSend.id = GetGuid();

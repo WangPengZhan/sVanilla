@@ -21,7 +21,7 @@ std::string AbstractTable::fieldType(FieldType eType)
         break;
     }
 
-    return std::string(" ");
+    return {" "};
 }
 
 int AbstractTable::sqliteType(FieldType eType)
@@ -69,7 +69,7 @@ void AbstractTable::setHeaders(const HeadType &headers)
 const AbstractTable::HeadType &AbstractTable::headers() const
 {
     return m_headers;
-};
+}
 
 void AbstractTable::setPrimary(const std::vector<std::string> &primary)
 {
@@ -85,7 +85,7 @@ std::string AbstractTable::createTableSql()
 {
     if (m_name.empty() || m_headers.empty() || m_primary.empty())
     {
-        return std::string();
+        return {};
     }
 
     std::string strSql = "CREATE TABLE IF NOT EXISTS " + m_name + "(";
@@ -113,7 +113,7 @@ std::string AbstractTable::createTableInsertSql()
 {
     if (m_name.empty() || m_headers.empty())
     {
-        return std::string();
+        return {};
     }
 
     std::string strSql = "INSERT INTO " + m_name + "(";
@@ -141,7 +141,7 @@ std::string AbstractTable::createTableSelectAllSql()
 {
     if (m_name.empty() || m_headers.empty() || m_primary.empty())
     {
-        return std::string();
+        return {};
     }
 
     return "SELECT * FROM " + m_name;

@@ -19,7 +19,7 @@ public:
         Error,
     };
 
-    Toast(QWidget* parent = nullptr);
+    explicit Toast(QWidget* parent = nullptr);
     ~Toast();
 
 private:

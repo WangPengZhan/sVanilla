@@ -27,5 +27,4 @@ VideoTabWidget::VideoTabWidget(QWidget* parent)
 }
 
 VideoTabWidget::~VideoTabWidget()
-{
-}
+= default;

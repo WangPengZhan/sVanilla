@@ -6,32 +6,31 @@
 #include <QDebug>
 #include <QProcess>
 #include <QString>
+#include <utility>
 
 #include "FFmpegHelper.h"
 #include "FFmpegLog.h"
 
 namespace ffmpeg
 {
-constexpr char ffmpegCommand[] = "-i \"%1\" -i \"%2\" -acodec copy -vcodec copy -f mp4 \"%3\"";
+constexpr char ffmpegCommand[] = R"(-i "%1" -i "%2" -acodec copy -vcodec copy -f mp4 "%3")";
 
 FFmpegHelper::FFmpegHelper()
-{
-}
+= default;
 
 FFmpegHelper::~FFmpegHelper()
 {
     closeFFmpeg();
 }
 
-void FFmpegHelper::megerVideo(const MergeInfo& mergeInfo)
+void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo)
 {
-    FFmpegHelper::megerVideo(
-        mergeInfo, [] {}, [] {});
+    FFmpegHelper::mergeVideo(mergeInfo, [] {}, [] {});
 }
 
-void FFmpegHelper::megerVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
+void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
 {
-    FFmpegHelper::globalInstance().startFFpmegAsync(mergeInfo, errorFunc, finishedFunc);
+    FFmpegHelper::globalInstance().startFFpmegAsync(mergeInfo, std::move(errorFunc), std::move(finishedFunc));
 }
 
 FFmpegHelper& FFmpegHelper::globalInstance()
