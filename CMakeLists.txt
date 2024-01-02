@@ -51,13 +51,13 @@ find_package(ZLIB)
 find_package(unofficial-breakpad CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
-find_package(spdlog CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
+  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
 )
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
@@ -74,7 +74,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
-# add_subdirectory(ThirdParty/SARibbon)
+add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 option(ENABLE_TEST "Enable Test" OFF)
 set(ENABLE_TEST ON)
@@ -110,12 +110,12 @@ target_link_libraries(${PROJECT_NAME}
         ${QT_LIBS}
         nlohmann_json::nlohmann_json
         CURL::libcurl
-        spdlog::spdlog
         unofficial::breakpad::libbreakpad
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
         QWindowKit::Widgets
         minizip
+        spdlog
 )
 
 
@@ -136,6 +136,7 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
 
 
@@ -153,4 +154,5 @@ install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL
 install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:QWindowKit::Widgets>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:QWindowKit::Core>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 

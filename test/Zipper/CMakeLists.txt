@@ -13,7 +13,6 @@ set(QT_COMPONENTS
     Network
 )
 
-find_package(spdlog CONFIG REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 
@@ -21,6 +20,15 @@ add_executable(${Zipper_test} ${SOURCES})
 add_test(NAME ${Zipper_test} COMMAND ${Zipper_test})
 add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
 add_dependencies(${Zipper_test} GTest::gtest_main)
+
+find_package(ZLIB)
+include_directories(${ZLIB_INCLUDE_DIR})
+link_directories(${ZLIB_LIB})
+message(STATUS "zlib include dir: ${ZLIB_LIB}")
+target_link_libraries(${Zipper_test}
+PRIVATE
+    ZLIB::ZLIB
+)
 
 foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})

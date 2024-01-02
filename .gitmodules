@@ -7,3 +7,6 @@
 [submodule "ThirdParty/qwindowkit"]
 	path = ThirdParty/qwindowkit
 	url = https://github.com/stdware/qwindowkit.git
+[submodule "ThirdParty/spdlog"]
+	path = ThirdParty/spdlog
+	url = https://github.com/gabime/spdlog.git
