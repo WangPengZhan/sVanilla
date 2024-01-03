@@ -277,4 +277,27 @@ std::string AriaClient::Request(const std::string& url, const std::string& param
     return strResponse;
 }
 
+std::string AriaClient::ConstructURL() const
+{
+    std::string const url = m_settings->readString("App", "RPCAddress");
+    std::string const port = m_settings->readString("App", "RPCPort");
+    return url + ":" + port + "/jsonrpc";
+}
+std::string AriaClient::GetToken() const
+{
+    return m_settings->readString("App", "TOKEN");
+}
+
+std::string AriaClient::ConstructSendData(const std::string& methodName, array params)
+{
+    AriaSendData data;
+    data.id = QUuid::createUuid().toString(QUuid::Id128).toStdString();
+    data.jsonrpc = "2.0";
+    data.method = "aria2." + std::string(methodName);
+    data.params.reserve(params.size() + 1);
+    data.params = std::move(params);
+    data.params.insert(data.params.begin(), "token:" + GetToken());
+    return Request(ConstructURL(), data.toString());
+}
+
 }  // namespace aria2net

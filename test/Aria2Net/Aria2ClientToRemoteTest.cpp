@@ -1,42 +1,59 @@
-
 #include <gmock/gmock.h>
-#include <Aria2ClientToRemoteTest.h>
-
+#include <Aria2Net/AriaClient/AriaClient.h>
 using namespace testing;
-
-
-
-
-TEST(GetRpcUri, GetRpcUri)
-{
-    EXPECT_EQ(GetRpcUri(), "http://10.0.2.122:6800/jsonrpc");
-}
+using namespace aria2net;
 
 
 
 class Aria2RemoteTesting : public Test
 {
 public:
-    Aria2RemoteTest& m_aria2RemoteTest = Aria2RemoteTest::globalClient();
+    AriaClient& ariaClient = AriaClient::globalClient();
+
+    void SetUp() override
+    {
+        ariaClient.m_settings = std::make_shared<Settings>("sVanilla.ini", Settings::IniFormat);
+        ariaClient.m_settings->write("App", "RPCAddress", "http://10.0.2.122");
+        ariaClient.m_settings->write("App", "RPCPort", "6800");
+        ariaClient.m_settings->write("App", "TOKEN", "");
+    }
+
+    void TearDown() override
+    {
+        ariaClient.m_settings->clear();
+    }
 };
-
-TEST_F(Aria2RemoteTesting, PrepareAriaSendData)
-{
-    auto ariaSendData = m_aria2RemoteTest.PrepareAriaSendData();
-    ASSERT_THAT(ariaSendData.id, Not(IsEmpty()));
-
-    std::list<std::string> paramList = {"token:password"};
-    ASSERT_THAT(ariaSendData.params, Eq(paramList));
-}
 
 TEST_F(Aria2RemoteTesting, GetAriaVersion)
 {
-    auto GetVersionResult = m_aria2RemoteTest.GetAriaVersionAsync();
-    ASSERT_THAT(GetVersionResult.result.version, Eq("1.36.0"));
+    auto const res = ariaClient.Call<AriaVersion>("getVersion", {});
+    qDebug() << res.result.version;
+    ASSERT_THAT(res.result.version, Eq("1.36.0"));
 }
 
-TEST_F(Aria2RemoteTesting, Request)
+TEST_F(Aria2RemoteTesting, AddSingleUri)
 {
-    std::string strResponse = m_aria2RemoteTest.Request(GetRpcUri(), "{\"jsonrpc\":\"2.0\",\"id\":\"c4a0e3a3-7e8a-4e4e-8e8a-4e4e7e8a4e4e\",\"method\":\"aria2.getVersion\",\"params\":[\"token:password\"]}");
-    ASSERT_THAT(strResponse, Eq("{\"id\":\"c4a0e3a3-7e8a-4e4e-8e8a-4e4e7e8a4e4e\",\"jsonrpc\":\"2.0\",\"result\":{\"enabledFeatures\":[\"Async DNS\",\"BitTorrent\",\"Firefox3 Cookie\",\"GZip\",\"HTTPS\",\"Message Digest\",\"Metalink\",\"XML-RPC\",\"libuv\"],\"version\":\"1.36.0\"}}"));
+    std::list<std::string> uris = {"https://filesamples.com/samples/video/mp4/sample_1280x720_surfing_with_audio.mp4"};
+    //    nlohmann::json params = uris;
+    AriaOption option;
+    auto const res = ariaClient.Call<AriaAddUri>("addUri", {uris, option, 1});
+    qDebug() << res.result;
+    ASSERT_THAT(res.result, Not(IsEmpty()));
+}
+
+TEST_F(Aria2RemoteTesting, AddMultipleUris)
+{
+    std::list<std::string> uris = {"https://filesamples.com/samples/video/mp4/sample_1280x720_surfing_with_audio.mp4",
+                                   "https://filesamples.com/samples/video/3gp/sample_1280x720_surfing_with_audio.3gp"};
+    AriaOption option;
+    auto const res = ariaClient.Call<AriaAddUri>("addUri", {uris, option, 1});
+    qDebug() << res.result;
+    ASSERT_THAT(res.result, Not(IsEmpty()));
+}
+
+TEST_F(Aria2RemoteTesting, GetGlobalOptionAsync)
+{
+    auto const res = ariaClient.Call<AriaGetOption>("getGlobalOption", {});
+    qDebug() << res.result.toString();
+    ASSERT_THAT(res.result.toString(), Not(IsEmpty()));
 }
