@@ -1,6 +1,7 @@
 #pragma once
 #include <QSettings>
 #include <QFileInfo>
+
 #include <shared_mutex>
 
 class CustomSettings
@@ -28,7 +29,9 @@ public:
         IniFormat,
         ConfFormat
     };
+
     explicit Settings(QString path, Format format);
+
     void write(const QString& group, const QString& key, const QVariant& value) const;
     [[nodiscard]] QVariant read(const QString& group, const QString& key) const;
     [[nodiscard]] std::string readString(const QString& group, const QString& key) const;

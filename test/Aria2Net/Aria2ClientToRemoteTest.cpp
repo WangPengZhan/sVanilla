@@ -1,5 +1,9 @@
 #include <gmock/gmock.h>
+
 #include <Aria2Net/AriaClient/AriaClient.h>
+
+#include <QDebug>
+
 using namespace testing;
 using namespace aria2net;
 
@@ -27,7 +31,7 @@ public:
 TEST_F(Aria2RemoteTesting, GetAriaVersion)
 {
     auto const res = ariaClient.Call<AriaVersion>("getVersion", {});
-    qDebug() << res.result.version;
+    qDebug() << res.result.version.c_str();
     ASSERT_THAT(res.result.version, Eq("1.36.0"));
 }
 
@@ -37,7 +41,7 @@ TEST_F(Aria2RemoteTesting, AddSingleUri)
     //    nlohmann::json params = uris;
     AriaOption option;
     auto const res = ariaClient.Call<AriaAddUri>("addUri", {uris, option, 1});
-    qDebug() << res.result;
+    qDebug() << res.result.c_str();
     ASSERT_THAT(res.result, Not(IsEmpty()));
 }
 
@@ -47,13 +51,13 @@ TEST_F(Aria2RemoteTesting, AddMultipleUris)
                                    "https://filesamples.com/samples/video/3gp/sample_1280x720_surfing_with_audio.3gp"};
     AriaOption option;
     auto const res = ariaClient.Call<AriaAddUri>("addUri", {uris, option, 1});
-    qDebug() << res.result;
+    qDebug() << res.result.c_str();
     ASSERT_THAT(res.result, Not(IsEmpty()));
 }
 
 TEST_F(Aria2RemoteTesting, GetGlobalOptionAsync)
 {
     auto const res = ariaClient.Call<AriaGetOption>("getGlobalOption", {});
-    qDebug() << res.result.toString();
+    qDebug() << res.result.toString().c_str();
     ASSERT_THAT(res.result.toString(), Not(IsEmpty()));
 }
