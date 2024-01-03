@@ -23,8 +23,6 @@ public:
     };
 
     using ListString = std::list<std::string>;
-    typedef nlohmann::json json;
-    typedef nlohmann::json::array_t array;
     AriaClient() = default;
     ~AriaClient() = default;
 
@@ -59,20 +57,22 @@ private:
     static constexpr char TOKEN[] = "sVanilla";
     [[nodiscard]] std::string ConstructURL() const;
     [[nodiscard]] std::string GetToken() const;
-    std::string ConstructSendData(const std::string& methodName, array params);
+    std::string ConstructSendData(std::string methodName, nlohmann::json::array_t params);
     std::string Request(const std::string& url, const std::string& params);
     template <typename Result> Result GetResult(const AriaSendData& sendData);
 
 public:
     std::shared_ptr<Settings> m_settings;
-    template <class Result> Result Call(const std::string& methodName, const array& params);
+    template <class Result> Result Call(std::string methodName, nlohmann::json::array_t params);
 };
-template <class Result> Result AriaClient::Call(const std::string& methodName, const array& params)
+
+template <class Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
 {
     std::string res = ConstructSendData(methodName, params);
-    json result = json::parse(res);
+    nlohmann::json result = nlohmann::json::parse(res);
     return Result(result);
 }
+
 template <typename Result> inline Result AriaClient::GetResult(const AriaSendData& sendData)
 {
     std::string strParams = sendData.toString();
