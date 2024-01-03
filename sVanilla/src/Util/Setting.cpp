@@ -1,3 +1,5 @@
+#include <QTextStream>
+#include <QMapIterator>
 #include "Setting.h"
 
 CustomSettings::CustomSettings(QSettings* settings) : m_settings(settings)
@@ -52,7 +54,8 @@ bool CustomSettings::readConfFile(QIODevice& device, QSettings::SettingsMap& map
     {
         if (QString line = stream.readLine().trimmed(); !line.isEmpty() && !line.startsWith("#"))
         {
-            QStringList parts = line.split("=");
+            QStringList parts;
+            parts = line.split("=");
             if (parts.size() == 2)
             {
                 QString key = parts[0].trimmed();
