@@ -27,9 +27,14 @@ VideoView BilibiliClient::GetVideoView(const std::string& bvid)
 PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
 {
     // "https://api.bilibili.com/x/player/playurl?cid=%s&qn=125&fourk=1&fnver=0&fnval=4048&bvid=%s";
-    std::string url = videoPlayUrl + std::string("?cid=") + std::to_string(cid) + "&qn=" + std::to_string(qn) + "&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
+    std::string url = videoPlayUrl + std::string("?from_client=BROWSER&fourk=1&fnver=0&fnval=4048&cid=") + 
+                      std::to_string(cid) + "&qn=" + std::to_string(qn) + "&from_client=BROWSER&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
     std::string response;
+    InitBiliDefaultHeaders();
     HttpGet(url, response);
+    curl_slist_free_all(m_headers);
+    m_headers = nullptr;
+    InitDefaultHeaders();
     return PlayUrl(GetDataFromRespones(response));
 }
 
@@ -77,6 +82,11 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& oauthKey)
         return {};
     }
     return LoginStatusScanning(json);
+}
+
+void BilibiliClient::InitBiliDefaultHeaders()
+{
+    m_headers = curl_slist_append(m_headers, "Referer: https://www.bilibili.com");
 }
 
 void BilibiliClient::SetLogined(bool logined)

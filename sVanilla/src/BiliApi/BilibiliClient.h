@@ -16,7 +16,7 @@ namespace BiliApi
 
 constexpr char const mainUrl[] = "https://www.bilibili.com/";
 constexpr char const videoViewUrl[] = "https://api.bilibili.com/x/web-interface/view";
-constexpr char const videoPlayUrl[] = "https://api.bilibili.com/x/player/playurl";
+constexpr char const videoPlayUrl[] = "https://api.bilibili.com/x/player/wbi/playurl";
 
 class BilibiliClient : public CNetWork
 {
@@ -30,6 +30,8 @@ public:
     PlayUrl GetPlayUrl(long long cid, long long qn, const std::string& bvid);
     LoginUrlOrigin GetLoginUrl();
     LoginStatusScanning GetLoginStatus(const std::string& oauthKey);
+
+    void InitBiliDefaultHeaders();
 
     void SetLogined(bool logined);
     bool GetLogined() const;

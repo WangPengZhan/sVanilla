@@ -28,7 +28,12 @@ void AriaServer::startServerAsync()
         QString sessionFile = ariaPath + "aira.session";
         QString logFile = ariaPath + "aira.log";
 
-        QDir airDir = QDir(ariaPath);
+        if (!QFile::exists(sessionFile))
+        {
+            QFile file(sessionFile);
+            file.open(QFile::WriteOnly);
+            file.close();
+        }
 
         // 设置启动的程序名和命令行参数
         m_aria2Process->setProgram(ariaExecutable);
@@ -66,7 +71,10 @@ void AriaServer::startServerAsync()
         if (!m_aria2Process->waitForStarted())
         {
             ARIA_LOG_INFO(fmt::format("error starting aria2 process: {}", m_aria2Process->errorString().toStdString()));
-
+            if (m_errorFunc)
+            {
+                m_errorFunc();
+            }
             return false;
         }
         else

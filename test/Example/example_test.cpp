@@ -32,10 +32,10 @@ int main(int argc, char* argv[])
     server.startServerAsync();
 
     auto biliClient = BilibiliClient::globalClient();
-    std::string bvid = "BV1pc41127hu";
+    std::string bvid = "BV1zv4y1T7NT";
 
     VideoView videoView = biliClient.GetVideoView(bvid);
-    PlayUrl playUrl = biliClient.GetPlayUrl(videoView.cid, 125, videoView.bvid);
+    PlayUrl playUrl = biliClient.GetPlayUrl(videoView.cid, 64, videoView.bvid);
 
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;

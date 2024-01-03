@@ -3,7 +3,7 @@
 #include <QObject>
 
 #include <nlohmann/json.hpp>
-
+#include <Util/Setting.h>
 #include "NetWork/CNetWork.h"
 #include "Aria2Net/Protocol/Protocol.h"
 
@@ -23,7 +23,6 @@ public:
     };
 
     using ListString = std::list<std::string>;
-
     AriaClient() = default;
     ~AriaClient() = default;
 
@@ -56,13 +55,23 @@ public:
 private:
     static constexpr char JSONRPC[] = "2.0";
     static constexpr char TOKEN[] = "sVanilla";
-
-
+    [[nodiscard]] std::string ConstructURL() const;
+    [[nodiscard]] std::string GetToken() const;
+    std::string ConstructSendData(std::string methodName, nlohmann::json::array_t params);
+    std::string Request(const std::string& url, const std::string& params);
     template <typename Result> Result GetResult(const AriaSendData& sendData);
 
 public:
-    std::string Request(const std::string& url, const std::string& params);
+    std::shared_ptr<Settings> m_settings;
+    template <class Result> Result Call(std::string methodName, nlohmann::json::array_t params);
 };
+
+template <class Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
+{
+    std::string res = ConstructSendData(methodName, params);
+    nlohmann::json result = nlohmann::json::parse(res);
+    return Result(result);
+}
 
 template <typename Result> inline Result AriaClient::GetResult(const AriaSendData& sendData)
 {

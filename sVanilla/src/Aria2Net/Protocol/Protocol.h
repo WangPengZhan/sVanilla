@@ -670,7 +670,7 @@ public:
     std::string id;
     std::string jsonrpc;
     std::string method;
-    nlohmann::json params;
+    nlohmann::json::array_t params;
 
     std::string toString() const override
     {

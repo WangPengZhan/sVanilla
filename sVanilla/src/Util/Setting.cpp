@@ -1,14 +1,17 @@
 #include <QTextStream>
 #include <QMapIterator>
+
 #include "Setting.h"
 
 CustomSettings::CustomSettings(QSettings* settings) : m_settings(settings)
 {
 }
+
 void CustomSettings::setConfFormat() const
 {
     QSettings::setDefaultFormat(ConfFormat);
 }
+
 void CustomSettings::writeSetting(const QString& group, const QString& key, const QVariant& value)
 {
     std::unique_lock lock(m_shared_mutex);
@@ -24,6 +27,7 @@ void CustomSettings::writeSetting(const QString& group, const QString& key, cons
         m_settings->endGroup();
     }
 }
+
 QVariant CustomSettings::readSetting(const QString& group, const QString& key)
 {
     std::unique_lock lock(m_shared_mutex);
@@ -42,11 +46,13 @@ QVariant CustomSettings::readSetting(const QString& group, const QString& key)
 
     return value;
 }
+
 void CustomSettings::clear()
 {
     std::unique_lock lock(m_shared_mutex);
     m_settings->clear();
 }
+
 bool CustomSettings::readConfFile(QIODevice& device, QSettings::SettingsMap& map)
 {
     QTextStream stream(&device);
@@ -66,6 +72,7 @@ bool CustomSettings::readConfFile(QIODevice& device, QSettings::SettingsMap& map
     }
     return true;
 }
+
 bool CustomSettings::writeConfFile(QIODevice& device, const QSettings::SettingsMap& map)
 {
     QTextStream stream(&device);
@@ -78,6 +85,7 @@ bool CustomSettings::writeConfFile(QIODevice& device, const QSettings::SettingsM
     }
     return true;
 }
+
 Settings::Settings(QString path, const Format format) : m_path(std::move(path))
 {
     if (m_path.isEmpty())
@@ -94,18 +102,22 @@ Settings::Settings(QString path, const Format format) : m_path(std::move(path))
         customSettings = std::make_shared<CustomSettings>(new QSettings(m_path, QSettings::NativeFormat));
     }
 }
+
 void Settings::write(const QString& group, const QString& key, const QVariant& value) const
 {
     customSettings->writeSetting(group, key, value);
 }
+
 QVariant Settings::read(const QString& group, const QString& key) const
 {
     return customSettings->readSetting(group, key);
 }
+
 std::string Settings::readString(const QString& group, const QString& key) const
 {
     return customSettings->readSetting(group, key).toString().toStdString();
 }
+
 void Settings::clear() const
 {
     customSettings->clear();
