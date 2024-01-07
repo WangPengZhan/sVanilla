@@ -1,25 +1,23 @@
-#include <QApplication>
 
-#include "ClientUi/MainWindow/MainWindow.h"
-#include "Logger/Dump.h"
-#include "Logger/Logger.h"
-#include "Aria2Net/AriaServer/AriaServer.h"
+#include "App.h"
 
 int main(int argc, char* argv[])
 {
-    DumpColletor::registerDumpHandle();
-    Logger::getInstance();
-
-    QApplication app(argc, argv);
-
-    aria2net::AriaServer ariaServer;
-    ariaServer.setErrorFunc([] {});
-    ariaServer.startServerAsync();
-
-    MainWindow maimWindow;
-    maimWindow.show();
-
-    return app.exec();
+    auto a = std::make_unique<App>(argc, argv);
+    return a->exec();
+//    DumpColletor::registerDumpHandle();
+//    Logger::getInstance();
+//
+//    QApplication app(argc, argv);
+//
+//    aria2net::AriaServer ariaServer;
+//    ariaServer.setErrorFunc([] {});
+//    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+//
+//    MainWindow maimWindow;
+//    maimWindow.show();
+//
+//    return app.exec();
 }
 
 void test()

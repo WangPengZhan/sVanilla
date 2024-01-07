@@ -30,4 +30,5 @@ class DownloadingListWidget : public QListWidget
 public:
     explicit DownloadingListWidget(QWidget* parent = nullptr);
     ~DownloadingListWidget();
+    void addListItem(DownloadingItemWidget* item);
 };

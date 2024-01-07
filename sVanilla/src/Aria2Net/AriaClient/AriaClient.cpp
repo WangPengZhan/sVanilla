@@ -114,11 +114,11 @@ AriaAddUri AriaClient::AddUriAsync(const ListString& uris, AriaSendOption option
 {
     if (position < 0)
     {
-        return Call<AriaChangePosition>("aria2.addUri", {uris, option});
+        return Call<AriaAddUri>("aria2.addUri", {uris});
     }
     else
     {
-        return Call<AriaChangePosition>("aria2.addUri", {uris, option, position});
+        return Call<AriaAddUri>("aria2.addUri", {uris, option, position});
     }
 }
 
@@ -158,7 +158,8 @@ std::string AriaClient::ConstructSendData(std::string methodName, nlohmann::json
     data.method = std::move(methodName);
     data.params.reserve(params.size() + 1);
     data.params = std::move(params);
-    data.params.insert(data.params.begin(), "token:" + std::string(TOKEN));
+    data.params.insert(data.params.begin(), "token:" + GetToken());
+    qDebug() << data.toString();
     return Request(GetRpcUri(), data.toString());
 }
 

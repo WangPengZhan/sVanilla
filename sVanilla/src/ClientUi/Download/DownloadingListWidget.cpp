@@ -24,6 +24,11 @@ void DownloadingItemWidget::SignalsAndSlots()
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
     : QListWidget(parent)
 {
+    this->setObjectName(QStringLiteral("DownloadingListWidget"));
+}
+void DownloadingListWidget::addListItem(DownloadingItemWidget* item)
+{
+    this -> addItem(reinterpret_cast<QListWidgetItem*>(item));
 }
 
 DownloadingListWidget::~DownloadingListWidget()

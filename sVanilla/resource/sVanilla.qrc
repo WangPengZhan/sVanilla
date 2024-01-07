@@ -1,18 +1,22 @@
 <RCC>
-    <qresource prefix="/MainWindow">
-        <file>download.svg</file>
-        <file>grid.svg</file>
-        <file>file-text.svg</file>
-        <file>server.svg</file>
-        <file>search.svg</file>
-        <file>settings.svg</file>
-        <file>sort.svg</file>
-        <file>dark-style.qss</file>
-        <file>light-style.qss</file>
-        <file>close.svg</file>
-        <file>fullscreen.svg</file>
-        <file>maximize.svg</file>
-        <file>more-line.svg</file>
-        <file>restore.svg</file>
+    <qresource prefix="/">
+        <file>icon/grid.svg</file>
+        <file>icon/file-text.svg</file>
+        <file>icon/server.svg</file>
+        <file>icon/search.svg</file>
+        <file>icon/sort.svg</file>
+        <file>icon/close.svg</file>
+        <file>icon/fullscreen.svg</file>
+        <file>icon/maximize.svg</file>
+        <file>icon/more-line.svg</file>
+        <file>icon/restore.svg</file>
+        <file>icon/clear.svg</file>
+        <file>icon/account.svg</file>
+        <file>icon/download.svg</file>
+        <file>icon/setting.svg</file>
+        <file>icon/gallery.svg</file>
+        <file>icon/home.svg</file>
+        <file>style/dark.qss</file>
+        <file>style/light.qss</file>
     </qresource>
 </RCC>

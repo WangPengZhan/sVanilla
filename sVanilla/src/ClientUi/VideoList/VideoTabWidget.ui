@@ -91,14 +91,6 @@
         <height>32</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true">.QPushButton
-{
-border-radius:4px;
-padding:4px;
-image:url(:/MainWindow/download.svg);
-}</string>
-      </property>
       <property name="text">
        <string/>
       </property>
@@ -124,14 +116,6 @@ image:url(:/MainWindow/download.svg);
         <height>32</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true">.QPushButton
-{
-border-radius:4px;
-padding:4px;
-image:url(:/MainWindow/file-text.svg);
-}</string>
-      </property>
       <property name="text">
        <string/>
       </property>
@@ -154,8 +138,6 @@ image:url(:/MainWindow/file-text.svg);
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="../../../Resource/MainWindow.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

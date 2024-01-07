@@ -1,5 +1,6 @@
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
+#include "ClientUi/Event.h"
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
@@ -33,8 +34,8 @@ void SearchLineEdit::SetEditFinishedSearch(bool enabled)
 
 void SearchLineEdit::resizeEvent(QResizeEvent* event)
 {
-    ui->btnSearch->resize(height() - 8, height() - 8);
-    ui->btnSearch->move(width() - 42, 4);
+    ui->btnSearch->resize(height(), height());
+    ui->btnSearch->move(width() - height(), 0);
     return QLineEdit::resizeEvent(event);
 }
 
@@ -45,4 +46,8 @@ void SearchLineEdit::SetUi()
 void SearchLineEdit::SignalsAndSlots()
 {
     connect(ui->btnSearch, &QPushButton::clicked, this, &SearchLineEdit::searchCliecked);
+    connect(ui->btnSearch, &QPushButton::clicked, this, [this]() {
+        qDebug() << this->text();
+        emit Event::getInstance()->addSingleUri(this->text().toStdString());
+    });
 }

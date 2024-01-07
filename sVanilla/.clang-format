@@ -209,3 +209,5 @@ UseTab:    Never
 IncludeBlocks: Preserve 
 FixNamespaceComments: true
 AllowShortLambdasOnASingleLine: Empty
+#AllowAllConstructorInitializersOnNextLine: true
+PackConstructorInitializers: Never

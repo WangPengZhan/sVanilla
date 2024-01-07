@@ -143,7 +143,27 @@ image:url(:/MainWindow/server.svg);
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QWidget" name="widgetContext" native="true"/>
+     <widget class="QWidget" name="widgetContext" native="true">
+      <widget class="QListWidget" name="listWidget">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>110</y>
+         <width>256</width>
+         <height>192</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>New Item</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/account.svg</normaloff>:/icon/account.svg</iconset>
+        </property>
+       </item>
+      </widget>
+     </widget>
     </item>
     <item row="3" column="0">
      <widget class="QWidget" name="widgetButtom" native="true">
@@ -314,7 +334,7 @@ image:url(:/MainWindow/server.svg);
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../Resource/MainWindow.qrc"/>
+  <include location="../../../resource/sVanilla.qrc"/>
  </resources>
  <connections/>
 </ui>

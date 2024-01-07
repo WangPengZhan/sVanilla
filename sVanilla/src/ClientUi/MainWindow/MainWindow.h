@@ -1,20 +1,18 @@
 #pragma once
 
+#include "ClientUi/Download/DownloadingListWidget.h"
+#include "ClientUi/Home//HomePage.h"
+#include "ClientUi/Setting/SettingPage.h"
+#include "WindowBar.h"
+#include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>
-#include <QEvent>
-#include <QWidget>
-#include <QStyle>
+#include <QStackedWidget>
 
 namespace QWK
 {
 class WidgetWindowAgent;
 class StyleAgent;
 }  // namespace QWK
-
-namespace Ui
-{
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
@@ -49,8 +47,16 @@ private:
     void installStyleAgent();
     void loadStyleSheet(Theme theme);
 
+    void loadWindowsSystemButton();
     Theme currentTheme{};
 
-    QWK::WidgetWindowAgent* windowAgent{};
-    QWK::StyleAgent* styleAgent{};
+    QWK::WidgetWindowAgent* windowAgent;
+    QWK::StyleAgent* styleAgent;
+    WindowBar* windowBar;
+    QStackedWidget* stackedPage;
+    HomePage* homePage;
+    QWidget* galleryPage;
+    DownloadingListWidget* downloadPage;
+    SettingPage* settingPage;
+
 };

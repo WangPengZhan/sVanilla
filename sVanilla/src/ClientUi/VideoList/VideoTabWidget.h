@@ -30,4 +30,6 @@ class VideoTabWidget : public QListWidget
 public:
     VideoTabWidget(QWidget* parent = nullptr);
     ~VideoTabWidget();
+
+
 };
