@@ -25,6 +25,13 @@ public:
 private:
     Ui::DefaultSetting* ui;
     void SignalsAndSlots();
+    QButtonGroup* m_themeGroup;
+
+    void updateStatus(const std::string& status);
+    void updateVersion(const std::string& version);
+    void updateFeatures(const std::string& features);
+    inline void setRedStatus();
+    inline void setGreenStatus();
 };
 
 #endif  //_DEFAULTSETTING_H_

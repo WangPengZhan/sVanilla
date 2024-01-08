@@ -5,12 +5,10 @@
 #include <QtWidgets/QApplication>
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
-#include "BiliApi/BilibiliClient.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"
 #include "ClientUi/Setting/SettingPage.h"
 #include "Sqlite/SQLiteManager.h"
-// #include "Util/UrlProcess.h"
 #include "ClientUi/Download/DownloadingListWidget.h"
 #include "ClientUi/Event.h"
 #include <QStackedWidget>
@@ -71,22 +69,10 @@ void MainWindow::SearchUrl()
 
 void MainWindow::SignalsAndSlots()
 {
-    connect(Event::getInstance(), &Event::BarBtnClick, this, [this](int index) {
-        if (index == 0) {
-            // account
-        }
-        else {
-            stackedPage->setCurrentIndex(index-1);
-
-        }
-
-    });
-    connect(stackedPage, &QStackedWidget::currentChanged,Event::getInstance(), &Event::StackedPageChanged);
-
-    connect(Event::getInstance(), &Event::SearchBtnClick, this, [this]() {
-        stackedPage->setCurrentIndex(1);
-    });
-
+    // tab bar btn click event to change stacked page
+    connect(Event::getInstance(), &Event::BarBtnClick, stackedPage, &QStackedWidget::setCurrentIndex);
+    // theme QRadioBtn toggle event to change theme
+    connect(Event::getInstance(), &Event::UpdateTheme, this, &MainWindow::SwitchTheme);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)
@@ -210,4 +196,26 @@ void MainWindow::loadWindowsSystemButton()
     //     emulateLeaveEvent(maxButton);
     // });
     // connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
+}
+void MainWindow::SwitchTheme(int theme)
+{
+#ifdef Q_OS_WIN
+
+#elif defined(Q_OS_MAC)
+    if (theme == 0)
+    {
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
+        loadStyleSheet(Light);
+    }
+    else if (theme == 1)
+    {
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
+        loadStyleSheet(Dark);
+    }
+    setProperty("custom-style", true);
+    style()->polish(this);
+
+#else
+
+#endif
 }

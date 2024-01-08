@@ -12,10 +12,18 @@
         <file>icon/restore.svg</file>
         <file>icon/clear.svg</file>
         <file>icon/account.svg</file>
+        <file>icon/folder.svg</file>
         <file>icon/download.svg</file>
         <file>icon/setting.svg</file>
         <file>icon/gallery.svg</file>
         <file>icon/home.svg</file>
+        <file>icon/arrow-down.svg</file>
+        <file>icon/arrow-down-disable.svg</file>
+        <file>icon/arrow-up.svg</file>
+        <file>icon/arrow-up-disable.svg</file>
+        <file>icon/checked.svg</file>
+        <file>icon/unchecked.svg</file>
+        <file>icon/anchor.svg</file>
         <file>style/dark.qss</file>
         <file>style/light.qss</file>
     </qresource>

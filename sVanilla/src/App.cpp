@@ -3,6 +3,7 @@
 #include <sstream>
 #include <utility>
 #include "ClientUi/MainWindow/MainWindow.h"
+#include "Util/UrlProcess.h"
 #include "Logger/Dump.h"
 #include "Logger/Logger.h"
 
@@ -26,7 +27,6 @@ int App::exec()
     SignalsAndSlots();
 
     startAriaServer();
-//    startAriaClient();
     QApplication app(_argc, _argv);
     MainWindow maimWindow;
     maimWindow.show();
@@ -50,12 +50,13 @@ void App::loadSettings()
 void App::setHighDpi()
 {
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
-
 }
 void App::startAriaServer() const
 {
-    if (!m_settings->read("App", "Remote").toBool()) {
+    if (!m_settings->read("App", "Remote").toBool())
+    {
         aria2net::AriaServer ariaServer;
+        qDebug() << "start aria2 local server";
         ariaServer.setErrorFunc([] {});
     }
 }
@@ -63,42 +64,43 @@ void App::startAriaServer() const
 void App::SignalsAndSlots()
 {
     connect(Event::getInstance(), &Event::BarBtnClick, this, [this](int index) {
-        if (index == 4) {
+        if (index == 3)
+        {
             updateAria2Status();
         }
     });
-    //https://filesamples.com/samples/video/mp4/sample_1280x720_surfing_with_audio.mp4
+    // https://filesamples.com/samples/video/mp4/sample_1280x720_surfing_with_audio.mp4
     connect(Event::getInstance(), &Event::ClipboardBtnClick, this, [this]() {
-        qDebug() << "SearchBtnClick";
-        QClipboard *clipboard = QGuiApplication::clipboard();
+        QClipboard* clipboard = QGuiApplication::clipboard();
         QString originalText = clipboard->text();
-        auto res = ariaClient.AddUriAsync({originalText.toStdString()}, option,0);
-        qDebug() << res.result;
-        qDebug() << res.error.message;
+//        if (!util::UrlProcess::IsUrl(originalText))
+//        {
+//            updateErrorMsg("Not a valid url");
+//            return;
+//        }
+        addUri({originalText.toStdString()});
     });
-    connect(Event::getInstance(), &Event::addSingleUri, this, [this](std::string uri) {
-        std::list<std::string> uris = {std::move(uri)};
-        auto res = ariaClient.AddUriAsync(uris, option,-1);
-        qDebug() << res.result.c_str();
-        qDebug() << res.error.message;
-    }
-    );
+    connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
 }
 void App::updateAria2Status()
 {
-    auto status = ariaClient.GetAriaVersionAsync();
-    if (status.id.empty()) {
-        emit Event::getInstance()->updateAria2Status("Disconnected");
-        return;
+    auto version = std::make_shared<aria2net::AriaVersion>(ariaClient.GetAriaVersionAsync());
+    if (!version->id.empty() && (version->error.message.empty())) {
+        isConnect = true;
     }
-    emit Event::getInstance()->updateAria2Status("Connected");
-    std::string version = status.result.version;
-    emit Event::getInstance()->updateVersion(std::move(version));
-
-    std::list<std::string> features = status.result.enabledFeatures;
-    std::stringstream ss;
-    for(const auto& str : features) {
-        ss << str << "\n";
+    emit Event::getInstance() -> updateAria2Version(version);
+}
+void App::updateHomeMsg(std::string msg)
+{
+    emit Event::getInstance() -> updateMsg(std::move(msg));
+}
+void App::addUri(const std::list<std::string>& uris)
+{
+    auto res = ariaClient.AddUriAsync(uris, option, -1);
+    if (auto err = res.error.message; !err.empty())
+    {
+        updateHomeMsg(err);
+    } else {
+        updateHomeMsg("Add success");
     }
-    emit Event::getInstance()->updateFeatures(std::move(ss.str()));
 }

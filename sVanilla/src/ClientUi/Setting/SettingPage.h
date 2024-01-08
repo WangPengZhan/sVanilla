@@ -3,6 +3,8 @@
 #include <QStackedWidget>
 #include "SUI/HorizonNavigation.h"
 #include "DefaultSetting.h"
+#include "AccountSetting.h"
+#include "AdvanceSetting.h"
 
 class SettingPage final : public QWidget{
 Q_OBJECT
@@ -13,4 +15,6 @@ public:
 
 private:
     DefaultSetting* defaultPage;
+    AccountSetting* accountPage;
+    AdvanceSetting* advancePage;
 };

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
-    <height>468</height>
+    <width>580</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,14 @@
     </spacer>
    </item>
    <item>
-    <widget class="QWidget" name="Draggable" native="true"/>
+    <widget class="QWidget" name="Draggable" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QWidget" name="Hit" native="true">
@@ -58,86 +65,70 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QListWidget" name="BarListWidget">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>130</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>160</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="horizontalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContents</enum>
-        </property>
-        <property name="flow">
-         <enum>QListView::LeftToRight</enum>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="topMargin">
+         <number>5</number>
         </property>
         <item>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/icon/account.svg</normaloff>:/icon/account.svg</iconset>
-         </property>
+         <widget class="QPushButton" name="HomeBtn">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/icon/home.svg</normaloff>:/icon/home.svg</iconset>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/icon/home.svg</normaloff>:/icon/home.svg</iconset>
-         </property>
+         <widget class="QPushButton" name="GalleryBtn">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/icon/gallery.svg</normaloff>:/icon/gallery.svg</iconset>
+          </property>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/icon/gallery.svg</normaloff>:/icon/gallery.svg</iconset>
-         </property>
+         <widget class="QPushButton" name="DownloadBtn">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/icon/download.svg</normaloff>:/icon/download.svg</iconset>
+          </property>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/icon/download.svg</normaloff>:/icon/download.svg</iconset>
-         </property>
+         <widget class="QPushButton" name="SettingBtn">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/icon/setting.svg</normaloff>:/icon/setting.svg</iconset>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/icon/setting.svg</normaloff>:/icon/setting.svg</iconset>
-         </property>
-        </item>
-       </widget>
+       </layout>
       </item>
      </layout>
     </widget>

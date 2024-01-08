@@ -114,7 +114,7 @@ AriaAddUri AriaClient::AddUriAsync(const ListString& uris, AriaSendOption option
 {
     if (position < 0)
     {
-        return Call<AriaAddUri>("aria2.addUri", {uris});
+        return Call<AriaAddUri>("aria2.addUri", {uris, option});
     }
     else
     {
@@ -159,8 +159,11 @@ std::string AriaClient::ConstructSendData(std::string methodName, nlohmann::json
     data.params.reserve(params.size() + 1);
     data.params = std::move(params);
     data.params.insert(data.params.begin(), "token:" + GetToken());
+    if (data.params[2].empty()) {
+        data.params[2] = nlohmann::json::object();
+    }
     qDebug() << data.toString();
-    return Request(GetRpcUri(), data.toString());
+    return Request(ConstructURL(), data.toString());
 }
 
 }  // namespace aria2net

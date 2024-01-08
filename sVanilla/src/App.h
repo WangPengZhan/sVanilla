@@ -14,14 +14,17 @@ public:
     void SignalsAndSlots();
     void startAriaServer() const;
     static void setHighDpi();
-    aria2net::AriaClient& ariaClient = aria2net::AriaClient::globalClient();
-    std::shared_ptr<Settings> m_settings;
 
 private:
     int _argc;
     char **_argv;
-    aria2net::AriaSendOption option{};
+    std::shared_ptr<Settings> m_settings;
+    aria2net::AriaSendOption option;
+    aria2net::AriaClient& ariaClient = aria2net::AriaClient::globalClient();
 
+    bool isConnect = false;
 public slots:
     void updateAria2Status();
+    void addUri(const std::list<std::string>& uris);
+    static void updateHomeMsg(std::string msg);
 };

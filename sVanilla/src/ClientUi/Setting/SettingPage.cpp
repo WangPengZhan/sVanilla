@@ -5,10 +5,12 @@ SettingPage::SettingPage(QWidget* parent)
     : QWidget(parent),
       horizonNavigation(new HorizonNavigation),
       settingStacked(new QStackedWidget),
-      defaultPage(new DefaultSetting)
+      defaultPage(new DefaultSetting),
+      accountPage(new AccountSetting),
+      advancePage(new AdvanceSetting)
 {
     const auto layout = new QVBoxLayout();
-    layout->setContentsMargins(20, 20, 20, 10);
+    layout->setContentsMargins(20, 20, 0, 0);
     this->setLayout(layout);
     QStringList horizonNavigationBtn;
     horizonNavigationBtn << "Default"
@@ -19,4 +21,10 @@ SettingPage::SettingPage(QWidget* parent)
 
     layout->addWidget(settingStacked);
     settingStacked->insertWidget(0, defaultPage);
+    settingStacked->insertWidget(1, accountPage);
+    settingStacked->insertWidget(2, advancePage);
+
+    connect(horizonNavigation, &HorizonNavigation::currentItemChanged, this, [this](int index) {
+        settingStacked->setCurrentIndex(index);
+    });
 }

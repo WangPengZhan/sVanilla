@@ -1,14 +1,20 @@
+#include <QButtonGroup>
 #include "ui_WindowBar.h"
 #include "WindowBar.h"
 #include "ClientUi/Event.h"
 
 WindowBar::WindowBar(QWidget* parent)
     : QFrame(parent),
-      ui(new Ui::WindowBar)
+      ui(new Ui::WindowBar),
+      m_barBtnGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
     SignalsAndSlots();
-    ui->BarListWidget->item(1)->setSelected(true);
+    m_barBtnGroup->addButton(ui->HomeBtn, 0);
+    m_barBtnGroup->addButton(ui->DownloadBtn, 1);
+    m_barBtnGroup->addButton(ui->GalleryBtn, 2);
+    m_barBtnGroup->addButton(ui->SettingBtn, 3);
+//    ui->BarListWidget->item(0)->setSelected(true);
 }
 
 WindowBar::~WindowBar()
@@ -23,18 +29,10 @@ QWidget* WindowBar::GetHitWidget() const
 
 void WindowBar::SignalsAndSlots()
 {
-    connect(ui->BarListWidget, &QListWidget::currentRowChanged, this, [](int row) {
-        Event::getInstance()->BarBtnClick(row);
+    connect(m_barBtnGroup, &QButtonGroup::buttonClicked, this, [this](QAbstractButton* button) {
+        int id = m_barBtnGroup->id(button);
+        emit Event::getInstance() -> BarBtnClick(id);
     });
-//    connect(ui->EnterDownloadBtn, &QToolButton::clicked, Event::getInstance(), &Event::DownloadClick);
-//    connect(ui->AccountBtn, &QToolButton::clicked, Event::getInstance(), &Event::AccountBtnClick);
-//    connect(ui->SettingBtn, &QToolButton::clicked, Event::getInstance(), &Event::SettingBtnClick);
-//    connect(Event::getInstance(), &Event::StackedPageChanged, this, [this](int index) {
-//        if (index != 0)
-//        {
-//            ui->BarListWidget->item(0)->setHidden(true);
-//        } else {
-//            ui->BarListWidget->item(0)->setHidden(false);
-//        }
-//    });
+//    connect(ui->BarListWidget, &QListWidget::currentRowChanged, Event::getInstance(), &Event::BarBtnClick);
+
 }

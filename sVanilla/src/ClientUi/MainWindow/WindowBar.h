@@ -26,6 +26,7 @@ public:
 private:
     Ui::WindowBar* ui;
     void SignalsAndSlots();
+    QButtonGroup* m_barBtnGroup;
 };
 
 #endif  //_WINDOWBAR_H_

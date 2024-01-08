@@ -1,11 +1,13 @@
 #pragma once
 
 #include <QObject>
-
 #include <nlohmann/json.hpp>
+#include <utility>
 #include <Util/Setting.h>
 #include "NetWork/CNetWork.h"
 #include "Aria2Net/Protocol/Protocol.h"
+
+#define PRINT(x) qDebug() << x ;
 
 namespace aria2net
 {
@@ -68,7 +70,11 @@ public:
 
 template <class Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
 {
-    std::string res = ConstructSendData(methodName, params);
+    std::string res = ConstructSendData(std::move(methodName), params);
+    if (res.empty()) {
+        return Result();
+    }
+    PRINT(QString::fromStdString(res))
     nlohmann::json result = nlohmann::json::parse(res);
     return Result(result);
 }

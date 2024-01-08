@@ -1,5 +1,6 @@
 #include <QString>
 #include <QStringList>
+#include <QRegularExpression>
 
 #include "UrlProcess.h"
 
@@ -8,7 +9,12 @@ namespace util
 
 bool UrlProcess::IsUrl(const QString& text)
 {
-    return text.startsWith("http://") || text.startsWith("https://");
+    QRegularExpression url(
+        "^((http|https|ftp)://|magnet:\\?\\S+)$",
+        QRegularExpression::CaseInsensitiveOption
+    );
+    return url.match(text).hasMatch();
+//    return text.startsWith("http://") || text.startsWith("https://");
 }
 
 bool UrlProcess::IsIntId(const QString& text)

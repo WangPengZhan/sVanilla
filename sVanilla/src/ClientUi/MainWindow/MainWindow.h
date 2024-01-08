@@ -32,6 +32,9 @@ public:
 Q_SIGNALS:
     void themeChanged();
 
+public slots:
+    void SwitchTheme(int theme);
+
 protected:
     bool event(QEvent* event) override;
 
@@ -58,5 +61,4 @@ private:
     QWidget* galleryPage;
     DownloadingListWidget* downloadPage;
     SettingPage* settingPage;
-
 };

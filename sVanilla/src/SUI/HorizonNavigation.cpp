@@ -14,8 +14,8 @@ void HorizonNavigation::setUi()
 {
     setAttribute(Qt::WA_StyledBackground, true);
     setFixedHeight(28);
-    animation->setDuration(400);
-    animation->setEasingCurve(QEasingCurve::InOutBack);
+    animation->setDuration(500);
+    animation->setEasingCurve(QEasingCurve::InCubic);
     connect(animation, &QPropertyAnimation::valueChanged, this, &HorizonNavigation::onValeChanged);
 }
 void HorizonNavigation::paintEvent(QPaintEvent* event)
@@ -28,9 +28,6 @@ void HorizonNavigation::paintEvent(QPaintEvent* event)
     QPainterPath background;
     background.addRoundedRect(QRect(0, 0, columnWidth * int(itemList.length()) + 4, rowHeight), radius, radius);
     painter.fillPath(background, QBrush(QColor(229, 230, 235)));
-    if (itemList.length() > 1)
-    {
-    }
     // 画按钮
     QPainterPath itemPath;
     itemPath.addRoundedRect(QRect(2 + offset, 2, columnWidth, rowHeight - 4), radius, radius);
