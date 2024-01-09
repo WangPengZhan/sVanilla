@@ -56,7 +56,7 @@ void App::startAriaServer() const
     if (!m_settings->read("App", "Remote").toBool())
     {
         aria2net::AriaServer ariaServer;
-        qDebug() << "start aria2 local server";
+        PRINT("start aria2 local server")
         ariaServer.setErrorFunc([] {});
     }
 }

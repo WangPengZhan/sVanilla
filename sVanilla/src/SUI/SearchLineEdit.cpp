@@ -3,8 +3,8 @@
 #include "ClientUi/Event.h"
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
-    : QLineEdit(parent)
-    , ui(new Ui::SearchLineEdit())
+    : QLineEdit(parent),
+      ui(new Ui::SearchLineEdit())
 {
     ui->setupUi(this);
     SetUi();
@@ -35,19 +35,24 @@ void SearchLineEdit::SetEditFinishedSearch(bool enabled)
 void SearchLineEdit::resizeEvent(QResizeEvent* event)
 {
     ui->ClearBtn->resize(height(), height());
-    ui->ClearBtn->move(width() - height()*2, 0);
+    ui->ClearBtn->move(width() - 60, 0);
     ui->SearchBtn->resize(height(), height());
-    ui->SearchBtn->move(width() - height(), 0);
+    ui->SearchBtn->move(width() - 25, 0);
     return QLineEdit::resizeEvent(event);
 }
 
 void SearchLineEdit::SetUi()
 {
+    ui->ClearBtn->setVisible(false);
 }
 
 void SearchLineEdit::SignalsAndSlots()
 {
     connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::searchCliecked);
+    connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
+        ui->ClearBtn->setVisible(!text.isEmpty());
+    });
+    connect(this, &SearchLineEdit::searchCliecked, this, &SearchLineEdit::clear);
     connect(ui->ClearBtn, &QPushButton::clicked, this, &SearchLineEdit::clear);
     connect(this, &SearchLineEdit::searchCliecked, this, [this]() {
         qDebug() << this->text();

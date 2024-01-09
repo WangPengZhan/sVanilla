@@ -1,3 +1,8 @@
+QToolTip {
+    border: none;
+    background-color: rgba(0, 0, 0, 10%);
+}
+
 /* Menu */
 
 QMenu {
@@ -68,7 +73,7 @@ SearchLineEdit#HomeLineEdit {
     padding: 8px 8px 8px 15px;
     background-color: transparent;
     min-height: 10px;
-    margin-right: 35px;
+    margin-right: 22px;
 }
 
 SearchLineEdit:focus#HomeLineEdit {
@@ -155,11 +160,25 @@ QToolButton:focus#AccountBtn {
     color: #726b6b;
 }
 
-/* HomeBtn */
+/* BarBtn */
 QPushButton#HomeBtn,
 #GalleryBtn,
 #DownloadBtn,
 #SettingBtn {
+    border: none;
+    background-color: transparent;
+}
+
+/* ClipBoardBtn */
+QPushButton#ClipBoardBtn {
+    qproperty-icon: url(":/icon/clipboard.svg");
+    border: none;
+    background-color: transparent;
+}
+
+/* HistoryBtn */
+QPushButton#HistoryBtn {
+    qproperty-icon: url(":/icon/history.svg");
     border: none;
     background-color: transparent;
 }

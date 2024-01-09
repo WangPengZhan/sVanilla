@@ -138,11 +138,25 @@ QToolButton:focus#AccountBtn {
     color: #726b6b;
 }
 
-/* HomeBtn */
+/* BarBtn */
 QPushButton#HomeBtn,
 #GalleryBtn,
 #DownloadBtn,
 #SettingBtn {
+    border: none;
+    background-color: transparent;
+}
+
+/* ClipBoardBtn */
+QPushButton#ClipBoardBtn {
+    qproperty-icon: url(":/icon/clipboard.svg");
+    border: none;
+    background-color: transparent;
+}
+
+/* HistoryBtn */
+QPushButton#HistoryBtn {
+    qproperty-icon: url(":/icon/history.svg");
     border: none;
     background-color: transparent;
 }

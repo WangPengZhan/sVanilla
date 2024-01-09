@@ -67,8 +67,21 @@ border:none;</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Add From Clipboard</string>
+       </property>
+       <property name="whatsThis">
+        <string>Add From Clipboard</string>
+       </property>
        <property name="text">
-        <string>Clipboard</string>
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="HistoryBtn">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
