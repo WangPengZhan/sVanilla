@@ -7,10 +7,10 @@
 DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
     : QWidget(parent),
       ui(new Ui::DownloadingItemWidget),
-      gid(std::move(gid))
+      m_gid(std::move(gid))
 {
     ui->setupUi(this);
-    // this->setStyleSheet("    background-color: #000000; border-radius: 5px;");
+    SignalsAndSlots();
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -18,22 +18,26 @@ DownloadingItemWidget::~DownloadingItemWidget()
     delete ui;
 }
 
-void DownloadingItemWidget::SetUi()
-{
-    // ui->labelTitle->setText(QString::fromStdString(name));
-    ui->Title->setText(QString::fromStdString(name));
-    ui->Size->setText(QString::fromStdString(size));
-}
-
 void DownloadingItemWidget::SignalsAndSlots()
 {
+    connect(ui->Delete, &QPushButton::clicked, this, [this] {
+        emit deleteBtnClick(m_gid);
+    });
+}
+void DownloadingItemWidget::updateStatus()
+{
+    ui->Title->setText(QString::fromStdString(status->result.dir));
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
-    : QListWidget(parent), downloadIntervalTimer(new QTimer(this))
+    : QListWidget(parent),
+      downloadIntervalTimer(new QTimer(this))
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     SignalsAndSlots();
+    addTaskItem("123");
+    addTaskItem("456");
+    addTaskItem("789");
 }
 void DownloadingListWidget::SignalsAndSlots() const
 {
@@ -42,7 +46,7 @@ void DownloadingListWidget::SignalsAndSlots() const
     // update download information to ui (core -> ui)
     connect(Event::getInstance(), &Event::updateDownloadStatus, this, &DownloadingListWidget::updateItem);
     // interval update download status (timer -> core)
-    connect(downloadIntervalTimer, &QTimer::timeout,Event::getInstance(), &Event::IntervalUpdateDownloadStatus);
+    connect(downloadIntervalTimer, &QTimer::timeout, Event::getInstance(), &Event::IntervalUpdateDownloadStatus);
     // current row changed signal -> onCurrent (ui -> core)
     connect(Event::getInstance(), &Event::OnDownloadCurrent, this, &DownloadingListWidget::onCurrent);
 }
@@ -63,25 +67,28 @@ void DownloadingListWidget::onCurrent(bool isCurrent)
 void DownloadingListWidget::addTaskItem(const std::string& gid)
 {
     const auto newItem = new DownloadingItemWidget(gid, this);
-    const auto item = qobject_cast<QWidget*>(newItem);
-    const auto itemWidget = new QListWidgetItem(this);
-    itemWidget->setSizeHint(newItem->sizeHint());
-    this->setItemWidget(itemWidget, item);
-    _items.insert({gid, newItem});
+    const auto listWidgetItem = new QListWidgetItem(this);
+    listWidgetItem->setSizeHint(newItem->sizeHint());
+    this->setItemWidget(listWidgetItem, newItem);
+    m_items.insert({gid, listWidgetItem});
+    connect(newItem, &DownloadingItemWidget::deleteBtnClick, this, &DownloadingListWidget::deleteItem);
 }
 void DownloadingListWidget::updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status)
 {
-    const auto item = _items[status->result.gid];
-    if (!status->result.errorCode.empty())
+    if (const auto& r = status->result; !r.gid.empty())
     {
-        item->status = 1;
-        item->name = status->result.files.front().path;
-        item->size = status->result.totalLength;
-        item->speed = status->result.downloadSpeed;
+        const auto item = qobject_cast<DownloadingItemWidget*>(itemWidget(m_items[r.gid]));
+        if (!r.errorCode.empty())
+        {
+            item->status = status;
+            item->updateStatus();
+        }
     }
-    else
-    {
-        item->status = 0;
-    }
-    item->update();
+}
+void DownloadingListWidget::deleteItem(std::string gid)
+{
+    const int row = this->row(m_items[gid]);
+    this->takeItem(row);
+    this->update();
+    m_items.erase(gid);
 }

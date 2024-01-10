@@ -111,7 +111,7 @@ void App::updateDownloadStatus()
     for (const auto& gid : gids)
     {
         const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
-        if (!status->result.gid.empty() && (status->error.message.empty()))
+        if (!status->result.gid.empty() && status->error.message.empty())
         {
             emit Event::getInstance()->updateDownloadStatus(status);
         }
