@@ -14,11 +14,15 @@
         <file>icon/clipboard.svg</file>
         <file>icon/history.svg</file>
         <file>icon/account.svg</file>
-        <file>icon/folder.svg</file>
         <file>icon/download.svg</file>
         <file>icon/setting.svg</file>
         <file>icon/gallery.svg</file>
         <file>icon/home.svg</file>
+        <file>icon/delete.svg</file>
+        <file>icon/start.svg</file>
+        <file>icon/pause.svg</file>
+        <file>icon/folder.svg</file>
+        <file>icon/details.svg</file>
         <file>icon/arrow-down.svg</file>
         <file>icon/arrow-down-disable.svg</file>
         <file>icon/arrow-up.svg</file>

@@ -1,6 +1,6 @@
 #include "Event.h"
 Event* Event::m_appEvent_ptr=nullptr;
-QMutex Event::m_mutex;
+std::mutex Event::m_mutex;
 
 Event* Event::getInstance()
 {

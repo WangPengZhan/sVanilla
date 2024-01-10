@@ -24,6 +24,7 @@ public:
 
 private:
     Ui::HomePage* ui;
+    void SignalsAndSlots();
 };
 
 #endif  //_HOMEPAGE_H_

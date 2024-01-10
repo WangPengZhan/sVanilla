@@ -1,9 +1,7 @@
 #include <QApplication>
-#include <QClipboard>
 #include <sstream>
 #include <utility>
 #include "ClientUi/MainWindow/MainWindow.h"
-#include "Util/UrlProcess.h"
 #include "Logger/Dump.h"
 #include "Logger/Logger.h"
 
@@ -23,29 +21,36 @@ int App::exec()
 
     setHighDpi();
     loadSettings();
+    downloadManager = std::make_shared<DownloadManager>();
 
-    SignalsAndSlots();
-
-    startAriaServer();
     QApplication app(_argc, _argv);
     MainWindow maimWindow;
     maimWindow.show();
 
+    SignalsAndSlots();
+    startAriaServer();
     return QApplication::exec();
 }
 void App::loadSettings()
 {
     // TODO 读取配置文件失败处理
-    m_settings = std::make_shared<Settings>("sVanilla.ini", Settings::IniFormat);
+    settings = std::make_shared<Settings>("sVanilla.ini", Settings::IniFormat);
 
 #if 1
-    m_settings->write("App", "RPCAddress", "http://10.0.2.122");
-    m_settings->write("App", "RPCPort", "6800");
-    m_settings->write("App", "TOKEN", "sVanilla");
-    m_settings->write("App", "Remote", "true");
+    settings->write("App", "RPCAddress", "http://10.0.2.122");
+    settings->write("App", "RPCPort", "6800");
+    settings->write("App", "TOKEN", "sVanilla");
+    settings->write("App", "Remote", "true");
 #endif
 
-    ariaClient.m_settings = m_settings;
+#if 0
+    settings->write("App", "RPCAddress", "http://localhost");
+    settings->write("App", "RPCPort", "6800");
+    settings->write("App", "TOKEN", "sVanilla");
+    settings->write("App", "Remote", "false");
+#endif
+
+    ariaClient.m_settings = settings;
 }
 void App::setHighDpi()
 {
@@ -53,7 +58,7 @@ void App::setHighDpi()
 }
 void App::startAriaServer() const
 {
-    if (!m_settings->read("App", "Remote").toBool())
+    if (!settings->read("App", "Remote").toBool())
     {
         aria2net::AriaServer ariaServer;
         PRINT("start aria2 local server")
@@ -63,44 +68,71 @@ void App::startAriaServer() const
 
 void App::SignalsAndSlots()
 {
+    // window bar button clicked signal -> Event::BarBtnClick (ui -> core)
     connect(Event::getInstance(), &Event::BarBtnClick, this, [this](int index) {
+        if (index == 2)
+        {
+            emit Event::getInstance()->OnDownloadCurrent(true);
+        }
+        else
+        {
+            emit Event::getInstance()->OnDownloadCurrent(false);
+        }
         if (index == 3)
         {
             updateAria2Status();
         }
     });
-    // https://filesamples.com/samples/video/mp4/sample_1280x720_surfing_with_audio.mp4
-    connect(Event::getInstance(), &Event::ClipboardBtnClick, this, [this]() {
-        QClipboard* clipboard = QGuiApplication::clipboard();
-        QString originalText = clipboard->text();
-//        if (!util::UrlProcess::IsUrl(originalText))
-//        {
-//            updateErrorMsg("Not a valid url");
-//            return;
-//        }
-        addUri({originalText.toStdString()});
-    });
+
+    // AddUri signal -> Event::AddUri (ui -> core)
     connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
+
+    // download interval timer -> Event::IntervalUpdateDownloadStatus (ui -> core)
+    connect(Event::getInstance(), &Event::IntervalUpdateDownloadStatus, this, &App::updateDownloadStatus);
 }
+
 void App::updateAria2Status()
 {
-    auto version = std::make_shared<aria2net::AriaVersion>(ariaClient.GetAriaVersionAsync());
-    if (!version->id.empty() && (version->error.message.empty())) {
+    const auto version = std::make_shared<aria2net::AriaVersion>(ariaClient.GetAriaVersionAsync());
+    if (!version->id.empty() && (version->error.message.empty()))
+    {
         isConnect = true;
     }
-    emit Event::getInstance() -> updateAria2Version(version);
+    emit Event::getInstance()->updateAria2Version(version);
 }
-void App::updateHomeMsg(std::string msg)
+
+void App::updateDownloadStatus()
 {
-    emit Event::getInstance() -> updateMsg(std::move(msg));
+    const std::list<std::string>& gids = downloadManager->downloadGIDs;
+    if (gids.empty())
+    {
+        return;
+    }
+    for (const auto& gid : gids)
+    {
+        const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
+        if (!status->result.gid.empty() && (status->error.message.empty()))
+        {
+            emit Event::getInstance()->updateDownloadStatus(status);
+        }
+    }
 }
+
 void App::addUri(const std::list<std::string>& uris)
 {
-    auto res = ariaClient.AddUriAsync(uris, option, -1);
-    if (auto err = res.error.message; !err.empty())
+    const auto res = ariaClient.AddUriAsync(uris, option, -1);
+    if (const auto err = res.error.message; !err.empty())
     {
         updateHomeMsg(err);
-    } else {
+    }
+    else
+    {
+        downloadManager->addDownloadGID(res.result);
         updateHomeMsg("Add success");
     }
+}
+
+void App::updateHomeMsg(std::string msg)
+{
+    emit Event::getInstance()->updateMsg(std::move(msg));
 }

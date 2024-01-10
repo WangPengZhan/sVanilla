@@ -23,12 +23,12 @@ void SearchLineEdit::SetEditFinishedSearch(bool enabled)
 {
     if (enabled)
     {
-        disconnect(this, &QLineEdit::editingFinished, this, &SearchLineEdit::searchCliecked);
-        connect(this, &QLineEdit::editingFinished, this, &SearchLineEdit::searchCliecked);
+        disconnect(this, &QLineEdit::editingFinished, this, &SearchLineEdit::Complete);
+        connect(this, &QLineEdit::editingFinished, this, &SearchLineEdit::Complete);
     }
     else
     {
-        disconnect(this, &QLineEdit::editingFinished, this, &SearchLineEdit::searchCliecked);
+        disconnect(this, &QLineEdit::editingFinished, this, &SearchLineEdit::Complete);
     }
 }
 
@@ -48,14 +48,9 @@ void SearchLineEdit::SetUi()
 
 void SearchLineEdit::SignalsAndSlots()
 {
-    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::searchCliecked);
+    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
         ui->ClearBtn->setVisible(!text.isEmpty());
     });
-    connect(this, &SearchLineEdit::searchCliecked, this, &SearchLineEdit::clear);
-    connect(ui->ClearBtn, &QPushButton::clicked, this, &SearchLineEdit::clear);
-    connect(this, &SearchLineEdit::searchCliecked, this, [this]() {
-        qDebug() << this->text();
-        emit Event::getInstance() -> AddUri({this->text().toStdString()});
-    });
+
 }

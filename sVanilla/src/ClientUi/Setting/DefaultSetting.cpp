@@ -22,7 +22,7 @@ DefaultSetting::~DefaultSetting()
 }
 void DefaultSetting::SignalsAndSlots()
 {
-    // update aria2 version (core -> ui)
+    //   update  request information to  version label (core -> ui)
     connect(Event::getInstance(), &Event::updateAria2Version, this, [this](std::shared_ptr<aria2net::AriaVersion> version) {
         if (version->id.empty() || (!version->error.message.empty()))
         {
@@ -47,7 +47,7 @@ void DefaultSetting::SignalsAndSlots()
         }
     });
 
-    // update theme(ui -> core)
+    // transfer theme btn click signal to core to update theme(ui -> core)
     connect(m_themeGroup, &QButtonGroup::buttonClicked, this, [this](QAbstractButton* button) {
         int id = m_themeGroup->id(button);
         emit Event::getInstance() -> UpdateTheme(id);

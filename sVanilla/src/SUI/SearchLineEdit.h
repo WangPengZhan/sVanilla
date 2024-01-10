@@ -20,7 +20,7 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 signals:
-    void searchCliecked();
+    void Complete();
 
 private:
     void SetUi();

@@ -11,8 +11,8 @@ WindowBar::WindowBar(QWidget* parent)
     ui->setupUi(this);
     SignalsAndSlots();
     m_barBtnGroup->addButton(ui->HomeBtn, 0);
-    m_barBtnGroup->addButton(ui->DownloadBtn, 1);
-    m_barBtnGroup->addButton(ui->GalleryBtn, 2);
+    m_barBtnGroup->addButton(ui->GalleryBtn, 1);
+    m_barBtnGroup->addButton(ui->DownloadBtn, 2);
     m_barBtnGroup->addButton(ui->SettingBtn, 3);
 //    ui->BarListWidget->item(0)->setSelected(true);
 }

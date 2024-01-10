@@ -12,6 +12,7 @@
 #include "ClientUi/Download/DownloadingListWidget.h"
 #include "ClientUi/Event.h"
 #include <QStackedWidget>
+#include <QtWidgets/QLabel>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
@@ -38,13 +39,6 @@ MainWindow::MainWindow(QWidget* parent)
     loadStyleSheet(Light);
     SignalsAndSlots();
     resize(800, 600);
-
-    auto downloadItem = new DownloadingItemWidget(downloadPage);
-    downloadPage->addListItem(downloadItem);
-    auto downloadItemTwo = new DownloadingItemWidget(downloadPage);
-    downloadPage->addListItem(downloadItemTwo);
-    auto downloadItemTree = new DownloadingItemWidget(downloadPage);
-    downloadPage->addListItem(downloadItemTree);
 }
 
 MainWindow::~MainWindow() = default;

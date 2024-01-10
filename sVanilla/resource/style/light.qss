@@ -189,7 +189,49 @@ QLabel#LineEditPlaceholderLabel {
     background-color: transparent;
 }
 
-DownloadingListWidget#DownloadingListWidget {
+QListWidget#DownloadingListWidget {
+    background-color: transparent;
+    padding: 10px;
+}
+
+/* QListWidget::item:alternate#DownloadingListWidget {
+    background-color: #efeeee;
+    border-radius: 5px;
+} */
+
+QListWidget::item#DownloadingListWidget {
+    background-color: #c3c3c3;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+QPushButton#Delete {
+    qproperty-icon: url(":/icon/delete.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#Start {
+    qproperty-icon: url(":/icon/start.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#Pause {
+    qproperty-icon: url(":/icon/pause.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#Folder {
+    qproperty-icon: url(":/icon/folder.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#Detail {
+    qproperty-icon: url(":/icon/details.svg");
+    border: none;
     background-color: transparent;
 }
 
