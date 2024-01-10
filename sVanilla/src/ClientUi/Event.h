@@ -27,7 +27,7 @@ signals:
     void AddUri(std::list<std::string> uri);
     void AddDownloadTask(const std::string& gid);
     void IntervalUpdateDownloadStatus();
-    voud OnDownloadCurrent(bool isCurrent);
+    void OnDownloadCurrent(bool isCurrent);
 
 
     // (core -> ui)
