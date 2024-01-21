@@ -26,7 +26,7 @@ signals:
 
 private:
     Ui::DefaultSetting* ui;
-    void SignalsAndSlots();
+    void signalsAndSlots();
     QButtonGroup* m_themeGroup;
 
     void updateStatus(const std::string& status);

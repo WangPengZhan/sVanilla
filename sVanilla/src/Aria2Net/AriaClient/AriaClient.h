@@ -64,14 +64,17 @@ private:
     [[nodiscard]] std::string GetToken() const;
     std::string ConstructSendData(std::string methodName, nlohmann::json::array_t params);
     std::string Request(const std::string& url, const std::string& params);
-    template <typename Result> Result GetResult(const AriaSendData& sendData);
+    template <typename Result>
+    Result GetResult(const AriaSendData& sendData);
 
 public:
     std::shared_ptr<Settings> m_settings;
-    template <typename Result> Result Call(std::string methodName, nlohmann::json::array_t params);
+    template <typename Result>
+    Result Call(std::string methodName, nlohmann::json::array_t params);
 };
 
-template <typename Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
+template <typename Result>
+Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
 {
     std::string res = ConstructSendData(std::move(methodName), std::move(params));
     if (res.empty())
@@ -83,7 +86,8 @@ template <typename Result> Result AriaClient::Call(std::string methodName, nlohm
     return Result(result);
 }
 
-template <typename Result> inline Result AriaClient::GetResult(const AriaSendData& sendData)
+template <typename Result>
+inline Result AriaClient::GetResult(const AriaSendData& sendData)
 {
     std::string strParams = sendData.toString();
     std::string strResponse = Request(GetRpcUri(), strParams);

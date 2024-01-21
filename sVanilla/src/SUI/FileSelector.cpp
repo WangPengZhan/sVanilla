@@ -12,8 +12,8 @@ class ModeValidator : public QValidator
     Q_OBJECT
 public:
     explicit ModeValidator(FileSelector* selector, QObject* parent)
-        : QValidator(parent),
-          m_selector(selector)
+        : QValidator(parent)
+        , m_selector(selector)
     {
     }
 
@@ -41,9 +41,9 @@ FileSelector::FileSelector(QWidget* parent)
 }
 
 FileSelector::FileSelector(Mode mode, QWidget* parent)
-    : QLineEdit(parent),
-      ui(new Ui::FileSelector),
-      m_validator(new ModeValidator(this, this))
+    : QLineEdit(parent)
+    , ui(new Ui::FileSelector)
+    , m_validator(new ModeValidator(this, this))
 {
     m_action = new QAction(this);
     m_action->setIcon(QPixmap(":icon/folder.svg"));
@@ -56,7 +56,8 @@ FileSelector::FileSelector(Mode mode, QWidget* parent)
 void FileSelector::chooseFile()
 {
     const QString fileName = [this] {
-        switch (mode()) {
+        switch (mode())
+        {
         case FileOpen:
             return QFileDialog::getOpenFileName(this, QString(), text());
         case Directory:
@@ -65,7 +66,8 @@ void FileSelector::chooseFile()
         Q_UNREACHABLE();
     }();
 
-    if (!fileName.isEmpty()) {
+    if (!fileName.isEmpty())
+    {
         setText(fileName);
         QString name = fileName;
         int pos = 0;
@@ -77,7 +79,8 @@ void FileSelector::chooseFile()
 void FileSelector::setMode(Mode mode)
 {
     const QString text = [mode] {
-        switch (mode) {
+        switch (mode)
+        {
         case Mode::FileOpen:
             return "Choose file to open";
         case Mode::Directory:
@@ -87,7 +90,8 @@ void FileSelector::setMode(Mode mode)
     }();
     setPlaceholderText(text);
 
-    if (mode != m_mode) {
+    if (mode != m_mode)
+    {
         m_mode = mode;
         emit modeChanged(mode);
     }
@@ -97,7 +101,6 @@ FileSelector::Mode FileSelector::mode() const
 {
     return m_mode;
 }
-
 
 FileSelector::~FileSelector()
 {

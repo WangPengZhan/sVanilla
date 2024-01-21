@@ -25,7 +25,7 @@ signals:
     void AddUri(const std::list<std::string>& uris);
 private:
     Ui::HomePage* ui;
-    void SignalsAndSlots();
+    void signalsAndSlots();
     void getUrl(const std::list<std::string>& uris);
 };
 

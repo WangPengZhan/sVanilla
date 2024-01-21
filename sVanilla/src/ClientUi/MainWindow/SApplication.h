@@ -7,8 +7,6 @@ class SApplication : public QApplication
 public:
     SApplication(int& argc, char** argv);
     ~SApplication();
-
-
 };
 
 #define sApp static_cast<SApplication*>(qApp)

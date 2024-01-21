@@ -2,9 +2,13 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtCore/QTimer>
+
 #include <QtWidgets/QApplication>
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
+#include <widgetframe/windowbar.h>
+#include <widgetframe/windowbutton.h>
+
 #include "MainWindow.h"
 #include "MainWindowlog.h"
 #include "ClientUi/Setting/SettingPage.h"
@@ -17,7 +21,6 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , windowAgent(new QWK::WidgetWindowAgent(this))
-    , styleAgent(new QWK::StyleAgent(this))
     , windowBar(new WindowBar(this))
     , stackedPage(new QStackedWidget(this))
     , homePage(new HomePage(this))
@@ -26,7 +29,6 @@ MainWindow::MainWindow(QWidget* parent)
     , settingPage(new SettingPage(this))
 {
     installWindowAgent();
-    installStyleAgent();
     stackedPage->setContentsMargins(0, 50, 0, 0);
     setCentralWidget(stackedPage);
 
@@ -37,7 +39,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
     loadStyleSheet(Light);
-    SignalsAndSlots();
+    signalsAndSlots();
     resize(800, 600);
 }
 
@@ -52,16 +54,11 @@ void MainWindow::installWindowAgent()
     setMenuWidget(windowBar);
 }
 
-void MainWindow::installStyleAgent()
-{
-    styleAgent = new QWK::StyleAgent(this);
-}
-
 void MainWindow::SearchUrl()
 {
 }
 
-void MainWindow::SignalsAndSlots()
+void MainWindow::signalsAndSlots()
 {
     // tab bar btn click event to change stacked page
     connect(windowBar, &WindowBar::BarBtnClick, stackedPage, &QStackedWidget::setCurrentIndex);
@@ -72,13 +69,19 @@ void MainWindow::SignalsAndSlots()
 void MainWindow::loadStyleSheet(const Theme theme)
 {
     if (!styleSheet().isEmpty() && theme == currentTheme)
+    {
         return;
+    }
+
     currentTheme = theme;
 
-    if (QFile qss(theme == Dark ? QStringLiteral(":/style/dark.qss") : QStringLiteral(":/style/light.qss")); qss.open(QIODevice::ReadOnly | QIODevice::Text))
+    QString styleSheetPath = theme == Dark ? ":/style/dark.qss" : ":/style/light.qss";
+    QFile qss(styleSheetPath);
+    if (qss.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         setStyleSheet(QString::fromUtf8(qss.readAll()));
-        Q_EMIT themeChanged();
+        emit themeChanged();
+        qss.close();
     }
 }
 
@@ -86,20 +89,20 @@ bool MainWindow::event(QEvent* event)
 {
     switch (event->type())
     {
-    case QEvent::WindowActivate: {
+    case QEvent::WindowActivate:
+    {
         auto menu = menuWidget();
         menu->setProperty("bar-active", true);
         style()->polish(menu);
         break;
     }
-
-    case QEvent::WindowDeactivate: {
+    case QEvent::WindowDeactivate:
+    {
         auto menu = menuWidget();
         menu->setProperty("bar-active", false);
         style()->polish(menu);
         break;
     }
-
     default:
         break;
     }
@@ -140,57 +143,60 @@ static inline void emulateLeaveEvent(QWidget* widget)
         }
     });
 }
+
 void MainWindow::loadWindowsSystemButton()
 {
-    // auto windowBar = new Ui::WindowBar();
-    //
-    // auto minButton = new Ui::WindowButton();
-    // minButton->setObjectName(QStringLiteral("min-button"));
-    // minButton->setProperty("system-button", true);
-    // minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    //
-    // auto maxButton = new Ui::WindowButton();
-    // maxButton->setCheckable(true);
-    // maxButton->setObjectName(QStringLiteral("max-button"));
-    // maxButton->setProperty("system-button", true);
-    // maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    //
-    // auto closeButton = new Ui::WindowButton();
-    // closeButton->setObjectName(QStringLiteral("close-button"));
-    // closeButton->setProperty("system-button", true);
-    // closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    //
-    // windowBar->setMinButton(minButton);
-    // windowBar->setMaxButton(maxButton);
-    // windowBar->setCloseButton(closeButton);
-    //
-    // windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
-    // windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
-    // windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
-    //
-    //
-    // // 3. Adds simulated mouse events to the title bar buttons
-    //
-    // // Emulate Window system menu button behaviors
-    //
-    // connect(windowBar, &Ui::WindowBar::minimizeRequested, this, &QWidget::showMinimized);
-    // connect(windowBar, &Ui::WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
-    //     if (max)
-    //     {
-    //         showMaximized();
-    //     }
-    //     else
-    //     {
-    //         showNormal();
-    //     }
-    //
-    //     // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
-    //     // the button remains to be hovered until the mouse move. As a result, we need to
-    //     // manually send leave events to the button.
-    //     emulateLeaveEvent(maxButton);
-    // });
-    // connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
+    //     auto windowBar = new Ui::WindowBar();
+
+    // #ifndef Q_OS_MAC
+    //     auto minButton = new Ui::WindowButton();
+    //     minButton->setObjectName(QStringLiteral("min-button"));
+    //     minButton->setProperty("system-button", true);
+    //     minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    //     auto maxButton = new Ui::WindowButton();
+    //     maxButton->setCheckable(true);
+    //     maxButton->setObjectName(QStringLiteral("max-button"));
+    //     maxButton->setProperty("system-button", true);
+    //     maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    //     auto closeButton = new Ui::WindowButton();
+    //     closeButton->setObjectName(QStringLiteral("close-button"));
+    //     closeButton->setProperty("system-button", true);
+    //     closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    //     windowBar->setMinButton(minButton);
+    //     windowBar->setMaxButton(maxButton);
+    //     windowBar->setCloseButton(closeButton);
+
+    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
+    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
+    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
+    // #endif
+
+    //     // 3. Adds simulated mouse events to the title bar buttons
+
+    //     // Emulate Window system menu button behaviors
+
+    //     connect(windowBar, &Ui::WindowBar::minimizeRequested, this, &QWidget::showMinimized);
+    //     connect(windowBar, &Ui::WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
+    //         if (max)
+    //         {
+    //             showMaximized();
+    //         }
+    //         else
+    //         {
+    //             showNormal();
+    //         }
+
+    //         // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
+    //         // the button remains to be hovered until the mouse move. As a result, we need to
+    //         // manually send leave events to the button.
+    //         emulateLeaveEvent(maxButton);
+    //     });
+    //     connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
 }
+
 void MainWindow::SwitchTheme(const int theme)
 {
 #ifdef Q_OS_WIN

@@ -14,13 +14,17 @@ class WindowBar : public QFrame
 
 public:
     explicit WindowBar(QWidget* parent = nullptr);
-    ~WindowBar() override;
+    ~WindowBar();
+
     [[nodiscard]] QWidget* GetHitWidget() const;
+
+private:
+    void signalsAndSlots();
+
 signals:
     void BarBtnClick(int index);
 
 private:
     Ui::WindowBar* ui;
-    void SignalsAndSlots();
     QButtonGroup* m_barBtnGroup;
 };

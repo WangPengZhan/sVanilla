@@ -25,7 +25,7 @@ std::string AbstractTable::fieldType(FieldType eType)
 }
 
 int AbstractTable::sqliteType(FieldType eType)
-{    
+{
     switch (eType)
     {
     case Integer:
@@ -45,7 +45,7 @@ int AbstractTable::sqliteType(FieldType eType)
     return -1;
 }
 
-AbstractTable::AbstractTable(SQLiteDatabase &db, const std::string &nameTable)
+AbstractTable::AbstractTable(SQLiteDatabase& db, const std::string& nameTable)
     : m_db(db)
     , m_name(nameTable)
 {
@@ -61,22 +61,22 @@ void AbstractTable::setName(const std::string& name)
     m_name = name;
 }
 
-void AbstractTable::setHeaders(const HeadType &headers)
+void AbstractTable::setHeaders(const HeadType& headers)
 {
     m_headers = headers;
 }
 
-const AbstractTable::HeadType &AbstractTable::headers() const
+const AbstractTable::HeadType& AbstractTable::headers() const
 {
     return m_headers;
 }
 
-void AbstractTable::setPrimary(const std::vector<std::string> &primary)
+void AbstractTable::setPrimary(const std::vector<std::string>& primary)
 {
     m_primary = primary;
 }
 
-const std::vector<std::string> &AbstractTable::primary() const
+const std::vector<std::string>& AbstractTable::primary() const
 {
     return m_primary;
 }

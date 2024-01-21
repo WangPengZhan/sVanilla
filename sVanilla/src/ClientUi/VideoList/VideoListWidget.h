@@ -17,8 +17,8 @@ public:
     ~VideoListItemWidget();
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
+    void setUi();
+    void signalsAndSlots();
 
 private:
     Ui::VideoListItemWidget* ui;

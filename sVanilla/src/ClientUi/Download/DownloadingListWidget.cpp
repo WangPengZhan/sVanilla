@@ -10,7 +10,7 @@ DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
     , m_gid(std::move(gid))
 {
     ui->setupUi(this);
-    SignalsAndSlots();
+    signalsAndSlots();
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -18,7 +18,7 @@ DownloadingItemWidget::~DownloadingItemWidget()
     delete ui;
 }
 
-void DownloadingItemWidget::SignalsAndSlots()
+void DownloadingItemWidget::signalsAndSlots()
 {
     connect(ui->Delete, &QPushButton::clicked, this, [this] {
         emit deleteBtnClick(m_gid);
@@ -33,12 +33,12 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
     : QListWidget(parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
-    SignalsAndSlots();
+    signalsAndSlots();
     addTaskItem("123");
     addTaskItem("456");
     addTaskItem("789");
 }
-void DownloadingListWidget::SignalsAndSlots() const
+void DownloadingListWidget::signalsAndSlots() const
 {
     // //  addTaskItem signal -> addTaskItem (core -> ui)
     // connect(Event::getInstance(), &Event::AddDownloadTask, this, &DownloadingListWidget::addTaskItem);

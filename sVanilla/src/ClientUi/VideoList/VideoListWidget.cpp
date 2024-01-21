@@ -6,9 +6,9 @@ VideoListItemWidget::VideoListItemWidget(QWidget* parent)
     , ui(new Ui::VideoListItemWidget())
 {
     ui->setupUi(this);
-    SetUi();
+    setUi();
 
-    SignalsAndSlots();
+    signalsAndSlots();
 }
 
 VideoListItemWidget::~VideoListItemWidget()
@@ -16,11 +16,11 @@ VideoListItemWidget::~VideoListItemWidget()
     delete ui;
 }
 
-void VideoListItemWidget::SetUi()
+void VideoListItemWidget::setUi()
 {
 }
 
-void VideoListItemWidget::SignalsAndSlots()
+void VideoListItemWidget::signalsAndSlots()
 {
 }
 

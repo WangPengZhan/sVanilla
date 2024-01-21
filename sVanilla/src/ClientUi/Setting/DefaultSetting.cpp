@@ -13,14 +13,14 @@ DefaultSetting::DefaultSetting(QWidget* parent)
     m_themeGroup->addButton(ui->LightThemeButton, 0);
     m_themeGroup->addButton(ui->DarkThemeButton, 1);
     m_themeGroup->addButton(ui->AutoThemeButton, 2);
-    SignalsAndSlots();
+    signalsAndSlots();
 }
 
 DefaultSetting::~DefaultSetting()
 {
     delete ui;
 }
-void DefaultSetting::SignalsAndSlots()
+void DefaultSetting::signalsAndSlots()
 {
     //   update  request information to  version label (core -> ui)
     connect(Event::getInstance(), &Event::updateAria2Version, this, [this](std::shared_ptr<aria2net::AriaVersion> version) {

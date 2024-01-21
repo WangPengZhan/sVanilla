@@ -12,7 +12,7 @@ HomePage::HomePage(QWidget* parent)
     , ui(new Ui::HomePage)
 {
     ui->setupUi(this);
-    SignalsAndSlots();
+    signalsAndSlots();
 
     auto* timer = new QTimer(this);
     timer->setInterval(5000);
@@ -26,7 +26,7 @@ HomePage::~HomePage()
 {
     delete ui;
 }
-void HomePage::SignalsAndSlots()
+void HomePage::signalsAndSlots()
 {
     // ClipBoardBtn clicked signal -> Event::AddUri (ui -> core)
     connect(ui->ClipBoardBtn, &QPushButton::clicked, this, [this] {

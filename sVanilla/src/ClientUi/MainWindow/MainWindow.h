@@ -11,7 +11,6 @@
 namespace QWK
 {
 class WidgetWindowAgent;
-class StyleAgent;
 }  // namespace QWK
 
 class MainWindow : public QMainWindow
@@ -19,15 +18,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
-    ~MainWindow();
-
     enum Theme
     {
         Dark,
         Light,
     };
     Q_ENUM(Theme)
+
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
 
 Q_SIGNALS:
     void themeChanged();
@@ -41,20 +40,18 @@ protected:
     void SearchUrl();
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
+    void setUi();
+    void signalsAndSlots();
 
 private:
     //    Ui::MainWindow* ui;
     void installWindowAgent();
-    void installStyleAgent();
     void loadStyleSheet(Theme theme);
 
     void loadWindowsSystemButton();
     Theme currentTheme{};
 
     QWK::WidgetWindowAgent* windowAgent;
-    QWK::StyleAgent* styleAgent;
     WindowBar* windowBar;
     QStackedWidget* stackedPage;
     HomePage* homePage;

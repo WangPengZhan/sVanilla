@@ -16,8 +16,8 @@ public:
     ~VideoTabItemWidget();
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
+    void setUi();
+    void signalsAndSlots();
 
 private:
     Ui::VideoTabItemWidget* ui;

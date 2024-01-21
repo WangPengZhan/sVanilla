@@ -16,7 +16,7 @@ public:
     ~DownloadingItemWidget() override;
 
 private:
-    void SignalsAndSlots();
+    void signalsAndSlots();
     Ui::DownloadingItemWidget* ui;
 signals:
     void deleteBtnClick(std::string);
@@ -43,7 +43,7 @@ public slots:
     // void openInfoDialog(const std::string& gid);
 
 private:
-    void SignalsAndSlots() const;
+    void signalsAndSlots() const;
     // QTimer* downloadIntervalTimer;
     // bool isTiemrStart = false;
     std::unordered_map<std::string, QListWidgetItem*> m_items;

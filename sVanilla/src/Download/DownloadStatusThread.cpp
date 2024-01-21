@@ -33,26 +33,31 @@ void DownloadStatusThread::downloadThread()
         {
             switch (value->status())
             {
-            case AbstractDownloader::Ready: {
+            case AbstractDownloader::Ready:
+            {
                 value->start();
                 break;
             }
-            case AbstractDownloader::Downloading: {
+            case AbstractDownloader::Downloading:
+            {
                 value->downloadStatus();
                 break;
             }
-            case AbstractDownloader::Paused: {
+            case AbstractDownloader::Paused:
+            {
                 value->pause();
                 removeKeys.push_back(key);
                 break;
             }
-            case AbstractDownloader::Stopped: {
+            case AbstractDownloader::Stopped:
+            {
                 value->stop();
                 removeKeys.push_back(key);
                 break;
             }
             case AbstractDownloader::Finished:
-            case AbstractDownloader::Error: {
+            case AbstractDownloader::Error:
+            {
                 removeKeys.push_back(key);
                 break;
             }
