@@ -7,8 +7,6 @@
 using namespace testing;
 using namespace aria2net;
 
-
-
 class Aria2RemoteTesting : public Test
 {
 public:
