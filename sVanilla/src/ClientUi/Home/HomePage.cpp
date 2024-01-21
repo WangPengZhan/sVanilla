@@ -32,21 +32,27 @@ void HomePage::SignalsAndSlots()
         if (const QString originalText = clipboard->text(); !util::UrlProcess::IsUrl(originalText))
         {
             ui->ErrorMsgLabel->setText(QStringLiteral("Not a valid url"));
-        } else {
-            emit AddUri({originalText.toStdString()});
+        }
+        else
+        {
+            getUrl({originalText.toStdString()});
         }
     });
 
     // HomeLineEdit start signal -> Event::AddUri (ui -> core)
     connect(ui->HomeLineEdit, &SearchLineEdit::Complete, this, [this] {
         qDebug() << ui->HomeLineEdit->text();
-        emit Event::getInstance() -> AddUri({ui->HomeLineEdit->text().toStdString()});
+        getUrl({ui->HomeLineEdit->text().toStdString()});
         ui->HomeLineEdit->clear();
     });
 
+    // connec
     // Event::updateMsg -> update MsgLabel (core -> ui)
     // connect(Event::getInstance(), &Event::updateMsg, this, [this](const std::string& msg) {
     //     ui->ErrorMsgLabel->setText(QString::fromStdString(msg));
     // });
-
+}
+void HomePage::getUrl(const std::list<std::string>& uris)
+{
+    emit AddUri(uris);
 }

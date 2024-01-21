@@ -26,6 +26,7 @@ signals:
 private:
     Ui::HomePage* ui;
     void SignalsAndSlots();
+    void getUrl(const std::list<std::string>& uris);
 };
 
 #endif  //_HOMEPAGE_H_
