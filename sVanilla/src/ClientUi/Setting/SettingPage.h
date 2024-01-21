@@ -13,7 +13,6 @@ public:
     HorizonNavigation *horizonNavigation;
     QStackedWidget* settingStacked;
 
-private:
     DefaultSetting* defaultPage;
     AccountSetting* accountPage;
     AdvanceSetting* advancePage;

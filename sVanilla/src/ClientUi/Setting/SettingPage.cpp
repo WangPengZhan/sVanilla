@@ -24,7 +24,7 @@ SettingPage::SettingPage(QWidget* parent)
     settingStacked->insertWidget(1, accountPage);
     settingStacked->insertWidget(2, advancePage);
 
-    connect(horizonNavigation, &HorizonNavigation::currentItemChanged, this, [this](int index) {
+    connect(horizonNavigation, &HorizonNavigation::currentItemChanged, this, [this](const int index) {
         settingStacked->setCurrentIndex(index);
     });
 }

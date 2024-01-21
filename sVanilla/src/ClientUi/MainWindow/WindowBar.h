@@ -1,11 +1,5 @@
-//
-// Created by Alanus Meminius on 2024/1/5.
-//
+#pragma once
 
-#ifndef _WINDOWBAR_H_
-#define _WINDOWBAR_H_
-
-#include <QFrame>
 #include <QToolButton>
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -22,6 +16,8 @@ public:
     explicit WindowBar(QWidget* parent = nullptr);
     ~WindowBar() override;
     [[nodiscard]] QWidget* GetHitWidget() const;
+signals:
+    void BarBtnClick(int index);
 
 private:
     Ui::WindowBar* ui;
@@ -29,4 +25,3 @@ private:
     QButtonGroup* m_barBtnGroup;
 };
 
-#endif  //_WINDOWBAR_H_

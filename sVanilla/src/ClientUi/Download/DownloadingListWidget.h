@@ -35,15 +35,16 @@ public:
     explicit DownloadingListWidget(QWidget* parent = nullptr);
 
 public slots:
-    void onCurrent(bool isCurrent);
+    // void onCurrent(bool isCurrent);
     void addTaskItem(const std::string& gid);
     void updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status);
 
-    void deleteItem(std::string);
+    void deleteItem(const std::string&);
+    // void openInfoDialog(const std::string& gid);
 
 private:
     void SignalsAndSlots() const;
-    QTimer* downloadIntervalTimer;
-    bool isTiemrStart = false;
+    // QTimer* downloadIntervalTimer;
+    // bool isTiemrStart = false;
     std::unordered_map<std::string, QListWidgetItem*> m_items;
 };

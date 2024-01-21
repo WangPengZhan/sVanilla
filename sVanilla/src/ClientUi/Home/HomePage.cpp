@@ -14,7 +14,7 @@ HomePage::HomePage(QWidget* parent)
 
     auto* timer = new QTimer(this);
     timer->setInterval(5000);
-    connect(timer, &QTimer::timeout, this, [this]() {
+    connect(timer, &QTimer::timeout, this, [this] {
         ui->ErrorMsgLabel->clear();
     });
     timer->start();
@@ -27,27 +27,26 @@ HomePage::~HomePage()
 void HomePage::SignalsAndSlots()
 {
     // ClipBoardBtn clicked signal -> Event::AddUri (ui -> core)
-    connect(ui->ClipBoardBtn, &QPushButton::clicked, this, [this](){
-        QClipboard* clipboard = QGuiApplication::clipboard();
-        QString originalText = clipboard->text();
-        if (!util::UrlProcess::IsUrl(originalText))
+    connect(ui->ClipBoardBtn, &QPushButton::clicked, this, [this] {
+        const QClipboard* clipboard = QGuiApplication::clipboard();
+        if (const QString originalText = clipboard->text(); !util::UrlProcess::IsUrl(originalText))
         {
-            ui->ErrorMsgLabel->setText("Not a valid url");
+            ui->ErrorMsgLabel->setText(QStringLiteral("Not a valid url"));
         } else {
-            emit Event::getInstance() -> AddUri({originalText.toStdString()});
+            emit AddUri({originalText.toStdString()});
         }
     });
 
     // HomeLineEdit start signal -> Event::AddUri (ui -> core)
-    connect(ui->HomeLineEdit, &SearchLineEdit::Complete, this, [this]() {
+    connect(ui->HomeLineEdit, &SearchLineEdit::Complete, this, [this] {
         qDebug() << ui->HomeLineEdit->text();
         emit Event::getInstance() -> AddUri({ui->HomeLineEdit->text().toStdString()});
         ui->HomeLineEdit->clear();
     });
 
     // Event::updateMsg -> update MsgLabel (core -> ui)
-    connect(Event::getInstance(), &Event::updateMsg, this, [this](const std::string& msg) {
-        ui->ErrorMsgLabel->setText(QString::fromStdString(msg));
-    });
+    // connect(Event::getInstance(), &Event::updateMsg, this, [this](const std::string& msg) {
+    //     ui->ErrorMsgLabel->setText(QString::fromStdString(msg));
+    // });
 
 }

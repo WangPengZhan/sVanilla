@@ -159,7 +159,8 @@ std::string AriaClient::ConstructSendData(std::string methodName, nlohmann::json
     data.params.reserve(params.size() + 1);
     data.params = std::move(params);
     data.params.insert(data.params.begin(), "token:" + GetToken());
-    if (data.params[2].empty()) {
+    if (data.params.size() > 2 && data.params[2].empty())
+    {
         data.params[2] = nlohmann::json::object();
     }
     qDebug() << data.toString();

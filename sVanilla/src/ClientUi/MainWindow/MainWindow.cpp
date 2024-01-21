@@ -64,9 +64,9 @@ void MainWindow::SearchUrl()
 void MainWindow::SignalsAndSlots()
 {
     // tab bar btn click event to change stacked page
-    connect(Event::getInstance(), &Event::BarBtnClick, stackedPage, &QStackedWidget::setCurrentIndex);
+    connect(windowBar, &WindowBar::BarBtnClick, stackedPage, &QStackedWidget::setCurrentIndex);
     // theme QRadioBtn toggle event to change theme
-    connect(Event::getInstance(), &Event::UpdateTheme, this, &MainWindow::SwitchTheme);
+    connect(settingPage->defaultPage,&DefaultSetting::UpdateTheme,this,&MainWindow::SwitchTheme);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)
@@ -191,7 +191,7 @@ void MainWindow::loadWindowsSystemButton()
     // });
     // connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
 }
-void MainWindow::SwitchTheme(int theme)
+void MainWindow::SwitchTheme(const int theme)
 {
 #ifdef Q_OS_WIN
 

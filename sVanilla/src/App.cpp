@@ -8,7 +8,7 @@
 #include "App.h"
 #include "ClientUi/Event.h"
 
-App::App(int argc, char** argv)
+App::App(const int argc, char** argv)
     : _argc(argc),
       _argv(argv)
 {
@@ -54,6 +54,14 @@ void App::loadSettings()
 }
 void App::setHighDpi()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
+    qputenv("QT_DPI_ADJUSTMENT_POLICY", "AdjustDpi");
+#endif  // Qt < 6.2.0
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+#endif  // Qt < 6.0.0
+
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 }
 void App::startAriaServer() const
@@ -68,71 +76,56 @@ void App::startAriaServer() const
 
 void App::SignalsAndSlots()
 {
-    // window bar button clicked signal -> Event::BarBtnClick (ui -> core)
-    connect(Event::getInstance(), &Event::BarBtnClick, this, [this](int index) {
-        if (index == 2)
-        {
-            emit Event::getInstance()->OnDownloadCurrent(true);
-        }
-        else
-        {
-            emit Event::getInstance()->OnDownloadCurrent(false);
-        }
-        if (index == 3)
-        {
-            updateAria2Status();
-        }
-    });
 
     // AddUri signal -> Event::AddUri (ui -> core)
-    connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
+    // connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
 
     // download interval timer -> Event::IntervalUpdateDownloadStatus (ui -> core)
-    connect(Event::getInstance(), &Event::IntervalUpdateDownloadStatus, this, &App::updateDownloadStatus);
+    // connect(Event::getInstance(), &Event::IntervalUpdateDownloadStatus, this, &App::updateDownloadStatus);
 }
 
-void App::updateAria2Status()
-{
-    const auto version = std::make_shared<aria2net::AriaVersion>(ariaClient.GetAriaVersionAsync());
-    if (!version->id.empty() && (version->error.message.empty()))
-    {
-        isConnect = true;
-    }
-    emit Event::getInstance()->updateAria2Version(version);
-}
-
-void App::updateDownloadStatus()
-{
-    const std::list<std::string>& gids = downloadManager->downloadGIDs;
-    if (gids.empty())
-    {
-        return;
-    }
-    for (const auto& gid : gids)
-    {
-        const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
-        if (!status->result.gid.empty() && status->error.message.empty())
-        {
-            emit Event::getInstance()->updateDownloadStatus(status);
-        }
-    }
-}
-
-void App::addUri(const std::list<std::string>& uris)
-{
-    const auto res = ariaClient.AddUriAsync(uris, option, -1);
-    if (const auto err = res.error.message; !err.empty())
-    {
-        updateHomeMsg(err);
-    }
-    else
-    {
-        downloadManager->addDownloadGID(res.result);
-        updateHomeMsg("Add success");
-    }
-}
-
-void App::updateHomeMsg(std::string msg)
-{
-    emit Event::getInstance()->updateMsg(std::move(msg));
-}
+// void App::updateAria2Status()
+// {
+//     const auto version = std::make_shared<aria2net::AriaVersion>(ariaClient.GetAriaVersionAsync());
+//     if (!version->id.empty() && (version->error.message.empty()))
+//     {
+//         isConnect = true;
+//     }
+//     emit Event::getInstance()->updateAria2Version(version);
+// }
+//
+// void App::updateDownloadStatus()
+// {
+//     const std::list<std::string>& gids = downloadManager->downloadGIDs;
+//     if (gids.empty())
+//     {
+//         return;
+//     }
+//     for (const auto& gid : gids)
+//     {
+//         const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
+//         if (!status->result.gid.empty() && status->error.message.empty())
+//         {
+//             emit Event::getInstance()->updateDownloadStatus(status);
+//         }
+//     }
+// }
+//
+// void App::addUri(const std::list<std::string>& uris)
+// {
+//     const auto res = ariaClient.AddUriAsync(uris, option, -1);
+//     if (const auto err = res.error.message; !err.empty())
+//     {
+//         updateHomeMsg(err);
+//     }
+//     else
+//     {
+//         downloadManager->addDownloadGID(res.result);
+//         updateHomeMsg("Add success");
+//     }
+// }
+//
+// void App::updateHomeMsg(std::string msg)
+// {
+//     emit Event::getInstance()->updateMsg(std::move(msg));
+// }

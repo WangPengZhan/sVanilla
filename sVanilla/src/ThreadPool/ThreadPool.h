@@ -58,7 +58,9 @@ template <class F, class... Args> auto ThreadPool::enqueue(F&& f, Args&&... args
         {
             throw std::runtime_error("enqueue on stopped ThreadPool");
         }
-        m_tasks.emplace_back([task]() { (*task)(); });
+        m_tasks.emplace_back([task]() {
+            (*task)();
+        });
     }
     m_condition.notify_one();
 

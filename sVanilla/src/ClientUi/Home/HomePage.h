@@ -21,7 +21,8 @@ class HomePage : public QWidget
 public:
     explicit HomePage(QWidget* parent = nullptr);
     ~HomePage() override;
-
+signals:
+    void AddUri(const std::list<std::string>& uris);
 private:
     Ui::HomePage* ui;
     void SignalsAndSlots();

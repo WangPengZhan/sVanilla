@@ -21,6 +21,8 @@ class DefaultSetting : public QWidget
 public:
     explicit DefaultSetting(QWidget* parent = nullptr);
     ~DefaultSetting() override;
+    signals:
+    void UpdateTheme(int theme);
 
 private:
     Ui::DefaultSetting* ui;

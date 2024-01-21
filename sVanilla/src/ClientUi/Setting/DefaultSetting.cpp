@@ -49,8 +49,8 @@ void DefaultSetting::SignalsAndSlots()
 
     // transfer theme btn click signal to core to update theme(ui -> core)
     connect(m_themeGroup, &QButtonGroup::buttonClicked, this, [this](QAbstractButton* button) {
-        int id = m_themeGroup->id(button);
-        emit Event::getInstance() -> UpdateTheme(id);
+        const int id = m_themeGroup->id(button);
+        emit UpdateTheme(id);
     });
 }
 void DefaultSetting::updateStatus(const std::string& status)

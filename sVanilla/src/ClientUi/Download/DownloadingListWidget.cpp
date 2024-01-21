@@ -30,8 +30,7 @@ void DownloadingItemWidget::updateStatus()
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
-    : QListWidget(parent),
-      downloadIntervalTimer(new QTimer(this))
+    : QListWidget(parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     SignalsAndSlots();
@@ -41,29 +40,29 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 }
 void DownloadingListWidget::SignalsAndSlots() const
 {
-    //  addTaskItem signal -> addTaskItem (core -> ui)
-    connect(Event::getInstance(), &Event::AddDownloadTask, this, &DownloadingListWidget::addTaskItem);
-    // update download information to ui (core -> ui)
-    connect(Event::getInstance(), &Event::updateDownloadStatus, this, &DownloadingListWidget::updateItem);
-    // interval update download status (timer -> core)
-    connect(downloadIntervalTimer, &QTimer::timeout, Event::getInstance(), &Event::IntervalUpdateDownloadStatus);
-    // current row changed signal -> onCurrent (ui -> core)
-    connect(Event::getInstance(), &Event::OnDownloadCurrent, this, &DownloadingListWidget::onCurrent);
+    // //  addTaskItem signal -> addTaskItem (core -> ui)
+    // connect(Event::getInstance(), &Event::AddDownloadTask, this, &DownloadingListWidget::addTaskItem);
+    // // update download information to ui (core -> ui)
+    // connect(Event::getInstance(), &Event::updateDownloadStatus, this, &DownloadingListWidget::updateItem);
+    // // interval update download status (timer -> core)
+    // connect(downloadIntervalTimer, &QTimer::timeout, Event::getInstance(), &Event::IntervalUpdateDownloadStatus);
+    // // current row changed signal -> onCurrent (ui -> core)
+    // connect(Event::getInstance(), &Event::OnDownloadCurrent, this, &DownloadingListWidget::onCurrent);
 }
-
-void DownloadingListWidget::onCurrent(bool isCurrent)
-{
-    if (isCurrent)
-    {
-        downloadIntervalTimer->start(1000);
-        isTiemrStart = true;
-    }
-    else if (isTiemrStart)
-    {
-        downloadIntervalTimer->stop();
-        isTiemrStart = false;
-    }
-}
+//
+// void DownloadingListWidget::onCurrent(const bool isCurrent)
+// {
+//     if (isCurrent)
+//     {
+//         downloadIntervalTimer->start(1000);
+//         isTiemrStart = true;
+//     }
+//     else if (isTiemrStart)
+//     {
+//         downloadIntervalTimer->stop();
+//         isTiemrStart = false;
+//     }
+// }
 void DownloadingListWidget::addTaskItem(const std::string& gid)
 {
     const auto newItem = new DownloadingItemWidget(gid, this);
@@ -85,7 +84,7 @@ void DownloadingListWidget::updateItem(const std::shared_ptr<aria2net::AriaTellS
         }
     }
 }
-void DownloadingListWidget::deleteItem(std::string gid)
+void DownloadingListWidget::deleteItem(const std::string& gid)
 {
     const int row = this->row(m_items[gid]);
     this->takeItem(row);

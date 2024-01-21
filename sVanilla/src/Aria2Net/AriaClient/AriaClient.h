@@ -70,7 +70,7 @@ public:
 
 template <class Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
 {
-    std::string res = ConstructSendData(std::move(methodName), params);
+    std::string res = ConstructSendData(std::move(methodName), std::move(params));
     if (res.empty()) {
         return Result();
     }
