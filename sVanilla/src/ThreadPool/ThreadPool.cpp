@@ -1,8 +1,8 @@
 #include "ThreadPool.h"
 
 ThreadPool::ThreadPool(size_t threads)
-    : m_stop(false),
-      m_numThreads(threads)
+    : m_stop(false)
+    , m_numThreads(threads)
 {
     if (threads == 0)
     {

@@ -1,28 +1,31 @@
-
+#include "Logger/Dump.h"
+#include "ClientUi/Mainwindow/Restarter.h"
+#include "ClientUi/Mainwindow/SingleAppHelper.h"
+#include "ClientUi/Mainwindow/SApplication.h"
+#include "ClientUi/Mainwindow/MainWindow.h"
 #include "App.h"
 
 int main(int argc, char* argv[])
 {
-    auto a = std::make_unique<App>(argc, argv);
-    return a->exec();
-//    DumpColletor::registerDumpHandle();
-//    Logger::getInstance();
-//
-//    QApplication app(argc, argv);
-//
-//    aria2net::AriaServer ariaServer;
-//    ariaServer.setErrorFunc([] {});
-//    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
-//
-//    MainWindow maimWindow;
-//    maimWindow.show();
-//
-//    return app.exec();
-}
+    DumpColletor::registerDumpHandle();
 
-void test()
-{
-    if (true)
+    SingleAppHelper singleAppHelper;
+    if (singleAppHelper.isHaveInstance())
     {
+        return 0;
     }
+
+    Restarter restarter(argc, argv);
+
+    SApplication app(argc, argv);
+
+    App sVanilla(argc, argv);
+    sVanilla.init();
+
+    MainWindow maimWindow;
+    maimWindow.show();
+
+    sVanilla.updateAria2Status();
+
+    return restarter.restartOrExit(app.exec());
 }

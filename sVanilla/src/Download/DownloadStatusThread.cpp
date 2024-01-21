@@ -6,7 +6,9 @@
 namespace download
 {
 
-DownloadStatusThread::DownloadStatusThread() : m_running(true), m_thread(&DownloadStatusThread::downloadThread, this)
+DownloadStatusThread::DownloadStatusThread()
+    : m_running(true)
+    , m_thread(&DownloadStatusThread::downloadThread, this)
 {
 }
 

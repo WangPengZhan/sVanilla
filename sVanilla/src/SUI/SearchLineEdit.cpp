@@ -3,8 +3,8 @@
 #include "ClientUi/Event.h"
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
-    : QLineEdit(parent),
-      ui(new Ui::SearchLineEdit())
+    : QLineEdit(parent)
+    , ui(new Ui::SearchLineEdit())
 {
     ui->setupUi(this);
     SetUi();
@@ -52,5 +52,4 @@ void SearchLineEdit::SignalsAndSlots()
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
         ui->ClearBtn->setVisible(!text.isEmpty());
     });
-
 }

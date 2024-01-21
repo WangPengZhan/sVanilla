@@ -24,4 +24,3 @@ private:
     void SignalsAndSlots();
     QButtonGroup* m_barBtnGroup;
 };
-

@@ -5,18 +5,19 @@
 #include <mutex>
 #include "Aria2Net/Protocol/Protocol.h"
 
-class Event final : public QObject {
+class Event final : public QObject
+{
     Q_OBJECT
 public:
-    static Event*getInstance();
+    static Event* getInstance();
 
 public:
-    explicit Event(QObject *parent = nullptr);
-    Event&operator=(Event&) = delete;
+    explicit Event(QObject* parent = nullptr);
+    Event& operator=(Event&) = delete;
     Event(Event&) = delete;
 
 private:
-    static Event*m_appEvent_ptr;
+    static Event* m_appEvent_ptr;
     static std::mutex m_mutex;
 
 public slots:
@@ -29,12 +30,10 @@ signals:
     void IntervalUpdateDownloadStatus();
     void OnDownloadCurrent(bool isCurrent);
 
-
     // (core -> ui)
     void updateAria2Version(std::shared_ptr<aria2net::AriaVersion> version);
     void updateDownloadStatus(std::shared_ptr<aria2net::AriaTellStatus> status);
     void updateMsg(std::string msg);
-
 };
 
 #pragma clang diagnostic pop

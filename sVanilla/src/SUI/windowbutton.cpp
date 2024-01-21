@@ -36,7 +36,8 @@ void WindowButtonPrivate::reloadIcon()
     }
 }
 
-WindowButton::WindowButton(QWidget* parent) : WindowButton(*new WindowButtonPrivate(), parent)
+WindowButton::WindowButton(QWidget* parent)
+    : WindowButton(*new WindowButtonPrivate(), parent)
 {
 }
 
@@ -95,7 +96,9 @@ void WindowButton::mouseDoubleClickEvent(QMouseEvent* event)
     }
 }
 
-WindowButton::WindowButton(WindowButtonPrivate& d, QWidget* parent) : QPushButton(parent), d_ptr(&d)
+WindowButton::WindowButton(WindowButtonPrivate& d, QWidget* parent)
+    : QPushButton(parent)
+    , d_ptr(&d)
 {
     d.q_ptr = this;
 

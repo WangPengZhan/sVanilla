@@ -16,7 +16,7 @@ TEST(TheadPool_Test, INIT)
 {
     spdlog::rotating_logger_mt<spdlog::async_factory>("TheadPool", "log/TheadPool.log", 1024 * 1024 * 10, 100);
 
-    ThreadPool &threadPool = ThreadPool::instance();
+    ThreadPool& threadPool = ThreadPool::instance();
     std::cout << "threadPool.numThreads() = " << threadPool.numThreads() << std::endl;
 
     EXPECT_EQ(threadPool.numThreads(), std::thread::hardware_concurrency());
@@ -24,7 +24,7 @@ TEST(TheadPool_Test, INIT)
 
 TEST(TheadPool_Test, EN)
 {
-    //spdlog::rotating_logger_mt<spdlog::async_factory>("TheadPool", "log/TheadPool.log", 1024 * 1024 * 10, 100);
+    // spdlog::rotating_logger_mt<spdlog::async_factory>("TheadPool", "log/TheadPool.log", 1024 * 1024 * 10, 100);
 
     ThreadPool& threadPool = ThreadPool::instance();
     std::cout << "threadPool.numThreads() = " << threadPool.numThreads() << std::endl;

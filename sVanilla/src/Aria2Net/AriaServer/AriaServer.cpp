@@ -11,7 +11,8 @@
 namespace aria2net
 {
 
-AriaServer::AriaServer() : m_aria2Process(std::make_unique<QProcess>())
+AriaServer::AriaServer()
+    : m_aria2Process(nullptr)
 {
 }
 
@@ -23,6 +24,7 @@ AriaServer::~AriaServer()
 void AriaServer::startServerAsync()
 {
     m_future = std::async(std::launch::async, [&]() {
+        m_aria2Process = std::make_unique<QProcess>();
         QString ariaPath = QApplication::applicationDirPath() + "/aria/";
         QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
         QString sessionFile = ariaPath + "aira.session";

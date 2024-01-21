@@ -27,8 +27,8 @@ VideoView BilibiliClient::GetVideoView(const std::string& bvid)
 PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
 {
     // "https://api.bilibili.com/x/player/playurl?cid=%s&qn=125&fourk=1&fnver=0&fnval=4048&bvid=%s";
-    std::string url = videoPlayUrl + std::string("?from_client=BROWSER&fourk=1&fnver=0&fnval=4048&cid=") + 
-                      std::to_string(cid) + "&qn=" + std::to_string(qn) + "&from_client=BROWSER&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
+    std::string url = videoPlayUrl + std::string("?from_client=BROWSER&fourk=1&fnver=0&fnval=4048&cid=") + std::to_string(cid) + "&qn=" + std::to_string(qn) +
+                      "&from_client=BROWSER&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
     std::string response;
     InitBiliDefaultHeaders();
     HttpGet(url, response);
@@ -118,7 +118,9 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     return json["data"];
 }
 
-BilibiliClient::BilibiliClient() : CNetWork(), m_logined(false)
+BilibiliClient::BilibiliClient()
+    : CNetWork()
+    , m_logined(false)
 {
     std::string origin = "origin: ";
     AppendHeaders(origin + mainUrl);

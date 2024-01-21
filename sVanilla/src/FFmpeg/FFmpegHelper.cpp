@@ -15,8 +15,7 @@ namespace ffmpeg
 {
 constexpr char ffmpegCommand[] = R"(-i "%1" -i "%2" -acodec copy -vcodec copy -f mp4 "%3")";
 
-FFmpegHelper::FFmpegHelper()
-= default;
+FFmpegHelper::FFmpegHelper() = default;
 
 FFmpegHelper::~FFmpegHelper()
 {
@@ -25,7 +24,8 @@ FFmpegHelper::~FFmpegHelper()
 
 void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo)
 {
-    FFmpegHelper::mergeVideo(mergeInfo, [] {}, [] {});
+    FFmpegHelper::mergeVideo(
+        mergeInfo, [] {}, [] {});
 }
 
 void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
@@ -42,7 +42,9 @@ FFmpegHelper& FFmpegHelper::globalInstance()
 void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
 {
     // 检测上一次已经完成的合并移除
-    m_futures.remove_if([](const std::future<bool>& future) { return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready; });
+    m_futures.remove_if([](const std::future<bool>& future) {
+        return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+    });
 
     // 启动新的合并
     std::future<bool> result = std::async(std::launch::async, [mergeInfo, errorFunc = std::move(errorFunc), finishedFunc = std::move(finishedFunc)]() -> bool {

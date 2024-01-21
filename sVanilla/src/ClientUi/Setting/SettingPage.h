@@ -6,11 +6,12 @@
 #include "AccountSetting.h"
 #include "AdvanceSetting.h"
 
-class SettingPage final : public QWidget{
-Q_OBJECT
+class SettingPage final : public QWidget
+{
+    Q_OBJECT
 public:
     explicit SettingPage(QWidget* parent = nullptr);
-    HorizonNavigation *horizonNavigation;
+    HorizonNavigation* horizonNavigation;
     QStackedWidget* settingStacked;
 
     DefaultSetting* defaultPage;

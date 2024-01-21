@@ -15,15 +15,15 @@
 #include <QtWidgets/QLabel>
 
 MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent),
-      windowAgent(new QWK::WidgetWindowAgent(this)),
-      styleAgent(new QWK::StyleAgent(this)),
-      windowBar(new WindowBar(this)),
-      stackedPage(new QStackedWidget(this)),
-      homePage(new HomePage(this)),
-      galleryPage(new QWidget(this)),
-      downloadPage(new DownloadingListWidget(this)),
-      settingPage(new SettingPage(this))
+    : QMainWindow(parent)
+    , windowAgent(new QWK::WidgetWindowAgent(this))
+    , styleAgent(new QWK::StyleAgent(this))
+    , windowBar(new WindowBar(this))
+    , stackedPage(new QStackedWidget(this))
+    , homePage(new HomePage(this))
+    , galleryPage(new QWidget(this))
+    , downloadPage(new DownloadingListWidget(this))
+    , settingPage(new SettingPage(this))
 {
     installWindowAgent();
     installStyleAgent();
@@ -66,7 +66,7 @@ void MainWindow::SignalsAndSlots()
     // tab bar btn click event to change stacked page
     connect(windowBar, &WindowBar::BarBtnClick, stackedPage, &QStackedWidget::setCurrentIndex);
     // theme QRadioBtn toggle event to change theme
-    connect(settingPage->defaultPage,&DefaultSetting::UpdateTheme,this,&MainWindow::SwitchTheme);
+    connect(settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)

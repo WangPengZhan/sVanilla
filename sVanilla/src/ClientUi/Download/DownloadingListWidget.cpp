@@ -5,9 +5,9 @@
 #include "ClientUi/Event.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
-    : QWidget(parent),
-      ui(new Ui::DownloadingItemWidget),
-      m_gid(std::move(gid))
+    : QWidget(parent)
+    , ui(new Ui::DownloadingItemWidget)
+    , m_gid(std::move(gid))
 {
     ui->setupUi(this);
     SignalsAndSlots();

@@ -8,8 +8,8 @@
 #include "ui_AccountSetting.h"
 
 AccountSetting::AccountSetting(QWidget* parent)
-    : QWidget(parent),
-      ui(new Ui::AccountSetting)
+    : QWidget(parent)
+    , ui(new Ui::AccountSetting)
 {
     ui->setupUi(this);
 }

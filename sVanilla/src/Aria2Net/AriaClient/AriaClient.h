@@ -1,13 +1,16 @@
 #pragma once
 
-#include <QObject>
+#include <QDebug>
+
 #include <nlohmann/json.hpp>
+
 #include <utility>
-#include <Util/Setting.h>
+
+#include "Util/Setting.h"
 #include "NetWork/CNetWork.h"
 #include "Aria2Net/Protocol/Protocol.h"
 
-#define PRINT(x) qDebug() << x ;
+#define PRINT(x) qDebug() << x;
 
 namespace aria2net
 {
@@ -65,13 +68,14 @@ private:
 
 public:
     std::shared_ptr<Settings> m_settings;
-    template <class Result> Result Call(std::string methodName, nlohmann::json::array_t params);
+    template <typename Result> Result Call(std::string methodName, nlohmann::json::array_t params);
 };
 
-template <class Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
+template <typename Result> Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
 {
     std::string res = ConstructSendData(std::move(methodName), std::move(params));
-    if (res.empty()) {
+    if (res.empty())
+    {
         return Result();
     }
     PRINT(QString::fromStdString(res))

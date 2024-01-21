@@ -5,9 +5,9 @@
 #include "ClientUi/Event.h"
 
 DefaultSetting::DefaultSetting(QWidget* parent)
-    : QWidget(parent),
-      ui(new Ui::DefaultSetting),
-      m_themeGroup(new QButtonGroup(this))
+    : QWidget(parent)
+    , ui(new Ui::DefaultSetting)
+    , m_themeGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
     m_themeGroup->addButton(ui->LightThemeButton, 0);
@@ -48,7 +48,7 @@ void DefaultSetting::SignalsAndSlots()
     });
 
     // transfer theme btn click signal to core to update theme(ui -> core)
-    connect(m_themeGroup, &QButtonGroup::buttonClicked, this, [this](QAbstractButton* button) {
+    connect(m_themeGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
         const int id = m_themeGroup->id(button);
         emit UpdateTheme(id);
     });

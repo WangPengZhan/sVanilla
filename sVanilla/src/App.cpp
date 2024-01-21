@@ -1,57 +1,33 @@
 #include <QApplication>
+
 #include <sstream>
 #include <utility>
+
 #include "ClientUi/MainWindow/MainWindow.h"
 #include "Logger/Dump.h"
 #include "Logger/Logger.h"
+#include "ThreadPool/ThreadPool.h"
+#include "ThreadPool/Task.h"
+#include "ClientUi/Config/SingleConfig.h"
 
 #include "App.h"
 #include "ClientUi/Event.h"
 
 App::App(const int argc, char** argv)
-    : _argc(argc),
-      _argv(argv)
+    : _argc(argc)
+    , _argv(argv)
 {
 }
 
-int App::exec()
+void App::init()
 {
-    DumpColletor::registerDumpHandle();
-    Logger::getInstance();
-
     setHighDpi();
-    loadSettings();
     downloadManager = std::make_shared<DownloadManager>();
 
-    QApplication app(_argc, _argv);
-    MainWindow maimWindow;
-    maimWindow.show();
-
-    SignalsAndSlots();
+    signalsAndSlots();
     startAriaServer();
-    return QApplication::exec();
 }
-void App::loadSettings()
-{
-    // TODO 读取配置文件失败处理
-    settings = std::make_shared<Settings>("sVanilla.ini", Settings::IniFormat);
 
-#if 1
-    settings->write("App", "RPCAddress", "http://10.0.2.122");
-    settings->write("App", "RPCPort", "6800");
-    settings->write("App", "TOKEN", "sVanilla");
-    settings->write("App", "Remote", "true");
-#endif
-
-#if 0
-    settings->write("App", "RPCAddress", "http://localhost");
-    settings->write("App", "RPCPort", "6800");
-    settings->write("App", "TOKEN", "sVanilla");
-    settings->write("App", "Remote", "false");
-#endif
-
-    ariaClient.m_settings = settings;
-}
 void App::setHighDpi()
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
@@ -64,68 +40,98 @@ void App::setHighDpi()
 
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 }
+
 void App::startAriaServer() const
 {
-    if (!settings->read("App", "Remote").toBool())
+    auto aria2Config = SingleConfig::instance().getAriaConfig();
+    if (!aria2Config.isRemote)
     {
         aria2net::AriaServer ariaServer;
         PRINT("start aria2 local server")
         ariaServer.setErrorFunc([] {});
+        ariaServer.startServerAsync();
     }
 }
 
-void App::SignalsAndSlots()
+void App::signalsAndSlots()
 {
-
     // AddUri signal -> Event::AddUri (ui -> core)
-    // connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
+    connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
 
-    // download interval timer -> Event::IntervalUpdateDownloadStatus (ui -> core)
-    // connect(Event::getInstance(), &Event::IntervalUpdateDownloadStatus, this, &App::updateDownloadStatus);
+    /// download interval timer -> Event::IntervalUpdateDownloadStatus (ui -> core)
+    connect(Event::getInstance(), &Event::IntervalUpdateDownloadStatus, this, &App::updateDownloadStatus);
 }
 
-// void App::updateAria2Status()
-// {
-//     const auto version = std::make_shared<aria2net::AriaVersion>(ariaClient.GetAriaVersionAsync());
-//     if (!version->id.empty() && (version->error.message.empty()))
-//     {
-//         isConnect = true;
-//     }
-//     emit Event::getInstance()->updateAria2Version(version);
-// }
-//
-// void App::updateDownloadStatus()
-// {
-//     const std::list<std::string>& gids = downloadManager->downloadGIDs;
-//     if (gids.empty())
-//     {
-//         return;
-//     }
-//     for (const auto& gid : gids)
-//     {
-//         const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
-//         if (!status->result.gid.empty() && status->error.message.empty())
-//         {
-//             emit Event::getInstance()->updateDownloadStatus(status);
-//         }
-//     }
-// }
-//
-// void App::addUri(const std::list<std::string>& uris)
-// {
-//     const auto res = ariaClient.AddUriAsync(uris, option, -1);
-//     if (const auto err = res.error.message; !err.empty())
-//     {
-//         updateHomeMsg(err);
-//     }
-//     else
-//     {
-//         downloadManager->addDownloadGID(res.result);
-//         updateHomeMsg("Add success");
-//     }
-// }
-//
-// void App::updateHomeMsg(std::string msg)
-// {
-//     emit Event::getInstance()->updateMsg(std::move(msg));
-// }
+void App::updateAria2Status()
+{
+    auto taskFunc = [this]() {
+        return ariaClient.GetAriaVersionAsync();
+    };
+    auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
+    connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
+        try
+        {
+            auto result = std::any_cast<aria2net::AriaVersion>(res);
+            if (!result.id.empty() && result.error.message.empty())
+            {
+                isConnect = true;
+            }
+            emit Event::getInstance()->updateAria2Version(std::make_shared<aria2net::AriaVersion>(std::move(result)));
+        }
+        catch (const std::bad_any_cast& e)
+        {
+            updateHomeMsg(e.what());
+        }
+    });
+    ThreadPool::instance().enqueue(task);
+}
+
+void App::updateDownloadStatus()
+{
+    const std::list<std::string>& gids = downloadManager->downloadGIDs;
+    if (gids.empty())
+    {
+        return;
+    }
+    for (const auto& gid : gids)
+    {
+        const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
+        if (!status->result.gid.empty() && status->error.message.empty())
+        {
+            emit Event::getInstance()->updateDownloadStatus(status);
+        }
+    }
+}
+
+void App::addUri(const std::list<std::string>& uris)
+{
+    auto taskFunc = [this, uris]() {
+        return ariaClient.AddUriAsync(uris, option, -1);
+    };
+    auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
+    connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
+        try
+        {
+            const auto& result = std::any_cast<aria2net::AriaAddUri>(res);
+            if (!result.result.empty() && result.error.message.empty())
+            {
+                downloadManager->addDownloadGID(result.result);
+                updateHomeMsg("Add success");
+            }
+            else
+            {
+                updateHomeMsg(result.error.message);
+            }
+        }
+        catch (const std::bad_any_cast& e)
+        {
+            updateHomeMsg(e.what());
+        }
+    });
+    ThreadPool::instance().enqueue(task);
+}
+
+void App::updateHomeMsg(std::string msg)
+{
+    emit Event::getInstance()->updateMsg(std::move(msg));
+}

@@ -1,13 +1,15 @@
 #include <QClipboard>
 #include <QTimer>
+#include <QDebug>
+
 #include "HomePage.h"
 #include "ui_HomePage.h"
 #include "ClientUi/Event.h"
 #include "Util/UrlProcess.h"
 
 HomePage::HomePage(QWidget* parent)
-    : QWidget(parent),
-      ui(new Ui::HomePage)
+    : QWidget(parent)
+    , ui(new Ui::HomePage)
 {
     ui->setupUi(this);
     SignalsAndSlots();

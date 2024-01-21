@@ -69,7 +69,7 @@ TEST(Aria2Net_Test, EN)
     AriaGetFiles getFiles;
     getFiles.id = "id";
     getFiles.jsonrpc = "jsonrpc";
-    getFiles.result = { ariaUri };
+    getFiles.result = {ariaUri};
     getFiles.error = ariaError;
     o << getFiles.toString();
 

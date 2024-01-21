@@ -2,8 +2,7 @@
 // Created by Alanus Meminius on 2024/1/8.
 //
 
-#ifndef _FILESELECTOR_H_
-#define _FILESELECTOR_H_
+#pragma once
 
 #include <QLineEdit>
 
@@ -19,10 +18,15 @@ class FileSelector : public QLineEdit
     Q_OBJECT
 
 public:
-    enum Mode { FileOpen, Directory };
+    enum Mode
+    {
+        FileOpen,
+        Directory
+    };
     explicit FileSelector(QWidget* parent = nullptr);
-    explicit FileSelector(Mode mode, QWidget *parent = nullptr);
-    ~FileSelector() override;
+    explicit FileSelector(Mode mode, QWidget* parent = nullptr);
+    ~FileSelector();
+
     Mode mode() const;
     void setMode(Mode mode);
     void chooseFile();
@@ -32,9 +36,7 @@ signals:
 
 private:
     Mode m_mode = Directory;
-    class QAction *m_action = nullptr;
-    class QValidator *m_validator;
+    class QAction* m_action = nullptr;
+    class QValidator* m_validator;
     Ui::FileSelector* ui;
 };
-
-#endif  //_FILESELECTOR_H_

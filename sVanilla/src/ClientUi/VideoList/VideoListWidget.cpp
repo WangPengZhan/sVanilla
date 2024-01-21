@@ -28,5 +28,4 @@ VideoListWidget::VideoListWidget(QWidget* parent)
 {
 }
 
-VideoListWidget::~VideoListWidget()
-= default;
+VideoListWidget::~VideoListWidget() = default;

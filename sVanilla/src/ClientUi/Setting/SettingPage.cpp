@@ -2,12 +2,12 @@
 #include <QVBoxLayout>
 
 SettingPage::SettingPage(QWidget* parent)
-    : QWidget(parent),
-      horizonNavigation(new HorizonNavigation),
-      settingStacked(new QStackedWidget),
-      defaultPage(new DefaultSetting),
-      accountPage(new AccountSetting),
-      advancePage(new AdvanceSetting)
+    : QWidget(parent)
+    , horizonNavigation(new HorizonNavigation)
+    , settingStacked(new QStackedWidget)
+    , defaultPage(new DefaultSetting)
+    , accountPage(new AccountSetting)
+    , advancePage(new AdvanceSetting)
 {
     const auto layout = new QVBoxLayout();
     layout->setContentsMargins(20, 20, 0, 0);

@@ -1,11 +1,10 @@
 #include "HorizonNavigation.h"
 #include <QPainter>
 
-
 HorizonNavigation::HorizonNavigation(QWidget* parent, QStringList items)
-    : QWidget(parent),
-      itemList(std::move(items)),
-      animation(new QPropertyAnimation(this, ""))
+    : QWidget(parent)
+    , itemList(std::move(items))
+    , animation(new QPropertyAnimation(this, ""))
 {
     setUi();
 }
@@ -59,9 +58,15 @@ void HorizonNavigation::paintEvent(QPaintEvent* event)
 }
 void HorizonNavigation::mousePressEvent(QMouseEvent* event)
 {
+#if QT_VERSION > QT_VERSION_CHECK(6, 2, 0)
     if (event->position().x() / columnWidth < int(itemList.length()))
     {
         currentIndex = qIntCast(event->position().x()) / columnWidth;
+#else
+    if (event->pos().x() / columnWidth < int(itemList.length()))
+    {
+        currentIndex = event->pos().x() / columnWidth;
+#endif
         emit currentItemChanged(currentIndex);
         animation->setStartValue(preIndex * columnWidth);
         animation->setEndValue(currentIndex * columnWidth);

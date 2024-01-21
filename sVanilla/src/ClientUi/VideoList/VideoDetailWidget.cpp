@@ -2,7 +2,7 @@
 #include "VideoDetailWidget.h"
 #include "ui_VideoDetailWidget.h"
 
-VideoDetailWidget::VideoDetailWidget(QWidget *parent)
+VideoDetailWidget::VideoDetailWidget(QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::VideoDetailWidget())
 {

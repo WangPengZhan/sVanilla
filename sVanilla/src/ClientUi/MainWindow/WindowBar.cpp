@@ -27,9 +27,8 @@ QWidget* WindowBar::GetHitWidget() const
 
 void WindowBar::SignalsAndSlots()
 {
-    connect(m_barBtnGroup, &QButtonGroup::buttonClicked, this, [this](QAbstractButton* button) {
+    connect(m_barBtnGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
         const int id = m_barBtnGroup->id(button);
         emit BarBtnClick(id);
     });
-
 }

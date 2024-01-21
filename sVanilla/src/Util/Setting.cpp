@@ -3,13 +3,11 @@
 
 #include "Setting.h"
 
-CustomSettings::CustomSettings(QSettings* settings) : m_settings(settings)
-{
-}
+QSettings::Format CustomSettings::m_confFormat = registerConfFormat();
 
-void CustomSettings::setConfFormat() const
+CustomSettings::CustomSettings(QSettings* settings)
+    : m_settings(settings)
 {
-    QSettings::setDefaultFormat(ConfFormat);
 }
 
 void CustomSettings::writeSetting(const QString& group, const QString& key, const QVariant& value)
@@ -53,6 +51,11 @@ void CustomSettings::clear()
     m_settings->clear();
 }
 
+QSettings::Format CustomSettings::registerConfFormat()
+{
+    return QSettings::registerFormat("conf", readConfFile, writeConfFile);
+}
+
 bool CustomSettings::readConfFile(QIODevice& device, QSettings::SettingsMap& map)
 {
     QTextStream stream(&device);
@@ -86,7 +89,8 @@ bool CustomSettings::writeConfFile(QIODevice& device, const QSettings::SettingsM
     return true;
 }
 
-Settings::Settings(QString path, const Format format) : m_path(std::move(path))
+Settings::Settings(QString path, const Format format)
+    : m_path(std::move(path))
 {
     if (m_path.isEmpty())
     {
@@ -95,7 +99,6 @@ Settings::Settings(QString path, const Format format) : m_path(std::move(path))
     if (format == ConfFormat)
     {
         customSettings = std::make_shared<CustomSettings>(new QSettings(m_path));
-        customSettings->setConfFormat();
     }
     else if (format == IniFormat)
     {

@@ -36,7 +36,8 @@ struct TestStruct
 class TestTable : public AbstractTable
 {
 public:
-    TestTable(SQLiteDatabase& db, const std::string& nameTable) : AbstractTable(db, nameTable)
+    TestTable(SQLiteDatabase& db, const std::string& nameTable)
+        : AbstractTable(db, nameTable)
     {
         setHeaders(m_testHeader);
         setPrimary({"FieldInteger"});

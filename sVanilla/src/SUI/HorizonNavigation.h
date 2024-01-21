@@ -5,17 +5,18 @@
 #include <QPropertyAnimation>
 #include <QPaintEvent>
 
-class HorizonNavigation final : public QWidget {
+class HorizonNavigation final : public QWidget
+{
     Q_OBJECT
 public:
-    explicit HorizonNavigation(QWidget *parent = nullptr, QStringList items = {});
-    void addItems(const QStringList &items);
+    explicit HorizonNavigation(QWidget* parent = nullptr, QStringList items = {});
+    void addItems(const QStringList& items);
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent* event) override;
     //    void mouseMoveEvent(QMouseEvent *) override;
-    void mousePressEvent(QMouseEvent *) override;
-    void mouseReleaseEvent(QMouseEvent *) override;
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
 
 private:
     QStringList itemList;
@@ -25,9 +26,9 @@ private:
     int offset = 0;
     int currentIndex = 0;
     int preIndex = 0;
-    QPropertyAnimation *animation;
-    void onValeChanged(const QVariant &v);
+    QPropertyAnimation* animation;
+    void onValeChanged(const QVariant& v);
     void setUi();
 signals:
-    void currentItemChanged(const int &index);
+    void currentItemChanged(const int& index);
 };
