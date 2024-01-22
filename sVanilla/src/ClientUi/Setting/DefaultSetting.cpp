@@ -2,7 +2,6 @@
 #include <QButtonGroup>
 #include "DefaultSetting.h"
 #include "ui_DefaultSetting.h"
-#include "ClientUi/Event.h"
 
 DefaultSetting::DefaultSetting(QWidget* parent)
     : QWidget(parent)
@@ -20,34 +19,34 @@ DefaultSetting::~DefaultSetting()
 {
     delete ui;
 }
+// void DefaultSetting::UpdateAria2Version(std::shared_ptr<aria2net::AriaVersion> version)
+// {
+//     if (version->id.empty() || (!version->error.message.empty()))
+//     {
+//         updateFeatures("-");
+//         setRedStatus();
+//         if (!version->id.empty())
+//         {
+//             updateVersion(version->error.message);
+//         }
+//     }
+//     else
+//     {
+//         updateStatus("Connected");
+//         setGreenStatus();
+//         updateVersion(version->result.version);
+//         std::stringstream ss;
+//         for (const auto& str : version->result.enabledFeatures)
+//         {
+//             ss << str << "<br>";
+//         }
+//         updateFeatures(ss.str());
+//     }
+// }
 void DefaultSetting::signalsAndSlots()
 {
-    //   update  request information to  version label (core -> ui)
-    connect(Event::getInstance(), &Event::updateAria2Version, this, [this](std::shared_ptr<aria2net::AriaVersion> version) {
-        if (version->id.empty() || (!version->error.message.empty()))
-        {
-            updateFeatures("-");
-            setRedStatus();
-            if (!version->id.empty())
-            {
-                updateVersion(version->error.message);
-            }
-        }
-        else
-        {
-            updateStatus("Connected");
-            setGreenStatus();
-            updateVersion(version->result.version);
-            std::stringstream ss;
-            for (const auto& str : version->result.enabledFeatures)
-            {
-                ss << str << "<br>";
-            }
-            updateFeatures(ss.str());
-        }
-    });
-
     // transfer theme btn click signal to core to update theme(ui -> core)
+    // connect(Event::getInstance(), &Event::updateAria2Version, this, &DefaultSetting::UpdateAria2Version);
     connect(m_themeGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
         const int id = m_themeGroup->id(button);
         emit UpdateTheme(id);

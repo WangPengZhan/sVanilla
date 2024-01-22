@@ -1,9 +1,6 @@
-//
-// Created by Alanus Meminius on 2024/1/6.
-//
+#pragma once
 
-#ifndef _DEFAULTSETTING_H_
-#define _DEFAULTSETTING_H_
+#include "ClientUi/Event.h"
 
 #include <QWidget>
 
@@ -36,4 +33,3 @@ private:
     inline void setGreenStatus();
 };
 
-#endif  //_DEFAULTSETTING_H_
