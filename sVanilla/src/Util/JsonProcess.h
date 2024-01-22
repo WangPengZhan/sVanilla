@@ -1,6 +1,6 @@
 #pragma once
 
-//class nlohmann::json;
+// class nlohmann::json;
 
 namespace util
 {
@@ -11,4 +11,4 @@ public:
     static void removeNullValues(nlohmann::json& jsonObj);
 };
 
-} // namespace util
+}  // namespace util

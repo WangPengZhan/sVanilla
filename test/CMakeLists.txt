@@ -1,9 +1,6 @@
 
 enable_testing()
 include(GoogleTest)
-#include_directories(
-#    ${CMAKE_CURRENT_SOURCE_DIR}/../ThirdParty/googletest/googletest/include
-#)
 
 add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
 add_subdirectory(../ThirdParty/googletest test_binary_dir)

@@ -44,12 +44,12 @@ TEST(Aria2Net_Test, AriaClient)
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
     auto videos = playUrl.dash.video;
-    for (const auto &video : videos)
+    for (const auto& video : videos)
     {
         video_urls.push_back(video.base_url);
     }
     auto audioes = playUrl.dash.audio;
-    for (const auto &audio : audioes)
+    for (const auto& audio : audioes)
     {
         audio_urls.push_back(audio.base_url);
     }
@@ -65,13 +65,12 @@ TEST(Aria2Net_Test, AriaClient)
     ariaSendOption.dir = dirPath.toLocal8Bit().toStdString();
     ariaSendOption.out = (bvid + ".mp4");
 
-    AriaClient &ariaClient = AriaClient::globalClient();
+    AriaClient& ariaClient = AriaClient::globalClient();
     auto ariaAddUriVideo = ariaClient.AddUriAsync(video_urls, ariaSendOption);
     ariaSendOption.out = (bvid + ".mp3");
     auto ariaAddUriAudio = ariaClient.AddUriAsync(audio_urls, ariaSendOption);
 
-    auto future = std::async(std::launch::async, [&, ariaAddUriVideo, ariaAddUriAudio]()
-                             {
+    auto future = std::async(std::launch::async, [&, ariaAddUriVideo, ariaAddUriAudio]() {
         bool videoOk = false, audioOk = false;
         while (true)
         {
@@ -93,14 +92,14 @@ TEST(Aria2Net_Test, AriaClient)
             if (audioOk && videoOk)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                FFmpegHelper::mergeVideo({ dirPath.toStdString() + "/" + bvid + ".mp3",
-                    dirPath.toStdString() + "/" + bvid + ".mp4",
-                    dirPath.toStdString() + "/" + bvid + "all.mp4" });
+                FFmpegHelper::mergeVideo(
+                    {dirPath.toStdString() + "/" + bvid + ".mp3", dirPath.toStdString() + "/" + bvid + ".mp4", dirPath.toStdString() + "/" + bvid + "all.mp4"});
                 break;
             }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        } });
+        }
+    });
 
     future.get();
 }

@@ -2,8 +2,10 @@
 
 #include "windowbutton.h"
 
-namespace Ui {
-class WindowButtonPrivate {
+namespace Ui
+{
+class WindowButtonPrivate
+{
     Q_DECLARE_PUBLIC(WindowButton)
 public:
     WindowButtonPrivate();
@@ -11,7 +13,7 @@ public:
 
     void init();
 
-    WindowButton *q_ptr;
+    WindowButton* q_ptr;
 
     QIcon iconNormal;
     QIcon iconChecked;
@@ -19,4 +21,4 @@ public:
 
     void reloadIcon();
 };
-}
+}  // namespace Ui

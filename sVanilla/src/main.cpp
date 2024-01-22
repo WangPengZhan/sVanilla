@@ -1,30 +1,31 @@
-#include <QApplication>
-
-#include "ClientUi/MainWindow/MainWindow.h"
 #include "Logger/Dump.h"
-#include "Logger/Logger.h"
-#include "Aria2Net/AriaServer/AriaServer.h"
+#include "ClientUi/MainWindow/Restarter.h"
+#include "ClientUi/MainWindow/SingleAppHelper.h"
+#include "ClientUi/MainWindow/SApplication.h"
+#include "ClientUi/MainWindow/MainWindow.h"
+#include "App.h"
 
 int main(int argc, char* argv[])
 {
     DumpColletor::registerDumpHandle();
-    Logger::getInstance();
 
-    QApplication app(argc, argv);
+    SingleAppHelper singleAppHelper;
+    if (singleAppHelper.isHaveInstance())
+    {
+        return 0;
+    }
 
-    aria2net::AriaServer ariaServer;
-    ariaServer.setErrorFunc([] {});
-    ariaServer.startServerAsync();
+    Restarter restarter(argc, argv);
+
+    SApplication app(argc, argv);
+
+    App sVanilla(argc, argv);
+    sVanilla.init();
 
     MainWindow maimWindow;
     maimWindow.show();
 
-    return app.exec();
-}
+    sVanilla.updateAria2Status();
 
-void test()
-{
-    if (true)
-    {
-    }
+    return restarter.restartOrExit(app.exec());
 }

@@ -6,9 +6,9 @@ Toast::Toast(QWidget* parent)
     , ui(new Ui::Toast())
 {
     ui->setupUi(this);
-    SetUi();
+    setUi();
 
-    SignalsAndSlots();
+    signalsAndSlots();
 }
 
 Toast::~Toast()
@@ -16,12 +16,10 @@ Toast::~Toast()
     delete ui;
 }
 
-
-
-void Toast::SetUi()
+void Toast::setUi()
 {
 }
 
-void Toast::SignalsAndSlots()
+void Toast::signalsAndSlots()
 {
 }

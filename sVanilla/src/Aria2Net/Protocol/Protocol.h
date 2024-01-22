@@ -49,7 +49,8 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaUri, status, uri)
 };
 
-template <typename Result> class AriaBasicJson : public Protocol
+template <typename Result>
+class AriaBasicJson : public Protocol
 {
 public:
     std::string id;

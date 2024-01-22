@@ -1,5 +1,6 @@
 #include <QString>
 #include <QStringList>
+#include <QRegularExpression>
 
 #include "UrlProcess.h"
 
@@ -8,7 +9,9 @@ namespace util
 
 bool UrlProcess::IsUrl(const QString& text)
 {
-    return text.startsWith("http://") || text.startsWith("https://");
+    QRegularExpression url("^((http|https|ftp)://|magnet:\\?\\S+)$", QRegularExpression::CaseInsensitiveOption);
+    return url.match(text).hasMatch();
+    //    return text.startsWith("http://") || text.startsWith("https://");
 }
 
 bool UrlProcess::IsIntId(const QString& text)
@@ -31,9 +34,7 @@ bool UrlProcess::IsBvUrl(const QString& text)
 QString UrlProcess::DeleteUrlParam(const QString& url)
 {
     QStringList strList = url.split("?");
-    return strList[0].endsWith("/")
-               ? strList[0].remove(strList[0].size() - 1, 1)
-               : strList[0];
+    return strList[0].endsWith("/") ? strList[0].remove(strList[0].size() - 1, 1) : strList[0];
 }
 
 QString UrlProcess::GetId(const QString& url, const QString& baseUrl)
@@ -46,20 +47,16 @@ QString UrlProcess::GetId(const QString& url, const QString& baseUrl)
     QString tempUrl = EnableHttps(url);
     tempUrl = DeleteUrlParam(tempUrl);
 
-    tempUrl = tempUrl.replace(QString::fromLocal8Bit(ShareWwwUrl.data()),
-                              QString::fromLocal8Bit(WwwUrl.data()));
-    tempUrl = tempUrl.replace(QString::fromLocal8Bit(MobileUrl.data()),
-                              QString::fromLocal8Bit(WwwUrl.data()));
+    tempUrl = tempUrl.replace(QString::fromLocal8Bit(ShareWwwUrl.data()), QString::fromLocal8Bit(WwwUrl.data()));
+    tempUrl = tempUrl.replace(QString::fromLocal8Bit(MobileUrl.data()), QString::fromLocal8Bit(WwwUrl.data()));
 
     if (tempUrl.contains("b23.tv/ss") || tempUrl.contains("b23.tv/ep"))
     {
-        tempUrl = tempUrl.replace(QString::fromLocal8Bit(ShortUrl.data()),
-                                  QString::fromLocal8Bit(BangumiUrl.data()));
+        tempUrl = tempUrl.replace(QString::fromLocal8Bit(ShortUrl.data()), QString::fromLocal8Bit(BangumiUrl.data()));
     }
     else
     {
-        tempUrl = tempUrl.replace(QString::fromLocal8Bit(ShortUrl.data()),
-                                  QString::fromLocal8Bit(VideoUrl.data()));
+        tempUrl = tempUrl.replace(QString::fromLocal8Bit(ShortUrl.data()), QString::fromLocal8Bit(VideoUrl.data()));
     }
 
     if (!tempUrl.startsWith(baseUrl))

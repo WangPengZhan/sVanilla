@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QLineEdit>
 
 namespace Ui
@@ -21,11 +20,11 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 signals:
-    void searchCliecked();
+    void Complete();
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
+    void setUi();
+    void signalsAndSlots();
 
 private:
     Ui::SearchLineEdit* ui;

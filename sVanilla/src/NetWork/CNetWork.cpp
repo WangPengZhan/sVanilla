@@ -61,7 +61,8 @@ CNetWork::CurlHelp::~CurlHelp()
 
 CNetWork::CurlHelp CNetWork::m_curlHelp;
 
-CNetWork::CNetWork() : m_headers(nullptr)
+CNetWork::CNetWork()
+    : m_headers(nullptr)
 {
     InitDefaultHeaders();
 }

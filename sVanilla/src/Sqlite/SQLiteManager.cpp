@@ -2,6 +2,7 @@
 
 namespace SQLite
 {
+
 SQLiteManager& SQLiteManager::getInstance()
 {
     static SQLiteManager sqliteManager;
@@ -12,7 +13,7 @@ SQLiteManager::SQLiteManager()
     : m_db("data.db")
 {
 }
-SQLiteManager::~SQLiteManager()
-= default;
+
+SQLiteManager::~SQLiteManager() = default;
 
 }  // namespace SQLite

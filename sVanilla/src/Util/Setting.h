@@ -8,15 +8,18 @@ class CustomSettings
 {
 public:
     explicit CustomSettings(QSettings* settings);
-    auto setConfFormat() const -> void;
     void writeSetting(const QString& group, const QString& key, const QVariant& value);
     QVariant readSetting(const QString& group, const QString& key);
     void clear();
 
+    static QSettings::Format registerConfFormat();
+
+public:
+    static QSettings::Format m_confFormat;
+
 private:
     QSettings* m_settings;
     std::shared_mutex m_shared_mutex;
-    const QSettings::Format ConfFormat = QSettings::registerFormat("conf", readConfFile, writeConfFile);
     static bool readConfFile(QIODevice& device, QSettings::SettingsMap& map);
     static bool writeConfFile(QIODevice& device, const QSettings::SettingsMap& map);
 };

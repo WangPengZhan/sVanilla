@@ -16,8 +16,8 @@ public:
     ~VideoDetailWidget();
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
+    void setUi();
+    void signalsAndSlots();
 
 private:
     Ui::VideoDetailWidget* ui;

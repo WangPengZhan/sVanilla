@@ -1,41 +1,97 @@
 #include <QDir>
-#include <QtWidgets/QPushButton>
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
-#include <QtCore/QTime>
 #include <QtCore/QTimer>
-#include <QtWidgets/QApplication>
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
-#include <QHBoxLayout>
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#    include <QtGui/QActionGroup>
-#    include <QHBoxLayout>
-#else
-#    include <QtWidgets/QActionGroup>
-#endif
-
-#include "sVanilla/src/SUI/windowbar.h"
-#include "sVanilla/src/SUI/windowbutton.h"
-#include "BiliApi/BilibiliClient.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"
+#include "ClientUi/Setting/SettingPage.h"
 #include "Sqlite/SQLiteManager.h"
-#include "Util/UrlProcess.h"
-#include "SUI/SearchLineEdit.h"
+#include "ClientUi/Download/DownloadingListWidget.h"
+#include <QStackedWidget>
+#include <QtWidgets/QLabel>
+#include <ui_MainWindow.h>
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
+    , windowAgent(new QWK::WidgetWindowAgent(this))
+    , windowBar(new WindowBar(this))
+    , ui(new Ui::MainWindow)
 {
     installWindowAgent();
-    installStyleAgent();
-
+    ui->setupUi(this);
+    windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
     loadStyleSheet(Light);
-    SignalsAndSlots();
+    signalsAndSlots();
     resize(800, 600);
 }
 
 MainWindow::~MainWindow() = default;
+
+void MainWindow::installWindowAgent()
+{
+    windowAgent->setup(this);
+    windowAgent->setTitleBar(windowBar);
+    windowAgent->setHitTestVisible(windowBar->GetHitWidget(), true);
+
+    setMenuWidget(windowBar);
+}
+
+void MainWindow::SearchUrl()
+{
+}
+
+void MainWindow::signalsAndSlots()
+{
+    // tab bar btn click event to change stacked page
+    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    // theme QRadioBtn toggle event to change theme
+    // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
+}
+
+void MainWindow::loadStyleSheet(const Theme theme)
+{
+    if (!styleSheet().isEmpty() && theme == currentTheme)
+    {
+        return;
+    }
+
+    currentTheme = theme;
+
+    QString styleSheetPath = theme == Dark ? ":/style/dark.qss" : ":/style/light.qss";
+    QFile qss(styleSheetPath);
+    if (qss.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        setStyleSheet(QString::fromUtf8(qss.readAll()));
+        emit themeChanged();
+        qss.close();
+    }
+}
+
+bool MainWindow::event(QEvent* event)
+{
+    switch (event->type())
+    {
+    case QEvent::WindowActivate:
+    {
+        auto menu = menuWidget();
+        menu->setProperty("bar-active", true);
+        style()->polish(menu);
+        break;
+    }
+    case QEvent::WindowDeactivate:
+    {
+        auto menu = menuWidget();
+        menu->setProperty("bar-active", false);
+        style()->polish(menu);
+        break;
+    }
+    default:
+        break;
+    }
+    return QMainWindow::event(event);
+}
 
 static inline void emulateLeaveEvent(QWidget* widget)
 {
@@ -72,242 +128,78 @@ static inline void emulateLeaveEvent(QWidget* widget)
     });
 }
 
-bool MainWindow::event(QEvent* event)
+void MainWindow::loadWindowsSystemButton()
 {
-    switch (event->type())
-    {
-    case QEvent::WindowActivate: {
-        auto menu = menuWidget();
-        menu->setProperty("bar-active", true);
-        style()->polish(menu);
-        break;
-    }
+    //     auto windowBar = new Ui::WindowBar();
 
-    case QEvent::WindowDeactivate: {
-        auto menu = menuWidget();
-        menu->setProperty("bar-active", false);
-        style()->polish(menu);
-        break;
-    }
+    // #ifndef Q_OS_MAC
+    //     auto minButton = new Ui::WindowButton();
+    //     minButton->setObjectName(QStringLiteral("min-button"));
+    //     minButton->setProperty("system-button", true);
+    //     minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    default:
-        break;
-    }
-    return QMainWindow::event(event);
+    //     auto maxButton = new Ui::WindowButton();
+    //     maxButton->setCheckable(true);
+    //     maxButton->setObjectName(QStringLiteral("max-button"));
+    //     maxButton->setProperty("system-button", true);
+    //     maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    //     auto closeButton = new Ui::WindowButton();
+    //     closeButton->setObjectName(QStringLiteral("close-button"));
+    //     closeButton->setProperty("system-button", true);
+    //     closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    //     windowBar->setMinButton(minButton);
+    //     windowBar->setMaxButton(maxButton);
+    //     windowBar->setCloseButton(closeButton);
+
+    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
+    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
+    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
+    // #endif
+
+    //     // 3. Adds simulated mouse events to the title bar buttons
+
+    //     // Emulate Window system menu button behaviors
+
+    //     connect(windowBar, &Ui::WindowBar::minimizeRequested, this, &QWidget::showMinimized);
+    //     connect(windowBar, &Ui::WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
+    //         if (max)
+    //         {
+    //             showMaximized();
+    //         }
+    //         else
+    //         {
+    //             showNormal();
+    //         }
+
+    //         // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
+    //         // the button remains to be hovered until the mouse move. As a result, we need to
+    //         // manually send leave events to the button.
+    //         emulateLeaveEvent(maxButton);
+    //     });
+    //     connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
 }
 
-void MainWindow::installWindowAgent()
+void MainWindow::SwitchTheme(const int theme)
 {
-    // 1. Setup window agent
-    windowAgent = new QWK::WidgetWindowAgent(this);
-    windowAgent->setup(this);
-
-    // 2. Construct your title bar
-    auto menuBar = [this]() {
-        auto menuBar = new QMenuBar();
-
-        // Virtual menu
-        auto file = new QMenu(tr("File(&F)"), menuBar);
-        file->addAction(new QAction(tr("New(&N)"), menuBar));
-        file->addAction(new QAction(tr("Open(&O)"), menuBar));
-        file->addSeparator();
-
-        auto edit = new QMenu(tr("Edit(&E)"), menuBar);
-        edit->addAction(new QAction(tr("Undo(&U)"), menuBar));
-        edit->addAction(new QAction(tr("Redo(&R)"), menuBar));
-
-        // Theme action
-        auto darkAction = new QAction(tr("Enable dark theme"), menuBar);
-        darkAction->setCheckable(true);
-        connect(darkAction, &QAction::triggered, this, [this](bool checked) {
-            loadStyleSheet(checked ? Dark : Light);  //
-        });
-        connect(this, &MainWindow::themeChanged, darkAction, [this, darkAction]() {
-            darkAction->setChecked(currentTheme == Dark);  //
-        });
-
 #ifdef Q_OS_WIN
-        auto dwmBlurAction = new QAction(tr("Enable DWM blur"), menuBar);
-        dwmBlurAction->setCheckable(true);
-        connect(dwmBlurAction, &QAction::triggered, this, [this](bool checked) {
-            if (!windowAgent->setWindowAttribute(QStringLiteral("dwm-blur"), checked))
-            {
-                return;
-            }
-            setProperty("custom-style", checked);
-            style()->polish(this);
-        });
 
-        auto acrylicAction = new QAction(tr("Enable acrylic material"), menuBar);
-        acrylicAction->setCheckable(true);
-        connect(acrylicAction, &QAction::triggered, this, [this](bool checked) {
-            if (!windowAgent->setWindowAttribute(QStringLiteral("acrylic-material"), true))
-            {
-                return;
-            }
-            setProperty("custom-style", checked);
-            style()->polish(this);
-        });
-
-        auto micaAction = new QAction(tr("Enable mica"), menuBar);
-        micaAction->setCheckable(true);
-        connect(micaAction, &QAction::triggered, this, [this](bool checked) {
-            if (!windowAgent->setWindowAttribute(QStringLiteral("mica"), checked))
-            {
-                return;
-            }
-            setProperty("custom-style", checked);
-            style()->polish(this);
-        });
-
-        auto micaAltAction = new QAction(tr("Enable mica alt"), menuBar);
-        micaAltAction->setCheckable(true);
-        connect(micaAltAction, &QAction::triggered, this, [this](bool checked) {
-            if (!windowAgent->setWindowAttribute(QStringLiteral("mica-alt"), checked))
-            {
-                return;
-            }
-            setProperty("custom-style", checked);
-            style()->polish(this);
-        });
-
-        auto winStyleGroup = new QActionGroup(menuBar);
-        winStyleGroup->addAction(dwmBlurAction);
-        winStyleGroup->addAction(acrylicAction);
-        winStyleGroup->addAction(micaAction);
-        winStyleGroup->addAction(micaAltAction);
-#endif
-
-        // Real menu
-        auto settings = new QMenu(tr("Settings(&S)"), menuBar);
-        settings->addAction(darkAction);
-
-        menuBar->addMenu(file);
-        menuBar->addMenu(edit);
-        menuBar->addMenu(settings);
-        return menuBar;
-    }();
-
-    menuBar->setObjectName(QStringLiteral("win-menu-bar"));
-
-    auto windowBar = new Ui::WindowBar();
-
-    // for windows button
-#ifndef Q_OS_MAC
-    auto iconButton = new Ui::WindowButton();
-    iconButton->setObjectName(QStringLiteral("icon-button"));
-    iconButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-    auto minButton = new Ui::WindowButton();
-    minButton->setObjectName(QStringLiteral("min-button"));
-    minButton->setProperty("system-button", true);
-    minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-    auto maxButton = new Ui::WindowButton();
-    maxButton->setCheckable(true);
-    maxButton->setObjectName(QStringLiteral("max-button"));
-    maxButton->setProperty("system-button", true);
-    maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-    auto closeButton = new Ui::WindowButton();
-    closeButton->setObjectName(QStringLiteral("close-button"));
-    closeButton->setProperty("system-button", true);
-    closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-    windowBar->setIconButton(iconButton);
-    windowBar->setMinButton(minButton);
-    windowBar->setMaxButton(maxButton);
-    windowBar->setCloseButton(closeButton);
-#endif
-
-    windowBar->setMenuBar(menuBar);
-
-    auto BarMainWidget = new QWidget();
-    BarMainWidget->setObjectName(QStringLiteral("BarMainWidget"));
-    auto BarMainLayout = new QHBoxLayout();
-    BarMainWidget->setLayout(BarMainLayout);
-    BarMainLayout->setObjectName(QStringLiteral("BarMainLayout"));
-    BarMainLayout->setContentsMargins(100, 5, 50, 0);
-
-    auto searchLineEdit = new SearchLineEdit();
-    BarMainLayout->addWidget(searchLineEdit);
-    windowBar->setBarWidget(BarMainWidget);
-    windowBar->setHostWidget(this);
-
-    windowAgent->setTitleBar(windowBar);
-    windowAgent->setHitTestVisible(searchLineEdit, true);
-
-    setMenuWidget(windowBar);
-
-#ifndef Q_OS_MAC
-    windowAgent->setSystemButton(QWK::WindowAgentBase::WindowIcon, iconButton);
-    windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
-    windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
-    windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
-#endif
-    // 3. Adds simulated mouse events to the title bar buttons
-#ifdef Q_OS_WINDOWS
-    // Emulate Window system menu button behaviors
-    connect(iconButton, &QAbstractButton::clicked, windowAgent, [this, iconButton] {
-        iconButton->setProperty("double-click-close", false);
-
-        // Pick a suitable time threshold
-        QTimer::singleShot(75, windowAgent, [this, iconButton]() {
-            if (iconButton->property("double-click-close").toBool())
-                return;
-            windowAgent->showSystemMenu(iconButton->mapToGlobal(QPoint{0, iconButton->height()}));
-        });
-    });
-    connect(iconButton, &Ui::WindowButton::doubleClicked, this, [iconButton, this]() {
-        iconButton->setProperty("double-click-close", true);
-        close();
-    });
-#endif
-
-#ifndef Q_OS_MAC
-    connect(windowBar, &Ui::WindowBar::minimizeRequested, this, &QWidget::showMinimized);
-    connect(windowBar, &Ui::WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
-        if (max)
-        {
-            showMaximized();
-        }
-        else
-        {
-            showNormal();
-        }
-
-        // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
-        // the button remains to be hovered until the mouse move. As a result, we need to
-        // manually send leave events to the button.
-        emulateLeaveEvent(maxButton);
-    });
-    connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
-#endif
-}
-
-void MainWindow::installStyleAgent()
-{
-    styleAgent = new QWK::StyleAgent(this);
-}
-
-void MainWindow::SearchUrl()
-{
-}
-
-void MainWindow::SignalsAndSlots()
-{
-}
-
-void MainWindow::loadStyleSheet(Theme theme)
-{
-    if (!styleSheet().isEmpty() && theme == currentTheme)
-        return;
-    currentTheme = theme;
-
-    if (QFile qss(theme == Dark ? QStringLiteral(":/MainWindow/dark-style.qss") : QStringLiteral(":/MainWindow/light-style.qss"));
-        qss.open(QIODevice::ReadOnly | QIODevice::Text))
+#elif defined(Q_OS_MAC)
+    if (theme == 0)
     {
-        setStyleSheet(QString::fromUtf8(qss.readAll()));
-        Q_EMIT themeChanged();
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
+        loadStyleSheet(Light);
     }
+    else if (theme == 1)
+    {
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
+        loadStyleSheet(Dark);
+    }
+    setProperty("custom-style", true);
+    style()->polish(this);
+
+#else
+
+#endif
 }

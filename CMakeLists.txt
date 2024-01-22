@@ -54,7 +54,6 @@ set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
@@ -77,7 +76,7 @@ add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 option(ENABLE_TEST "Enable Test" OFF)
-set(ENABLE_TEST ON)
+#set(ENABLE_TEST ON)
 if (ENABLE_TEST)
     enable_testing()
     add_subdirectory(test)

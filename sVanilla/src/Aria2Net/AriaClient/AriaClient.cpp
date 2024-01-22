@@ -1,4 +1,5 @@
 #include <QUuid>
+#include <QDebug>
 
 #include "AriaClient.h"
 #include "Logger/Logger.h"
@@ -114,11 +115,11 @@ AriaAddUri AriaClient::AddUriAsync(const ListString& uris, AriaSendOption option
 {
     if (position < 0)
     {
-        return Call<AriaChangePosition>("aria2.addUri", {uris, option});
+        return Call<AriaAddUri>("aria2.addUri", {uris, option});
     }
     else
     {
-        return Call<AriaChangePosition>("aria2.addUri", {uris, option, position});
+        return Call<AriaAddUri>("aria2.addUri", {uris, option, position});
     }
 }
 
@@ -141,12 +142,14 @@ std::string AriaClient::Request(const std::string& url, const std::string& param
 
 std::string AriaClient::ConstructURL() const
 {
+    return GetRpcUri(6800);
     std::string const url = m_settings->readString("App", "RPCAddress");
     std::string const port = m_settings->readString("App", "RPCPort");
     return url + ":" + port + "/jsonrpc";
 }
 std::string AriaClient::GetToken() const
 {
+    return TOKEN;
     return m_settings->readString("App", "TOKEN");
 }
 
@@ -158,8 +161,13 @@ std::string AriaClient::ConstructSendData(std::string methodName, nlohmann::json
     data.method = std::move(methodName);
     data.params.reserve(params.size() + 1);
     data.params = std::move(params);
-    data.params.insert(data.params.begin(), "token:" + std::string(TOKEN));
-    return Request(GetRpcUri(), data.toString());
+    data.params.insert(data.params.begin(), "token:" + GetToken());
+    if (data.params.size() > 2 && data.params[2].empty())
+    {
+        data.params[2] = nlohmann::json::object();
+    }
+    qDebug() << data.toString().c_str();
+    return Request(ConstructURL(), data.toString());
 }
 
 }  // namespace aria2net

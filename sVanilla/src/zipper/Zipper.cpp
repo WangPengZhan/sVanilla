@@ -18,7 +18,8 @@ ResourceHelper::ResourceHelper(const std::function<void(void)>& fn)
     m_fns.push_back(fn);
 }
 
-ResourceHelper::ResourceHelper(const std::list<std::function<void(void)>>& fns) : m_fns(fns)
+ResourceHelper::ResourceHelper(const std::list<std::function<void(void)>>& fns)
+    : m_fns(fns)
 {
 }
 
@@ -39,12 +40,15 @@ void ResourceHelper::addFn(const std::function<void(void)>& fn)
 }
 
 Zipper::Zipper(const std::vector<std::string>& vectZipFiles, std::string strOutputFileName)
-    : m_vectZipFiles(vectZipFiles), m_strOutputFileName(std::move(strOutputFileName))
+    : m_vectZipFiles(vectZipFiles)
+    , m_strOutputFileName(std::move(strOutputFileName))
 {
 }
 
 Zipper::Zipper(std::string strZipPath, std::string strOutputFileName, std::string strRelativePath)
-    : m_strZipPath(std::move(strZipPath)), m_strOutputFileName(std::move(strOutputFileName)), m_strRelativePath(std::move(strRelativePath))
+    : m_strZipPath(std::move(strZipPath))
+    , m_strOutputFileName(std::move(strOutputFileName))
+    , m_strRelativePath(std::move(strRelativePath))
 {
 }
 
@@ -94,7 +98,9 @@ bool Zipper::zip()
         return false;
     }
 
-    ResourceHelper resurceHelper([zFile]() { zipClose(zFile, nullptr); });
+    ResourceHelper resurceHelper([zFile]() {
+        zipClose(zFile, nullptr);
+    });
 
     return collectFileInDirToZip(zFile, m_strZipPath, m_strZipPath);
 }
@@ -187,7 +193,9 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
     return true;
 }
 
-Unzipper::Unzipper(std::string strUnzipperFile, std::string strPath) : m_strUnzippedFile(std::move(strUnzipperFile)), m_strOutputPath(std::move(strPath))
+Unzipper::Unzipper(std::string strUnzipperFile, std::string strPath)
+    : m_strUnzippedFile(std::move(strUnzipperFile))
+    , m_strOutputPath(std::move(strPath))
 {
 }
 
@@ -236,7 +244,9 @@ bool Unzipper::unzip()
     {
         return false;
     }
-    resource.addFn([unzfile]() { unzCloseCurrentFile(unzfile); });
+    resource.addFn([unzfile]() {
+        unzCloseCurrentFile(unzfile);
+    });
 
     // 获取zip文件的信息
     auto* pGlobalInfo = new unz_global_info;
@@ -245,14 +255,18 @@ bool Unzipper::unzip()
     {
         return false;
     }
-    resource.addFn([pGlobalInfo]() { delete pGlobalInfo; });
+    resource.addFn([pGlobalInfo]() {
+        delete pGlobalInfo;
+    });
 
     // 解析zip文件
     auto* pFileInfo = new unz_file_info;
     char szZipFName[nMaxPath] = {0};
     char szExtraName[nMaxPath] = {0};
     char szCommName[nMaxPath] = {0};
-    resource.addFn([pFileInfo]() { delete pFileInfo; });
+    resource.addFn([pFileInfo]() {
+        delete pFileInfo;
+    });
 
     // 存放从zip中解析出来的内部文件名
     for (int i = 0; i < pGlobalInfo->number_entry; ++i)

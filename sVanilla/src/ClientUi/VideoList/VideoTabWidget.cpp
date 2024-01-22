@@ -13,11 +13,11 @@ VideoTabItemWidget::~VideoTabItemWidget()
     delete ui;
 }
 
-void VideoTabItemWidget::SetUi()
+void VideoTabItemWidget::setUi()
 {
 }
 
-void VideoTabItemWidget::SignalsAndSlots()
+void VideoTabItemWidget::signalsAndSlots()
 {
 }
 
@@ -26,5 +26,4 @@ VideoTabWidget::VideoTabWidget(QWidget* parent)
 {
 }
 
-VideoTabWidget::~VideoTabWidget()
-= default;
+VideoTabWidget::~VideoTabWidget() = default;

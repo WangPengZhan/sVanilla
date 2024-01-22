@@ -73,7 +73,9 @@ void ThreadPool::workLoop()
         std::function<void()> task;
         {
             std::unique_lock<std::mutex> lock(m_tasksMutex);
-            m_condition.wait(lock, [&] { return m_stop || !m_tasks.empty(); });
+            m_condition.wait(lock, [&] {
+                return m_stop || !m_tasks.empty();
+            });
             if (m_stop && m_tasks.empty())
             {
                 return;

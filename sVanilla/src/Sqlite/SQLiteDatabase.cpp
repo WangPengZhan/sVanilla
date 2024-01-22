@@ -4,7 +4,6 @@
 #include "SQLiteDatabase.h"
 #include "SQLiteLog.h"
 
-
 namespace SQLite
 {
 constexpr char ListTablesSql[] = "SELECT name"
@@ -225,7 +224,6 @@ bool SQLiteDatabase::prepare(const std::string& sql, SQLiteStmtPtr& stmt)
         return false;
     }
 
-
     m_lastError.clear();
 
     sqlite3_mutex_enter(sqlite3_db_mutex(m_db));
@@ -387,7 +385,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any& value)
     case SQLITE_FLOAT:
     {
         nRet = sqlite3_bind_double(m_stmt, index, std::any_cast<double>(value));
-        break; 
+        break;
     }
     case SQLITE_BLOB:
     {
@@ -459,7 +457,7 @@ std::any SQLiteDatabase::value(int index, SQLiteStmtPtr stmt)
     return ret;
 }
 
-bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStmtPtr stmt)
+bool SQLiteDatabase::bind(int index, int type, const std::any& value, SQLiteStmtPtr stmt)
 {
     assert(index >= 0);
 
@@ -492,7 +490,7 @@ bool SQLiteDatabase::bind(int index, int type, const std::any & value, SQLiteStm
     case SQLITE_FLOAT:
     {
         nRet = sqlite3_bind_double(stmt.get(), index, std::any_cast<double>(value));
-        break; 
+        break;
     }
     case SQLITE_BLOB:
     {

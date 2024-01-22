@@ -1,7 +1,7 @@
 #pragma once
-
+#include <QTimer>
 #include <QListWidget>
-#include <QWidget>
+#include "Aria2Net/Protocol/Protocol.h"
 namespace Ui
 {
 class DownloadingItemWidget;
@@ -12,15 +12,19 @@ class DownloadingItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DownloadingItemWidget(QWidget* parent = nullptr);
-    ~DownloadingItemWidget();
+    explicit DownloadingItemWidget(std::string gid, QWidget* parent = nullptr);
+    ~DownloadingItemWidget() override;
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
-
-private:
+    void signalsAndSlots();
     Ui::DownloadingItemWidget* ui;
+signals:
+    void deleteBtnClick(std::string);
+
+public:
+    std::string m_gid;
+    std::shared_ptr<aria2net::AriaTellStatus> status;
+    void updateStatus();
 };
 
 class DownloadingListWidget : public QListWidget
@@ -29,5 +33,18 @@ class DownloadingListWidget : public QListWidget
 
 public:
     explicit DownloadingListWidget(QWidget* parent = nullptr);
-    ~DownloadingListWidget();
+
+public slots:
+    // void onCurrent(bool isCurrent);
+    void addTaskItem(const std::string& gid);
+    void updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status);
+
+    void deleteItem(const std::string&);
+    // void openInfoDialog(const std::string& gid);
+
+private:
+    void signalsAndSlots() const;
+    // QTimer* downloadIntervalTimer;
+    // bool isTiemrStart = false;
+    std::unordered_map<std::string, QListWidgetItem*> m_items;
 };

@@ -6,9 +6,9 @@ TipDialog::TipDialog(QWidget* parent)
     , ui(new Ui::TipDialog())
 {
     ui->setupUi(this);
-    SetUi();
+    setUi();
 
-    SignalsAndSlots();
+    signalsAndSlots();
 }
 
 TipDialog::~TipDialog()
@@ -18,10 +18,10 @@ TipDialog::~TipDialog()
 
 
 
-void TipDialog::SetUi()
+void TipDialog::setUi()
 {
 }
 
-void TipDialog::SignalsAndSlots()
+void TipDialog::signalsAndSlots()
 {
 }

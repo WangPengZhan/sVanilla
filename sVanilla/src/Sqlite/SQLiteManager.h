@@ -18,7 +18,6 @@ private:
     SQLiteManager();
     ~SQLiteManager();
 
-
     SQLiteDatabase m_db;
 };
 

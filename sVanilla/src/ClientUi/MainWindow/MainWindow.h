@@ -1,29 +1,27 @@
 #pragma once
 
+#include "WindowBar.h"
+#include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>
-#include <QEvent>
-#include <QWidget>
-#include <QStyle>
 
-namespace QWK
-{
-class WidgetWindowAgent;
-class StyleAgent;
-}  // namespace QWK
 
+QT_BEGIN_NAMESPACE
 namespace Ui
 {
 class MainWindow;
 }
+QT_END_NAMESPACE
+
+namespace QWK
+{
+class WidgetWindowAgent;
+}  // namespace QWK
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
-    ~MainWindow();
-
     enum Theme
     {
         Dark,
@@ -31,8 +29,14 @@ public:
     };
     Q_ENUM(Theme)
 
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
+
 Q_SIGNALS:
     void themeChanged();
+
+public slots:
+    void SwitchTheme(int theme);
 
 protected:
     bool event(QEvent* event) override;
@@ -40,17 +44,17 @@ protected:
     void SearchUrl();
 
 private:
-    void SetUi();
-    void SignalsAndSlots();
+    void setUi();
+    void signalsAndSlots();
 
 private:
-    //    Ui::MainWindow* ui;
+    Ui::MainWindow* ui;
     void installWindowAgent();
-    void installStyleAgent();
     void loadStyleSheet(Theme theme);
 
+    void loadWindowsSystemButton();
     Theme currentTheme{};
 
-    QWK::WidgetWindowAgent* windowAgent{};
-    QWK::StyleAgent* styleAgent{};
+    QWK::WidgetWindowAgent* windowAgent;
+    WindowBar* windowBar;
 };
