@@ -2,7 +2,7 @@
 #include "ClientUi/MainWindow/Restarter.h"
 #include "ClientUi/MainWindow/SingleAppHelper.h"
 #include "ClientUi/MainWindow/SApplication.h"
-#include "ClientUi/Mainwindow/MainWindow.h"
+#include "ClientUi/MainWindow/MainWindow.h"
 #include "App.h"
 
 int main(int argc, char* argv[])
