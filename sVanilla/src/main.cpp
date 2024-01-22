@@ -1,7 +1,7 @@
 #include "Logger/Dump.h"
-#include "ClientUi/Mainwindow/Restarter.h"
-#include "ClientUi/Mainwindow/SingleAppHelper.h"
-#include "ClientUi/Mainwindow/SApplication.h"
+#include "ClientUi/MainWindow/Restarter.h"
+#include "ClientUi/MainWindow/SingleAppHelper.h"
+#include "ClientUi/MainWindow/SApplication.h"
 #include "ClientUi/Mainwindow/MainWindow.h"
 #include "App.h"
 
