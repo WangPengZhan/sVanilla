@@ -47,7 +47,7 @@ void MainWindow::signalsAndSlots()
     // tab bar btn click event to change stacked page
     connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
     // theme QRadioBtn toggle event to change theme
-    connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
+    // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)

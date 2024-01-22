@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ClientUi/Setting/SettingPage.h"
 #include "WindowBar.h"
 #include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>

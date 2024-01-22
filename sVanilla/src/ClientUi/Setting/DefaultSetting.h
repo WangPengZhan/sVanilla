@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ClientUi/Event.h"
-
+#include <QButtonGroup>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
