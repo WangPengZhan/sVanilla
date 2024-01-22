@@ -2,41 +2,25 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtCore/QTimer>
-
-#include <QtWidgets/QApplication>
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
-#include <widgetframe/windowbar.h>
-#include <widgetframe/windowbutton.h>
-
 #include "MainWindow.h"
 #include "MainWindowlog.h"
 #include "ClientUi/Setting/SettingPage.h"
 #include "Sqlite/SQLiteManager.h"
 #include "ClientUi/Download/DownloadingListWidget.h"
-#include "ClientUi/Event.h"
 #include <QStackedWidget>
 #include <QtWidgets/QLabel>
+#include <ui_MainWindow.h>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , windowAgent(new QWK::WidgetWindowAgent(this))
     , windowBar(new WindowBar(this))
-    , stackedPage(new QStackedWidget(this))
-    , homePage(new HomePage(this))
-    , galleryPage(new QWidget(this))
-    , downloadPage(new DownloadingListWidget(this))
-    , settingPage(new SettingPage(this))
+    , ui(new Ui::MainWindow)
 {
     installWindowAgent();
-    stackedPage->setContentsMargins(0, 50, 0, 0);
-    setCentralWidget(stackedPage);
-
-    stackedPage->insertWidget(0, homePage);
-    stackedPage->insertWidget(1, galleryPage);
-    stackedPage->insertWidget(2, downloadPage);
-    stackedPage->insertWidget(3, settingPage);
-
+    ui->setupUi(this);
     windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
     loadStyleSheet(Light);
     signalsAndSlots();
@@ -61,9 +45,9 @@ void MainWindow::SearchUrl()
 void MainWindow::signalsAndSlots()
 {
     // tab bar btn click event to change stacked page
-    connect(windowBar, &WindowBar::BarBtnClick, stackedPage, &QStackedWidget::setCurrentIndex);
+    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
     // theme QRadioBtn toggle event to change theme
-    connect(settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
+    connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)

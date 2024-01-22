@@ -1,12 +1,17 @@
 #pragma once
 
-#include "ClientUi/Download/DownloadingListWidget.h"
-#include "ClientUi/Home//HomePage.h"
 #include "ClientUi/Setting/SettingPage.h"
 #include "WindowBar.h"
 #include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>
-#include <QStackedWidget>
+
+
+QT_BEGIN_NAMESPACE
+namespace Ui
+{
+class MainWindow;
+}
+QT_END_NAMESPACE
 
 namespace QWK
 {
@@ -44,7 +49,7 @@ private:
     void signalsAndSlots();
 
 private:
-    //    Ui::MainWindow* ui;
+    Ui::MainWindow* ui;
     void installWindowAgent();
     void loadStyleSheet(Theme theme);
 
@@ -53,9 +58,4 @@ private:
 
     QWK::WidgetWindowAgent* windowAgent;
     WindowBar* windowBar;
-    QStackedWidget* stackedPage;
-    HomePage* homePage;
-    QWidget* galleryPage;
-    DownloadingListWidget* downloadPage;
-    SettingPage* settingPage;
 };
