@@ -3,6 +3,41 @@ QToolTip {
     background-color: rgba(0, 0, 0, 10%);
 }
 
+QPushButton[system-button=true] {
+    qproperty-iconSize: 12px 12px;
+    min-width: 40px;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+QPushButton#min-button {
+    qproperty-icon: url(":/icon/minimize.svg");
+}
+
+QPushButton#min-button:hover,
+QAbstractButton#min-button:focus {
+    background-color: rgba(0, 0, 0, 10%);
+}
+
+QPushButton#max-button {
+    qproperty-icon: url(":/icon/maximize.svg");
+}
+
+QPushButton#max-button:hover,
+QPushButton#max-button:focus {
+    background-color: rgba(0, 0, 0, 10%);
+}
+
+QPushButton#close-button {
+    qproperty-icon: url(":/icon/close.svg");
+}
+
+QPushButton#close-button:hover,
+QPushButton#close-button:focus {
+    background-color: #e81123;
+}
+
 /* Menu */
 
 QMenu {

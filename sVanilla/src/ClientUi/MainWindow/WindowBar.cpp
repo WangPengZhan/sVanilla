@@ -3,9 +3,9 @@
 #include "WindowBar.h"
 
 WindowBar::WindowBar(QWidget* parent)
-    : QFrame(parent),
-      ui(new Ui::WindowBar),
-      m_barBtnGroup(new QButtonGroup(this))
+    : QFrame(parent)
+    , ui(new Ui::WindowBar)
+    , m_barBtnGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
     signalsAndSlots();
@@ -23,6 +23,22 @@ WindowBar::~WindowBar()
 QWidget* WindowBar::GetHitWidget() const
 {
     return ui->Hit;
+}
+
+void WindowBar::setMinButton(QAbstractButton* btn)
+{
+    ui->horizontalLayout->insertWidget(0, btn);
+    connect(btn, &QAbstractButton::clicked, this, &WindowBar::minimizeRequested);
+}
+void WindowBar::setMaxButton(QAbstractButton* btn)
+{
+    ui->horizontalLayout->insertWidget(1, btn);
+    connect(btn, &QAbstractButton::clicked, this, &WindowBar::maximizeRequested);
+}
+void WindowBar::setCloseButton(QAbstractButton* btn)
+{
+    ui->horizontalLayout->insertWidget(2, btn);
+    connect(btn, &QAbstractButton::clicked, this, &WindowBar::closeRequested);
 }
 
 void WindowBar::signalsAndSlots()

@@ -9,6 +9,8 @@
 #include "ClientUi/Setting/SettingPage.h"
 #include "Sqlite/SQLiteManager.h"
 #include "ClientUi/Download/DownloadingListWidget.h"
+#include "SUI/windowbutton.h"
+
 #include <QStackedWidget>
 #include <QtWidgets/QLabel>
 #include <ui_MainWindow.h>
@@ -36,6 +38,10 @@ void MainWindow::installWindowAgent()
     windowAgent->setHitTestVisible(windowBar->GetHitWidget(), true);
 
     setMenuWidget(windowBar);
+
+#ifdef Q_OS_WIN
+    loadWindowsSystemButton();
+#endif
 }
 
 void MainWindow::SearchUrl()
@@ -130,55 +136,48 @@ static inline void emulateLeaveEvent(QWidget* widget)
 
 void MainWindow::loadWindowsSystemButton()
 {
-    //     auto windowBar = new Ui::WindowBar();
+    const auto minButton = new QPushButton();
+    minButton->setObjectName(QStringLiteral("min-button"));
+    minButton->setProperty("system-button", true);
+    minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    windowBar->setMinButton(minButton);
+    windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
 
-    // #ifndef Q_OS_MAC
-    //     auto minButton = new Ui::WindowButton();
-    //     minButton->setObjectName(QStringLiteral("min-button"));
-    //     minButton->setProperty("system-button", true);
-    //     minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    const auto maxButton = new QPushButton();
+    maxButton->setCheckable(true);
+    maxButton->setObjectName(QStringLiteral("max-button"));
+    maxButton->setProperty("system-button", true);
+    maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    windowBar->setMaxButton(maxButton);
+    windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
 
-    //     auto maxButton = new Ui::WindowButton();
-    //     maxButton->setCheckable(true);
-    //     maxButton->setObjectName(QStringLiteral("max-button"));
-    //     maxButton->setProperty("system-button", true);
-    //     maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    const auto closeButton = new QPushButton();
+    closeButton->setObjectName(QStringLiteral("close-button"));
+    closeButton->setProperty("system-button", true);
+    closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    windowBar->setCloseButton(closeButton);
+    windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
 
-    //     auto closeButton = new Ui::WindowButton();
-    //     closeButton->setObjectName(QStringLiteral("close-button"));
-    //     closeButton->setProperty("system-button", true);
-    //     closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    // 3. Adds simulated mouse events to the title bar buttons
+    // Emulate Window system menu button behaviors
 
-    //     windowBar->setMinButton(minButton);
-    //     windowBar->setMaxButton(maxButton);
-    //     windowBar->setCloseButton(closeButton);
+    connect(windowBar, &WindowBar::minimizeRequested, this, &QWidget::showMinimized);
+    connect(windowBar, &WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
+        if (max)
+        {
+            showMaximized();
+        }
+        else
+        {
+            showNormal();
+        }
 
-    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
-    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
-    //     windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
-    // #endif
-
-    //     // 3. Adds simulated mouse events to the title bar buttons
-
-    //     // Emulate Window system menu button behaviors
-
-    //     connect(windowBar, &Ui::WindowBar::minimizeRequested, this, &QWidget::showMinimized);
-    //     connect(windowBar, &Ui::WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
-    //         if (max)
-    //         {
-    //             showMaximized();
-    //         }
-    //         else
-    //         {
-    //             showNormal();
-    //         }
-
-    //         // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
-    //         // the button remains to be hovered until the mouse move. As a result, we need to
-    //         // manually send leave events to the button.
-    //         emulateLeaveEvent(maxButton);
-    //     });
-    //     connect(windowBar, &Ui::WindowBar::closeRequested, this, &QWidget::close);
+        // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
+        // the button remains to be hovered until the mouse move. As a result, we need to
+        // manually send leave events to the button.
+        emulateLeaveEvent(maxButton);
+    });
+    connect(windowBar, &WindowBar::closeRequested, this, &QWidget::close);
 }
 
 void MainWindow::SwitchTheme(const int theme)
