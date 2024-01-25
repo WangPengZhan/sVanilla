@@ -18,6 +18,13 @@ DownloadStatusThread::~DownloadStatusThread()
     m_thread.join();
 }
 
+bool DownloadStatusThread::addTaks(std::shared_ptr<AbstractDownloader> downloader)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto [iter, inserted] = m_downloadTasks.insert({downloader->guid(), downloader});
+    return inserted;
+}
+
 void DownloadStatusThread::stop()
 {
     m_running.store(false);
