@@ -9,9 +9,9 @@ public:
 
     void setArguments(const QStringList& args);
 
-    QString executable() const;
-    QStringList arguments() const;
-    QString workingPath() const;
+    [[nodiscard]] QString executable() const;
+    [[nodiscard]] QStringList arguments() const;
+    [[nodiscard]] QString workingPath() const;
 
     int restartOrExit(int exitCode);
     int restart(int exitCode);

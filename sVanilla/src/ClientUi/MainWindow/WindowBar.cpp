@@ -4,15 +4,10 @@
 
 WindowBar::WindowBar(QWidget* parent)
     : QFrame(parent),
-      ui(new Ui::WindowBar),
-      m_barBtnGroup(new QButtonGroup(this))
+      ui(new Ui::WindowBar)
 {
     ui->setupUi(this);
     signalsAndSlots();
-    m_barBtnGroup->addButton(ui->HomeBtn, 0);
-    m_barBtnGroup->addButton(ui->GalleryBtn, 1);
-    m_barBtnGroup->addButton(ui->DownloadBtn, 2);
-    m_barBtnGroup->addButton(ui->SettingBtn, 3);
 }
 
 WindowBar::~WindowBar()
@@ -27,8 +22,11 @@ QWidget* WindowBar::GetHitWidget() const
 
 void WindowBar::signalsAndSlots()
 {
-    connect(m_barBtnGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
-        const int id = m_barBtnGroup->id(button);
-        emit BarBtnClick(id);
-    });
+    QList<QPushButton*> btns = ui->Hit->findChildren<QPushButton*>();  // find all btns in Hit widget
+    for (int i = 0; i < btns.size(); ++i)
+    {
+        connect(btns[i], &QPushButton::clicked, [this, i] {
+            emit BarBtnClick(i);
+        });
+    }
 }

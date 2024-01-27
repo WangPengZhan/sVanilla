@@ -1,4 +1,3 @@
-#include "ClientUi/Event.h"
 #include "DownloadManager.h"
 
 template <typename T> QString formatSize(T bytesPerSec)
@@ -10,18 +9,15 @@ template <typename T> QString formatSize(T bytesPerSec)
     {
         return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB";
     }
-    else if (bytesPerSec >= Mib)
+    if (bytesPerSec >= Mib)
     {
         return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib";
     }
-    else if (bytesPerSec >= Kib)
+    if (bytesPerSec >= Kib)
     {
         return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib";
     }
-    else
-    {
-        return QString::number(bytesPerSec, 'g', 3) + "B";
-    }
+    return QString::number(bytesPerSec, 'g', 3) + "B";
 }
 
 DownloadManager::DownloadManager(QObject* parent)
@@ -30,6 +26,7 @@ DownloadManager::DownloadManager(QObject* parent)
 }
 void DownloadManager::addDownloadGID(const std::string& gid)
 {
-    emit Event::getInstance()->AddDownloadTask(gid);
+    // emit Event::getInstance()->AddDownloadTask(gid);
+
     downloadGIDs.push_back(gid);
 }

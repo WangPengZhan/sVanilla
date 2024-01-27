@@ -2,7 +2,6 @@
 
 #include <utility>
 #include "ui_DownloadingListWidget.h"
-#include "ClientUi/Event.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
     : QWidget(parent)

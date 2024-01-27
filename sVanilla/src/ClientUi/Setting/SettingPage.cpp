@@ -8,12 +8,14 @@ SettingPage::SettingPage(QWidget* parent)
     ui->setupUi(this);
 
     QStringList horizonNavigationBtn;
-    horizonNavigationBtn << QStringLiteral("Defalut")
-                         << QStringLiteral("Account")
-                         << QStringLiteral("Advanced");
+    horizonNavigationBtn << QStringLiteral("Defalut") << QStringLiteral("Account") << QStringLiteral("Advanced");
     ui->horizonNavigation->addItems(horizonNavigationBtn);
 
     connect(ui->horizonNavigation, &HorizonNavigation::currentItemChanged, this, [this](const int index) {
         ui->settingStackedPage->setCurrentIndex(index);
     });
+}
+void SettingPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version)
+{
+    ui->defaultSetting->updateAria2Version(version);
 }

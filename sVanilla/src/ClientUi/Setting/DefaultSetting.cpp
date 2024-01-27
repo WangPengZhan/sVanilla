@@ -19,30 +19,30 @@ DefaultSetting::~DefaultSetting()
 {
     delete ui;
 }
-// void DefaultSetting::UpdateAria2Version(std::shared_ptr<aria2net::AriaVersion> version)
-// {
-//     if (version->id.empty() || (!version->error.message.empty()))
-//     {
-//         updateFeatures("-");
-//         setRedStatus();
-//         if (!version->id.empty())
-//         {
-//             updateVersion(version->error.message);
-//         }
-//     }
-//     else
-//     {
-//         updateStatus("Connected");
-//         setGreenStatus();
-//         updateVersion(version->result.version);
-//         std::stringstream ss;
-//         for (const auto& str : version->result.enabledFeatures)
-//         {
-//             ss << str << "<br>";
-//         }
-//         updateFeatures(ss.str());
-//     }
-// }
+void DefaultSetting::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version)
+{
+    if (version->id.empty() || (!version->error.message.empty()))
+    {
+        updateFeatures("-");
+        setRedStatus();
+        if (!version->id.empty())
+        {
+            updateVersion(version->error.message);
+        }
+    }
+    else
+    {
+        updateStatus("Connected");
+        setGreenStatus();
+        updateVersion(version->result.version);
+        std::stringstream ss;
+        for (const auto& str : version->result.enabledFeatures)
+        {
+            ss << str << "<br>";
+        }
+        updateFeatures(ss.str());
+    }
+}
 void DefaultSetting::signalsAndSlots()
 {
     // transfer theme btn click signal to core to update theme(ui -> core)

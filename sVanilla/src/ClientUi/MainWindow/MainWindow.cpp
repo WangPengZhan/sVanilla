@@ -29,6 +29,22 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() = default;
 
+void MainWindow::updateHomeMsg(const std::string& msg) const
+{
+    ui->homePage->updateMsg(msg);
+}
+void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
+{
+    ui->settingPage->updateAria2Version(version);
+}
+void MainWindow::updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const
+{
+}
+void MainWindow::AddDownloadTask(const std::string& gid) const
+{
+    ui->downloadTab->addTaskItem(gid);
+}
+
 void MainWindow::installWindowAgent()
 {
     windowAgent->setup(this);
@@ -48,6 +64,9 @@ void MainWindow::signalsAndSlots()
     connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
     // theme QRadioBtn toggle event to change theme
     // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
+    // connect(ui->homePage, &HomePage::updateMsg, this, &MainWindow::updateHomeMsg);
+
+    connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)

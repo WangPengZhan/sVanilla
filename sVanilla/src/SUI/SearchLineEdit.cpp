@@ -1,6 +1,5 @@
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
-#include "ClientUi/Event.h"
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)

@@ -4,7 +4,6 @@
 
 #include "HomePage.h"
 #include "ui_HomePage.h"
-#include "ClientUi/Event.h"
 #include "Util/UrlProcess.h"
 
 HomePage::HomePage(QWidget* parent)
@@ -26,6 +25,15 @@ HomePage::~HomePage()
 {
     delete ui;
 }
+void HomePage::setMsgLabel(const std::string& msg)
+{
+    ui->ErrorMsgLabel->setText(QString::fromStdString(msg));
+}
+void HomePage::updateMsg(const std::string& msg)
+{
+    setMsgLabel(msg);
+}
+
 void HomePage::signalsAndSlots()
 {
     // ClipBoardBtn clicked signal -> Event::AddUri (ui -> core)
@@ -33,7 +41,7 @@ void HomePage::signalsAndSlots()
         const QClipboard* clipboard = QGuiApplication::clipboard();
         if (const QString originalText = clipboard->text(); !util::UrlProcess::IsUrl(originalText))
         {
-            ui->ErrorMsgLabel->setText(QStringLiteral("Not a valid url"));
+            setMsgLabel("Not a valid url");
         }
         else
         {
