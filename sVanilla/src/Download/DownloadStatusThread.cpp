@@ -22,19 +22,27 @@ bool DownloadStatusThread::addTaks(std::shared_ptr<AbstractDownloader> downloade
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     auto [iter, inserted] = m_downloadTasks.insert({downloader->guid(), downloader});
+    if (m_downloadTasks.size() == 1)
+    {
+        m_condition.notify_one();
+    }
     return inserted;
 }
 
 void DownloadStatusThread::stop()
 {
     m_running.store(false);
+    m_condition.notify_all();
 }
 
 void DownloadStatusThread::downloadThread()
 {
     while (m_running.load())
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_condition.wait(lock, [&] {
+            return !m_downloadTasks.empty();
+        });
         std::vector<std::string> removeKeys;
         for (auto& [key, value] : m_downloadTasks)
         {
