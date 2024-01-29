@@ -7,6 +7,8 @@
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "App.h"
 
+#include <QStandardPaths>
+
 void App::init()
 {
     setHighDpi();
@@ -14,10 +16,12 @@ void App::init()
 
     maimWindow = std::make_unique<MainWindow>();
     maimWindow->show();
-    // MainWindow maimWindow;
-    // maimWindow.show();
-    // signalsAndSlots();
+    signalsAndSlots();
     startAriaServer();
+
+    // option.dir = SingleConfig::instance().getAriaConfig().downloadDir;
+    const QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    option.dir = downloadPath.toStdString();
 }
 
 void App::setHighDpi()
@@ -33,10 +37,9 @@ void App::setHighDpi()
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 }
 
-void App::startAriaServer() const
+void App::startAriaServer()
 {
-    auto aria2Config = SingleConfig::instance().getAriaConfig();
-    if (!aria2Config.isRemote)
+    if (const auto aria2Config = SingleConfig::instance().getAriaConfig(); !aria2Config.isRemote)
     {
         aria2net::AriaServer ariaServer;
         PRINT("start aria2 local server")
@@ -47,8 +50,9 @@ void App::startAriaServer() const
 
 void App::signalsAndSlots()
 {
-
     connect(maimWindow.get(), &MainWindow::AddUri, this, &App::addUri);
+    connect(maimWindow.get(), &MainWindow::onSettingPage, this, &App::updateAria2Status);
+    connect(downloadManager.get(), &DownloadManager::toRuquestStatus, this, &App::updateDownloadStatus);
 }
 
 void App::updateAria2Status()
@@ -74,22 +78,37 @@ void App::updateAria2Status()
     });
     ThreadPool::instance().enqueue(task);
 }
-
-void App::updateDownloadStatus()
+void App::updateDownloadStatus(const std::string& gid)
 {
-    const std::list<std::string>& gids = downloadManager->downloadGIDs;
-    if (gids.empty())
-    {
-        return;
-    }
-    for (const auto& gid : gids)
-    {
-        const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
-        if (!status->result.gid.empty() && status->error.message.empty())
+    auto taskFunc = [this, gid]() {
+        return ariaClient.TellStatus(gid);
+    };
+    const auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
+    connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
+        try
         {
-            maimWindow->updateDownloadStatus(status);
+            const auto& result = std::any_cast<aria2net::AriaTellStatus>(res);
+            const auto status = std::make_shared<aria2net::AriaTellStatus>(result);
+            const auto error = downloadManager->updateDownloaderStatus(status);
+            if (const auto e = error.message; !e.empty())
+            {
+                updateHomeMsg(e);
+            }
+            else
+            {
+                const auto g = status->result.gid;
+                if (downloadManager->neededUpdate.count(g) > 0)
+                {
+                    maimWindow->updateDownloadStatus(status);
+                }
+            }
         }
-    }
+        catch (const std::bad_any_cast& e)
+        {
+            updateHomeMsg(e.what());
+        }
+    });
+    ThreadPool::instance().enqueue(task);
 }
 
 void App::addUri(const std::list<std::string>& uris)
@@ -104,8 +123,9 @@ void App::addUri(const std::list<std::string>& uris)
             const auto& result = std::any_cast<aria2net::AriaAddUri>(res);
             if (!result.result.empty() && result.error.message.empty())
             {
-                maimWindow->AddDownloadTask(result.result);
-                downloadManager->addDownloadGID(result.result);
+                auto gid = result.result;
+                maimWindow->AddDownloadTask(gid);
+                downloadManager->addDownloader(gid);
                 updateHomeMsg("Add success");
             }
             else

@@ -11,8 +11,9 @@ public:
     App() = default;
     void init();
     void signalsAndSlots();
-    void startAriaServer() const;
+    static void startAriaServer() ;
     static void setHighDpi();
+
 
 private:
     std::unique_ptr<MainWindow> maimWindow;
@@ -25,6 +26,6 @@ private:
     void updateHomeMsg(const std::string& msg) const;
 public slots:
     void updateAria2Status();
-    void updateDownloadStatus();
+    void updateDownloadStatus(const std::string& gid);
     void addUri(const std::list<std::string>& uris);
 };

@@ -39,6 +39,7 @@ public:
     void AddDownloadTask(const std::string& gid) const;
 Q_SIGNALS:
     void AddUri(const std::list<std::string>& uris);
+    void onSettingPage();
     void themeChanged();
 
 public slots:

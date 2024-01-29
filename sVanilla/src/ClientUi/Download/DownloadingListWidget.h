@@ -36,9 +36,7 @@ public:
     void addTaskItem(const std::string& gid);
 
 public slots:
-    // void onCurrent(bool isCurrent);
     void updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status);
-
     void deleteItem(const std::string&);
     // void openInfoDialog(const std::string& gid);
 

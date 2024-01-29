@@ -3,6 +3,28 @@
 #include <utility>
 #include "ui_DownloadingListWidget.h"
 
+
+template <typename T>
+QString formatSize(T bytesPerSec)
+{
+    const double Gib = pow(2, 30);
+    const double Mib = pow(2, 20);
+    const double Kib = pow(2, 10);
+    if (bytesPerSec >= Gib)
+    {
+        return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB";
+    }
+    if (bytesPerSec >= Mib)
+    {
+        return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib";
+    }
+    if (bytesPerSec >= Kib)
+    {
+        return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib";
+    }
+    return QString::number(bytesPerSec, 'g', 3) + "B";
+}
+
 DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadingItemWidget)
@@ -26,6 +48,9 @@ void DownloadingItemWidget::signalsAndSlots()
 void DownloadingItemWidget::updateStatus()
 {
     ui->Title->setText(QString::fromStdString(status->result.dir));
+    ui->Speed->setText(formatSize(QString::fromStdString(status->result.downloadSpeed).toInt()));
+    const auto progress = QString::fromStdString(status->result.completedLength).toInt() * 100 / QString::fromStdString(status->result.totalLength).toInt();
+    ui->progressBar->setValue(progress);
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
@@ -33,56 +58,32 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
-    addTaskItem("123");
-    addTaskItem("456");
-    addTaskItem("789");
+
 }
 void DownloadingListWidget::signalsAndSlots() const
 {
-    // //  addTaskItem signal -> addTaskItem (core -> ui)
-    // connect(Event::getInstance(), &Event::AddDownloadTask, this, &DownloadingListWidget::addTaskItem);
-    // // update download information to ui (core -> ui)
-    // connect(Event::getInstance(), &Event::updateDownloadStatus, this, &DownloadingListWidget::updateItem);
-    // // interval update download status (timer -> core)
-    // connect(downloadIntervalTimer, &QTimer::timeout, Event::getInstance(), &Event::IntervalUpdateDownloadStatus);
-    // // current row changed signal -> onCurrent (ui -> core)
-    // connect(Event::getInstance(), &Event::OnDownloadCurrent, this, &DownloadingListWidget::onCurrent);
+
 }
-//
-// void DownloadingListWidget::onCurrent(const bool isCurrent)
-// {
-//     if (isCurrent)
-//     {
-//         downloadIntervalTimer->start(1000);
-//         isTiemrStart = true;
-//     }
-//     else if (isTiemrStart)
-//     {
-//         downloadIntervalTimer->stop();
-//         isTiemrStart = false;
-//     }
-// }
+
 void DownloadingListWidget::addTaskItem(const std::string& gid)
 {
     const auto newItem = new DownloadingItemWidget(gid, this);
     const auto listWidgetItem = new QListWidgetItem(this);
     listWidgetItem->setSizeHint(newItem->sizeHint());
     this->setItemWidget(listWidgetItem, newItem);
-    m_items.insert({gid, listWidgetItem});
+    m_items.insert(std::make_pair(gid, listWidgetItem));
     connect(newItem, &DownloadingItemWidget::deleteBtnClick, this, &DownloadingListWidget::deleteItem);
 }
+
 void DownloadingListWidget::updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status)
 {
-    if (const auto& r = status->result; !r.gid.empty())
-    {
-        const auto item = qobject_cast<DownloadingItemWidget*>(itemWidget(m_items[r.gid]));
-        if (!r.errorCode.empty())
-        {
-            item->status = status;
-            item->updateStatus();
-        }
-    }
+    const auto gid = status->result.gid;
+    const auto item = itemWidget(m_items[gid]);
+    const auto widget = qobject_cast<DownloadingItemWidget*>(item);
+    widget->status = status;
+    widget->updateStatus();
 }
+
 void DownloadingListWidget::deleteItem(const std::string& gid)
 {
     const int row = this->row(m_items[gid]);

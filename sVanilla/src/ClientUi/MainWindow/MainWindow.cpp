@@ -39,6 +39,7 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 }
 void MainWindow::updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const
 {
+    ui->downloadTab->updateItem(status);
 }
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
@@ -62,6 +63,13 @@ void MainWindow::signalsAndSlots()
 {
     // tab bar btn click event to change stacked page
     connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+
+    connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
+        if (index == 3)
+        {
+            Q_EMIT onSettingPage();
+        }
+    });
     // theme QRadioBtn toggle event to change theme
     // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
     // connect(ui->homePage, &HomePage::updateMsg, this, &MainWindow::updateHomeMsg);
