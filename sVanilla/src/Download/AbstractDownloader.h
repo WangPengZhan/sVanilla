@@ -1,5 +1,6 @@
 #pragma once
-
+#include <string>
+#include <atomic>
 namespace download
 {
 
@@ -25,10 +26,13 @@ public:
     virtual void resume() = 0;
     virtual void downloadStatus() = 0;
 
+    std::string guid() const;
+    void setStatus(Status status);
     Status status() const;
 
 protected:
-    Status m_status;
+    std::atomic<Status> m_status;
+    std::string m_guid;
 };
 
 }  // namespace download
