@@ -51,11 +51,11 @@ void App::startAriaServer()
 void App::signalsAndSlots()
 {
     connect(maimWindow.get(), &MainWindow::AddUri, this, &App::addUri);
-    connect(maimWindow.get(), &MainWindow::onSettingPage, this, &App::updateAria2Status);
+    connect(maimWindow.get(), &MainWindow::onSettingPage, this, &App::updateAria2Version);
     connect(downloadManager.get(), &DownloadManager::toRuquestStatus, this, &App::updateDownloadStatus);
 }
 
-void App::updateAria2Status()
+void App::updateAria2Version()
 {
     auto taskFunc = [this]() {
         return ariaClient.GetAriaVersionAsync();

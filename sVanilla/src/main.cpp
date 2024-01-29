@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     // MainWindow maimWindow;
     // maimWindow.show();
 
-    sVanilla.updateAria2Status();
+    sVanilla.updateAria2Version();
 
     return restarter.restartOrExit(SApplication::exec());
 }
