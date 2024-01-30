@@ -38,9 +38,9 @@ PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::strin
     return PlayUrl(GetDataFromRespones(response));
 }
 
-LoginUrlOrigin BilibiliClient::GetLoginUrl()
+LoginUrl BilibiliClient::GetLoginUrl()
 {
-    std::string url = "https://passport.bilibili.com/qrcode/getLoginUrl";
+    std::string url = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
     std::string response;
 
     curl_slist_free_all(m_headers);
@@ -51,27 +51,30 @@ LoginUrlOrigin BilibiliClient::GetLoginUrl()
     m_headers = nullptr;
     InitDefaultHeaders();
 
-    return LoginUrlOrigin(GetDataFromRespones(response));
+    qDebug() << QString::fromStdString(response);
+    return LoginUrl(GetDataFromRespones(response));
 }
 
-LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& oauthKey)
+LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key)
 {
-    std::string url = "https://passport.bilibili.com/qrcode/getLoginInfo";
+    std::string url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
     std::string response;
 
     curl_slist_free_all(m_headers);
     m_headers = nullptr;
     InitDefaultHeadersLogin();
-    ParamType param{
-        {"oauthKey", oauthKey                  },
-        {"gourl",    "https://www.bilibili.com"},
-    };
-    url = url + "?oauthKey=" + oauthKey + "&gourl=https://www.bilibili.com";
-    HttpPost(url, param, response);
+    // ParamType param{
+    //     {"qrcode_key", qrcode_key                  },
+    //     {"gourl",    "https://www.bilibili.com"},
+    // };
+    url = url + "?qrcode_key=" + qrcode_key;
+    // HttpPost(url, param, response);
+    HttpGet(url, response);
     curl_slist_free_all(m_headers);
     m_headers = nullptr;
     InitDefaultHeaders();
 
+    qDebug() << "status response：" << QString::fromStdString(response);
     nlohmann::json json;
     try
     {
@@ -116,6 +119,7 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     stream.flush();
     stream.close();
     return json["data"];
+    // return json;
 }
 
 BilibiliClient::BilibiliClient()

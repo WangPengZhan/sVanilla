@@ -43,9 +43,10 @@ set(QT_COMPONENTS
     Gui
     Widgets
     Network
+        Svg
 )
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 find_package(ZLIB)
 find_package(unofficial-breakpad CONFIG REQUIRED)

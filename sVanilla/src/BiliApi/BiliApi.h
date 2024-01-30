@@ -490,7 +490,7 @@ public:
 class LoginUrl : public Protocol
 {
 public:
-    std::string oauthKey;
+    std::string qrcode_key;
     std::string url;
 
     std::string toString() override
@@ -500,14 +500,14 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrl, oauthKey, url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrl, qrcode_key, url)
 };
 
 class LoginUrlOrigin : public Protocol
 {
 public:
     LoginUrl data;
-    bool status;
+    bool code;
 
     std::string toString() override
     {
@@ -516,7 +516,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrlOrigin, data, status)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrlOrigin, data, code)
 };
 
 // https://passport.bilibili.com/qrcode/getLoginInfo
@@ -524,6 +524,9 @@ class LoginStatusData : public Protocol
 {
 public:
     std::string url;
+    std::string refresh_token;
+    std::string message;
+    int code;
 
     std::string toString() override
     {
@@ -532,14 +535,14 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusData, url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusData, url, refresh_token, message, code)
 };
 
 class LoginStatusScanning : public Protocol
 {
 public:
     LoginStatusData data;
-    bool status;
+    int code;
     std::string message;
 
     std::string toString() override
@@ -549,7 +552,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, status, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, code, message)
 };
 
 class LoginStatus : public Protocol

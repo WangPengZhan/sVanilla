@@ -28,7 +28,7 @@ public:
 
     VideoView GetVideoView(const std::string& bvid);
     PlayUrl GetPlayUrl(long long cid, long long qn, const std::string& bvid);
-    LoginUrlOrigin GetLoginUrl();
+    LoginUrl GetLoginUrl();
     LoginStatusScanning GetLoginStatus(const std::string& oauthKey);
 
     void InitBiliDefaultHeaders();

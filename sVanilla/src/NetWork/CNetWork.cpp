@@ -219,7 +219,7 @@ void CNetWork::InitDefaultHeaders()
 void CNetWork::InitDefaultHeadersLogin()
 {
     std::string userAgent = std::string("user-agent: ") + chrome;
-    std::string referer = "referer: https://passport.bilibili.com/login";
+    std::string referer = "referer: https://passport.bilibili.com";
     m_headers = curl_slist_append(m_headers, accept_language);
     m_headers = curl_slist_append(m_headers, userAgent.c_str());
     m_headers = curl_slist_append(m_headers, referer.c_str());

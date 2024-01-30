@@ -5,6 +5,8 @@
 #ifndef _ACCOUNTSETTING_H_
 #define _ACCOUNTSETTING_H_
 
+#include "BiliApi/BilibiliClient.h"
+
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +26,9 @@ public:
 
 private:
     Ui::AccountSetting* ui;
+
+    void checkLoginStatus(const std::string& qrcode);
+    BiliApi::BilibiliClient& m_biliClient = BiliApi::BilibiliClient::globalClient();
 };
 
 #endif  //_ACCOUNTSETTING_H_
