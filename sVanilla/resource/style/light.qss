@@ -224,9 +224,25 @@ QLabel#LineEditPlaceholderLabel {
     background-color: transparent;
 }
 
-QListWidget#DownloadingListWidget {
+
+
+QListWidget#videoTab {
     background-color: transparent;
     padding: 10px;
+}
+
+QListWidget#downloadTab {
+    background-color: transparent;
+    padding: 10px;
+}
+
+
+QWidget#galleryPage {
+    background-color: transparent;
+}
+
+QWidget#downloadPage {
+    background-color: transparent;
 }
 
 /* QListWidget::item:alternate#DownloadingListWidget {

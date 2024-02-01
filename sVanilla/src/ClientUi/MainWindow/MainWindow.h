@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WindowBar.h"
+#include "Aria2Net/Protocol/Protocol.h"
 #include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>
 
@@ -32,7 +33,13 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+    void updateHomeMsg(const std::string& msg) const;
+    void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
+    void updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const;
+    void AddDownloadTask(const std::string& gid) const;
 Q_SIGNALS:
+    void AddUri(const std::list<std::string>& uris);
+    void onSettingPage();
     void themeChanged();
 
 public slots:
@@ -44,7 +51,6 @@ protected:
     void SearchUrl();
 
 private:
-    void setUi();
     void signalsAndSlots();
 
 private:

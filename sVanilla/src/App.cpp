@@ -1,31 +1,27 @@
 #include <QApplication>
-
 #include <sstream>
 #include <utility>
-
-#include "ClientUi/MainWindow/MainWindow.h"
-#include "Logger/Dump.h"
-#include "Logger/Logger.h"
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
 #include "ClientUi/Config/SingleConfig.h"
-
+#include "Aria2Net/AriaServer/AriaServer.h"
 #include "App.h"
-#include "ClientUi/Event.h"
 
-App::App(const int argc, char** argv)
-    : _argc(argc)
-    , _argv(argv)
-{
-}
+#include <QStandardPaths>
 
 void App::init()
 {
     setHighDpi();
     downloadManager = std::make_shared<DownloadManager>();
 
+    maimWindow = std::make_unique<MainWindow>();
+    maimWindow->show();
     signalsAndSlots();
     startAriaServer();
+
+    // option.dir = SingleConfig::instance().getAriaConfig().downloadDir;
+    const QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    option.dir = downloadPath.toStdString();
 }
 
 void App::setHighDpi()
@@ -41,10 +37,9 @@ void App::setHighDpi()
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 }
 
-void App::startAriaServer() const
+void App::startAriaServer()
 {
-    auto aria2Config = SingleConfig::instance().getAriaConfig();
-    if (!aria2Config.isRemote)
+    if (const auto aria2Config = SingleConfig::instance().getAriaConfig(); !aria2Config.isRemote)
     {
         aria2net::AriaServer ariaServer;
         PRINT("start aria2 local server")
@@ -55,14 +50,12 @@ void App::startAriaServer() const
 
 void App::signalsAndSlots()
 {
-    // AddUri signal -> Event::AddUri (ui -> core)
-    connect(Event::getInstance(), &Event::AddUri, this, &App::addUri);
-
-    /// download interval timer -> Event::IntervalUpdateDownloadStatus (ui -> core)
-    connect(Event::getInstance(), &Event::IntervalUpdateDownloadStatus, this, &App::updateDownloadStatus);
+    connect(maimWindow.get(), &MainWindow::AddUri, this, &App::addUri);
+    connect(maimWindow.get(), &MainWindow::onSettingPage, this, &App::updateAria2Version);
+    connect(downloadManager.get(), &DownloadManager::toRuquestStatus, this, &App::updateDownloadStatus);
 }
 
-void App::updateAria2Status()
+void App::updateAria2Version()
 {
     auto taskFunc = [this]() {
         return ariaClient.GetAriaVersionAsync();
@@ -76,7 +69,7 @@ void App::updateAria2Status()
             {
                 isConnect = true;
             }
-            emit Event::getInstance()->updateAria2Version(std::make_shared<aria2net::AriaVersion>(std::move(result)));
+            maimWindow->updateAria2Version(std::make_shared<aria2net::AriaVersion>(result));
         }
         catch (const std::bad_any_cast& e)
         {
@@ -85,22 +78,37 @@ void App::updateAria2Status()
     });
     ThreadPool::instance().enqueue(task);
 }
-
-void App::updateDownloadStatus()
+void App::updateDownloadStatus(const std::string& gid)
 {
-    const std::list<std::string>& gids = downloadManager->downloadGIDs;
-    if (gids.empty())
-    {
-        return;
-    }
-    for (const auto& gid : gids)
-    {
-        const auto status = std::make_shared<aria2net::AriaTellStatus>(ariaClient.TellStatus(gid));
-        if (!status->result.gid.empty() && status->error.message.empty())
+    auto taskFunc = [this, gid]() {
+        return ariaClient.TellStatus(gid);
+    };
+    const auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
+    connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
+        try
         {
-            emit Event::getInstance()->updateDownloadStatus(status);
+            const auto& result = std::any_cast<aria2net::AriaTellStatus>(res);
+            const auto status = std::make_shared<aria2net::AriaTellStatus>(result);
+            const auto error = downloadManager->updateDownloaderStatus(status);
+            if (const auto e = error.message; !e.empty())
+            {
+                updateHomeMsg(e);
+            }
+            else
+            {
+                const auto g = status->result.gid;
+                if (downloadManager->neededUpdate.count(g) > 0)
+                {
+                    maimWindow->updateDownloadStatus(status);
+                }
+            }
         }
-    }
+        catch (const std::bad_any_cast& e)
+        {
+            updateHomeMsg(e.what());
+        }
+    });
+    ThreadPool::instance().enqueue(task);
 }
 
 void App::addUri(const std::list<std::string>& uris)
@@ -115,7 +123,9 @@ void App::addUri(const std::list<std::string>& uris)
             const auto& result = std::any_cast<aria2net::AriaAddUri>(res);
             if (!result.result.empty() && result.error.message.empty())
             {
-                downloadManager->addDownloadGID(result.result);
+                auto gid = result.result;
+                maimWindow->AddDownloadTask(gid);
+                downloadManager->addDownloader(gid);
                 updateHomeMsg("Add success");
             }
             else
@@ -131,7 +141,7 @@ void App::addUri(const std::list<std::string>& uris)
     ThreadPool::instance().enqueue(task);
 }
 
-void App::updateHomeMsg(std::string msg)
+void App::updateHomeMsg(const std::string& msg) const
 {
-    emit Event::getInstance()->updateMsg(std::move(msg));
+    maimWindow->updateHomeMsg(msg);
 }

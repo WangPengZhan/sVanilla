@@ -1,35 +1,90 @@
-#include "ClientUi/Event.h"
 #include "DownloadManager.h"
 
-template <typename T> QString formatSize(T bytesPerSec)
+void AbstractDownloader::updateStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status)
 {
-    const double Gib = pow(2, 30);
-    const double Mib = pow(2, 20);
-    const double Kib = pow(2, 10);
-    if (bytesPerSec >= Gib)
+    aria2Status = status;
+    if (const auto downloadStatus = status->result.status; downloadStatus == "active")
     {
-        return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB";
+        m_status = Downloading;
     }
-    else if (bytesPerSec >= Mib)
+    else if (downloadStatus == "paused")
     {
-        return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib";
+        m_status = Paused;
     }
-    else if (bytesPerSec >= Kib)
+    else if (downloadStatus == "complete")
     {
-        return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib";
+        m_status = Finished;
+    }
+    else if (downloadStatus == "error")
+    {
+        m_status = Error;
+    }
+    else if (downloadStatus == "removed")
+    {
+        m_status = Stopped;
     }
     else
     {
-        return QString::number(bytesPerSec, 'g', 3) + "B";
+        m_status = Ready;
     }
+}
+AbstractDownloader::Status AbstractDownloader::status() const
+{
+    return m_status;
+}
+std::shared_ptr<aria2net::AriaTellStatus> AbstractDownloader::getStatus() const
+{
+    return aria2Status;
 }
 
 DownloadManager::DownloadManager(QObject* parent)
     : QObject(parent)
+    , timer(new QTimer(this))
 {
+    connect(timer, &QTimer::timeout, this, &DownloadManager::updateDownloadStatusInterval);
+    timer->start(1000);
 }
-void DownloadManager::addDownloadGID(const std::string& gid)
+void DownloadManager::addDownloader(const std::string& gid)
 {
-    emit Event::getInstance()->AddDownloadTask(gid);
-    downloadGIDs.push_back(gid);
+    neededUpdate.insert(gid);
+    const auto downloader = std::make_shared<AbstractDownloader>();
+    downloaders.insert(std::make_pair(gid, downloader));
+}
+
+aria2net::AriaError DownloadManager::updateDownloaderStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status)
+{
+    const auto gid = status->result.gid;
+    const auto downloader = downloaders[gid];
+
+    if (!status->error.message.empty())
+    {
+        return status->error;
+    }
+    downloader->updateStatus(status);
+    return {};
+}
+
+void DownloadManager::checkStatus(const std::string& gid)
+{
+    const auto downloader = downloaders[gid];
+    if (const auto status = downloader->status(); status == AbstractDownloader::Status::Stopped)
+    {
+        neededUpdate.erase(gid);
+        downloaders.erase(gid);
+    }
+}
+
+void DownloadManager::updateDownloadStatusInterval()
+{
+    if (downloaders.empty())
+    {
+        return;
+    }
+    for (const auto& [gid, downloader] : downloaders)
+    {
+        if (downloader->status() == AbstractDownloader::Status::Downloading)
+        {
+            emit toRuquestStatus(gid);
+        }
+    }
 }

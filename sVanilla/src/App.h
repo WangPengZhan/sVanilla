@@ -1,34 +1,31 @@
 #pragma once
-#include "Aria2Net/AriaServer/AriaServer.h"
+#include "ClientUi/MainWindow/MainWindow.h"
 #include "ClientUi/Download/DownloadManager.h"
 #include <Aria2Net/AriaClient/AriaClient.h>
 #include <QtCore/QObject>
-#include <QTimer>
 
 // for platform
-class App : public QObject
+class App final : public QObject
 {
 public:
-    App(int argc, char* argv[]);
+    App() = default;
     void init();
-
-    void loadSettings();
     void signalsAndSlots();
-    void startAriaServer() const;
+    static void startAriaServer() ;
     static void setHighDpi();
 
-private:
-    int _argc;
-    char** _argv;
 
+private:
+    std::unique_ptr<MainWindow> maimWindow;
     std::shared_ptr<DownloadManager> downloadManager;
     aria2net::AriaSendOption option;
     aria2net::AriaClient& ariaClient = aria2net::AriaClient::globalClient();
 
     bool isConnect = false;
+
+    void updateHomeMsg(const std::string& msg) const;
 public slots:
-    void updateAria2Status();
-    void updateDownloadStatus();
+    void updateAria2Version();
+    void updateDownloadStatus(const std::string& gid);
     void addUri(const std::list<std::string>& uris);
-    static void updateHomeMsg(std::string msg);
 };
