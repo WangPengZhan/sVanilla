@@ -10,8 +10,9 @@ inline std::vector mixinKeyEncTab = {46, 47, 18, 2,  53, 8,  23, 32, 15, 50, 10,
                                      60, 51, 30, 4,  22, 25, 54, 21, 56, 59, 6,  63, 57, 62, 11, 36, 20, 34, 44, 52};
 
 std::string GetMixinKey(const std::string& orig);
+std::string MD5Hash(const std::string& str);
 
-CNetWork::ParamType& encWbi(CNetWork::ParamType& param,const std::string& mixin_key);
+void encWbi(CNetWork::ParamType& params, const std::string& mixin_key);
 class BilibiliUtils
 {
 public:
