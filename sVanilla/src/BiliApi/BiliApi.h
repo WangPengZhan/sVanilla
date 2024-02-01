@@ -507,7 +507,7 @@ class LoginUrlOrigin : public Protocol
 {
 public:
     LoginUrl data;
-    bool code;
+    int code;
 
     std::string toString() override
     {
@@ -584,7 +584,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, data, code, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Nav, data, code, message)
 };
 
 class LoginStatus : public Protocol

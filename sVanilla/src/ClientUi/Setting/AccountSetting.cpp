@@ -24,7 +24,7 @@ AccountSetting::AccountSetting(QWidget* parent)
     layout->addWidget(label);
 
     const auto loginUrl = m_biliClient.GetLoginUrl();
-    const std::string url = loginUrl.url;
+    const std::string url = loginUrl.data.url;
 
     qDebug() << QString::fromStdString(url);
     // std::string Url = "https://passport.bilibili.com/h5-app/passport/login/scan?navhide=1\u0026qrcode_key=358b647748030c2547aa94fb17be6eed\u0026from=";
