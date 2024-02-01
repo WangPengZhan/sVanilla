@@ -9,23 +9,22 @@ int main(int argc, char* argv[])
 {
     DumpColletor::registerDumpHandle();
 
-    SingleAppHelper singleAppHelper;
-    if (singleAppHelper.isHaveInstance())
+    if (const SingleAppHelper singleAppHelper; singleAppHelper.isHaveInstance())
     {
         return 0;
     }
 
     Restarter restarter(argc, argv);
 
-    SApplication app(argc, argv);
+    SApplication application(argc, argv);
 
-    App sVanilla(argc, argv);
+    App sVanilla;
     sVanilla.init();
+    //
+    // MainWindow maimWindow;
+    // maimWindow.show();
 
-    MainWindow maimWindow;
-    maimWindow.show();
+    sVanilla.updateAria2Version();
 
-    sVanilla.updateAria2Status();
-
-    return restarter.restartOrExit(app.exec());
+    return restarter.restartOrExit(SApplication::exec());
 }

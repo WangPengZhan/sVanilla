@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ClientUi/Event.h"
+#include "Aria2Net/Protocol/Protocol.h"
+
 #include <QButtonGroup>
 #include <QWidget>
 
@@ -18,6 +19,8 @@ class DefaultSetting : public QWidget
 public:
     explicit DefaultSetting(QWidget* parent = nullptr);
     ~DefaultSetting() override;
+
+    void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version);
 signals:
     void UpdateTheme(int theme);
 

@@ -26,5 +26,4 @@ signals:
 
 private:
     Ui::WindowBar* ui;
-    QButtonGroup* m_barBtnGroup;
 };

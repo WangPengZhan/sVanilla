@@ -33,12 +33,10 @@ class DownloadingListWidget : public QListWidget
 
 public:
     explicit DownloadingListWidget(QWidget* parent = nullptr);
+    void addTaskItem(const std::string& gid);
 
 public slots:
-    // void onCurrent(bool isCurrent);
-    void addTaskItem(const std::string& gid);
     void updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status);
-
     void deleteItem(const std::string&);
     // void openInfoDialog(const std::string& gid);
 
