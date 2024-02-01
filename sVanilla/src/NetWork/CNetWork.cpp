@@ -5,6 +5,9 @@
 #include "CNetWork.h"
 #include "NetworkLog.h"
 
+#include <QtCore/qstring.h>
+#include <QDebug>
+
 namespace
 {
 
@@ -104,6 +107,10 @@ void CNetWork::AppendHeaders(const std::string& header)
 {
     curl_slist_append(m_headers, header.c_str());
 }
+std::string CNetWork::getAgent()
+{
+    return std::string("user-agent: ") + chrome;
+}
 
 void CNetWork::HttpGet(const std::string& url, ParamType params, std::string& response)
 {
@@ -113,13 +120,14 @@ void CNetWork::HttpGet(const std::string& url, ParamType params, std::string& re
         strParam += param.first + "=" + param.second + "&";
     }
 
-    if (std::string::npos == url.find("?"))
+    if (std::string::npos == url.find('?'))
     {
         strParam = "?" + strParam;
     }
 
     strParam.erase(strParam.end() - 1);
 
+    qDebug() << "完整URL为：" << QString::fromStdString(url + strParam);
     return HttpGet(url, strParam, response);
 }
 
@@ -157,10 +165,22 @@ void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& r
     //{
     //     listParams.emplace_back(param.first + " " + param.second);
     // }
+    std::string strParam;
+    for (const auto& param : params)
+    {
+        strParam += param.first + "=" + param.second + "&";
+    }
 
-    nlohmann::json jsonParam = params;
+    if (std::string::npos == url.find('?'))
+    {
+        strParam = "?" + strParam;
+    }
 
-    HttpPost(url, jsonParam.dump(), response);
+    strParam.erase(strParam.end() - 1);
+
+    // nlohmann::json jsonParam = params;
+    qDebug() << "完整URL为：" << QString::fromStdString(url + strParam);
+    HttpPost(url, strParam, response);
 }
 
 void CNetWork::HttpPost(const std::string& url, const std::string& params, std::string& response)

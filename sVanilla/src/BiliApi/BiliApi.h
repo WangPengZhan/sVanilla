@@ -555,6 +555,38 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, code, message)
 };
 
+class NavData : public Protocol
+{
+public:
+    std::vector<std::string> img;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, img)
+};
+
+class Nav : public Protocol
+{
+public:
+    NavData data;
+    int code;
+    std::string message;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, data, code, message)
+};
+
 class LoginStatus : public Protocol
 {
 public:

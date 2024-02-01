@@ -6,6 +6,11 @@
 #include "BilibiliClient.h"
 #include "Logger/Logger.h"
 #include "Util/JsonProcess.h"
+#include "BiliApiConstants.h"
+#include "BilibiliUtils.h"
+
+#include <regex>
+#include <filesystem>
 
 namespace BiliApi
 {
@@ -38,53 +43,47 @@ PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::strin
     return PlayUrl(GetDataFromRespones(response));
 }
 
-LoginUrl BilibiliClient::GetLoginUrl()
+LoginUrlOrigin BilibiliClient::GetLoginUrl()
 {
-    std::string url = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
     std::string response;
 
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-    InitDefaultHeadersLogin();
-    HttpGet(url, response);
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-    InitDefaultHeaders();
+    const auto headers = getPassportHeaders();
+    Rquest(GET, PassportURL::QRCode, {}, response, headers, false);
 
     qDebug() << QString::fromStdString(response);
-    return LoginUrl(GetDataFromRespones(response));
+    return LoginUrlOrigin(GetDataFromRespones(response));
 }
 
 LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key)
 {
-    std::string url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll";
-    std::string response;
+    ParamType param;
+    param["qrcode_key"] = qrcode_key;
 
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-    InitDefaultHeadersLogin();
-    // ParamType param{
-    //     {"qrcode_key", qrcode_key                  },
-    //     {"gourl",    "https://www.bilibili.com"},
-    // };
-    url = url + "?qrcode_key=" + qrcode_key;
-    // HttpPost(url, param, response);
-    HttpGet(url, response);
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-    InitDefaultHeaders();
+    const auto headers = getPassportHeaders();
+
+    std::string response;
+    Rquest(GET, PassportURL::LoginStatus, param, response, headers, false);
 
     qDebug() << "status response：" << QString::fromStdString(response);
-    nlohmann::json json;
-    try
+
+    return LoginStatusScanning(GetDataFromRespones(response));
+}
+std::string BilibiliClient::GetWbiKey()
+{
+    std::string response;
+    Rquest(GET, PassportURL::WebNav, {}, response, {}, false);
+    if (const auto res = NavData(GetDataFromRespones(response)); !res.img.empty())
     {
-        json = nlohmann::json::parse(response);
+        return std::filesystem::path(res.img[0]).stem().string() + std::filesystem::path(res.img[1]).stem().string();
     }
-    catch (std::exception& e)
+    return "";
+}
+void BilibiliClient::ResetWbi()
+{
+    if (const auto key = GetWbiKey();!key.empty())
     {
-        return {};
+        m_wbiKey = GetMixinKey(key);
     }
-    return LoginStatusScanning(json);
 }
 
 void BilibiliClient::InitBiliDefaultHeaders()
@@ -100,6 +99,51 @@ void BilibiliClient::SetLogined(bool logined)
 bool BilibiliClient::GetLogined() const
 {
     return m_logined;
+}
+void BilibiliClient::Rquest(const HpptType method, const std::string& url, const ParamType& param, std::string& response, const std::list<std::string>& headers,
+                            bool needCookie)
+{
+    curl_slist_free_all(m_headers);
+    m_headers = nullptr;
+
+    for (const auto& header : headers)
+    {
+        AppendHeaders(header);
+    }
+    if (method == GET)
+    {
+        HttpGet(url, param, response);
+    }
+    else if (method == POST)
+    {
+        HttpPost(url, param, response);
+    }
+    else
+    {
+        return;
+    }
+    curl_slist_free_all(m_headers);
+    m_headers = nullptr;
+    InitDefaultHeaders();
+}
+std::list<std::string> BilibiliClient::getPassportHeaders()
+{
+    return std::list{getAgent(), std::string("referer: https://passport.bilibili.com")};
+}
+std::string BilibiliClient::getSESSData(const std::string& url)
+{
+    const std::regex reg("(^|&)?(\\w+)=([^&]+)(&|$)?");
+    if (std::smatch match; std::regex_search(url, match, reg))
+    {
+        for (const auto& m : match)
+        {
+            if (m.str() == "SESSDATA")
+            {
+                return match.suffix().str();
+            }
+        }
+    }
+    return "";
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
@@ -118,7 +162,7 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     stream << json;
     stream.flush();
     stream.close();
-    return json["data"];
+    return json;
     // return json;
 }
 

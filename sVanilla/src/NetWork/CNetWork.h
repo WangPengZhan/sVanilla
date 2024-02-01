@@ -35,6 +35,7 @@ public:
     void SetHeaders(curl_slist* headers);
     void AppendHeaders(curl_slist* headers);
     void AppendHeaders(const std::string& header);
+    std::string getAgent();
 
 protected:
     void InitDefaultHeaders();
