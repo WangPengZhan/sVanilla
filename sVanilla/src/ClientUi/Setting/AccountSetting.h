@@ -8,6 +8,7 @@
 #include "BiliApi/BilibiliClient.h"
 
 #include <QWidget>
+#include <QtWidgets/qlabel.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -27,6 +28,8 @@ public:
 private:
     Ui::AccountSetting* ui;
 
+    std::string m_qrcode_key;
+    void refreshQrCode(QLabel* label, const std::string& url);
     void checkLoginStatus(const std::string& qrcode);
     BiliApi::BilibiliClient& m_biliClient = BiliApi::BilibiliClient::globalClient();
 };

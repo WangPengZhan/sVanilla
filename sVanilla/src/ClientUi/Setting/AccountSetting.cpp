@@ -20,28 +20,33 @@ AccountSetting::AccountSetting(QWidget* parent)
     ui->setupUi(this);
     auto layout = new QHBoxLayout(this);
     this->setLayout(layout);
-    auto label = new QLabel("AccountSetting");
+    auto label = new QLabel("QRCode");
     layout->addWidget(label);
 
-    const auto loginUrl = m_biliClient.GetLoginUrl();
-    const std::string url = loginUrl.data.url;
+    const auto refreshBtn = new QPushButton("refresh");
+    layout->addWidget(refreshBtn);
+    connect(refreshBtn, &QPushButton::clicked, [this, label]() {
+        const auto login = m_biliClient.GetLoginUrl();
+        m_qrcode_key = login.data.qrcode_key;
+        refreshQrCode(label, login.data.url);
+    });
 
-    qDebug() << QString::fromStdString(url);
-    // std::string Url = "https://passport.bilibili.com/h5-app/passport/login/scan?navhide=1\u0026qrcode_key=358b647748030c2547aa94fb17be6eed\u0026from=";
-    QrCodeGenerator qrCodeGenerator;
-    const auto image = qrCodeGenerator.generateQR(QString::fromStdString(url));
-    label->setPixmap(QPixmap::fromImage(image));
-
-    auto btn = new QPushButton("check");
+    const auto btn = new QPushButton("check");
     layout->addWidget(btn);
-    connect(btn, &QPushButton::clicked, [this, loginUrl]() {
-        checkLoginStatus(loginUrl.data.qrcode_key);
+    connect(btn, &QPushButton::clicked, [this]() {
+        checkLoginStatus(m_qrcode_key);
     });
 }
 
 AccountSetting::~AccountSetting()
 {
     delete ui;
+}
+void AccountSetting::refreshQrCode(QLabel* label, const std::string& url)
+{
+    QrCodeGenerator qrCodeGenerator;
+    const auto image =  qrCodeGenerator.generateQR(QString::fromStdString(url));
+    label->setPixmap(QPixmap::fromImage(image));
 }
 void AccountSetting::checkLoginStatus(const std::string& qrcode)
 {
@@ -69,7 +74,7 @@ void AccountSetting::checkLoginStatus(const std::string& qrcode)
         }
         else
         {
-            std::string SESSDATA = BiliApi::BilibiliClient::getSESSData(loginStatus.data.url);
+            m_biliClient.SESSDATA(loginStatus.data.url);
             break;
 
         }

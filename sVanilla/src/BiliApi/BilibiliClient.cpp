@@ -21,12 +21,17 @@ BilibiliClient& BilibiliClient::globalClient()
     return bilibiliClient;
 }
 
-VideoView BilibiliClient::GetVideoView(const std::string& bvid)
+VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
 {
-    std::string url = videoViewUrl + std::string("?bvid=") + bvid;
+    ParamType param;
+    param["bvid"] = bvid;
+
+    const auto headers = getDefalutHeaders();
+
     std::string response;
-    HttpGet(url, response);
-    return VideoView(GetDataFromRespones(response));
+    Rquest(GET, VideoURL::View, param, response, headers, true);
+
+    return VideoViewOrigin(GetDataFromRespones(response));
 }
 
 PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
@@ -80,7 +85,7 @@ std::string BilibiliClient::GetWbiKey()
 }
 void BilibiliClient::ResetWbi()
 {
-    if (const auto key = GetWbiKey();!key.empty())
+    if (const auto key = GetWbiKey(); !key.empty())
     {
         m_wbiKey = GetMixinKey(key);
     }
@@ -101,7 +106,7 @@ bool BilibiliClient::GetLogined() const
     return m_logined;
 }
 void BilibiliClient::Rquest(const HpptType method, const std::string& url, const ParamType& param, std::string& response, const std::list<std::string>& headers,
-                            bool needCookie)
+                            const bool needCookie)
 {
     curl_slist_free_all(m_headers);
     m_headers = nullptr;
@@ -110,9 +115,12 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     {
         AppendHeaders(header);
     }
-    if (method == GET)
+    if (method == GET && needCookie)
     {
-        HttpGet(url, param, response);
+        ParamType p;
+        p.insert(param.begin(), param.end());
+        p["SESSDATA"] = m_SESSDATA;
+        HttpGet(url, p, response);
     }
     else if (method == POST)
     {
@@ -120,7 +128,7 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     else
     {
-        return;
+        HttpGet(url, response);
     }
     curl_slist_free_all(m_headers);
     m_headers = nullptr;
@@ -130,7 +138,11 @@ std::list<std::string> BilibiliClient::getPassportHeaders()
 {
     return std::list{getAgent(), std::string("referer: https://passport.bilibili.com")};
 }
-std::string BilibiliClient::getSESSData(const std::string& url)
+std::list<std::string> BilibiliClient::getDefalutHeaders()
+{
+    return std::list{getAgent(), std::string("referer: https://www.bilibili.com")};
+}
+void BilibiliClient::SESSDATA(const std::string& url)
 {
     const std::regex reg("(^|&)?(\\w+)=([^&]+)(&|$)?");
     if (std::smatch match; std::regex_search(url, match, reg))
@@ -139,11 +151,10 @@ std::string BilibiliClient::getSESSData(const std::string& url)
         {
             if (m.str() == "SESSDATA")
             {
-                return match.suffix().str();
+                m_SESSDATA = match.suffix().str();
             }
         }
     }
-    return "";
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
@@ -156,7 +167,7 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     }
     catch (std::exception& e)
     {
-        return json;
+        return nlohmann::json::object();
     }
     std::ofstream stream("response.json", std::ios_base::out | std::ios_base::app);
     stream << json;
@@ -167,8 +178,7 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
 }
 
 BilibiliClient::BilibiliClient()
-    : CNetWork()
-    , m_logined(false)
+    : m_logined(false)
 {
     std::string origin = "origin: ";
     AppendHeaders(origin + mainUrl);

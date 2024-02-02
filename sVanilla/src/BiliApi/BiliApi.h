@@ -340,6 +340,23 @@ public:
                                                 ugc_season)
 };
 
+class VideoViewOrigin : public Protocol
+{
+public:
+    VideoView data;
+    int code{};
+
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
+
+};
+
 class SubtitleInfo : public Protocol
 {
 public:
@@ -486,6 +503,22 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
 };
 
+class PlayUrlOrigin : public Protocol
+{
+public:
+    PlayUrl data;
+    int code{};
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlOrigin, data, code)
+};
+
 // https://passport.bilibili.com/qrcode/getLoginUrl
 class LoginUrl : public Protocol
 {
@@ -542,7 +575,7 @@ class LoginStatusScanning : public Protocol
 {
 public:
     LoginStatusData data;
-    int code;
+    int code{};
     std::string message;
 
     std::string toString() override
@@ -570,11 +603,11 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, img)
 };
 
-class Nav : public Protocol
+class Nav final : public Protocol
 {
 public:
     NavData data;
-    int code;
+    int code{};
     std::string message;
 
     std::string toString() override

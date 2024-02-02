@@ -7,6 +7,8 @@
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "App.h"
 
+#include "BiliApi/BilibiliClient.h"
+
 #include <QStandardPaths>
 
 void App::init()
@@ -50,7 +52,7 @@ void App::startAriaServer()
 
 void App::signalsAndSlots()
 {
-    connect(maimWindow.get(), &MainWindow::AddUri, this, &App::addUri);
+    connect(maimWindow.get(), &MainWindow::AddUri, this, &App::parseUri);
     connect(maimWindow.get(), &MainWindow::onSettingPage, this, &App::updateAria2Version);
     connect(downloadManager.get(), &DownloadManager::toRuquestStatus, this, &App::updateDownloadStatus);
 }
@@ -139,6 +141,13 @@ void App::addUri(const std::list<std::string>& uris)
         }
     });
     ThreadPool::instance().enqueue(task);
+}
+void App::parseUri(const std::string& uri)
+{
+    // if bili
+    auto m_biliClient = BiliApi::BilibiliClient::globalClient();
+    const auto res = m_biliClient.GetVideoView(uri);
+    qDebug() << "视频标题"<< QString::fromStdString(res.data.title);
 }
 
 void App::updateHomeMsg(const std::string& msg) const

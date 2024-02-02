@@ -16,18 +16,17 @@ std::string BiliApi::GetMixinKey(const std::string& orig)
 }
 std::string BiliApi::MD5Hash(const std::string& str)
 {
-    std::vector<unsigned char> md5_digest(MD5_DIGEST_LENGTH);
-    EVP_MD_CTX* md5_ctx = EVP_MD_CTX_new();
-    EVP_DigestInit_ex(md5_ctx, EVP_md5(), nullptr);
-    EVP_DigestUpdate(md5_ctx, str.c_str(), str.size());
-    EVP_DigestFinal_ex(md5_ctx, md5_digest.data(), nullptr);
-    EVP_MD_CTX_free(md5_ctx);
+    unsigned char hash[MD5_DIGEST_LENGTH];
+
+    MD5_CTX md5;
+    MD5_Init(&md5);
+    MD5_Update(&md5, str.c_str(), str.size());
+    MD5_Final(hash, &md5);
 
     std::stringstream ss;
-    ss << std::hex << std::setfill('0');
-    for (unsigned char c : md5_digest)
-    {
-        ss << std::setw(2) << static_cast<int>(c);
+
+    for (const unsigned char i : hash){
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>( i );
     }
     return ss.str();
 }

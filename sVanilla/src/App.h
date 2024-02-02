@@ -28,4 +28,5 @@ public slots:
     void updateAria2Version();
     void updateDownloadStatus(const std::string& gid);
     void addUri(const std::list<std::string>& uris);
+    void parseUri(const std::string& uri);
 };

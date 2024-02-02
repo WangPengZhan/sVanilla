@@ -18,12 +18,12 @@ public:
     ~HomePage() override;
     void setMsgLabel(const std::string& msg);
 signals:
-    void AddUri(const std::list<std::string>& uris);
+    void AddUri(const std::string& uri);
 public slots:
     void updateMsg(const std::string& msg);
 
 private:
     Ui::HomePage* ui;
     void signalsAndSlots();
-    void getUrl(const std::list<std::string>& uris);
+    void getUrl(const std::string& uri);
 };

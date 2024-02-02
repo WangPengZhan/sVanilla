@@ -54,6 +54,14 @@ find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
+# 寻找OpenSSL库
+find_package(OpenSSL REQUIRED)
+
+# 如果OpenSSL被找到，包含OpenSSL的头文件目录
+if(OPENSSL_FOUND)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+endif()
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
@@ -116,6 +124,7 @@ target_link_libraries(${PROJECT_NAME}
         QWindowKit::Widgets
         minizip
         spdlog
+        ${OPENSSL_LIBRARIES}
 )
 
 

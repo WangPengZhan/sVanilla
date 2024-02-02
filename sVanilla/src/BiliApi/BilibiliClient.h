@@ -31,10 +31,10 @@ public:
 
     static BilibiliClient& globalClient();
 
-    VideoView GetVideoView(const std::string& bvid);
+    VideoViewOrigin GetVideoView(const std::string& bvid);
     PlayUrl GetPlayUrl(long long cid, long long qn, const std::string& bvid);
     LoginUrlOrigin GetLoginUrl();
-    LoginStatusScanning GetLoginStatus(const std::string& oauthKey);
+    LoginStatusScanning GetLoginStatus(const std::string& qrcode_key);
     std::string GetWbiKey();
     void ResetWbi();
 
@@ -46,12 +46,14 @@ public:
                     bool needCookie);
 
     std::list<std::string> getPassportHeaders();
-    static std::string getSESSData(const std::string& url);
+    std::list<std::string> getDefalutHeaders();
+    void SESSDATA(const std::string& url);
     static nlohmann::json GetDataFromRespones(const std::string& respones);
 
     volatile bool m_logined;
 private:
     std::string m_wbiKey;
+    std::string m_SESSDATA;
 };
 
 }  // namespace BiliApi
