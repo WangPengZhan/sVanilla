@@ -18,11 +18,19 @@ public:
 
     [[nodiscard]] QWidget* GetHitWidget() const;
 
+    void setMinButton(QAbstractButton* btn);
+    void setMaxButton(QAbstractButton* btn);
+    void setCloseButton(QAbstractButton* btn);
 private:
     void signalsAndSlots();
 
 signals:
     void BarBtnClick(int index);
+
+    Q_SIGNALS:
+    void minimizeRequested();
+    void maximizeRequested(bool max = false);
+    void closeRequested();
 
 private:
     Ui::WindowBar* ui;
