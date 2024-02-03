@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <map>
 
 struct curl_slist;
 
@@ -15,15 +16,17 @@ public:
         PUT,
     };
 
-    using ParamType = std::unordered_map<std::string, std::string>;
+    using ParamType = std::map<std::string, std::string>;
+    // using OrderParamType = std::map<std::string, std::string>;
 
 public:
     CNetWork();
     ~CNetWork();
 
-    void HttpGet(const std::string& url, ParamType params, std::string& response);
+    void HttpGet(const std::string& url,  const ParamType& params, std::string& response, const std::string& cookie = "");
     void HttpGet(const std::string& url, const std::string& params, std::string& response);
     void HttpGet(const std::string& url, std::string& response);
+    void HttpGetWithCookie(const std::string& url, std::string& response, const std::string& cookie);
 
     void HttpPost(const std::string& url, ParamType params, std::string& response);
     void HttpPost(const std::string& url, const std::string& params, std::string& response);

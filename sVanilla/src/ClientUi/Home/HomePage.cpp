@@ -19,6 +19,8 @@ HomePage::HomePage(QWidget* parent)
         ui->ErrorMsgLabel->clear();
     });
     timer->start();
+
+
 }
 
 HomePage::~HomePage()

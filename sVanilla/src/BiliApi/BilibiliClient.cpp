@@ -34,20 +34,6 @@ VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
     return VideoViewOrigin(GetDataFromRespones(response));
 }
 
-PlayUrl BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
-{
-    // "https://api.bilibili.com/x/player/playurl?cid=%s&qn=125&fourk=1&fnver=0&fnval=4048&bvid=%s";
-    std::string url = videoPlayUrl + std::string("?from_client=BROWSER&fourk=1&fnver=0&fnval=4048&cid=") + std::to_string(cid) + "&qn=" + std::to_string(qn) +
-                      "&from_client=BROWSER&fourk=1&fnver=0&fnval=4048&bvid=" + bvid;
-    std::string response;
-    InitBiliDefaultHeaders();
-    HttpGet(url, response);
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-    InitDefaultHeaders();
-    return PlayUrl(GetDataFromRespones(response));
-}
-
 LoginUrlOrigin BilibiliClient::GetLoginUrl()
 {
     std::string response;
@@ -57,6 +43,24 @@ LoginUrlOrigin BilibiliClient::GetLoginUrl()
 
     qDebug() << QString::fromStdString(response);
     return LoginUrlOrigin(GetDataFromRespones(response));
+}
+PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
+{
+    ParamType param;
+    param["bvid"] = bvid;
+    param["cid"] = std::to_string(cid);
+    param["qn"] = std::to_string(qn);
+    param["fnver"] = "0";  // 恒为零
+    param["fnval"] = "0";
+    param["fourk"] = "1";
+    ResetWbi();
+    encWbi(param, m_wbiKey);
+    const auto headers = getDefalutHeaders();
+    std::string response;
+    Rquest(GET, VideoURL::Playurl, param, response, headers, true);
+
+    qDebug() << "playurl response：" << QString::fromStdString(response);
+    return PlayUrlOrigin(GetDataFromRespones(response));
 }
 
 LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key)
@@ -117,10 +121,7 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     if (method == GET && needCookie)
     {
-        ParamType p;
-        p.insert(param.begin(), param.end());
-        p["SESSDATA"] = m_SESSDATA;
-        HttpGet(url, p, response);
+        HttpGet(url, param, response, m_cookie);
     }
     else if (method == POST)
     {
@@ -128,7 +129,7 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     else
     {
-        HttpGet(url, response);
+        HttpGet(url, param, response);
     }
     curl_slist_free_all(m_headers);
     m_headers = nullptr;
@@ -142,19 +143,59 @@ std::list<std::string> BilibiliClient::getDefalutHeaders()
 {
     return std::list{getAgent(), std::string("referer: https://www.bilibili.com")};
 }
-void BilibiliClient::SESSDATA(const std::string& url)
-{
-    const std::regex reg("(^|&)?(\\w+)=([^&]+)(&|$)?");
-    if (std::smatch match; std::regex_search(url, match, reg))
-    {
-        for (const auto& m : match)
-        {
-            if (m.str() == "SESSDATA")
-            {
-                m_SESSDATA = match.suffix().str();
-            }
-        }
+// 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
+void replaceAll(std::string& source, const std::string& from, const std::string& to) {
+    std::string newString;
+    newString.reserve(source.length());  // 预分配足够空间
+
+    std::string::size_type lastPos = 0;
+    std::string::size_type findPos;
+
+    while (std::string::npos != (findPos = source.find(from, lastPos))) {
+        newString.append(source, lastPos, findPos - lastPos);
+        newString += to;
+        lastPos = findPos + from.length();
     }
+
+    // 拼接最后一个分隔符后的所有字符
+    newString += source.substr(lastPos);
+    source.swap(newString);
+}
+
+void BilibiliClient::ParseCookie(const std::string& url)
+{
+
+    // std::string result;
+    // std::string keys[] = {"DedeUserID=", "DedeUserID__ckMd5=", "SESSDATA=", "bili_jct="};
+    // for (const auto& key : keys)
+    // {
+    //     if (size_t startPos = url.find(key); startPos != std::string::npos)
+    //     {
+    //         startPos += key.length();
+    //         if (const size_t endPos = url.find('&', startPos); endPos != std::string::npos)
+    //         {
+    //             if (!result.empty())
+    //             {
+    //                 result += ";";  // 在不是第一个关键词值的前面加上分号
+    //             }
+    //             result += url.substr(startPos, endPos - startPos);
+    //         }
+    //     }
+    // }
+    std::string cookie = url.substr(url.find('?') + 1);
+    replaceAll(cookie, "&", ";");
+    m_cookie = cookie;
+    // const std::regex reg("(^|&)?(\\w+)=([^&]+)(&|$)?");
+    // if (std::smatch match; std::regex_search(url, match, reg))
+    // {
+    //     for (const auto& m : match)
+    //     {
+    //         if (m.str() == "SESSDATA")
+    //         {
+    //             m_SESSDATA = match.suffix().str();
+    //         }
+    //     }
+    // }
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)

@@ -147,7 +147,27 @@ void App::parseUri(const std::string& uri)
     // if bili
     auto m_biliClient = BiliApi::BilibiliClient::globalClient();
     const auto res = m_biliClient.GetVideoView(uri);
-    qDebug() << "视频标题"<< QString::fromStdString(res.data.title);
+    qDebug() << "视频标题" << QString::fromStdString(res.data.title);
+    const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
+    std::list<std::string> video_urls;
+    std::list<std::string> audio_urls;
+    if (playUrl.code != 0)
+    {
+        qDebug() << "play url error" << QString::fromStdString(playUrl.message);
+        return;
+    }
+
+    const auto videos = playUrl.data.durl;
+    qDebug() << "accept_format: " <<playUrl.data.accept_format;
+    for (const auto& video : videos)
+    {
+        video_urls.push_back(video.url);
+        qDebug() << "video url" << QString::fromStdString(video.url);
+    }
+    if (!video_urls.empty())
+    {
+        addUri(video_urls);
+    }
 }
 
 void App::updateHomeMsg(const std::string& msg) const

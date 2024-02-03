@@ -74,7 +74,8 @@ void AccountSetting::checkLoginStatus(const std::string& qrcode)
         }
         else
         {
-            m_biliClient.SESSDATA(loginStatus.data.url);
+            m_biliClient.ParseCookie(loginStatus.data.url);
+            qDebug() << "登录成功, cookie:\n" << QString::fromStdString(m_biliClient.m_cookie);
             break;
 
         }

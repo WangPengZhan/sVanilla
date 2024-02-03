@@ -346,7 +346,6 @@ public:
     VideoView data;
     int code{};
 
-
     std::string toString() override
     {
         nlohmann::json json;
@@ -354,7 +353,6 @@ public:
         return json.dump(4);
     }
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
-
 };
 
 class SubtitleInfo : public Protocol
@@ -491,6 +489,7 @@ public:
     std::list<int> accept_quality;
     std::list<PlayUrlDurl> durl;
     PlayUrlDash dash;
+    std::string accept_format;
     std::list<PlayUrlSupportFormat> support_formats;
 
     std::string toString() override
@@ -500,7 +499,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, accept_format, support_formats)
 };
 
 class PlayUrlOrigin : public Protocol
@@ -508,6 +507,7 @@ class PlayUrlOrigin : public Protocol
 public:
     PlayUrl data;
     int code{};
+    std::string message;
 
     std::string toString() override
     {
@@ -516,7 +516,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlOrigin, data, code)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlOrigin, data, code, message)
 };
 
 // https://passport.bilibili.com/qrcode/getLoginUrl

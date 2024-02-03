@@ -112,7 +112,7 @@ std::string CNetWork::getAgent()
     return std::string("user-agent: ") + chrome;
 }
 
-void CNetWork::HttpGet(const std::string& url, ParamType params, std::string& response)
+void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::string& cookie)
 {
     std::string strParam;
     for (const auto& param : params)
@@ -128,6 +128,10 @@ void CNetWork::HttpGet(const std::string& url, ParamType params, std::string& re
     strParam.erase(strParam.end() - 1);
 
     qDebug() << "完整URL为：" << QString::fromStdString(url + strParam);
+    if (!cookie.empty())
+    {
+        return HttpGetWithCookie(url + strParam, response, cookie);
+    }
     return HttpGet(url, strParam, response);
 }
 
@@ -139,6 +143,28 @@ void CNetWork::HttpGet(const std::string& url, const std::string& params, std::s
 void CNetWork::HttpGet(const std::string& url, std::string& response)
 {
     CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    CURLcode retCode = curl_easy_perform(curlHandle.get());
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
+    if (retCode != CURLE_OK)
+    {
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
+    }
+}
+void CNetWork::HttpGetWithCookie(const std::string& url, std::string& response, const std::string& cookie)
+{
+    CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIE, cookie.c_str());
     curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
     curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
     curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);

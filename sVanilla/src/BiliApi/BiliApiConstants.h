@@ -16,6 +16,7 @@ inline std::string WebNav = std::string(apiBase) + "x/web-interface/nav";
 namespace VideoURL
 {
 inline std::string View = std::string(apiBase) + "x/web-interface/view";
-}
+inline std::string Playurl = std::string(apiBase) + "x/player/wbi/playurl";
+}  // namespace VideoURL
 
 }  // namespace BiliApi
