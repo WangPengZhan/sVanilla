@@ -80,7 +80,7 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key
 std::string BilibiliClient::GetWbiKey()
 {
     std::string response;
-    Rquest(GET, PassportURL::WebNav, {}, response, {}, false);
+    Rquest(GET, PassportURL::WebNav, {}, response, {}, true);
     if (const auto res = NavData(GetDataFromRespones(response)); !res.img.empty())
     {
         return std::filesystem::path(res.img[0]).stem().string() + std::filesystem::path(res.img[1]).stem().string();
