@@ -12,9 +12,12 @@ public:
     AriaServer();
     ~AriaServer();
 
-    void startServerAsync();
+    void startLocalServerAsync();
+
     void closeServer();
     void forceCloseServer();
+
+    void testServer();
 
     void setErrorFunc(std::function<void()> func);
     void setCloseFunc(std::function<void()> func);

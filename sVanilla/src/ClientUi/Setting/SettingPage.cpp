@@ -15,6 +15,7 @@ SettingPage::SettingPage(QWidget* parent)
         ui->settingStackedPage->setCurrentIndex(index);
     });
 }
+
 void SettingPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version)
 {
     ui->defaultSetting->updateAria2Version(version);

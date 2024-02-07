@@ -3,23 +3,22 @@
 #include "ClientUi/MainWindow/SingleAppHelper.h"
 #include "ClientUi/MainWindow/SApplication.h"
 #include "ClientUi/MainWindow/MainWindow.h"
-#include "App.h"
-#include "BiliApi/BilibiliUtils.h"
+#include "ClientUi/PlatformInitializer/AppInitializer.h"
 
 int main(int argc, char* argv[])
 {
     DumpColletor::registerDumpHandle();
 
-    if (const SingleAppHelper singleAppHelper; singleAppHelper.isHaveInstance())
+    Restarter restarter(argc, argv);
+
+    SApplication application(argc, argv);
+    SingleAppHelper singleAppHelper;
+    if (singleAppHelper.isHaveInstance())
     {
         return 0;
     }
 
-    Restarter restarter(argc, argv);
-
-    SApplication application(argc, argv);
-
-    App sVanilla;
+    AppInitializer sVanilla;
     sVanilla.init();
     //
     // MainWindow maimWindow;
