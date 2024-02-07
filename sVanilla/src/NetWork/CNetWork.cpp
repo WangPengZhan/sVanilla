@@ -226,7 +226,7 @@ void CNetWork::HttpPost(const std::string& url, const std::string& params, std::
     curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIEFILE, "cookie.txt");
     CURLcode retCode = curl_easy_perform(curlHandle.get());
-
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
