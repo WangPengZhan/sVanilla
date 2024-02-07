@@ -25,8 +25,8 @@ public:
         for (auto& [key, value] : params)
         {
             // 过滤 value 中的 "!'()*" 字符
-            const std::string filteredValue = BiliApi::filterCharacters(value);
-            sortedParams.push_back(key + "=" += filteredValue);
+            const std::string filteredValue = filterCharacters(value);
+            sortedParams.push_back(url_encode(key) + "=" += url_encode(filteredValue));
         }
         std::sort(sortedParams.begin(), sortedParams.end());
 
