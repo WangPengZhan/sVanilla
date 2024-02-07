@@ -2,20 +2,23 @@
 #include <openssl/evp.h>
 #include "BilibiliUtils.h"
 
+#include <fstream>
 #include <iomanip>
 #include <numeric>
 #include <sstream>
 #include <curl/curl.h>
 
 // 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
-void replaceAll(std::string& source, const std::string& from, const std::string& to) {
+void BiliApi::replaceCharacter(std::string& source, const std::string& from, const std::string& to)
+{
     std::string newString;
     newString.reserve(source.length());  // 预分配足够空间
 
     std::string::size_type lastPos = 0;
     std::string::size_type findPos;
 
-    while (std::string::npos != (findPos = source.find(from, lastPos))) {
+    while (std::string::npos != (findPos = source.find(from, lastPos)))
+    {
         newString.append(source, lastPos, findPos - lastPos);
         newString += to;
         lastPos = findPos + from.length();
@@ -24,6 +27,35 @@ void replaceAll(std::string& source, const std::string& from, const std::string&
     // 拼接最后一个分隔符后的所有字符
     newString += source.substr(lastPos);
     source.swap(newString);
+}
+void BiliApi::saveToFile(const std::string& filename, const std::string& content)
+{
+    if (std::ofstream outFile(filename); outFile.is_open())
+    {
+        outFile << content;
+        outFile.close();
+    }
+    else
+    {
+        // std::cout << "Unable to open file";
+    }
+}
+std::string BiliApi::readFromFile(const std::string& filename)
+{
+    std::ifstream inFile(filename);
+    std::string str;
+
+    if (inFile.is_open())
+    {
+        getline(inFile, str);
+        inFile.close();
+    }
+    else
+    {
+        // std::cout << "Unable to open file";
+    }
+
+    return str;
 }
 
 /*
@@ -53,7 +85,8 @@ std::string BiliApi::url_encode(const std::string& decoded)
     curl_free(encoded_value);
     return result;
 }
-std::string BiliApi::url_decode(const std::string& encoded){
+std::string BiliApi::url_decode(const std::string& encoded)
+{
     int output_length;
     const auto decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
     std::string result(decoded_value, output_length);

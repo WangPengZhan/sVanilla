@@ -11,6 +11,7 @@
 
 #include <regex>
 #include <filesystem>
+#include <sstream>
 
 namespace BiliApi
 {
@@ -24,8 +25,7 @@ LoginUrlOrigin BilibiliClient::GetLoginUrl()
 {
     std::string response;
 
-    const auto headers = getPassportHeaders();
-    Rquest(GET, PassportURL::QRCode, {}, response, headers, false);
+    Rquest(GET, PassportURL::QRCode, {}, response, getPassportHeaders(), false);
 
     qDebug() << QString::fromStdString(response);
     return LoginUrlOrigin(GetDataFromRespones(response));
@@ -36,10 +36,8 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key
     ParamType param;
     param["qrcode_key"] = qrcode_key;
 
-    const auto headers = getPassportHeaders();
-
     std::string response;
-    Rquest(GET, PassportURL::LoginStatus, param, response, headers, false);
+    Rquest(GET, PassportURL::LoginStatus, param, response, getPassportHeaders(), false);
 
     qDebug() << "status response：" << QString::fromStdString(response);
 
@@ -51,10 +49,8 @@ VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
     ParamType param;
     param["bvid"] = bvid;
 
-    const auto headers = getDefalutHeaders();
-
     std::string response;
-    Rquest(GET, VideoURL::View, param, response, headers, true);
+    Rquest(GET, VideoURL::View, param, response, getDefalutHeaders(), true);
 
     return VideoViewOrigin(GetDataFromRespones(response));
 }
@@ -70,9 +66,8 @@ PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std:
     param["fourk"] = "1";
     ResetWbi();
     encWbi(param, m_wbiKey);
-    const auto headers = getDefalutHeaders();
     std::string response;
-    Rquest(GET, VideoURL::Playurl, param, response, headers, true);
+    Rquest(GET, VideoURL::Playurl, param, response, getDefalutHeaders(), true);
 
     qDebug() << "playurl response：" << QString::fromStdString(response);
     return PlayUrlOrigin(GetDataFromRespones(response));
@@ -82,6 +77,7 @@ void BilibiliClient::ResetWbi()
 {
     std::string response;
     Rquest(GET, PassportURL::WebNav, {}, response, {}, true);
+    qDebug() << "nav response：" << QString::fromStdString(response);
     std::string img_url;
     std::string sub_url;
     if (const auto res = NavData(GetDataFromRespones(response)); !res.img.empty())
@@ -121,7 +117,10 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     if (method == GET && needCookie)
     {
-        HttpGet(url, param, response, m_cookie);
+        if (const std::string cookie = readFromFile("cookie"); !cookie.empty())
+        {
+            HttpGet(url, param, response, cookie);
+        }
     }
     else if (method == POST)
     {
@@ -147,8 +146,26 @@ std::list<std::string> BilibiliClient::getDefalutHeaders()
 void BilibiliClient::ParseCookie(const std::string& url)
 {
     std::string cookie = url.substr(url.find('?') + 1);
-    replaceAll(cookie, "&", ";");
-    m_cookie = cookie;
+    replaceCharacter(cookie, "&", ";");
+    nlohmann::json j_cookie;
+    std::istringstream iss(url);
+    std::string segment;
+    while (std::getline(iss, segment, ';'))
+    {
+        std::istringstream iss2(segment);
+        std::string value;
+        if (std::string key; std::getline(std::getline(iss2, key, '='), value))
+        {
+            if (key == "Expires" || key == "SESSDATA" || key == "bili_jct")
+            {
+                j_cookie[key] = value;
+            }
+        }
+    }
+    m_cookie = "SESSDATA=" + std::string(j_cookie["SESSDATA"]);
+    nlohmann::json bilibili_data;
+    bilibili_data["cookie"] = j_cookie;
+    saveToFile("cookie", cookie);
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)

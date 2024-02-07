@@ -3,7 +3,7 @@
 #include "BiliApi/BilibiliUtils.h"
 
 using namespace testing;
-using namespace aria2net;
+using namespace BiliApi;
 
 class BiliApiTest : public Test
 {

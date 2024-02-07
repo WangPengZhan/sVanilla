@@ -147,7 +147,6 @@ void App::parseUri(const std::string& uri)
     // if bili
     auto m_biliClient = BiliApi::BilibiliClient::globalClient();
     const auto res = m_biliClient.GetVideoView(uri);
-    qDebug() << "视频标题" << QString::fromStdString(res.data.title);
     const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
