@@ -107,6 +107,32 @@ void CNetWork::AppendHeaders(const std::string& header)
 {
     curl_slist_append(m_headers, header.c_str());
 }
+std::string CNetWork::ConcatenateParams(const ParamType& params)
+{
+    // Calculate the length of the final string in advance
+    size_t length = std::distance(params.begin(), params.end()) - 1;  // count of '&'
+    for (const auto& [fst, snd] : params)
+    {
+        length += fst.size() + snd.size() + 1;  // length of "key=value"
+    }
+
+    std::string result;
+    result.reserve(length + 1);  // include the length of '?'
+
+    result.push_back('?');
+    for (auto it = params.begin(); it != params.end();)
+    {
+        result += it->first;
+        result.push_back('=');
+        result += it->second;
+        if (++it != params.end())
+        {
+            result.push_back('&');
+        }
+    }
+
+    return result;
+}
 std::string CNetWork::getAgent()
 {
     return std::string("user-agent: ") + chrome;
@@ -114,25 +140,8 @@ std::string CNetWork::getAgent()
 
 void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::string& cookie)
 {
-    std::string strParam;
-    for (const auto& param : params)
-    {
-        strParam += param.first + "=" + param.second + "&";
-    }
-
-    if (std::string::npos == url.find('?'))
-    {
-        strParam = "?" + strParam;
-    }
-
-    strParam.erase(strParam.end() - 1);
-
-    if (!cookie.empty())
-    {
-        return HttpGetWithCookie(url + strParam, response, cookie);
-    }
-    qDebug() << "完整URL为：" << QString::fromStdString(url + strParam);
-    return HttpGet(url, strParam, response);
+    return HttpGetWithCookie(url + ConcatenateParams(params), response, cookie);
+    ;
 }
 
 void CNetWork::HttpGet(const std::string& url, const std::string& params, std::string& response)

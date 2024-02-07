@@ -38,6 +38,7 @@ public:
     void SetHeaders(curl_slist* headers);
     void AppendHeaders(curl_slist* headers);
     void AppendHeaders(const std::string& header);
+    static std::string ConcatenateParams(const ParamType &params);
     std::string getAgent();
 
 protected:

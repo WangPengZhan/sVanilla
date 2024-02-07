@@ -58,14 +58,15 @@ VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
 PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
 {
     ParamType param;
-    param["bvid"] = bvid;
-    param["cid"] = std::to_string(cid);
-    param["qn"] = std::to_string(qn);
-    param["fnver"] = "0";  // 恒为零
-    param["fnval"] = "0";
-    param["fourk"] = "1";
-    ResetWbi();
-    encWbi(param, m_wbiKey);
+    param.emplace("bvid", bvid);
+    param.emplace("cid", std::to_string(cid));
+    param.emplace("qn", std::to_string(qn));
+    param.emplace("fnver", "0");
+    param.emplace("fnval", "0");
+    param.emplace("fourk", "1");
+
+    encWbi(param);
+
     std::string response;
     Rquest(GET, VideoURL::Playurl, param, response, getDefalutHeaders(), true);
 
@@ -87,7 +88,10 @@ void BilibiliClient::ResetWbi()
     }
     if (!img_url.empty() && !sub_url.empty())
     {
-        m_wbiKey = GetMixinKey(img_url + sub_url);
+        nlohmann::json j;
+        j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
+        j.emplace("Expires", std::time(nullptr) + 60 * 60 * 24);
+        updateData("sVanilla.data", "mixinKey", j);
     }
 }
 
@@ -117,9 +121,13 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     if (method == GET && needCookie)
     {
-        if (const std::string cookie = readFromFile("cookie"); !cookie.empty())
+        if (Cookie cookie; readData<Cookie>("sVanilla.data", "cookie", cookie))
         {
-            HttpGet(url, param, response, cookie);
+            HttpGet(url, param, response, cookie.SESSDATA);
+        }
+        else
+        {
+            // 重新获取cookie
         }
     }
     else if (method == POST)
@@ -142,12 +150,44 @@ std::list<std::string> BilibiliClient::getDefalutHeaders()
 {
     return std::list{getAgent(), std::string("referer: https://www.bilibili.com")};
 }
+void BilibiliClient::encWbi(ParamType& params)
+{
+    // 添加 wts 字段
+    const time_t curr_time = time(nullptr);
+    params["wts"] = std::to_string(curr_time);
+
+    // 按照 key 重排参数
+    std::vector<std::string> sortedParams;
+    for (auto& [key, value] : params)
+    {
+        // 过滤 value 中的 "!'()*" 字符
+        const std::string filteredValue = filterCharacters(value);
+        // url encode
+        sortedParams.push_back(url_encode(key) + "=" += url_encode(filteredValue));
+    }
+    std::sort(sortedParams.begin(), sortedParams.end());
+    // 序列化参数
+    const std::string query = std::accumulate(std::next(sortedParams.begin()), sortedParams.end(), sortedParams[0], [](std::string a, std::string b) {
+        return std::move(a) + '&' + std::move(b);
+    });
+
+    // 计算 w_rid 字段
+    if (MixinKey mixinKey; readData<MixinKey>("sVanilla.data", "mixinKey", mixinKey))
+    {
+        params["w_rid"] = MD5Hash(query + mixinKey.value);
+    }
+    else
+    {
+        ResetWbi();
+        encWbi(params);
+    }
+}
 
 void BilibiliClient::ParseCookie(const std::string& url)
 {
     std::string cookie = url.substr(url.find('?') + 1);
     replaceCharacter(cookie, "&", ";");
-    nlohmann::json j_cookie;
+    nlohmann::json j;
     std::istringstream iss(url);
     std::string segment;
     while (std::getline(iss, segment, ';'))
@@ -158,14 +198,12 @@ void BilibiliClient::ParseCookie(const std::string& url)
         {
             if (key == "Expires" || key == "SESSDATA" || key == "bili_jct")
             {
-                j_cookie[key] = value;
+                j.emplace(key, value);
             }
         }
     }
-    m_cookie = "SESSDATA=" + std::string(j_cookie["SESSDATA"]);
-    nlohmann::json bilibili_data;
-    bilibili_data["cookie"] = j_cookie;
-    saveToFile("cookie", cookie);
+    m_cookie = "SESSDATA=" + std::string(j["SESSDATA"]);
+    updateData("sVanilla.data", "cookie", j);
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)

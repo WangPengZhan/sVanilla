@@ -1,7 +1,7 @@
 #include <openssl/md5.h>
 #include <openssl/evp.h>
 #include "BilibiliUtils.h"
-
+#include "BiliApi.h"
 #include <fstream>
 #include <iomanip>
 #include <numeric>
@@ -28,34 +28,26 @@ void BiliApi::replaceCharacter(std::string& source, const std::string& from, con
     newString += source.substr(lastPos);
     source.swap(newString);
 }
-void BiliApi::saveToFile(const std::string& filename, const std::string& content)
+
+void BiliApi::saveJson(const std::string& filename, const nlohmann::json& content)
 {
-    if (std::ofstream outFile(filename); outFile.is_open())
-    {
-        outFile << content;
-        outFile.close();
-    }
-    else
-    {
-        // std::cout << "Unable to open file";
-    }
+    std::ofstream o(filename);
+    o << content;
+    o.close();
 }
-std::string BiliApi::readFromFile(const std::string& filename)
+nlohmann::json BiliApi::readJson(const std::string& filename)
 {
-    std::ifstream inFile(filename);
-    std::string str;
-
-    if (inFile.is_open())
-    {
-        getline(inFile, str);
-        inFile.close();
-    }
-    else
-    {
-        // std::cout << "Unable to open file";
-    }
-
-    return str;
+    std::ifstream i(filename);
+    nlohmann::json j;
+    i >> j;
+    i.close();
+    return j;
+}
+void BiliApi::updateData(const std::string& filename, const std::string& key, const nlohmann::json& value)
+{
+    nlohmann::json j = readJson(filename);
+    j[key] = value;
+    saveJson(filename, j);
 }
 
 /*
@@ -126,28 +118,4 @@ std::string BiliApi::MD5Hash(const std::string& str)
     }
 
     return oss.str();
-}
-void BiliApi::encWbi(CNetWork::ParamType& params, const std::string& mixin_key)
-{
-    // 添加 wts 字段
-    const time_t curr_time = time(nullptr);
-    params["wts"] = std::to_string(curr_time);
-
-    // 按照 key 重排参数
-    std::vector<std::string> sortedParams;
-    for (auto& [key, value] : params)
-    {
-        // 过滤 value 中的 "!'()*" 字符
-        const std::string filteredValue = filterCharacters(value);
-        // url encode
-        sortedParams.push_back(url_encode(key) + "=" += url_encode(filteredValue));
-    }
-    std::sort(sortedParams.begin(), sortedParams.end());
-    // 序列化参数
-    const std::string query = std::accumulate(std::next(sortedParams.begin()), sortedParams.end(), sortedParams[0], [](std::string a, std::string b) {
-        return std::move(a) + '&' + std::move(b);
-    });
-
-    // 计算 w_rid 字段
-    params["w_rid"] = MD5Hash(query + mixin_key);
 }

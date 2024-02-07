@@ -1,26 +1,23 @@
 {
-    "name": "svanilla",
-    "version-string": "1.0.0",
-    "builtin-baseline": "2718aa52a31977b792af7e9c2f83eaf4ddcd932d",
-    "dependencies": [
-        {
-            "name": "breakpad",
-            "version>=": "2022-07-12#4"
-        },
-        {
-            "name": "curl",
-            "version>=": "8.0.1"
-        },
-        {
-            "name": "nlohmann-json",
-            "version>=": "3.11.2"
-        },
-        {
-            "name": "sqlite3",
-            "version>=": "3.40.0"
-        },
-        {
-            "name": "zlib"
-        }
-    ]
+  "name" : "svanilla",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "2718aa52a31977b792af7e9c2f83eaf4ddcd932d",
+  "dependencies" : [ {
+    "name" : "breakpad",
+    "version>=" : "2022-07-12#4"
+  }, {
+    "name" : "curl",
+    "version>=" : "8.0.1"
+  }, {
+    "name" : "nlohmann-json",
+    "version>=" : "3.11.2"
+  }, {
+    "name" : "sqlite3",
+    "version>=" : "3.40.0"
+  }, {
+    "name" : "zlib"
+  }, {
+    "name" : "openssl",
+    "version>=" : "3.1.0#4"
+  } ]
 }

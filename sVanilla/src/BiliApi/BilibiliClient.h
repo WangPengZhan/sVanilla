@@ -44,6 +44,7 @@ public:
 
     std::list<std::string> getPassportHeaders();
     std::list<std::string> getDefalutHeaders();
+    void  encWbi(ParamType& params);
     void ParseCookie(const std::string& url);
     static nlohmann::json GetDataFromRespones(const std::string& respones);
 

@@ -654,4 +654,33 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusReady, code, status, data)
 };
 
+class Cookie : public Protocol
+{
+public:
+    time_t Expires;
+    std::string SESSDATA;
+    std::string bili_jct;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Cookie, Expires, SESSDATA, bili_jct)
+};
+
+class MixinKey : public Protocol
+{
+
+public:
+    time_t Expires;
+    std::string value;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MixinKey, Expires, value)
+};
 }  // namespace BiliApi
