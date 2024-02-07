@@ -34,7 +34,6 @@ public:
     PlayUrlOrigin GetPlayUrl(long long cid, long long qn, const std::string& bvid);
     LoginUrlOrigin GetLoginUrl();
     LoginStatusScanning GetLoginStatus(const std::string& qrcode_key);
-    std::string GetWbiKey();
     void ResetWbi();
 
     void InitBiliDefaultHeaders();

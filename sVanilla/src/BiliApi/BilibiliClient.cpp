@@ -77,21 +77,21 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key
 
     return LoginStatusScanning(GetDataFromRespones(response));
 }
-std::string BilibiliClient::GetWbiKey()
+
+void BilibiliClient::ResetWbi()
 {
     std::string response;
     Rquest(GET, PassportURL::WebNav, {}, response, {}, true);
+    std::string img_url;
+    std::string sub_url;
     if (const auto res = NavData(GetDataFromRespones(response)); !res.img.empty())
     {
-        return std::filesystem::path(res.img[0]).stem().string() + std::filesystem::path(res.img[1]).stem().string();
+        img_url = std::filesystem::path(res.img[0]).stem().string();
+        sub_url = std::filesystem::path(res.img[1]).stem().string();
     }
-    return "";
-}
-void BilibiliClient::ResetWbi()
-{
-    if (const auto key = GetWbiKey(); !key.empty())
+    if (!img_url.empty() && !sub_url.empty())
     {
-        m_wbiKey = GetMixinKey(key);
+        m_wbiKey = GetMixinKey(img_url + sub_url);
     }
 }
 
@@ -143,59 +143,12 @@ std::list<std::string> BilibiliClient::getDefalutHeaders()
 {
     return std::list{getAgent(), std::string("referer: https://www.bilibili.com")};
 }
-// 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
-void replaceAll(std::string& source, const std::string& from, const std::string& to) {
-    std::string newString;
-    newString.reserve(source.length());  // 预分配足够空间
-
-    std::string::size_type lastPos = 0;
-    std::string::size_type findPos;
-
-    while (std::string::npos != (findPos = source.find(from, lastPos))) {
-        newString.append(source, lastPos, findPos - lastPos);
-        newString += to;
-        lastPos = findPos + from.length();
-    }
-
-    // 拼接最后一个分隔符后的所有字符
-    newString += source.substr(lastPos);
-    source.swap(newString);
-}
 
 void BilibiliClient::ParseCookie(const std::string& url)
 {
-
-    // std::string result;
-    // std::string keys[] = {"DedeUserID=", "DedeUserID__ckMd5=", "SESSDATA=", "bili_jct="};
-    // for (const auto& key : keys)
-    // {
-    //     if (size_t startPos = url.find(key); startPos != std::string::npos)
-    //     {
-    //         startPos += key.length();
-    //         if (const size_t endPos = url.find('&', startPos); endPos != std::string::npos)
-    //         {
-    //             if (!result.empty())
-    //             {
-    //                 result += ";";  // 在不是第一个关键词值的前面加上分号
-    //             }
-    //             result += url.substr(startPos, endPos - startPos);
-    //         }
-    //     }
-    // }
     std::string cookie = url.substr(url.find('?') + 1);
     replaceAll(cookie, "&", ";");
     m_cookie = cookie;
-    // const std::regex reg("(^|&)?(\\w+)=([^&]+)(&|$)?");
-    // if (std::smatch match; std::regex_search(url, match, reg))
-    // {
-    //     for (const auto& m : match)
-    //     {
-    //         if (m.str() == "SESSDATA")
-    //         {
-    //             m_SESSDATA = match.suffix().str();
-    //         }
-    //     }
-    // }
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)

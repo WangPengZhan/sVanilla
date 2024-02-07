@@ -7,7 +7,26 @@
 #include <sstream>
 #include <curl/curl.h>
 
-// 过滤字符串中的特定字符
+// 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
+void replaceAll(std::string& source, const std::string& from, const std::string& to) {
+    std::string newString;
+    newString.reserve(source.length());  // 预分配足够空间
+
+    std::string::size_type lastPos = 0;
+    std::string::size_type findPos;
+
+    while (std::string::npos != (findPos = source.find(from, lastPos))) {
+        newString.append(source, lastPos, findPos - lastPos);
+        newString += to;
+        lastPos = findPos + from.length();
+    }
+
+    // 拼接最后一个分隔符后的所有字符
+    newString += source.substr(lastPos);
+    source.swap(newString);
+}// 过滤字符串中的特定字符
+
+
 std::string BiliApi::filterCharacters(const std::string& input)
 {
     const std::string charsToFilter = "!\'()*";
