@@ -24,8 +24,13 @@ void replaceAll(std::string& source, const std::string& from, const std::string&
     // 拼接最后一个分隔符后的所有字符
     newString += source.substr(lastPos);
     source.swap(newString);
-}// 过滤字符串中的特定字符
+}
 
+/*
+ * @brief 过滤字符串中的特定字符
+ * @param input 输入字符串
+ * @return 过滤后的字符串
+ */
 
 std::string BiliApi::filterCharacters(const std::string& input)
 {

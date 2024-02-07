@@ -20,6 +20,31 @@ BilibiliClient& BilibiliClient::globalClient()
     static BilibiliClient bilibiliClient;
     return bilibiliClient;
 }
+LoginUrlOrigin BilibiliClient::GetLoginUrl()
+{
+    std::string response;
+
+    const auto headers = getPassportHeaders();
+    Rquest(GET, PassportURL::QRCode, {}, response, headers, false);
+
+    qDebug() << QString::fromStdString(response);
+    return LoginUrlOrigin(GetDataFromRespones(response));
+}
+
+LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key)
+{
+    ParamType param;
+    param["qrcode_key"] = qrcode_key;
+
+    const auto headers = getPassportHeaders();
+
+    std::string response;
+    Rquest(GET, PassportURL::LoginStatus, param, response, headers, false);
+
+    qDebug() << "status response：" << QString::fromStdString(response);
+
+    return LoginStatusScanning(GetDataFromRespones(response));
+}
 
 VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
 {
@@ -34,16 +59,6 @@ VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
     return VideoViewOrigin(GetDataFromRespones(response));
 }
 
-LoginUrlOrigin BilibiliClient::GetLoginUrl()
-{
-    std::string response;
-
-    const auto headers = getPassportHeaders();
-    Rquest(GET, PassportURL::QRCode, {}, response, headers, false);
-
-    qDebug() << QString::fromStdString(response);
-    return LoginUrlOrigin(GetDataFromRespones(response));
-}
 PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std::string& bvid)
 {
     ParamType param;
@@ -61,21 +76,6 @@ PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std:
 
     qDebug() << "playurl response：" << QString::fromStdString(response);
     return PlayUrlOrigin(GetDataFromRespones(response));
-}
-
-LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key)
-{
-    ParamType param;
-    param["qrcode_key"] = qrcode_key;
-
-    const auto headers = getPassportHeaders();
-
-    std::string response;
-    Rquest(GET, PassportURL::LoginStatus, param, response, headers, false);
-
-    qDebug() << "status response：" << QString::fromStdString(response);
-
-    return LoginStatusScanning(GetDataFromRespones(response));
 }
 
 void BilibiliClient::ResetWbi()
