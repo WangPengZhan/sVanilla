@@ -2,6 +2,7 @@
 
 #include <nlohmann/json.hpp>
 #include <vector>
+#include <list>
 
 namespace BiliApi
 {
@@ -588,10 +589,25 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, code, message)
 };
 
+class WbiImg : public Protocol
+{
+public:
+    std::string img_url;
+    std::string sub_url;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(WbiImg, img_url,sub_url)
+};
+
 class NavData : public Protocol
 {
 public:
-    std::vector<std::string> img;
+    bool isLogin;
+    WbiImg wbi_img;
 
     std::string toString() override
     {
@@ -600,7 +616,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, img)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, wbi_img)
 };
 
 class Nav final : public Protocol
@@ -657,7 +673,7 @@ public:
 class Cookie : public Protocol
 {
 public:
-    time_t Expires;
+    std::time_t Expires;
     std::string SESSDATA;
     std::string bili_jct;
     std::string toString() override
@@ -673,14 +689,14 @@ class MixinKey : public Protocol
 {
 
 public:
-    time_t Expires;
-    std::string value;
+    std::time_t Expires;
+    std::string mixin_key;
     std::string toString() override
     {
         nlohmann::json json;
         to_json(json, *this);
         return json.dump(4);
     }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MixinKey, Expires, value)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MixinKey, Expires, mixin_key)
 };
 }  // namespace BiliApi

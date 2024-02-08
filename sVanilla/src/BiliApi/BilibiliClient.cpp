@@ -12,6 +12,7 @@
 #include <regex>
 #include <filesystem>
 #include <sstream>
+#include <string>
 
 namespace BiliApi
 {
@@ -77,20 +78,24 @@ PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std:
 void BilibiliClient::ResetWbi()
 {
     std::string response;
-    Rquest(GET, PassportURL::WebNav, {}, response, {}, true);
+    Rquest(GET, PassportURL::WebNav, {}, response, getDefalutHeaders(), false);
     qDebug() << "nav response：" << QString::fromStdString(response);
     std::string img_url;
     std::string sub_url;
-    if (const auto res = NavData(GetDataFromRespones(response)); !res.img.empty())
+
+    if (const auto res = Nav(GetDataFromRespones(response)); !res.data.wbi_img.img_url.empty())
     {
-        img_url = std::filesystem::path(res.img[0]).stem().string();
-        sub_url = std::filesystem::path(res.img[1]).stem().string();
+        img_url = std::filesystem::path(res.data.wbi_img.img_url).stem().string();
+        sub_url = std::filesystem::path(res.data.wbi_img.sub_url).stem().string();
     }
     if (!img_url.empty() && !sub_url.empty())
     {
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
-        j.emplace("Expires", std::time(nullptr) + 60 * 60 * 24);
+        j.emplace("Expires", (std::time(nullptr) + 60 * 60 * 24) / 86400);  // 有效期一天
+        // j["mixin_key"] = GetMixinKey(img_url + sub_url);
+        // j["Expires"] = (std::time(nullptr) + 60 * 60 * 24) / 86400;
+        qDebug() << "mixin_key: " << QString::fromStdString(j.dump());
         updateData("sVanilla.data", "mixinKey", j);
     }
 }
@@ -121,7 +126,7 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     if (method == GET && needCookie)
     {
-        if (Cookie cookie; readData<Cookie>("sVanilla.data", "cookie", cookie))
+        if (const auto cookie = readCookie(); !cookie.SESSDATA.empty())
         {
             HttpGet(url, param, response, cookie.SESSDATA);
         }
@@ -152,6 +157,12 @@ std::list<std::string> BilibiliClient::getDefalutHeaders()
 }
 void BilibiliClient::encWbi(ParamType& params)
 {
+    MixinKey mixinKey = readMixinKey();
+    if (mixinKey.mixin_key.empty())
+    {
+        ResetWbi();
+        mixinKey = readMixinKey();
+    }
     // 添加 wts 字段
     const time_t curr_time = time(nullptr);
     params["wts"] = std::to_string(curr_time);
@@ -172,38 +183,28 @@ void BilibiliClient::encWbi(ParamType& params)
     });
 
     // 计算 w_rid 字段
-    if (MixinKey mixinKey; readData<MixinKey>("sVanilla.data", "mixinKey", mixinKey))
-    {
-        params["w_rid"] = MD5Hash(query + mixinKey.value);
-    }
-    else
-    {
-        ResetWbi();
-        encWbi(params);
-    }
+    params["w_rid"] = MD5Hash(query + mixinKey.mixin_key);
 }
 
 void BilibiliClient::ParseCookie(const std::string& url)
 {
-    std::string cookie = url.substr(url.find('?') + 1);
-    replaceCharacter(cookie, "&", ";");
-    nlohmann::json j;
-    std::istringstream iss(url);
-    std::string segment;
-    while (std::getline(iss, segment, ';'))
-    {
-        std::istringstream iss2(segment);
-        std::string value;
-        if (std::string key; std::getline(std::getline(iss2, key, '='), value))
-        {
-            if (key == "Expires" || key == "SESSDATA" || key == "bili_jct")
-            {
-                j.emplace(key, value);
-            }
+    qDebug() << "cookie: " << QString::fromStdString(url);
+    nlohmann::json result;
+    std::string params = url.substr(url.find('?') + 1);  // 获取参数部分
+    std::stringstream ss(params);
+    std::string param;
+    while (std::getline(ss, param, '&')) {
+        std::string key = param.substr(0, param.find('='));
+        std::string value = param.substr(param.find('=') + 1);
+        if (key == "Expires") {
+            auto expires = static_cast<std::time_t>(std::stoll(value));
+            result[key] = expires;
+        }
+        else if (key == "SESSDATA" || key == "bili_jct") {
+            result[key] = value;
         }
     }
-    m_cookie = "SESSDATA=" + std::string(j["SESSDATA"]);
-    updateData("sVanilla.data", "cookie", j);
+    updateData("sVanilla.data", "cookie", result);
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)

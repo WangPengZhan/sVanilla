@@ -141,7 +141,6 @@ std::string CNetWork::getAgent()
 void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::string& cookie)
 {
     return HttpGetWithCookie(url + ConcatenateParams(params), response, cookie);
-    ;
 }
 
 void CNetWork::HttpGet(const std::string& url, const std::string& params, std::string& response)
@@ -151,6 +150,7 @@ void CNetWork::HttpGet(const std::string& url, const std::string& params, std::s
 
 void CNetWork::HttpGet(const std::string& url, std::string& response)
 {
+    qDebug() << "HttpGet: " << QString::fromStdString(url);
     CURLPtr curlHandle(curl_easy_init());
     curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
     curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
@@ -172,6 +172,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response)
 }
 void CNetWork::HttpGetWithCookie(const std::string& url, std::string& response, const std::string& cookie)
 {
+    qDebug() << "HttpGetWithCookie: " << QString::fromStdString(url);
     CURLPtr curlHandle(curl_easy_init());
     curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIE, cookie.c_str());
     curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");

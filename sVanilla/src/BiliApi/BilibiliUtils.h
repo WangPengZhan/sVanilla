@@ -1,4 +1,6 @@
 #pragma once
+#include "BiliApi.h"
+
 #include <string>
 #include "NetWork/CNetWork.h"
 #include <nlohmann/json.hpp>
@@ -19,17 +21,31 @@ std::string url_decode(const std::string& encoded);
 std::string GetMixinKey(const std::string& orig);
 std::string MD5Hash(const std::string& str);
 
-template <typename T>
-bool readData(const std::string& filename, const std::string& key, T& value)
+bool isExpired(const std::time_t& expires);
+
+template <typename Result>
+Result readData(const std::string& key)
 {
-    nlohmann::json j = readJson(filename);
-    auto it = T(j.find(key));
-    const time_t expires = it.find("Expires");
-    if (const std::time_t now = std::time(nullptr) / 86400; expires < now)
+    nlohmann::json j = readJson("sVanilla.data");
+    if (!j.is_object() || !j.contains(key))
     {
-        return false;
+        return Result();
     }
-    value = it;
-    return true;
+
+    nlohmann::json cookie = j[key];
+    if (!cookie.is_object())
+    {
+        return Result();
+    }
+
+    if (cookie.contains("Expires") && isExpired(cookie["Expires"].get<std::time_t>()))
+    {
+        return Result();
+    }
+
+    return Result(cookie);
 }
+Cookie readCookie();
+MixinKey readMixinKey();
+
 }  // namespace BiliApi

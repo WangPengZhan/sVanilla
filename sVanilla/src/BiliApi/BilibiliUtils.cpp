@@ -32,15 +32,35 @@ void BiliApi::replaceCharacter(std::string& source, const std::string& from, con
 void BiliApi::saveJson(const std::string& filename, const nlohmann::json& content)
 {
     std::ofstream o(filename);
+    if (!o)
+    {
+        throw std::runtime_error("Error opening file: " + filename);
+    }
     o << content;
     o.close();
 }
 nlohmann::json BiliApi::readJson(const std::string& filename)
 {
-    std::ifstream i(filename);
+    std::ifstream file(filename);
+    if (!file)
+    {
+        return nlohmann::json::object();
+    }
+    // 检查文件是否为空
+    if (file.peek() == std::ifstream::traits_type::eof()) {
+        // 文件为空，返回空的json对象
+        return nlohmann::json::object();
+    }
+
     nlohmann::json j;
-    i >> j;
-    i.close();
+    try
+    {
+        file >> j;
+    }
+    catch (nlohmann::json::parse_error& e)
+    {
+        throw std::runtime_error("Error parsing JSON: " + std::string(e.what()));
+    }
     return j;
 }
 void BiliApi::updateData(const std::string& filename, const std::string& key, const nlohmann::json& value)
@@ -118,4 +138,18 @@ std::string BiliApi::MD5Hash(const std::string& str)
     }
 
     return oss.str();
+}
+
+bool BiliApi::isExpired(const std::time_t& expires)
+{
+    return expires < std::time(nullptr) / 86400;
+}
+
+BiliApi::Cookie BiliApi::readCookie()
+{
+    return readData<Cookie>("cookie");
+}
+
+BiliApi::MixinKey BiliApi::readMixinKey(){
+    return readData<MixinKey>("mixinKey");
 }
