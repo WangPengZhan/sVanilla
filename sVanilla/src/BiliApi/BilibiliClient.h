@@ -1,13 +1,6 @@
 #pragma once
-
-#include <QObject>
-
-#include <curl/curl.h>
-
 #include <nlohmann/json.hpp>
-
 #include <string>
-
 #include "BiliApi.h"
 #include "NetWork/CNetWork.h"
 

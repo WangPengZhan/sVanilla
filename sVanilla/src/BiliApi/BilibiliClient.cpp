@@ -5,6 +5,8 @@
 #include "Util/JsonProcess.h"
 #include "BiliApiConstants.h"
 #include "BilibiliUtils.h"
+#include "NetWork/NetworkLog.h"
+#include <curl/curl.h>
 #include <regex>
 #include <filesystem>
 #include <sstream>
@@ -78,7 +80,7 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
             PRINTS("Cookie", cookieStr);
             std::list<std::string> headersWithCookie = headers;
             headersWithCookie.push_back(cookieStr);
-            HttpGet(url, param, response,headersWithCookie);
+            HttpGet(url, param, response, headersWithCookie);
         }
         else
         {
@@ -91,26 +93,31 @@ void BilibiliClient::Rquest(const HpptType method, const std::string& url, const
     }
     else
     {
-        HttpGet(url, param, response,headers);
+        HttpGet(url, param, response, headers);
     }
 }
 
 void BilibiliClient::ResetWbi()
 {
     std::string response;
-    auto headers  = getDefalutHeaders();
-    Rquest(GET, PassportURL::WebNav, {}, response, headers, false);
+    Rquest(GET, PassportURL::WebNav, {}, response, getDefalutHeaders(), false);
     PRINTJ("nav response：", response);
     std::string img_url;
     std::string sub_url;
-
-    if (const auto res = Nav(GetDataFromRespones(response)); !res.data.wbi_img.img_url.empty())
+    try
     {
-        img_url = std::filesystem::path(res.data.wbi_img.img_url).stem().string();
-        sub_url = std::filesystem::path(res.data.wbi_img.sub_url).stem().string();
+        auto jsonData = nlohmann::json::parse(response);
+        img_url = jsonData["data"]["wbi_img"]["img_url"].get<std::string>();
+        sub_url = jsonData["data"]["wbi_img"]["sub_url"].get<std::string>();
+    }
+    catch (nlohmann::json::parse_error& e)
+    {
+        PRINTS("Error parsing NAV response: ", e.what());
     }
     if (!img_url.empty() && !sub_url.empty())
     {
+        img_url = std::filesystem::path(img_url).stem().string();
+        sub_url = std::filesystem::path(sub_url).stem().string();
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
         j.emplace("Expires", (std::time(nullptr) + 60 * 60 * 24) / 86400);  // 有效期一天
@@ -161,6 +168,7 @@ void BilibiliClient::ParseCookie(const std::string& url)
         std::string value = param.substr(param.find('=') + 1);
         if (key == "Expires")
         {
+            // 将 Expires 时间戳字符串转换为天数, 以便与 mixinKey 日更同步
             auto expires = static_cast<std::time_t>(std::stoll(value));
             result.emplace("Expires", expires / 86400);
         }
@@ -209,15 +217,19 @@ void BilibiliClient::InitBiliDefaultHeaders()
 
 std::list<std::string> BilibiliClient::getPassportHeaders()
 {
-    return std::list{getAgent(), std::string("referer: https://passport.bilibili.com")};
+    return {
+        getAgent(),
+        Headers::PassportReferer,
+    };
 }
 std::list<std::string> BilibiliClient::getDefalutHeaders()
 {
-    return std::list{
+    return {
         getAgent(),
-        std::string("Referer: https://www.bilibili.com"),
+        Headers::DefaultReferer,
     };
 }
+
 
 BilibiliClient::BilibiliClient()
     : m_logined(false)

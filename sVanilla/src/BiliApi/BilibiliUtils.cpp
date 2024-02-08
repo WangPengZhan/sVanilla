@@ -9,11 +9,6 @@
 #include <sstream>
 #include <curl/curl.h>
 
-// size_t WriteCallback(void *contents, size_t size, size_t nmemb, std::string *userp) {
-//     userp->append((char*)contents, size * nmemb);
-//     return size * nmemb;
-// }
-
 // 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
 void BiliApi::replaceCharacter(std::string& source, const std::string& from, const std::string& to)
 {
@@ -71,9 +66,10 @@ nlohmann::json BiliApi::readJson(const std::string& filename)
 }
 void BiliApi::updateData( const std::string& key, const nlohmann::json& value)
 {
-    nlohmann::json j = readJson("sVanilla.data");
+    const std::string filename = "sVanilla.data";
+    nlohmann::json j = readJson(filename);
     j[key] = value;
-    saveJson("sVanilla.data", j);
+    saveJson(filename, j);
 }
 
 std::string BiliApi::filterCharacters(const std::string& input)
@@ -139,42 +135,6 @@ std::string BiliApi::MD5Hash(const std::string& str)
 
     return oss.str();
 }
-// void BiliApi::Get(){
-//     CURL *curl;
-//     CURLcode res;
-//     std::string readBuffer;
-//
-//     curl_global_init(CURL_GLOBAL_DEFAULT);
-//
-//     curl = curl_easy_init();
-//     if(curl) {
-//         struct curl_slist *headers = nullptr;
-//
-//         headers = curl_slist_append(headers, "Referer: https://www.bilibili.com");
-//         headers = curl_slist_append(headers, "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36");
-//         headers = curl_slist_append(headers, "Cookie: SESSDATA=50cea82e%2C1722158630%2C52fbc%2A12CjCZ-m3IY6kROAiNMcziRaJ1r9W6od8FqErVzOW9aqqSZvhXs9_JeQRmG5Anz7uxO98SVkR3NDRWWDhOb21CeTRXY25BM28wdW15UHhpRElZdFZKQWNtNjRzbFNKRXUzUlM3OTgxTmVST0JjbnBMMDQzdnhab2RacjE1b1NvNjQwMW9uOXBHelh3IIEC; bili_jct=f25e423e574a3a36c74f1d2eaccaddfd; DedeUserID=1524815138; DedeUserID__ckMd5=f492745a735982a3; sid=on1qhrr5");
-//
-//         curl_easy_setopt(curl, CURLOPT_URL, "https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1zv4y1T7NT&cid=761588849&fnval=0&fnver=0&fourk=1&qn=64&w_rid=59c826e1a65e12cdb4d56b30b06861ad&wts=1707370890");
-//         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-//
-//         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-//         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-//
-//         res = curl_easy_perform(curl);
-//         if(res != CURLE_OK)
-//             fprintf(stderr, "curl_easy_perform() failed: %s\n",
-//                     curl_easy_strerror(res));
-//         else
-//             std::cout << readBuffer << std::endl;
-//
-//         curl_easy_cleanup(curl);
-//
-//         if(headers)
-//             curl_slist_free_all(headers);
-//     }
-//
-//     curl_global_cleanup();
-// }
 
 bool BiliApi::isExpired(const std::time_t& expires)
 {
