@@ -26,7 +26,7 @@ public:
         {
             // 过滤 value 中的 "!'()*" 字符
             const std::string filteredValue = filterCharacters(value);
-            sortedParams.push_back(url_encode(key) + "=" += url_encode(filteredValue));
+            sortedParams.push_back(urlEncode(key) + "=" += urlEncode(filteredValue));
         }
         std::sort(sortedParams.begin(), sortedParams.end());
 
@@ -43,7 +43,7 @@ TEST_F(BiliApiTest, URL)
 
 TEST_F(BiliApiTest, URLEncode)
 {
-    encoded = BiliApi::url_encode(query);
+    encoded = BiliApi::urlEncode(query);
     ASSERT_THAT(encoded, Eq("bar%3D514%26foo%3D114%26wts%3D1702204169%26zab%3D1919810"));
 }
 

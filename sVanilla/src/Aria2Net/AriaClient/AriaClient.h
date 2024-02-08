@@ -10,7 +10,6 @@
 #include "NetWork/CNetWork.h"
 #include "Aria2Net/Protocol/Protocol.h"
 
-#define PRINT(x) qDebug() << x;
 
 namespace aria2net
 {
@@ -81,7 +80,6 @@ Result AriaClient::Call(std::string methodName, nlohmann::json::array_t params)
     {
         return Result();
     }
-    PRINT(QString::fromStdString(res))
     nlohmann::json result = nlohmann::json::parse(res);
     return Result(result);
 }

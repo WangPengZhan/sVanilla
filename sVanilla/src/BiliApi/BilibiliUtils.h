@@ -1,8 +1,6 @@
 #pragma once
 #include "BiliApi.h"
-
 #include <string>
-#include "NetWork/CNetWork.h"
 #include <nlohmann/json.hpp>
 
 namespace BiliApi
@@ -14,38 +12,36 @@ inline std::vector mixinKeyEncTab = {46, 47, 18, 2,  53, 8,  23, 32, 15, 50, 10,
 void replaceCharacter(std::string& source, const std::string& from, const std::string& to);
 void saveJson(const std::string& filename, const nlohmann::json& content);
 nlohmann::json readJson(const std::string& filename);
-void updateData(const std::string& filename, const std::string& key, const nlohmann::json& value);
+void updateData(const std::string& key, const nlohmann::json& value);
 std::string filterCharacters(const std::string& input);
-std::string url_encode(const std::string& decoded);
-std::string url_decode(const std::string& encoded);
+std::string urlEncode(const std::string& decoded);
+std::string urlDecode(const std::string& encoded);
 std::string GetMixinKey(const std::string& orig);
 std::string MD5Hash(const std::string& str);
-
+// void Get();
 bool isExpired(const std::time_t& expires);
 
 template <typename Result>
-Result readData(const std::string& key)
+bool readData(Result& result, const std::string& key)
 {
     nlohmann::json j = readJson("sVanilla.data");
     if (!j.is_object() || !j.contains(key))
     {
-        return Result();
+        return false;
     }
 
     nlohmann::json cookie = j[key];
     if (!cookie.is_object())
     {
-        return Result();
+        return false;
     }
 
     if (cookie.contains("Expires") && isExpired(cookie["Expires"].get<std::time_t>()))
     {
-        return Result();
+        return false;
     }
 
-    return Result(cookie);
+    result = Result(cookie);
+    return true;
 }
-Cookie readCookie();
-MixinKey readMixinKey();
-
 }  // namespace BiliApi

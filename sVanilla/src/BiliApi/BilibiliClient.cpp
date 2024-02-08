@@ -1,14 +1,10 @@
 #include <QApplication>
-#include <QFile>
-
 #include <fstream>
-
 #include "BilibiliClient.h"
 #include "Logger/Logger.h"
 #include "Util/JsonProcess.h"
 #include "BiliApiConstants.h"
 #include "BilibiliUtils.h"
-
 #include <regex>
 #include <filesystem>
 #include <sstream>
@@ -25,10 +21,8 @@ BilibiliClient& BilibiliClient::globalClient()
 LoginUrlOrigin BilibiliClient::GetLoginUrl()
 {
     std::string response;
-
     Rquest(GET, PassportURL::QRCode, {}, response, getPassportHeaders(), false);
-
-    qDebug() << QString::fromStdString(response);
+    PRINTJ("login response：", response);
     return LoginUrlOrigin(GetDataFromRespones(response));
 }
 
@@ -39,9 +33,7 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key
 
     std::string response;
     Rquest(GET, PassportURL::LoginStatus, param, response, getPassportHeaders(), false);
-
-    qDebug() << "status response：" << QString::fromStdString(response);
-
+    PRINTJ("login status response：", response);
     return LoginStatusScanning(GetDataFromRespones(response));
 }
 
@@ -51,8 +43,8 @@ VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
     param["bvid"] = bvid;
 
     std::string response;
-    Rquest(GET, VideoURL::View, param, response, getDefalutHeaders(), true);
-
+    Rquest(GET, VideoURL::View, param, response, getDefalutHeaders(), false);
+    PRINTJ("view response：", response);
     return VideoViewOrigin(GetDataFromRespones(response));
 }
 
@@ -66,20 +58,49 @@ PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std:
     param.emplace("fnval", "0");
     param.emplace("fourk", "1");
 
-    encWbi(param);
+    EncodeWithWbi(param);
 
     std::string response;
     Rquest(GET, VideoURL::Playurl, param, response, getDefalutHeaders(), true);
 
-    qDebug() << "playurl response：" << QString::fromStdString(response);
+    PRINTJ("playurl response：", response);
     return PlayUrlOrigin(GetDataFromRespones(response));
+}
+
+void BilibiliClient::Rquest(const HpptType method, const std::string& url, const ParamType& param, std::string& response, const std::list<std::string>& headers,
+                            const bool needCookie)
+{
+    if (method == GET && needCookie)
+    {
+        if (Cookie cookie; readData(cookie, "cookie"))
+        {
+            const std::string cookieStr = "Cookie: SESSDATA=" + urlEncode(cookie.SESSDATA) + ";";
+            PRINTS("Cookie", cookieStr);
+            std::list<std::string> headersWithCookie = headers;
+            headersWithCookie.push_back(cookieStr);
+            HttpGet(url, param, response,headersWithCookie);
+        }
+        else
+        {
+            // 重新获取cookie
+        }
+    }
+    else if (method == POST)
+    {
+        HttpPost(url, param, response);
+    }
+    else
+    {
+        HttpGet(url, param, response,headers);
+    }
 }
 
 void BilibiliClient::ResetWbi()
 {
     std::string response;
-    Rquest(GET, PassportURL::WebNav, {}, response, getDefalutHeaders(), false);
-    qDebug() << "nav response：" << QString::fromStdString(response);
+    auto headers  = getDefalutHeaders();
+    Rquest(GET, PassportURL::WebNav, {}, response, headers, false);
+    PRINTJ("nav response：", response);
     std::string img_url;
     std::string sub_url;
 
@@ -93,75 +114,17 @@ void BilibiliClient::ResetWbi()
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
         j.emplace("Expires", (std::time(nullptr) + 60 * 60 * 24) / 86400);  // 有效期一天
-        // j["mixin_key"] = GetMixinKey(img_url + sub_url);
-        // j["Expires"] = (std::time(nullptr) + 60 * 60 * 24) / 86400;
-        qDebug() << "mixin_key: " << QString::fromStdString(j.dump());
-        updateData("sVanilla.data", "mixinKey", j);
+        updateData("mixinKey", j);
     }
 }
 
-void BilibiliClient::InitBiliDefaultHeaders()
+void BilibiliClient::EncodeWithWbi(ParamType& params)
 {
-    m_headers = curl_slist_append(m_headers, "Referer: https://www.bilibili.com");
-}
-
-void BilibiliClient::SetLogined(bool logined)
-{
-    m_logined = logined;
-}
-
-bool BilibiliClient::GetLogined() const
-{
-    return m_logined;
-}
-void BilibiliClient::Rquest(const HpptType method, const std::string& url, const ParamType& param, std::string& response, const std::list<std::string>& headers,
-                            const bool needCookie)
-{
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-
-    for (const auto& header : headers)
-    {
-        AppendHeaders(header);
-    }
-    if (method == GET && needCookie)
-    {
-        if (const auto cookie = readCookie(); !cookie.SESSDATA.empty())
-        {
-            HttpGet(url, param, response, cookie.SESSDATA);
-        }
-        else
-        {
-            // 重新获取cookie
-        }
-    }
-    else if (method == POST)
-    {
-        HttpPost(url, param, response);
-    }
-    else
-    {
-        HttpGet(url, param, response);
-    }
-    curl_slist_free_all(m_headers);
-    m_headers = nullptr;
-    InitDefaultHeaders();
-}
-std::list<std::string> BilibiliClient::getPassportHeaders()
-{
-    return std::list{getAgent(), std::string("referer: https://passport.bilibili.com")};
-}
-std::list<std::string> BilibiliClient::getDefalutHeaders()
-{
-    return std::list{getAgent(), std::string("referer: https://www.bilibili.com")};
-}
-void BilibiliClient::encWbi(ParamType& params)
-{
-    MixinKey mixinKey = readMixinKey();
-    if (mixinKey.mixin_key.empty())
+    MixinKey mixinKey;
+    if (!readData(mixinKey, "mixinKey"))
     {
         ResetWbi();
-        mixinKey = readMixinKey();
+        readData(mixinKey, "mixinKey");
     }
     // 添加 wts 字段
     const time_t curr_time = time(nullptr);
@@ -174,7 +137,7 @@ void BilibiliClient::encWbi(ParamType& params)
         // 过滤 value 中的 "!'()*" 字符
         const std::string filteredValue = filterCharacters(value);
         // url encode
-        sortedParams.push_back(url_encode(key) + "=" += url_encode(filteredValue));
+        sortedParams.push_back(urlEncode(key) + "=" += urlEncode(filteredValue));
     }
     std::sort(sortedParams.begin(), sortedParams.end());
     // 序列化参数
@@ -188,23 +151,25 @@ void BilibiliClient::encWbi(ParamType& params)
 
 void BilibiliClient::ParseCookie(const std::string& url)
 {
-    qDebug() << "cookie: " << QString::fromStdString(url);
     nlohmann::json result;
     std::string params = url.substr(url.find('?') + 1);  // 获取参数部分
     std::stringstream ss(params);
     std::string param;
-    while (std::getline(ss, param, '&')) {
+    while (std::getline(ss, param, '&'))
+    {
         std::string key = param.substr(0, param.find('='));
         std::string value = param.substr(param.find('=') + 1);
-        if (key == "Expires") {
+        if (key == "Expires")
+        {
             auto expires = static_cast<std::time_t>(std::stoll(value));
-            result[key] = expires;
+            result.emplace("Expires", expires / 86400);
         }
-        else if (key == "SESSDATA" || key == "bili_jct") {
-            result[key] = value;
+        else if (key == "SESSDATA" || key == "bili_jct")
+        {
+            result.emplace(key, value);
         }
     }
-    updateData("sVanilla.data", "cookie", result);
+    updateData("cookie", result);
 }
 
 nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
@@ -225,6 +190,33 @@ nlohmann::json BilibiliClient::GetDataFromRespones(const std::string& respones)
     stream.close();
     return json;
     // return json;
+}
+
+void BilibiliClient::SetLogined(bool logined)
+{
+    m_logined = logined;
+}
+
+bool BilibiliClient::GetLogined() const
+{
+    return m_logined;
+}
+
+void BilibiliClient::InitBiliDefaultHeaders()
+{
+    m_headers = curl_slist_append(m_headers, "Referer: https://www.bilibili.com");
+}
+
+std::list<std::string> BilibiliClient::getPassportHeaders()
+{
+    return std::list{getAgent(), std::string("referer: https://passport.bilibili.com")};
+}
+std::list<std::string> BilibiliClient::getDefalutHeaders()
+{
+    return std::list{
+        getAgent(),
+        std::string("Referer: https://www.bilibili.com"),
+    };
 }
 
 BilibiliClient::BilibiliClient()

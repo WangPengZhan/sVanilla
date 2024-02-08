@@ -24,6 +24,9 @@ void App::init()
     // option.dir = SingleConfig::instance().getAriaConfig().downloadDir;
     const QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     option.dir = downloadPath.toStdString();
+    const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
+    option.header = h;
+    option.out = "test.mp4";
 }
 
 void App::setHighDpi()
@@ -152,16 +155,17 @@ void App::parseUri(const std::string& uri)
     std::list<std::string> audio_urls;
     if (playUrl.code != 0)
     {
-        qDebug() << "play url error" << QString::fromStdString(playUrl.message);
+        PRINTS("play url error", playUrl.message)
+        PRINTS("play url error", playUrl.message)
         return;
     }
 
     const auto videos = playUrl.data.durl;
-    qDebug() << "accept_format: " <<playUrl.data.accept_format;
+    PRINTS("accept_format: ", playUrl.data.accept_format)
     for (const auto& video : videos)
     {
         video_urls.push_back(video.url);
-        qDebug() << "video url" << QString::fromStdString(video.url);
+        PRINTS("video url", video.url)
     }
     if (!video_urls.empty())
     {
