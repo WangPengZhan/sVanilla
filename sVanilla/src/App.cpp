@@ -148,28 +148,33 @@ void App::parseUri(const std::string& uri)
     option.header = h;
     auto m_biliClient = BiliApi::BilibiliClient::globalClient();
     const auto res = m_biliClient.GetVideoView(uri);
-    const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
-    std::list<std::string> video_urls;
-    std::list<std::string> audio_urls;
-    if (playUrl.code != 0)
+    if (res.code == 0)
     {
-        PRINTS("play url error", playUrl.message)
-        PRINTS("play url error", playUrl.message)
-        return;
+        // 更新并跳转到 video page
+        maimWindow->updateVideoPage(std::make_shared<BiliApi::VideoView>(res.data));
     }
-
-    const auto videos = playUrl.data.durl;
-    PRINTS("accept_format: ", playUrl.data.accept_format)
-    for (const auto& video : videos)
-    {
-        video_urls.push_back(video.url);
-        PRINTS("video url", video.url)
-    }
-    if (!video_urls.empty())
-    {
-        option.out = res.data.title + ".mp4";
-        addUri(video_urls);
-    }
+    // const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
+    // std::list<std::string> video_urls;
+    // std::list<std::string> audio_urls;
+    // if (playUrl.code != 0)
+    // {
+    //     PRINTS("play url error", playUrl.message)
+    //     PRINTS("play url error", playUrl.message)
+    //     return;
+    // }
+    //
+    // const auto videos = playUrl.data.durl;
+    // PRINTS("accept_format: ", playUrl.data.accept_format)
+    // for (const auto& video : videos)
+    // {
+    //     video_urls.push_back(video.url);
+    //     PRINTS("video url", video.url)
+    // }
+    // if (!video_urls.empty())
+    // {
+    //     option.out = res.data.title + ".mp4";
+    //     addUri(video_urls);
+    // }
 }
 
 void App::updateHomeMsg(const std::string& msg) const

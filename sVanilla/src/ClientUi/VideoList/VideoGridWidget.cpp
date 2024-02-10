@@ -1,5 +1,6 @@
 #include "VideoGridWidget.h"
 #include "ui_VideoGridWidget.h"
+#include "BiliApi/BilibiliClient.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -26,12 +27,39 @@ void VideoGridItemWidget::setUi()
 void VideoGridItemWidget::signalsAndSlots()
 {
     connect(ui->VideoGridInformationBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
+    connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, [this]() {
+        // emit downloadBtnClick(m_videoView);
+        auto m_biliClient = BiliApi::BilibiliClient::globalClient();
+        const auto playUrl = m_biliClient.GetPlayUrl(m_videoView->cid, 64, m_videoView->bvid);
+        std::list<std::string> video_urls;
+        std::list<std::string> audio_urls;
+        if (playUrl.code != 0)
+        {
+            PRINTS("play url error", playUrl.message)
+            PRINTS("play url error", playUrl.message)
+            return;
+        }
+
+        const auto videos = playUrl.data.durl;
+        PRINTS("accept_format: ", playUrl.data.accept_format)
+        for (const auto& video : videos)
+        {
+            video_urls.push_back(video.url);
+            PRINTS("video url", video.url)
+        }
+    });
 }
 void VideoGridItemWidget::setCover()
 {
     const QPixmap pixmap(":/CoverTest.jpeg");
     const QPixmap scaledPixmap = pixmap.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     ui->Cover->setPixmap(scaledPixmap);
+}
+void VideoGridItemWidget::updateVideoCard()
+{
+    ui->Title->setText(QString::fromStdString(m_videoView->title));
+    ui->Duration->setText(QString::fromStdString(std::to_string(m_videoView->duration)));
+    ui->Author->setText(QString::fromStdString(m_videoView->owner.name));
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -54,6 +82,14 @@ void VideoGridWidget::addVideoItem(const std::string& bvid)
     this->setItemWidget(item, videoItem);
     m_items.insert(std::make_pair(bvid, item));
     connect(videoItem, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
+}
+void VideoGridWidget::updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView)
+{
+    const auto bvid = videoView->bvid;
+    const auto item = itemWidget(m_items[bvid]);
+    const auto widget = qobject_cast<VideoGridItemWidget*>(item);
+    widget->m_videoView = videoView;
+    widget->updateVideoCard();
 }
 void VideoGridWidget::setCover()
 {

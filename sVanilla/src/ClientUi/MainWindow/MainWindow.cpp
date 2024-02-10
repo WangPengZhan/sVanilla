@@ -42,11 +42,19 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 }
 void MainWindow::updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const
 {
-    ui->downloadTab->updateItem(status);
+    ui->DownloadPage->updateItem(status);
 }
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
-    ui->downloadTab->addTaskItem(gid);
+    ui->DownloadPage->addTaskItem(gid);
+}
+void MainWindow::addVideoCard(const std::string& bvid) const
+{
+    ui->VideoPage->addVideoItem(bvid);
+}
+void MainWindow::updateVideoPage(const std::shared_ptr<BiliApi::VideoView>& videoView) const
+{
+    ui->VideoPage->updateVideoItem(videoView);
 }
 
 void MainWindow::installWindowAgent()

@@ -317,7 +317,7 @@ public:
     int duration;
     std::string redirect_url;
     long long mission_id;
-    VideoOwner owener;
+    VideoOwner owner;
     VideoStat stat;
     std::string dynamic;
     long long cid;
@@ -336,7 +336,7 @@ public:
     }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title, pubdate, ctime, desc, state, duration,
-                                                redirect_url, mission_id, owener, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle,
+                                                redirect_url, mission_id, owner, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle,
                                                 ugc_season)
 };
 

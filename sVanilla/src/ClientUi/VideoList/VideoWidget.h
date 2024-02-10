@@ -1,6 +1,8 @@
 #ifndef VIDEOWIDGET_H
 #define VIDEOWIDGET_H
 
+#include "BiliApi/BiliApi.h"
+
 #include <QStackedWidget>
 #include <QWidget>
 
@@ -20,6 +22,7 @@ public:
     ~VideoWidget() override;
 
     void addVideoItem(const std::string& bvid);
+    void updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView);
 public slots:
     void showDetailPanel();
 

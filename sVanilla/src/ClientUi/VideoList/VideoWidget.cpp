@@ -20,9 +20,9 @@ VideoWidget::VideoWidget(QWidget *parent) :
         ui->VideoStackedPage->setCurrentWidget(ui->VideoTab);
     });
 
-    addVideoItem("123");
-    addVideoItem("123");
-    addVideoItem("123");
+    // addVideoItem("123");
+    // addVideoItem("123");
+    // addVideoItem("123");
     connect(ui->VideoGridWidget, &VideoGridWidget::itemDetailBtnClick, this, &VideoWidget::showDetailPanel);
     connect(ui->VideoListWidget, &VideoListWidget::itemDetailBtnClick,this,&VideoWidget::showDetailPanel);
 }
@@ -39,4 +39,9 @@ void VideoWidget::addVideoItem(const std::string& bvid)
 void VideoWidget::showDetailPanel()
 {
     ui->VideoDetailWidget->show();
+}
+void VideoWidget::updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView)
+{
+    ui->VideoGridWidget->addVideoItem(videoView->bvid);
+    ui->VideoGridWidget->updateVideoItem(videoView);
 }
