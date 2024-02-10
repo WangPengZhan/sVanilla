@@ -11,6 +11,7 @@ VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     , m_bvid(std::move(bvid))
 {
     ui->setupUi(this);
+    signalsAndSlots();
 }
 
 VideoGridItemWidget::~VideoGridItemWidget()
@@ -24,6 +25,7 @@ void VideoGridItemWidget::setUi()
 
 void VideoGridItemWidget::signalsAndSlots()
 {
+    connect(ui->VideoGridInformationBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
 }
 void VideoGridItemWidget::setCover()
 {
@@ -51,6 +53,7 @@ void VideoGridWidget::addVideoItem(const std::string& bvid)
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
     m_items.insert(std::make_pair(bvid, item));
+    connect(videoItem, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
 }
 void VideoGridWidget::setCover()
 {

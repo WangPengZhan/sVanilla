@@ -12,7 +12,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="SwitchBtnLayout">
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -43,30 +43,37 @@
     </layout>
    </item>
    <item>
-    <widget class="QStackedWidget" name="VideoStackedPage">
-     <widget class="QWidget" name="VideoTab">
-      <layout class="QVBoxLayout" name="VideoTabLayout">
-       <item>
-        <widget class="::VideoGridWidget" name="VideoGridWidget">
-         <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="VideoList">
-      <layout class="QVBoxLayout" name="VideoListLayout">
-       <item>
-        <widget class="::VideoListWidget" name="VideoListWidget">
-         <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <layout class="QHBoxLayout" name="VideoLayout">
+     <item>
+      <widget class="QStackedWidget" name="VideoStackedPage">
+       <widget class="QWidget" name="VideoTab">
+        <layout class="QVBoxLayout" name="VideoTabLayout">
+         <item>
+          <widget class="::VideoGridWidget" name="VideoGridWidget">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::NoSelection</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="VideoList">
+        <layout class="QVBoxLayout" name="VideoListLayout">
+         <item>
+          <widget class="::VideoListWidget" name="VideoListWidget">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::NoSelection</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="::VideoDetailWidget" name="VideoDetailWidget" native="true"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -81,6 +88,12 @@
    <class>::VideoListWidget</class>
    <extends>QListWidget</extends>
    <header>ClientUi/VideoList/VideoListWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>::VideoDetailWidget</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/VideoList/VideoDetailWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

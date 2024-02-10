@@ -23,6 +23,8 @@ private:
 private:
     Ui::VideoListItemWidget* ui;
     std::string m_bvid;
+signals:
+    void detailBtnClick();
 };
 
 class VideoListWidget : public QListWidget
@@ -33,4 +35,6 @@ public:
     explicit VideoListWidget(QWidget* parent = nullptr);
     ~VideoListWidget();
     void addVideoItem(const std::string& bvid);
+signals:
+    void itemDetailBtnClick();
 };

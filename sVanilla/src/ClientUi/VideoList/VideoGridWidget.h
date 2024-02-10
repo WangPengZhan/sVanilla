@@ -23,6 +23,9 @@ private:
 private:
     Ui::VideoGridItemWidget* ui;
     std::string m_bvid;
+
+signals:
+    void detailBtnClick();
 };
 
 class VideoGridWidget : public QListWidget
@@ -38,4 +41,7 @@ public:
 
 private:
     std::map<std::string, QListWidgetItem*> m_items;
+
+signals:
+    void itemDetailBtnClick();
 };

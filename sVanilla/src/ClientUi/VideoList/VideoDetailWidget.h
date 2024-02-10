@@ -1,18 +1,18 @@
 #pragma once
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui
 {
 class VideoDetailWidget;
 }
 
-class VideoDetailWidget : public QDialog
+class VideoDetailWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit VideoDetailWidget(std::string bvid,QWidget* parent = nullptr);
+    explicit VideoDetailWidget(QWidget* parent = nullptr);
     ~VideoDetailWidget();
 
 private:

@@ -23,6 +23,7 @@ void VideoListItemWidget::setUi()
 
 void VideoListItemWidget::signalsAndSlots()
 {
+    connect(ui->VideoListInformationBtn, &QPushButton::clicked, this, &VideoListItemWidget::detailBtnClick);
 }
 
 VideoListWidget::VideoListWidget(QWidget* parent)
@@ -37,4 +38,5 @@ void VideoListWidget::addVideoItem(const std::string& bvid)
     const auto item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
+    connect(videoItem, &VideoListItemWidget::detailBtnClick, this, &VideoListWidget::itemDetailBtnClick);
 }

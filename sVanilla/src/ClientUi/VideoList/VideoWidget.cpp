@@ -10,7 +10,7 @@
 VideoWidget::VideoWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui::VideoPage) {
     ui->setupUi(this);
-    // ui->VideoStackedWidget->setCurrentWidget(ui->VideoTab);
+    ui->VideoDetailWidget->hide();
     ui->VideoStackedPage->setCurrentWidget(ui->VideoTab);
 
     connect(ui->VideoListBtn, &QPushButton::clicked, [this] {
@@ -23,7 +23,8 @@ VideoWidget::VideoWidget(QWidget *parent) :
     addVideoItem("123");
     addVideoItem("123");
     addVideoItem("123");
-
+    connect(ui->VideoGridWidget, &VideoGridWidget::itemDetailBtnClick, this, &VideoWidget::showDetailPanel);
+    connect(ui->VideoListWidget, &VideoListWidget::itemDetailBtnClick,this,&VideoWidget::showDetailPanel);
 }
 
 VideoWidget::~VideoWidget()
@@ -34,4 +35,8 @@ void VideoWidget::addVideoItem(const std::string& bvid)
 {
     ui->VideoGridWidget->addVideoItem(bvid);
     ui->VideoListWidget->addVideoItem(bvid);
+}
+void VideoWidget::showDetailPanel()
+{
+    ui->VideoDetailWidget->show();
 }
