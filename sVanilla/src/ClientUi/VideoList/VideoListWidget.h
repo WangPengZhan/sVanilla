@@ -13,7 +13,7 @@ class VideoListItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit VideoListItemWidget(QWidget* parent = nullptr);
+    explicit VideoListItemWidget(std::string bvid, QWidget* parent = nullptr);
     ~VideoListItemWidget();
 
 private:
@@ -22,6 +22,7 @@ private:
 
 private:
     Ui::VideoListItemWidget* ui;
+    std::string m_bvid;
 };
 
 class VideoListWidget : public QListWidget
@@ -31,4 +32,5 @@ class VideoListWidget : public QListWidget
 public:
     explicit VideoListWidget(QWidget* parent = nullptr);
     ~VideoListWidget();
+    void addVideoItem(const std::string& bvid);
 };

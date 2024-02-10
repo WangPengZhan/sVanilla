@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VideoPage</class>
+ <widget class="QWidget" name="VideoPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>304</width>
+    <height>240</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="VideoGridBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="VideoListBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="VideoStackedPage">
+     <widget class="QWidget" name="VideoTab">
+      <layout class="QVBoxLayout" name="VideoTabLayout">
+       <item>
+        <widget class="::VideoGridWidget" name="VideoGridWidget">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="VideoList">
+      <layout class="QVBoxLayout" name="VideoListLayout">
+       <item>
+        <widget class="::VideoListWidget" name="VideoListWidget">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>::VideoGridWidget</class>
+   <extends>QListWidget</extends>
+   <header>ClientUi/VideoList/VideoGridWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::VideoListWidget</class>
+   <extends>QListWidget</extends>
+   <header>ClientUi/VideoList/VideoListWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

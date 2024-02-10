@@ -31,7 +31,12 @@
         <file>icon/checked.svg</file>
         <file>icon/unchecked.svg</file>
         <file>icon/anchor.svg</file>
+        <file>icon/video/grid.svg</file>
+        <file>icon/video/list.svg</file>
+        <file>icon/video/information.svg</file>
+        <file>icon/video/download.svg</file>
         <file>style/dark.qss</file>
         <file>style/light.qss</file>
+        <file>CoverTest.jpeg</file>
     </qresource>
 </RCC>

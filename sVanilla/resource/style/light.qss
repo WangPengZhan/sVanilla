@@ -226,23 +226,74 @@ QLabel#LineEditPlaceholderLabel {
 
 
 
-QListWidget#videoTab {
+/* QListWidget#videoTab {
     background-color: transparent;
     padding: 10px;
+} */
+
+
+/* QWidget#galleryPage {
+    background-color: transparent;
+} */
+QPushButton#VideoGridBtn {
+    qproperty-icon: url(":/icon/video/grid.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#VideoListBtn {
+    qproperty-icon: url(":/icon/video/list.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QWidget#VideoTab {
+    background-color: transparent;
+
+}
+
+QStackedWidget#VideoStackedPage {
+    background-color: transparent;
+}
+
+QListWidget#VideoGridWidget,
+#VideoListWidget {
+    background-color: transparent;
+}
+
+QListWidget::item#VideoGridWidget {
+    background-color: transparent;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+QLabel#Cover {
+    border-radius: 10px;
+}
+
+QPushButton#VideoGridInformationBtn,
+#VideoListInformationBtn {
+    qproperty-icon: url(":/icon/video/information.svg");
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#VideoGridDownloadBtn,
+#VideoListDownloadBtn {
+    qproperty-icon: url(":/icon/video/download.svg");
+    border: none;
+    background-color: transparent;
+}
+
+
+QWidget#downloadPage {
+    background-color: transparent;
 }
 
 QListWidget#downloadTab {
     background-color: transparent;
     padding: 10px;
-}
-
-
-QWidget#galleryPage {
-    background-color: transparent;
-}
-
-QWidget#downloadPage {
-    background-color: transparent;
 }
 
 /* QListWidget::item:alternate#DownloadingListWidget {

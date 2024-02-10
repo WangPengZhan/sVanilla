@@ -9,6 +9,7 @@
 #include "ClientUi/Setting/SettingPage.h"
 #include "Sqlite/SQLiteManager.h"
 #include "ClientUi/Download/DownloadingListWidget.h"
+#include "ClientUi/VideoList/VideoWidget.h"
 #include "SUI/windowbutton.h"
 
 #include <QStackedWidget>

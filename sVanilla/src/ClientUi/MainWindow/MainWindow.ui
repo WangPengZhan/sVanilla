@@ -39,7 +39,7 @@
       <widget class="QWidget" name="galleryPage">
        <layout class="QHBoxLayout" name="galleryLayout">
         <item>
-         <widget class="::VideoTabWidget" name="videoTab"/>
+         <widget class="::VideoWidget" name="VideoPage"/>
         </item>
        </layout>
       </widget>
@@ -65,12 +65,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>::VideoTabWidget</class>
-   <extends>QListWidget</extends>
-   <header>ClientUi/VideoList//VideoTabWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>::DownloadingListWidget</class>
    <extends>QListWidget</extends>
    <header>ClientUi/Download/DownloadingListWidget.h</header>
@@ -80,6 +74,12 @@
    <class>::SettingPage</class>
    <extends>QWidget</extends>
    <header>ClientUi/Setting/SettingPage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::VideoWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>ClientUi/VideoList/VideoWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
