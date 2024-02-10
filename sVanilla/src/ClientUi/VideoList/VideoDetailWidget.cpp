@@ -24,4 +24,7 @@ void VideoDetailWidget::setUi()
 
 void VideoDetailWidget::signalsAndSlots()
 {
+    connect(ui->DetailPanelCloseBtn, &QPushButton::clicked,this, [this]() {
+        this->hide();
+    });
 }
