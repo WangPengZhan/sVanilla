@@ -11,18 +11,18 @@ VideoWidget::VideoWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui::VideoPage) {
     ui->setupUi(this);
     ui->VideoDetailWidget->hide();
-    ui->VideoStackedPage->setCurrentWidget(ui->VideoTab);
+    ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
 
     connect(ui->VideoListBtn, &QPushButton::clicked, [this] {
         ui->VideoStackedPage->setCurrentWidget(ui->VideoList);
     });
     connect(ui->VideoGridBtn, &QPushButton::clicked, [this] {
-        ui->VideoStackedPage->setCurrentWidget(ui->VideoTab);
+        ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
     });
 
-    // addVideoItem("123");
-    // addVideoItem("123");
-    // addVideoItem("123");
+    addVideoItem("123");
+    addVideoItem("123");
+    addVideoItem("123");
     connect(ui->VideoGridWidget, &VideoGridWidget::itemDetailBtnClick, this, &VideoWidget::showDetailPanel);
     connect(ui->VideoListWidget, &VideoListWidget::itemDetailBtnClick,this,&VideoWidget::showDetailPanel);
 }

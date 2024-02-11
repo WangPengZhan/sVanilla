@@ -3,6 +3,8 @@ QToolTip {
     background-color: rgba(0, 0, 0, 10%);
 }
 
+/* windows system button */
+
 QPushButton[system-button=true] {
     qproperty-iconSize: 12px 12px;
     min-width: 40px;
@@ -12,7 +14,7 @@ QPushButton[system-button=true] {
 }
 
 QPushButton#min-button {
-    qproperty-icon: url(":/icon/minimize.svg");
+    qproperty-icon: url(:/icon/bar/minimize.svg);
 }
 
 QPushButton#min-button:hover,
@@ -21,7 +23,7 @@ QAbstractButton#min-button:focus {
 }
 
 QPushButton#max-button {
-    qproperty-icon: url(":/icon/maximize.svg");
+    qproperty-icon: url(:/icon/bar/maximize.svg);
 }
 
 QPushButton#max-button:hover,
@@ -30,7 +32,7 @@ QPushButton#max-button:focus {
 }
 
 QPushButton#close-button {
-    qproperty-icon: url(":/icon/close.svg");
+    qproperty-icon: url(:/icon/bar/close.svg);
 }
 
 QPushButton#close-button:hover,
@@ -92,7 +94,7 @@ MainWindow[custom-style=true] {
 
 
 QToolButton#IconButton {
-    qproperty-icon: url(":/icon/anchor.svg");
+    qproperty-icon: url(:/icon/home/icon.svg);
     min-width: 40px;
     border: none;
     padding: 20px;
@@ -100,7 +102,16 @@ QToolButton#IconButton {
 
 }
 
+/* BarBtn */
+QPushButton#HomeBtn,
+#GalleryBtn,
+#DownloadBtn,
+#SettingBtn {
+    border: none;
+    background-color: transparent;
+}
 
+/* Home Page */
 
 SearchLineEdit#HomeLineEdit {
     border-radius: 5px;
@@ -120,27 +131,10 @@ SearchLineEdit::placeholder#HomeLineEdit {
     color: #767e89;
 }
 
-QLineEdit#FolderSelector {
-    height: 18;
-    border-radius: 5px;
-    border: 1px solid #7077A1;
-    padding: 1px 18px 1px 3px;
-    background-color: transparent;
-    min-height: 10px;
-    /* margin-right: 35px; */
-}
 
-QLineEdit:focus#FolderSelector {
-    border: 1px solid #424769;
-    background-color: transparent;
-}
-
-QLineEdit::placeholder#FolderSelector {
-    color: #767e89;
-}
 
 QPushButton#SearchBtn {
-    qproperty-icon: url(":/icon/search.svg");
+    qproperty-icon: url(:/icon/home/search.svg);
     background-color: transparent;
     font-weight: 600;
     padding: 1px 5px;
@@ -157,7 +151,7 @@ QPushButton:focus#SearchBtn {
 
 
 QPushButton#ClearBtn {
-    qproperty-icon: url(":/icon/clear.svg");
+    qproperty-icon: url(:/icon/home/clear.svg);
     background-color: transparent;
     font-weight: 600;
     padding: 1px 5px;
@@ -182,38 +176,17 @@ QPushButton#ClipBoardBtn {
 
 }
 
-/* AccountBtn */
-QToolButton#AccountBtn {
-    border: none;
-    background-color: transparent;
-}
-
-QToolButton:hover#AccountBtn,
-QToolButton:focus#AccountBtn {
-    background-color: transparent;
-    /* border: 1px solid #607274; */
-    color: #726b6b;
-}
-
-/* BarBtn */
-QPushButton#HomeBtn,
-#GalleryBtn,
-#DownloadBtn,
-#SettingBtn {
-    border: none;
-    background-color: transparent;
-}
 
 /* ClipBoardBtn */
 QPushButton#ClipBoardBtn {
-    qproperty-icon: url(":/icon/clipboard.svg");
+    qproperty-icon: url(:/icon/home/clipboard.svg);
     border: none;
     background-color: transparent;
 }
 
 /* HistoryBtn */
 QPushButton#HistoryBtn {
-    qproperty-icon: url(":/icon/history.svg");
+    qproperty-icon: url(:/icon/home/history.svg);
     border: none;
     background-color: transparent;
 }
@@ -224,33 +197,27 @@ QLabel#LineEditPlaceholderLabel {
     background-color: transparent;
 }
 
+/* Video Page */
 
-
-/* QListWidget#videoTab {
+QWidget#VideoPage,
+#VideoLayoutWidget,
+#VideoGrid,
+#VideoList {
     background-color: transparent;
-    padding: 10px;
-} */
+}
 
-
-/* QWidget#galleryPage {
-    background-color: transparent;
-} */
 QPushButton#VideoGridBtn {
-    qproperty-icon: url(":/icon/video/grid.svg");
+    qproperty-icon: url(:/icon/video/grid.svg);
     border: none;
     background-color: transparent;
 }
 
 QPushButton#VideoListBtn {
-    qproperty-icon: url(":/icon/video/list.svg");
+    qproperty-icon: url(:/icon/video/list.svg);
     border: none;
     background-color: transparent;
 }
 
-QWidget#VideoTab {
-    background-color: transparent;
-
-}
 
 QStackedWidget#VideoStackedPage {
     background-color: transparent;
@@ -263,79 +230,88 @@ QListWidget#VideoGridWidget,
 
 QListWidget::item#VideoGridWidget {
     background-color: transparent;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    margin-left: 10px;
+    margin-bottom: 30px;
+    margin-left: 15px;
 }
 
-QLabel#Cover {
-    border-radius: 10px;
+QLabel#VideoGridTitle {
+    color: #302f2f;
+    font-weight: 500;
+    font-size: 16px;
+    margin-top: 20px;
 }
 
-QPushButton#VideoGridInformationBtn,
-#VideoListInformationBtn {
-    qproperty-icon: url(":/icon/video/information.svg");
+QLabel#VideoGridAuthor,
+#VideoGridDuration,
+#VideoGridPulishDate {
+    color: #5c5c5c;
+    font-weight: 500;
+    font-size: 14px;
+    border: 1px solid #7077A1;
+    border-radius: 5px;
+}
+
+
+QPushButton#VideoGridDetailsBtn,
+#VideoListDetailsBtn {
+    qproperty-icon: url(:/icon/video/detail.svg);
     border: none;
     background-color: transparent;
 }
 
 QPushButton#VideoGridDownloadBtn,
 #VideoListDownloadBtn {
-    qproperty-icon: url(":/icon/video/download.svg");
+    qproperty-icon: url(:/icon/video/download.svg);
+    border: none;
+    background-color: transparent;
+}
+
+QPushButton#DetailPanelCloseBtn {
+    qproperty-icon: url(:/icon/video/close.svg);
     border: none;
     background-color: transparent;
 }
 
 
-QWidget#downloadPage {
-    background-color: transparent;
-}
+/* Download Page */
 
-QListWidget#downloadTab {
+QListWidget#DownloadPage {
     background-color: transparent;
     padding: 10px;
 }
 
-/* QListWidget::item:alternate#DownloadingListWidget {
-    background-color: #efeeee;
-    border-radius: 5px;
-} */
-
-QListWidget::item#DownloadingListWidget {
-    background-color: #c3c3c3;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
 
 QPushButton#Delete {
-    qproperty-icon: url(":/icon/delete.svg");
+    qproperty-icon: url(:/icon/download/delete.svg);
     border: none;
     background-color: transparent;
 }
 
 QPushButton#Start {
-    qproperty-icon: url(":/icon/start.svg");
+    qproperty-icon: url(:/icon/download/start.svg);
     border: none;
     background-color: transparent;
 }
 
 QPushButton#Pause {
-    qproperty-icon: url(":/icon/pause.svg");
+    qproperty-icon: url(:/icon/download/pause.svg);
     border: none;
     background-color: transparent;
 }
 
 QPushButton#Folder {
-    qproperty-icon: url(":/icon/folder.svg");
+    qproperty-icon: url(:/icon/download/folder.svg);
     border: none;
     background-color: transparent;
 }
 
 QPushButton#Detail {
-    qproperty-icon: url(":/icon/details.svg");
+    qproperty-icon: url(:/icon/download/details.svg);
     border: none;
     background-color: transparent;
 }
+
+/* Setting Page */
 
 QLabel {
     color: #5c5c5c;
@@ -356,12 +332,12 @@ QRadioButton::indicator {
 
 QRadioButton::indicator::unchecked {
 
-    image: url(:/icon/unchecked.svg);
+    image: url(:/icon/setting/unchecked.svg);
 }
 
 QRadioButton::indicator::checked {
 
-    image: url(:/icon/checked.svg);
+    image: url(:/icon/setting/checked.svg);
 }
 
 
@@ -376,11 +352,11 @@ QCheckBox::indicator {
 }
 
 QCheckBox::indicator:unchecked {
-    image: url(:/icon/unchecked.svg);
+    image: url(:/icon/setting/unchecked.svg);
 }
 
 QCheckBox::indicator:checked {
-    image: url(:/icon/checked.svg);
+    image: url(:/icon/setting/checked.svg);
 }
 
 
@@ -399,7 +375,7 @@ QSpinBox::up-button {
     height: 12px;
     width: 10px;
     /* 16 + 2*1px border-width = 15px padding + 3px parent border */
-    image: url(:/icon/arrow-up.svg);
+    image: url(:/icon/setting/arrow-up.svg);
     padding-right: 4px;
 }
 
@@ -408,7 +384,7 @@ QSpinBox::up-button:off {
     /* off state when value is max */
     height: 12px;
     width: 10px;
-    image: url(:/icon/arrow-up-disable.svg);
+    image: url(:/icon/setting/arrow-up-disable.svg);
 }
 
 QSpinBox::down-button {
@@ -417,7 +393,7 @@ QSpinBox::down-button {
     height: 12px;
     width: 10px;
     /* 16 + 2*1px border-width = 15px padding + 3px parent border */
-    image: url(:/icon/arrow-down.svg);
+    image: url(:/icon/setting/arrow-down.svg);
     padding-right: 4px;
 }
 
@@ -426,7 +402,7 @@ QSpinBox::down-button:off {
     height: 12px;
     width: 10px;
     /* off state when value in min */
-    image: url(:/icon/arrow-down-disable.svg);
+    image: url(:/icon/setting/arrow-down-disable.svg);
 }
 
 QComboBox {
@@ -447,7 +423,7 @@ QComboBox:on {
 
 
 QComboBox::down-arrow {
-    image: url(":/icon/arrow-down.svg");
+    image: url(:/icon/setting/arrow-down.svg);
 }
 
 QComboBox::down-arrow:on {
@@ -465,4 +441,72 @@ QComboBox QAbstractItemView {
     background-color: transparent;
     color: #313238;
     selection-background-color: rgb(60, 60, 60);
+}
+
+QLineEdit#FolderSelector {
+    height: 18;
+    border-radius: 5px;
+    border: 1px solid #7077A1;
+    padding: 1px 18px 1px 3px;
+    background-color: transparent;
+    min-height: 10px;
+    /* margin-right: 35px; */
+}
+
+QLineEdit:focus#FolderSelector {
+    border: 1px solid #424769;
+    background-color: transparent;
+}
+
+QLineEdit::placeholder#FolderSelector {
+    color: #767e89;
+}
+
+
+/* Common Component */
+
+QScrollBar {
+    width: 6px;
+    margin-left: 2px;
+    background-color: transparent;
+}
+
+QScrollBar::handle {
+    background-color: #6e6e6e;
+    border-radius: 2px;
+    border: 1px solid #6e6e6e;
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    background: none;
+}
+
+QScrollBar::add-page,
+QScrollBar::sub-page {
+    background: none;
+}
+
+QScrollBar::up-arrow,
+QScrollBar::down-arrow {
+    height: 0;
+    width: 0;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+    width: 0;
+}
+
+QScrollBar::left-arrow,
+QScrollBar::right-arrow {
+    height: 0;
+    width: 0;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    height: 0;
+    width: 0;
 }

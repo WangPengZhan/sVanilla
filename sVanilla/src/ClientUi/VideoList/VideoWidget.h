@@ -2,7 +2,6 @@
 #define VIDEOWIDGET_H
 
 #include "BiliApi/BiliApi.h"
-
 #include <QStackedWidget>
 #include <QWidget>
 

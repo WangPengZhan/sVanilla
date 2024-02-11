@@ -20,6 +20,7 @@ VideoDetailWidget::~VideoDetailWidget()
 
 void VideoDetailWidget::setUi()
 {
+    this->setMaximumWidth(150);
 }
 
 void VideoDetailWidget::signalsAndSlots()

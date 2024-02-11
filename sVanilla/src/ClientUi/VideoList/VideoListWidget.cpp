@@ -1,5 +1,6 @@
 #include "VideoListWidget.h"
 #include "ui_VideoListWidget.h"
+#include "Theme/StyledItemDelegate.h"
 
 VideoListItemWidget::VideoListItemWidget(std::string bvid, QWidget* parent)
     : QWidget(parent)
@@ -23,11 +24,13 @@ void VideoListItemWidget::setUi()
 
 void VideoListItemWidget::signalsAndSlots()
 {
-    connect(ui->VideoListInformationBtn, &QPushButton::clicked, this, &VideoListItemWidget::detailBtnClick);
+    connect(ui->VideoListDetailsBtn, &QPushButton::clicked, this, &VideoListItemWidget::detailBtnClick);
 }
 
 VideoListWidget::VideoListWidget(QWidget* parent)
 {
+    auto* delegate = new CustomVideoListItemDelegate();
+    this->setItemDelegate(delegate);
 }
 
 VideoListWidget::~VideoListWidget() = default;

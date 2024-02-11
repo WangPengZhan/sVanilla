@@ -1,6 +1,7 @@
 #include "VideoGridWidget.h"
 #include "ui_VideoGridWidget.h"
 #include "BiliApi/BilibiliClient.h"
+#include "SUI/RoundImageWidget.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -26,7 +27,7 @@ void VideoGridItemWidget::setUi()
 
 void VideoGridItemWidget::signalsAndSlots()
 {
-    connect(ui->VideoGridInformationBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
+    connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
     connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, [this]() {
         // emit downloadBtnClick(m_videoView);
         auto m_biliClient = BiliApi::BilibiliClient::globalClient();
@@ -51,15 +52,17 @@ void VideoGridItemWidget::signalsAndSlots()
 }
 void VideoGridItemWidget::setCover()
 {
-    const QPixmap pixmap(":/CoverTest.jpeg");
-    const QPixmap scaledPixmap = pixmap.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap pixmap(":/CoverTest.jpeg");
+    auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
+    ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
     ui->Cover->setPixmap(scaledPixmap);
 }
+
 void VideoGridItemWidget::updateVideoCard()
 {
-    ui->Title->setText(QString::fromStdString(m_videoView->title));
-    ui->Duration->setText(QString::fromStdString(std::to_string(m_videoView->duration)));
-    ui->Author->setText(QString::fromStdString(m_videoView->owner.name));
+    ui->VideoGridTitle->setText(QString::fromStdString(m_videoView->title));
+    ui->VideoGridDuration->setText(QString::fromStdString(std::to_string(m_videoView->duration)));
+    ui->VideoGridAuthor->setText(QString::fromStdString(m_videoView->owner.name));
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
