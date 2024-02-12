@@ -199,12 +199,12 @@ QLabel#LineEditPlaceholderLabel {
 
 /* Video Page */
 
-QWidget#VideoPage,
+/* QWidget#VideoPage,
 #VideoLayoutWidget,
 #VideoGrid,
 #VideoList {
     background-color: transparent;
-}
+} */
 
 QPushButton#VideoGridBtn {
     qproperty-icon: url(:/icon/video/grid.svg);
@@ -219,9 +219,9 @@ QPushButton#VideoListBtn {
 }
 
 
-QStackedWidget#VideoStackedPage {
+/* QStackedWidget#VideoStackedPage {
     background-color: transparent;
-}
+} */
 
 QListWidget#VideoGridWidget,
 #VideoListWidget {
@@ -229,7 +229,7 @@ QListWidget#VideoGridWidget,
 }
 
 QListWidget::item#VideoGridWidget {
-    background-color: transparent;
+    /* background-color: transparent; */
     margin-bottom: 30px;
     margin-left: 15px;
 }

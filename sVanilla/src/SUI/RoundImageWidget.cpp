@@ -5,7 +5,7 @@ RoundImageWidget::RoundImageWidget(QWidget* parent, const QPixmap& pixmap)
     : QWidget(parent)
     , m_pixmap(pixmap)
 {
-    setAttribute(Qt::WA_OpaquePaintEvent);
+    // setAttribute(Qt::WA_OpaquePaintEvent);
 }
 void RoundImageWidget::setPixmap(const QPixmap& pixmap)
 {

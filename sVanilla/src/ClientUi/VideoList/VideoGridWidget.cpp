@@ -68,7 +68,7 @@ void VideoGridItemWidget::updateVideoCard()
 VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    this->setFrameShape(NoFrame);
+    // this->setFrameShape(NoFrame);
     this->setFlow(LeftToRight);
     this->setWrapping(true);
     this->setResizeMode(Adjust);
