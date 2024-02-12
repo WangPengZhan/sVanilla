@@ -31,9 +31,9 @@ void VideoListItemWidget::signalsAndSlots()
 
 VideoListWidget::VideoListWidget(QWidget* parent)
 {
-    Q_UNUSED(parent);
     auto* delegate = new CustomVideoListItemDelegate();
     this->setItemDelegate(delegate);
+    this->setSelectionMode(ExtendedSelection);
 }
 
 VideoListWidget::~VideoListWidget() = default;
@@ -48,13 +48,18 @@ void VideoListWidget::addVideoItem(const std::string& bvid)
 }
 void VideoListWidget::mousePressEvent(QMouseEvent* event)
 {
-    QListWidget::mousePressEvent(event);
     if (event->button() == Qt::LeftButton)
     {
         const QPoint point = event->pos();
-        if (const auto item = this->itemAt(point); item == nullptr)
+        if (const auto itemClicked = this->itemAt(point); itemClicked == nullptr)
         {
             this->clearSelection();
         }
+        else
+        {
+            itemClicked->setSelected(!itemClicked->isSelected());
+            return;
+        }
     }
+    QListWidget::mousePressEvent(event);
 }
