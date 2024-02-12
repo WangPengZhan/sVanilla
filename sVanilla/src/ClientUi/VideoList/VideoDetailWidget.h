@@ -14,6 +14,7 @@ class VideoDetailWidget : public QWidget
 public:
     explicit VideoDetailWidget(QWidget* parent = nullptr);
     ~VideoDetailWidget();
+    void updateUi(const std::string& data);
 
 private:
     void setUi();

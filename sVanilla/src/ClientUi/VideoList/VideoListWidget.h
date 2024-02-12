@@ -25,6 +25,7 @@ private:
     std::string m_bvid;
 signals:
     void detailBtnClick();
+    void detailCheckBtnClick(bool isChecked);
 };
 
 class VideoListWidget : public QListWidget
@@ -35,6 +36,10 @@ public:
     explicit VideoListWidget(QWidget* parent = nullptr);
     ~VideoListWidget();
     void addVideoItem(const std::string& bvid);
+
+protected:
+    void mousePressEvent(QMouseEvent* event) override;
 signals:
     void itemDetailBtnClick();
+    void itemDetailCheckBtnClick(bool isChecked);
 };

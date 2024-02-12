@@ -17,6 +17,10 @@ VideoDetailWidget::~VideoDetailWidget()
 {
     delete ui;
 }
+void VideoDetailWidget::updateUi(const std::string& data)
+{
+    ui->DetailTitle->setText(QString::fromStdString(data));
+}
 
 void VideoDetailWidget::setUi()
 {

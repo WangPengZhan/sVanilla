@@ -26,9 +26,11 @@ private:
 
 private:
     Ui::VideoGridItemWidget* ui;
-    std::string m_bvid;
+public:
+    std::string Identifier;
 signals:
     void detailBtnClick();
+    void detailCheckBtnClick(bool isChecked);
 };
 
 class VideoGridWidget : public QListWidget
@@ -36,7 +38,7 @@ class VideoGridWidget : public QListWidget
     Q_OBJECT
 
 public:
-    VideoGridWidget(QWidget* parent = nullptr);
+    explicit VideoGridWidget(QWidget* parent = nullptr);
     ~VideoGridWidget();
 
     void addVideoItem(const std::string& bvid);
@@ -45,8 +47,13 @@ public:
 
 private:
     std::map<std::string, QListWidgetItem*> m_items;
+    void connectItemSingal(const VideoGridItemWidget* itemWidget) const;
 
 signals:
     void itemDetailBtnClick();
+    void itemDetailCheckBtnClick(bool isChecked);
     // void itemDownloadBtnClick(std::shared_ptr<BiliApi::VideoView> videoView);
+public slots:
+    signals:
+    void handleDetialCheckBtnClick(bool isChecked);
 };

@@ -10,10 +10,11 @@
 VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoGridItemWidget)
-    , m_bvid(std::move(bvid))
+    , Identifier(std::move(bvid))
 {
     ui->setupUi(this);
     signalsAndSlots();
+    ui->VideoGridDetailsBtn->installEventFilter(this);
 }
 
 VideoGridItemWidget::~VideoGridItemWidget()
@@ -27,7 +28,8 @@ void VideoGridItemWidget::setUi()
 
 void VideoGridItemWidget::signalsAndSlots()
 {
-    connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
+    // connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
+    // connect(ui->VideoGridDetailsBtn, &CheckButton::checked, this, &VideoGridItemWidget::detailCheckBtnClick);
     connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, [this]() {
         // emit downloadBtnClick(m_videoView);
         auto m_biliClient = BiliApi::BilibiliClient::globalClient();
@@ -84,7 +86,7 @@ void VideoGridWidget::addVideoItem(const std::string& bvid)
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
     m_items.insert(std::make_pair(bvid, item));
-    connect(videoItem, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
+    // connectItemSingal(videoItem);
 }
 void VideoGridWidget::updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView)
 {
@@ -93,6 +95,11 @@ void VideoGridWidget::updateVideoItem(const std::shared_ptr<BiliApi::VideoView>&
     const auto widget = qobject_cast<VideoGridItemWidget*>(item);
     widget->m_videoView = videoView;
     widget->updateVideoCard();
+}
+void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget) const
+{
+    connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
+    connect(itemWidget,&VideoGridItemWidget::detailCheckBtnClick,this, &VideoGridWidget::handleDetialCheckBtnClick);
 }
 void VideoGridWidget::setCover()
 {

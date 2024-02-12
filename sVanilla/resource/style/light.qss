@@ -272,6 +272,12 @@ QPushButton#DetailPanelCloseBtn {
     background-color: transparent;
 }
 
+QListWidget::item:selected#VideoListWidget {
+    border: 2px solid #7077A1;
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
 
 /* Download Page */
 
