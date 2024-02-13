@@ -6,9 +6,9 @@
 #include "ClientUi/Config/SingleConfig.h"
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "App.h"
-
 #include "Adapter/BilibiliVideoView.h"
 #include "BiliApi/BilibiliClient.h"
+#include <QDir>
 #include <QStandardPaths>
 
 void App::init()
@@ -24,6 +24,7 @@ void App::init()
     // option.dir = SingleConfig::instance().getAriaConfig().downloadDir;
     const QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     option.dir = downloadPath.toStdString();
+
 
 }
 
@@ -152,11 +153,12 @@ void App::parseUri(const std::string& uri)
     {
         // 更新并跳转到 video page
         auto videoView = std::make_shared<Adapter::VideoView>(ConvertToVideoView(res.data));
+        downloadCover(videoView->Cover, videoView->Identifier);
         maimWindow->updateVideoPage(videoView);
     }
-
 }
-void App::addDownloadTask(const std::shared_ptr<Adapter::VideoView>& videoView){
+void App::addDownloadTask(const std::shared_ptr<Adapter::VideoView>& videoView)
+{
     const auto playUrl = biliClient.GetPlayUrl(std::stoll(videoView->VideoId), 64, videoView->Identifier);
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
@@ -183,6 +185,19 @@ void App::addDownloadTask(const std::shared_ptr<Adapter::VideoView>& videoView){
     }
 }
 
+void App::downloadCover(const std::string& url, const std::string& Identifier)
+{
+    QString tempPath = QDir::tempPath();
+    tempPath.append("/").append(Identifier).append("jpg");
+    if (!QFile::exists(tempPath))
+    {
+        FILE* file = fopen(tempPath.toStdString().c_str(), "wb");
+        CNetWork netWork;
+        netWork.HttpGet(url, file);
+        fclose(file);
+    }
+
+}
 void App::updateHomeMsg(const std::string& msg) const
 {
     maimWindow->updateHomeMsg(msg);

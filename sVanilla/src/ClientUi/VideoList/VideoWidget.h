@@ -27,7 +27,7 @@ public:
 
     void addVideoItem(const std::string& bvid) const;
     void updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView);
-    void updateDetailPanel(const std::string& detail) const;
+    void updateDetailPanel(const std::shared_ptr<Adapter::VideoView>& videoView) const;
 
 private:
     Ui::VideoPage* ui;
@@ -42,6 +42,7 @@ private:
     [[nodiscard]] bool detailPanelVisible() const;
     void showDetailPanel() const;
     void hideDetailPanel() const;
+    void updateDetailPanelWidth();
 
 signals:
     void downloadBtnClick(const std::shared_ptr<Adapter::VideoView>& videoView);

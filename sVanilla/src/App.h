@@ -23,6 +23,7 @@ private:
     aria2net::AriaClient& ariaClient = aria2net::AriaClient::globalClient();
     BiliApi::BilibiliClient& biliClient = BiliApi::BilibiliClient::globalClient();
     bool isConnect = false;
+    void downloadCover(const std::string& url, const std::string& Identifier);
 
     void updateHomeMsg(const std::string& msg) const;
 public slots:

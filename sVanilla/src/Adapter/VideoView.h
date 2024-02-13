@@ -18,8 +18,10 @@ public:
     std::string AlternateId;
     std::string VideoId;
     std::string Title;
-    int Duration;
+    std::string Duration;
     std::string Publisher;
+    std::string Cover;
+    std::string Description;
 
     std::string toString() override
     {
@@ -27,6 +29,6 @@ public:
         to_json(json, *this);
         return json.dump(4);
     }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoView, Identifier, AlternateId, VideoId, Title, Duration, Publisher)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoView, Identifier, AlternateId, VideoId, Title, Duration, Publisher, Cover, Description)
 };
 }  // namespace Adapter

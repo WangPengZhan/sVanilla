@@ -3,6 +3,7 @@
 #include "BiliApi/BilibiliClient.h"
 #include "SUI/RoundImageWidget.h"
 
+#include <QDir>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmap>
@@ -15,6 +16,7 @@ VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     ui->setupUi(this);
     signalsAndSlots();
     ui->VideoGridDetailsBtn->installEventFilter(this);
+    qDebug() << "VideoGridItemWidget width" << this->width();
 }
 
 VideoGridItemWidget::~VideoGridItemWidget()
@@ -50,18 +52,30 @@ void VideoGridItemWidget::signalsAndSlots()
     //     }
     // });
 }
-void VideoGridItemWidget::setCover()
+void VideoGridItemWidget::setCover(const std::string& id)
 {
-    QPixmap pixmap(":/CoverTest.jpeg");
-    auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
-    ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
-    ui->Cover->setPixmap(scaledPixmap);
+    QString tempPath = QDir::tempPath();
+    tempPath.append("/").append(id).append("jpg");
+    if (QFile::exists(tempPath))
+    {
+        QPixmap pixmap(tempPath);
+        auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
+        ui->Cover->setPixmap(scaledPixmap);
+    }
+    else
+    {
+        QPixmap pixmap(":/CoverTest.jpeg");
+        auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
+        ui->Cover->setPixmap(scaledPixmap);
+    }
 }
 
 void VideoGridItemWidget::updateVideoCard()
 {
     ui->VideoGridTitle->setText(QString::fromStdString(m_videoView->Title));
-    ui->VideoGridDuration->setText(QString::fromStdString(std::to_string(m_videoView->Duration)));
+    ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
     ui->VideoGridAuthor->setText(QString::fromStdString(m_videoView->Publisher));
 }
 
@@ -79,7 +93,7 @@ VideoGridWidget::~VideoGridWidget() = default;
 void VideoGridWidget::addVideoItem(const std::string& bvid)
 {
     const auto videoItem = new VideoGridItemWidget(bvid, this);
-    videoItem->setCover();
+    videoItem->setCover(bvid);
     const auto item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
@@ -99,9 +113,4 @@ void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget) c
     connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
     connect(itemWidget,&VideoGridItemWidget::detailCheckBtnClick,this, &VideoGridWidget::handleDetialCheckBtnClick);
 }
-void VideoGridWidget::setCover()
-{
-    auto item = this->item(0);
-    auto widget = qobject_cast<VideoGridItemWidget*>(itemWidget(item));
-    widget->setCover();
-}
+

@@ -2,6 +2,10 @@
 
 #include <QWidget>
 
+namespace Adapter
+{
+class VideoView;
+}
 namespace Ui
 {
 class VideoDetailWidget;
@@ -14,7 +18,7 @@ class VideoDetailWidget : public QWidget
 public:
     explicit VideoDetailWidget(QWidget* parent = nullptr);
     ~VideoDetailWidget();
-    void updateUi(const std::string& data);
+    void updateUi(const std::shared_ptr<Adapter::VideoView>& videoViewdata);
 
 private:
     void setUi();

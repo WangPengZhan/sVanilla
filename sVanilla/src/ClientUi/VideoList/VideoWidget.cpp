@@ -14,17 +14,7 @@ VideoWidget::VideoWidget(QWidget* parent)
     detailAnimation->setTargetObject(detailPanel());
     ui->VideoDetailWidget->hide();
     ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
-
-
-    // addVideoItem("123");
-    // addVideoItem("345");
-    // addVideoItem("567");
-
-
     connect(ui->SwitchBtn, &ToggleSwitch::toggled, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
-    // connect(ui->VideoGridWidget, &VideoGridWidget::itemDetailBtnClick, this, &VideoWidget::showDetailPanel);
-    // connect(ui->VideoListWidget, &VideoListWidget::itemDetailBtnClick,this,&VideoWidget::showDetailPanel);
-    // connect(ui->VideoGridWidget, &VideoGridWidget::handleDetialCheckBtnClick, this, &VideoWidget::updateDetailPanelVisibility);
 }
 
 VideoWidget::~VideoWidget()
@@ -72,22 +62,20 @@ bool VideoWidget::processDetailsBtnClickEvent(QObject* watched)
     if (!detailPanelVisible())
     {
         showDetailPanel();
+        updateDetailPanelWidth();
     }
-    // if (const auto itemIdentifier = videoGridItemWidget->Identifier; detailSourceIdentifier != itemIdentifier)
-    // {
-    //     //  可以在此处更新详情栏data
-    //     qDebug() << videoGridItemWidget->Identifier;
-    //     detailSourceIdentifier = itemIdentifier;
-    //     updateDetailPanel(videoGridItemWidget->Identifier);
-    //     if (!detailPanelVisible())
-    //     {
-    //         showDetailPanel();
-    //     }
-    // }
-    // else
-    // {
-    //     // hideDetailPanel();
-    // }
+    else
+    {
+        hideDetailPanel();
+    }
+    if (const auto itemIdentifier = videoGridItemWidget->Identifier; detailSourceIdentifier != itemIdentifier)
+    {
+        //  可以在此处更新详情栏data
+        qDebug() << videoGridItemWidget->Identifier;
+        detailSourceIdentifier = itemIdentifier;
+        updateDetailPanel(videoGridItemWidget->m_videoView);
+        return true;
+    }
     return true;
 }
 bool VideoWidget::precessDownloadBtnClickEvent(QObject* watched)
@@ -133,9 +121,9 @@ void VideoWidget::installBtnEventFilter()
     }
 }
 
-void VideoWidget::updateDetailPanel(const std::string& detail) const
+void VideoWidget::updateDetailPanel(const std::shared_ptr<Adapter::VideoView>& videoView) const
 {
-    detailPanel()->updateUi(detail);
+    detailPanel()->updateUi(videoView);
 }
 VideoDetailWidget* VideoWidget::detailPanel() const
 {
@@ -148,17 +136,25 @@ bool VideoWidget::detailPanelVisible() const
 void VideoWidget::showDetailPanel() const
 {
     detailPanel()->show();
-    const auto rect = detailPanel()->geometry();
-    detailAnimation->setValues(rect.adjusted(detailPanel()->width(), 0, 0, 0), rect);
-    detailAnimation->start();
+    // const auto rect = detailPanel()->geometry();
+    // detailAnimation->setValues(rect.adjusted(detailPanel()->width(), 0, 0, 0), rect);
+    // detailAnimation->start();
 }
 void VideoWidget::hideDetailPanel() const
 {
-    const auto rect = detailPanel()->geometry();
-    detailAnimation->setValues(rect, rect.adjusted(detailPanel()->width(), 0, 0, 0));
-    connect(detailAnimation.get(), &GeometryAnimation::finish, detailPanel(), &QWidget::hide);
-    detailAnimation->start();
-
+    // const auto rect = detailPanel()->geometry();
+    // detailAnimation->setValues(rect, rect.adjusted(detailPanel()->width(), 0, 0, 0));
+    // connect(detailAnimation.get(), &GeometryAnimation::finish, detailPanel(), &QWidget::hide);
+    // detailAnimation->start();
+    detailPanel()->hide();
+}
+void VideoWidget::updateDetailPanelWidth()
+{
+    auto videoGridItemWidth = 400;
+    auto remainingWidth = ui->VideoStackedPage->width() % videoGridItemWidth;
+    // auto detailWidth = this->width() - remainingWidth;
+    ui->VideoDetailWidget->setMinimumWidth(remainingWidth + detailPanel()->width());
+    update();
 }
 bool VideoWidget::eventFilter(QObject* watched, QEvent* event)
 {
