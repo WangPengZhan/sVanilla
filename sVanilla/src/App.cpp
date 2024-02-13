@@ -6,6 +6,8 @@
 #include "ClientUi/Config/SingleConfig.h"
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "App.h"
+
+#include "Adapter/BilibiliVideoView.h"
 #include "BiliApi/BilibiliClient.h"
 #include <QStandardPaths>
 
@@ -54,6 +56,7 @@ void App::signalsAndSlots()
     connect(maimWindow.get(), &MainWindow::AddUri, this, &App::parseUri);
     connect(maimWindow.get(), &MainWindow::onSettingPage, this, &App::updateAria2Version);
     connect(downloadManager.get(), &DownloadManager::toRuquestStatus, this, &App::updateDownloadStatus);
+    connect(maimWindow.get(), &MainWindow::downloadBtnClick, this, &App::addDownloadTask);
 }
 
 void App::updateAria2Version()
@@ -144,37 +147,40 @@ void App::addUri(const std::list<std::string>& uris)
 void App::parseUri(const std::string& uri)
 {
     // if bili
-    const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
-    option.header = h;
-    auto m_biliClient = BiliApi::BilibiliClient::globalClient();
-    const auto res = m_biliClient.GetVideoView(uri);
+    const auto res = biliClient.GetVideoView(uri);
     if (res.code == 0)
     {
         // 更新并跳转到 video page
-        maimWindow->updateVideoPage(std::make_shared<BiliApi::VideoView>(res.data));
+        auto videoView = std::make_shared<Adapter::VideoView>(ConvertToVideoView(res.data));
+        maimWindow->updateVideoPage(videoView);
     }
-    // const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
-    // std::list<std::string> video_urls;
-    // std::list<std::string> audio_urls;
-    // if (playUrl.code != 0)
-    // {
-    //     PRINTS("play url error", playUrl.message)
-    //     PRINTS("play url error", playUrl.message)
-    //     return;
-    // }
-    //
-    // const auto videos = playUrl.data.durl;
-    // PRINTS("accept_format: ", playUrl.data.accept_format)
-    // for (const auto& video : videos)
-    // {
-    //     video_urls.push_back(video.url);
-    //     PRINTS("video url", video.url)
-    // }
-    // if (!video_urls.empty())
-    // {
-    //     option.out = res.data.title + ".mp4";
-    //     addUri(video_urls);
-    // }
+
+}
+void App::addDownloadTask(const std::shared_ptr<Adapter::VideoView>& videoView){
+    const auto playUrl = biliClient.GetPlayUrl(std::stoll(videoView->VideoId), 64, videoView->Identifier);
+    std::list<std::string> video_urls;
+    std::list<std::string> audio_urls;
+    if (playUrl.code != 0)
+    {
+        PRINTS("play url error", playUrl.message)
+        PRINTS("play url error", playUrl.message)
+        return;
+    }
+
+    const auto videos = playUrl.data.durl;
+    PRINTS("accept_format: ", playUrl.data.accept_format)
+    for (const auto& video : videos)
+    {
+        video_urls.push_back(video.url);
+        PRINTS("video url", video.url)
+    }
+    if (!video_urls.empty())
+    {
+        const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
+        option.header = h;
+        option.out = videoView->Title + ".mp4";
+        addUri(video_urls);
+    }
 }
 
 void App::updateHomeMsg(const std::string& msg) const

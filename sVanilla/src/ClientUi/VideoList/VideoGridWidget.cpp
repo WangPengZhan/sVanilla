@@ -28,29 +28,27 @@ void VideoGridItemWidget::setUi()
 
 void VideoGridItemWidget::signalsAndSlots()
 {
-    // connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
-    // connect(ui->VideoGridDetailsBtn, &CheckButton::checked, this, &VideoGridItemWidget::detailCheckBtnClick);
-    connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, [this]() {
-        // emit downloadBtnClick(m_videoView);
-        auto m_biliClient = BiliApi::BilibiliClient::globalClient();
-        const auto playUrl = m_biliClient.GetPlayUrl(m_videoView->cid, 64, m_videoView->bvid);
-        std::list<std::string> video_urls;
-        std::list<std::string> audio_urls;
-        if (playUrl.code != 0)
-        {
-            PRINTS("play url error", playUrl.message)
-            PRINTS("play url error", playUrl.message)
-            return;
-        }
-
-        const auto videos = playUrl.data.durl;
-        PRINTS("accept_format: ", playUrl.data.accept_format)
-        for (const auto& video : videos)
-        {
-            video_urls.push_back(video.url);
-            PRINTS("video url", video.url)
-        }
-    });
+    // connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, [this]() {
+    //     // emit downloadBtnClick(m_videoView);
+    //     auto m_biliClient = BiliApi::BilibiliClient::globalClient();
+    //     const auto playUrl = m_biliClient.GetPlayUrl(std::stoll(m_videoView->VideoId), 64, m_videoView->Identifier);
+    //     std::list<std::string> video_urls;
+    //     std::list<std::string> audio_urls;
+    //     if (playUrl.code != 0)
+    //     {
+    //         PRINTS("play url error", playUrl.message)
+    //         PRINTS("play url error", playUrl.message)
+    //         return;
+    //     }
+    //
+    //     const auto videos = playUrl.data.durl;
+    //     PRINTS("accept_format: ", playUrl.data.accept_format)
+    //     for (const auto& video : videos)
+    //     {
+    //         video_urls.push_back(video.url);
+    //         PRINTS("video url", video.url)
+    //     }
+    // });
 }
 void VideoGridItemWidget::setCover()
 {
@@ -62,9 +60,9 @@ void VideoGridItemWidget::setCover()
 
 void VideoGridItemWidget::updateVideoCard()
 {
-    ui->VideoGridTitle->setText(QString::fromStdString(m_videoView->title));
-    ui->VideoGridDuration->setText(QString::fromStdString(std::to_string(m_videoView->duration)));
-    ui->VideoGridAuthor->setText(QString::fromStdString(m_videoView->owner.name));
+    ui->VideoGridTitle->setText(QString::fromStdString(m_videoView->Title));
+    ui->VideoGridDuration->setText(QString::fromStdString(std::to_string(m_videoView->Duration)));
+    ui->VideoGridAuthor->setText(QString::fromStdString(m_videoView->Publisher));
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -88,9 +86,9 @@ void VideoGridWidget::addVideoItem(const std::string& bvid)
     m_items.insert(std::make_pair(bvid, item));
     // connectItemSingal(videoItem);
 }
-void VideoGridWidget::updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView)
+void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView)
 {
-    const auto bvid = videoView->bvid;
+    const auto bvid = videoView->Identifier;
     const auto item = itemWidget(m_items[bvid]);
     const auto widget = qobject_cast<VideoGridItemWidget*>(item);
     widget->m_videoView = videoView;

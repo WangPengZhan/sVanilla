@@ -16,14 +16,10 @@ VideoWidget::VideoWidget(QWidget* parent)
     ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
 
 
-    addVideoItem("123");
-    addVideoItem("345");
-    addVideoItem("567");
-    auto VideoGridDetailsBtns = findChildren<QPushButton*>("VideoGridDetailsBtn", Qt::FindChildrenRecursively);
-    for (const auto btn : VideoGridDetailsBtns)
-    {
-        btn->installEventFilter(this);
-    }
+    // addVideoItem("123");
+    // addVideoItem("345");
+    // addVideoItem("567");
+
 
     connect(ui->SwitchBtn, &ToggleSwitch::toggled, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
     // connect(ui->VideoGridWidget, &VideoGridWidget::itemDetailBtnClick, this, &VideoWidget::showDetailPanel);
@@ -41,9 +37,10 @@ void VideoWidget::addVideoItem(const std::string& bvid) const
     ui->VideoListWidget->addVideoItem(bvid);
 }
 
-void VideoWidget::updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView) const
+void VideoWidget::updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView)
 {
-    ui->VideoGridWidget->addVideoItem(videoView->bvid);
+    ui->VideoGridWidget->addVideoItem(videoView->Identifier);
+    installBtnEventFilter();
     ui->VideoGridWidget->updateVideoItem(videoView);
 }
 
@@ -93,6 +90,48 @@ bool VideoWidget::processDetailsBtnClickEvent(QObject* watched)
     // }
     return true;
 }
+bool VideoWidget::precessDownloadBtnClickEvent(QObject* watched)
+{
+    const auto clickedButton = qobject_cast<QPushButton*>(watched);
+    if (!clickedButton)
+    {
+        return false;
+    }
+    if (clickedButton->objectName() != "VideoGridDownloadBtn")
+    {
+        return false;
+    }
+    const auto videoGridItemWidgetObj = clickedButton->parentWidget()->parentWidget();
+    if (!videoGridItemWidgetObj || videoGridItemWidgetObj->objectName() != "VideoGridItemWidget")
+    {
+        return false;
+    }
+    const auto videoGridItemWidget = qobject_cast<VideoGridItemWidget*>(videoGridItemWidgetObj);
+    if (!videoGridItemWidget)
+    {
+        return false;
+    }
+    emit downloadBtnClick(videoGridItemWidget->m_videoView);
+    return true;
+}
+void VideoWidget::installBtnEventFilter()
+{
+    auto btns = findChildren<QPushButton*>(Qt::FindChildrenRecursively);
+    for (const auto btn : btns)
+    {
+        if (btn->objectName() == "VideoGridDetailsBtn" || btn->objectName() == "VideoGridDownloadBtn")
+        {
+            if (std::find(eventBtns.begin(), eventBtns.end(), btn) == eventBtns.end())
+            {
+                btn->installEventFilter(this);
+            }
+            else
+            {
+                eventBtns.push_back(btn);
+            }
+        }
+    }
+}
 
 void VideoWidget::updateDetailPanel(const std::string& detail) const
 {
@@ -128,5 +167,5 @@ bool VideoWidget::eventFilter(QObject* watched, QEvent* event)
         return false;
     }
 
-    return processDetailsBtnClickEvent(watched);
+    return processDetailsBtnClickEvent(watched) || precessDownloadBtnClickEvent(watched);
 }

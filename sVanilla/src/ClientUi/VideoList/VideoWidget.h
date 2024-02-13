@@ -1,12 +1,13 @@
 #ifndef VIDEOWIDGET_H
 #define VIDEOWIDGET_H
 
+#include "Adapter/VideoView.h"
 #include "VideoDetailWidget.h"
 #include "BiliApi/BiliApi.h"
 #include "Theme/GeometryAnimation.h"
-
 #include <QStackedWidget>
 #include <QWidget>
+#include <QtWidgets/QPushButton>
 #include <QPropertyAnimation>
 
 QT_BEGIN_NAMESPACE
@@ -25,19 +26,25 @@ public:
     ~VideoWidget() override;
 
     void addVideoItem(const std::string& bvid) const;
-    void updateVideoItem(const std::shared_ptr<BiliApi::VideoView>& videoView) const;
+    void updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView);
     void updateDetailPanel(const std::string& detail) const;
 
 private:
     Ui::VideoPage* ui;
     std::shared_ptr<GeometryAnimation> detailAnimation;
     bool processDetailsBtnClickEvent(QObject* watched);
+    bool precessDownloadBtnClickEvent(QObject* watched);
+    void installBtnEventFilter();
+    std::list<QPushButton*> eventBtns;
     std::string detailSourceIdentifier;
 
     [[nodiscard]] VideoDetailWidget* detailPanel() const;
     [[nodiscard]] bool detailPanelVisible() const;
     void showDetailPanel() const;
     void hideDetailPanel() const;
+
+signals:
+    void downloadBtnClick(const std::shared_ptr<Adapter::VideoView>& videoView);
 
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;

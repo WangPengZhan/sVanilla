@@ -6,7 +6,10 @@
 #include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>
 
-
+namespace Adapter
+{
+class VideoView;
+}
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -39,11 +42,12 @@ public:
     void updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const;
     void AddDownloadTask(const std::string& gid) const;
     void addVideoCard(const std::string& bvid) const;
-    void updateVideoPage(const std::shared_ptr<BiliApi::VideoView>& videoView) const;
+    void updateVideoPage(const std::shared_ptr<Adapter::VideoView>& videoView) const;
 Q_SIGNALS:
     void AddUri(const std::string& uri);
     void onSettingPage();
     void themeChanged();
+    void downloadBtnClick(const std::shared_ptr<Adapter::VideoView>& videoView);
 
 public slots:
     void SwitchTheme(int theme);

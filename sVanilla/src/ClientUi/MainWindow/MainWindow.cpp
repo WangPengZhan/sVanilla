@@ -52,7 +52,7 @@ void MainWindow::addVideoCard(const std::string& bvid) const
 {
     ui->VideoPage->addVideoItem(bvid);
 }
-void MainWindow::updateVideoPage(const std::shared_ptr<BiliApi::VideoView>& videoView) const
+void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::VideoView>& videoView) const
 {
     ui->VideoPage->updateVideoItem(videoView);
 }
@@ -90,6 +90,7 @@ void MainWindow::signalsAndSlots()
     // connect(ui->homePage, &HomePage::updateMsg, this, &MainWindow::updateHomeMsg);
 
     connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
+    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)
