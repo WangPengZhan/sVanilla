@@ -1,9 +1,13 @@
 #ifndef VIDEOWIDGET_H
 #define VIDEOWIDGET_H
 
+#include "VideoDetailWidget.h"
 #include "BiliApi/BiliApi.h"
+#include "Theme/GeometryAnimation.h"
+
 #include <QStackedWidget>
 #include <QWidget>
+#include <QPropertyAnimation>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -26,8 +30,11 @@ public:
 
 private:
     Ui::VideoPage* ui;
+    std::shared_ptr<GeometryAnimation> detailAnimation;
     bool processDetailsBtnClickEvent(QObject* watched);
     std::string detailSourceIdentifier;
+
+    [[nodiscard]] VideoDetailWidget* detailPanel() const;
     [[nodiscard]] bool detailPanelVisible() const;
     void showDetailPanel() const;
     void hideDetailPanel() const;

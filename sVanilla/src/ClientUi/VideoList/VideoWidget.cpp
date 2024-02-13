@@ -1,6 +1,8 @@
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
 #include "VideoGridWidget.h"
+#include "SUI/ToggleSwitch.h"
+#include <QPushButton>
 #include <QtWidgets/QLabel>
 
 VideoWidget::VideoWidget(QWidget* parent)
@@ -8,15 +10,11 @@ VideoWidget::VideoWidget(QWidget* parent)
     , ui(new Ui::VideoPage)
 {
     ui->setupUi(this);
+    detailAnimation = std::make_shared<GeometryAnimation>(this);
+    detailAnimation->setTargetObject(detailPanel());
     ui->VideoDetailWidget->hide();
     ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
 
-    connect(ui->VideoListBtn, &QPushButton::clicked, [this] {
-        ui->VideoStackedPage->setCurrentWidget(ui->VideoList);
-    });
-    connect(ui->VideoGridBtn, &QPushButton::clicked, [this] {
-        ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
-    });
 
     addVideoItem("123");
     addVideoItem("345");
@@ -26,6 +24,8 @@ VideoWidget::VideoWidget(QWidget* parent)
     {
         btn->installEventFilter(this);
     }
+
+    connect(ui->SwitchBtn, &ToggleSwitch::toggled, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
     // connect(ui->VideoGridWidget, &VideoGridWidget::itemDetailBtnClick, this, &VideoWidget::showDetailPanel);
     // connect(ui->VideoListWidget, &VideoListWidget::itemDetailBtnClick,this,&VideoWidget::showDetailPanel);
     // connect(ui->VideoGridWidget, &VideoGridWidget::handleDetialCheckBtnClick, this, &VideoWidget::updateDetailPanelVisibility);
@@ -55,8 +55,6 @@ bool VideoWidget::processDetailsBtnClickEvent(QObject* watched)
         return false;
     }
 
-    qDebug() << clickedButton->objectName();
-
     if (clickedButton->objectName() != "VideoGridDetailsBtn")
     {
         return false;
@@ -74,39 +72,54 @@ bool VideoWidget::processDetailsBtnClickEvent(QObject* watched)
         return false;
     }
 
-    if (const auto itemIdentifier = videoGridItemWidget->Identifier; detailSourceIdentifier != itemIdentifier)
+    if (!detailPanelVisible())
     {
-        //  可以在此处更新详情栏data
-        qDebug() << videoGridItemWidget->Identifier;
-        detailSourceIdentifier = itemIdentifier;
-        updateDetailPanel(videoGridItemWidget->Identifier);
-        if (!detailPanelVisible())
-        {
-            showDetailPanel();
-        }
+        showDetailPanel();
     }
-    else
-    {
-        hideDetailPanel();
-    }
+    // if (const auto itemIdentifier = videoGridItemWidget->Identifier; detailSourceIdentifier != itemIdentifier)
+    // {
+    //     //  可以在此处更新详情栏data
+    //     qDebug() << videoGridItemWidget->Identifier;
+    //     detailSourceIdentifier = itemIdentifier;
+    //     updateDetailPanel(videoGridItemWidget->Identifier);
+    //     if (!detailPanelVisible())
+    //     {
+    //         showDetailPanel();
+    //     }
+    // }
+    // else
+    // {
+    //     // hideDetailPanel();
+    // }
     return true;
 }
 
 void VideoWidget::updateDetailPanel(const std::string& detail) const
 {
-    ui->VideoDetailWidget->updateUi(detail);
+    detailPanel()->updateUi(detail);
+}
+VideoDetailWidget* VideoWidget::detailPanel() const
+{
+    return ui->VideoDetailWidget;
 }
 bool VideoWidget::detailPanelVisible() const
 {
-    return ui->VideoDetailWidget->isVisible();
+    return detailPanel()->isVisible();
 }
 void VideoWidget::showDetailPanel() const
 {
-    ui->VideoDetailWidget->show();
+    detailPanel()->show();
+    const auto rect = detailPanel()->geometry();
+    detailAnimation->setValues(rect.adjusted(detailPanel()->width(), 0, 0, 0), rect);
+    detailAnimation->start();
 }
 void VideoWidget::hideDetailPanel() const
 {
-    ui->VideoDetailWidget->hide();
+    const auto rect = detailPanel()->geometry();
+    detailAnimation->setValues(rect, rect.adjusted(detailPanel()->width(), 0, 0, 0));
+    connect(detailAnimation.get(), &GeometryAnimation::finish, detailPanel(), &QWidget::hide);
+    detailAnimation->start();
+
 }
 bool VideoWidget::eventFilter(QObject* watched, QEvent* event)
 {
