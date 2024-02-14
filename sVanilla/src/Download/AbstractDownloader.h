@@ -25,6 +25,7 @@ public:
     virtual void pause() = 0;
     virtual void resume() = 0;
     virtual void downloadStatus() = 0;
+    virtual void finish() = 0;
 
     std::string guid() const;
     void setStatus(Status status);

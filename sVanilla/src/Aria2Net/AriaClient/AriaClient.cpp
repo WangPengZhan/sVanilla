@@ -128,6 +128,21 @@ AriaTellStatus AriaClient::TellStatus(const std::string& gid)
     return Call<AriaTellStatus>("aria2.tellStatus", {gid});
 }
 
+AriaRemove AriaClient::RemoveAsync(const std::string& gid)
+{
+    return Call<AriaRemove>("aria2.remove", {gid});
+}
+
+AriaPause AriaClient::PauseAsync(const std::string& gid)
+{
+    return Call<AriaPause>("aria2.pause", {gid});
+}
+
+AriaPause AriaClient::UnpauseAsync(const std::string& gid)
+{
+    return Call<AriaPause>("aria2.unpause", {gid});
+}
+
 AriaChangeOption AriaClient::ChangeOptionAsync(const std::string& gid, const ListString& option)
 {
     return Call<AriaChangeOption>("aria2.getGlobalStat", {gid});

@@ -61,7 +61,6 @@ void DownloadStatusThread::downloadThread()
             case AbstractDownloader::Paused:
             {
                 value->pause();
-                removeKeys.push_back(key);
                 break;
             }
             case AbstractDownloader::Stopped:
@@ -71,11 +70,11 @@ void DownloadStatusThread::downloadThread()
                 break;
             }
             case AbstractDownloader::Finished:
-            case AbstractDownloader::Error:
             {
                 removeKeys.push_back(key);
                 break;
             }
+            case AbstractDownloader::Error:
             default:
                 break;
             }
