@@ -52,7 +52,7 @@ void MainWindow::addVideoCard(const std::string& bvid) const
 {
     ui->VideoPage->addVideoItem(bvid);
 }
-void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::VideoView>& videoView) const
+void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
 {
     ui->VideoPage->updateVideoItem(videoView);
 }

@@ -113,27 +113,28 @@ std::string BiliApi::GetMixinKey(const std::string& orig)
 }
 std::string BiliApi::MD5Hash(const std::string& str)
 {
-    unsigned char md_value[EVP_MAX_MD_SIZE];
-    unsigned int md_len;
-    // 创建和初始化摘要上下文
-    EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
-    const EVP_MD* md = EVP_md5();
-    // 初始化摘要操作
-    EVP_DigestInit_ex(mdctx, md, nullptr);
-    // 提供要进行摘要计算的数据
-    EVP_DigestUpdate(mdctx, str.c_str(), str.length());
-    // 获取摘要结果
-    EVP_DigestFinal_ex(mdctx, md_value, &md_len);
-    // 清理上下文
-    EVP_MD_CTX_free(mdctx);
-    // 将摘要结果转换为字符串形式
-    std::ostringstream oss;
-    for (unsigned int i = 0; i < md_len; i++)
-    {
-        oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
-    }
-
-    return oss.str();
+    // unsigned char md_value[EVP_MAX_MD_SIZE];
+    // unsigned int md_len;
+    // // 创建和初始化摘要上下文
+    // EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
+    // const EVP_MD* md = EVP_md5();
+    // // 初始化摘要操作
+    // EVP_DigestInit_ex(mdctx, md, nullptr);
+    // // 提供要进行摘要计算的数据
+    // EVP_DigestUpdate(mdctx, str.c_str(), str.length());
+    // // 获取摘要结果
+    // EVP_DigestFinal_ex(mdctx, md_value, &md_len);
+    // // 清理上下文
+    // EVP_MD_CTX_free(mdctx);
+    // // 将摘要结果转换为字符串形式
+    // std::ostringstream oss;
+    // for (unsigned int i = 0; i < md_len; i++)
+    // {
+    //     oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
+    // }
+    //
+    // return oss.str();
+    return {};
 }
 
 bool BiliApi::isExpired(const std::time_t& expires)

@@ -11,7 +11,8 @@ public:
     virtual ~Protocol() = default;
     virtual std::string toString() = 0;
 };
-class VideoView : public Protocol
+
+class BaseVideoView : public Protocol
 {
 public:
     std::string Identifier;
@@ -29,6 +30,8 @@ public:
         to_json(json, *this);
         return json.dump(4);
     }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoView, Identifier, AlternateId, VideoId, Title, Duration, Publisher, Cover, Description)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(BaseVideoView, Identifier, AlternateId, VideoId, Title, Duration, Publisher, Cover, Description)
 };
+
+using VideoView = std::vector<BaseVideoView>;
 }  // namespace Adapter

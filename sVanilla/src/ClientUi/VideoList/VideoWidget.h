@@ -1,7 +1,7 @@
 #ifndef VIDEOWIDGET_H
 #define VIDEOWIDGET_H
 
-#include "Adapter/VideoView.h"
+#include "Adapter/BaseVideoView.h"
 #include "VideoDetailWidget.h"
 #include "BiliApi/BiliApi.h"
 #include "Theme/GeometryAnimation.h"
@@ -26,8 +26,8 @@ public:
     ~VideoWidget() override;
 
     void addVideoItem(const std::string& bvid) const;
-    void updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView);
-    void updateDetailPanel(const std::shared_ptr<Adapter::VideoView>& videoView) const;
+    void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    void updateDetailPanel(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
 
 private:
     Ui::VideoPage* ui;
@@ -45,7 +45,7 @@ private:
     void updateDetailPanelWidth();
 
 signals:
-    void downloadBtnClick(const std::shared_ptr<Adapter::VideoView>& videoView);
+    void downloadBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;

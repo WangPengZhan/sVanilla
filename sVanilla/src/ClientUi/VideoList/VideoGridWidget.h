@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Adapter/VideoView.h"
+#include "Adapter/BaseVideoView.h"
 #include "BiliApi/BiliApi.h"
 
 #include <QWidget>
@@ -19,7 +19,7 @@ public:
     ~VideoGridItemWidget();
     void setCover(const std::string& id);
     void updateVideoCard();
-    std::shared_ptr<Adapter::VideoView> m_videoView;
+    std::shared_ptr<Adapter::BaseVideoView> m_videoView;
 
 private:
     void setUi();
@@ -43,7 +43,7 @@ public:
     ~VideoGridWidget();
 
     void addVideoItem(const std::string& bvid);
-    void updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView);
+    void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
 private:
     std::map<std::string, QListWidgetItem*> m_items;

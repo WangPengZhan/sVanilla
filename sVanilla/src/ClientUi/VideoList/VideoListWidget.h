@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Adapter/BaseVideoView.h"
+
 #include <QWidget>
 #include <QListWidget>
 
@@ -16,13 +18,16 @@ public:
     explicit VideoListItemWidget(std::string bvid, QWidget* parent = nullptr);
     ~VideoListItemWidget();
 
+    void updateVideoItem();
+    std::shared_ptr<Adapter::BaseVideoView> m_videoView;
+
 private:
     void setUi();
     void signalsAndSlots();
 
 private:
     Ui::VideoListItemWidget* ui;
-    std::string m_bvid;
+    std::string Identifier;
 signals:
     void detailBtnClick();
     void detailCheckBtnClick(bool isChecked);
@@ -36,7 +41,10 @@ public:
     explicit VideoListWidget(QWidget* parent = nullptr);
     ~VideoListWidget();
     void addVideoItem(const std::string& bvid);
+    void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
+private:
+    std::map<std::string, QListWidgetItem*> m_items;
 protected:
     void mousePressEvent(QMouseEvent* event) override;
 signals:

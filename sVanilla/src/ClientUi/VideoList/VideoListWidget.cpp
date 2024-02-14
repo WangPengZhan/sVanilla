@@ -7,7 +7,7 @@
 VideoListItemWidget::VideoListItemWidget(std::string bvid, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoListItemWidget())
-    , m_bvid(std::move(bvid))
+    , Identifier(std::move(bvid))
 {
     ui->setupUi(this);
     setUi();
@@ -18,6 +18,12 @@ VideoListItemWidget::VideoListItemWidget(std::string bvid, QWidget* parent)
 VideoListItemWidget::~VideoListItemWidget()
 {
     delete ui;
+}
+void VideoListItemWidget::updateVideoItem()
+{
+    ui->Title->setText(QString::fromStdString(m_videoView->Title));
+    ui->Duration->setText(QString::fromStdString(m_videoView->Duration));
+    ui->Author->setText(QString::fromStdString(m_videoView->Publisher));
 }
 
 void VideoListItemWidget::setUi()
@@ -44,7 +50,16 @@ void VideoListWidget::addVideoItem(const std::string& bvid)
     const auto item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
-    connect(videoItem, &VideoListItemWidget::detailBtnClick, this, &VideoListWidget::itemDetailBtnClick);
+    m_items.insert(std::make_pair(bvid, item));
+    // connect(videoItem, &VideoListItemWidget::detailBtnClick, this, &VideoListWidget::itemDetailBtnClick);
+}
+void VideoListWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
+{
+    const auto bvid = videoView->Identifier;
+    const auto item = itemWidget(m_items[bvid]);
+    const auto widget = qobject_cast<VideoListItemWidget*>(item);
+    widget->m_videoView = videoView;
+    widget->updateVideoItem();
 }
 void VideoListWidget::mousePressEvent(QMouseEvent* event)
 {

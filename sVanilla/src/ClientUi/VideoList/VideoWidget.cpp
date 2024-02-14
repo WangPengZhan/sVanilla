@@ -27,11 +27,13 @@ void VideoWidget::addVideoItem(const std::string& bvid) const
     ui->VideoListWidget->addVideoItem(bvid);
 }
 
-void VideoWidget::updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView)
+void VideoWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
     ui->VideoGridWidget->addVideoItem(videoView->Identifier);
+    ui->VideoListWidget->addVideoItem(videoView->Identifier);
     installBtnEventFilter();
     ui->VideoGridWidget->updateVideoItem(videoView);
+    ui->VideoListWidget->updateVideoItem(videoView);
 }
 
 bool VideoWidget::processDetailsBtnClickEvent(QObject* watched)
@@ -121,7 +123,7 @@ void VideoWidget::installBtnEventFilter()
     }
 }
 
-void VideoWidget::updateDetailPanel(const std::shared_ptr<Adapter::VideoView>& videoView) const
+void VideoWidget::updateDetailPanel(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
 {
     detailPanel()->updateUi(videoView);
 }
@@ -150,7 +152,7 @@ void VideoWidget::hideDetailPanel() const
 }
 void VideoWidget::updateDetailPanelWidth()
 {
-    auto videoGridItemWidth = 400;
+    auto videoGridItemWidth = 350;
     auto remainingWidth = ui->VideoStackedPage->width() % videoGridItemWidth;
     // auto detailWidth = this->width() - remainingWidth;
     ui->VideoDetailWidget->setMinimumWidth(remainingWidth + detailPanel()->width());

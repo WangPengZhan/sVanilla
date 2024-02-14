@@ -2,7 +2,7 @@
 #include "VideoDetailWidget.h"
 #include <utility>
 #include "ui_VideoDetailWidget.h"
-#include "Adapter/VideoView.h"
+#include "Adapter/BaseVideoView.h"
 
 VideoDetailWidget::VideoDetailWidget(QWidget* parent)
     : QWidget(parent)
@@ -18,7 +18,7 @@ VideoDetailWidget::~VideoDetailWidget()
 {
     delete ui;
 }
-void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::VideoView>& data)
+void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::BaseVideoView>& data)
 {
     ui->DetailTitle->setText(QString::fromStdString(data->Title));
     ui->DetailPusblisher->setText(QString::fromStdString(data->Publisher));

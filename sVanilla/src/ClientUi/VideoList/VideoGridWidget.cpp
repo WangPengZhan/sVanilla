@@ -100,7 +100,7 @@ void VideoGridWidget::addVideoItem(const std::string& bvid)
     m_items.insert(std::make_pair(bvid, item));
     // connectItemSingal(videoItem);
 }
-void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::VideoView>& videoView)
+void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
     const auto bvid = videoView->Identifier;
     const auto item = itemWidget(m_items[bvid]);

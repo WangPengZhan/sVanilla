@@ -2,13 +2,12 @@
 
 #include "WindowBar.h"
 #include "Aria2Net/Protocol/Protocol.h"
-#include "BiliApi/BiliApi.h"
 #include "Util/Setting.h"
 #include <QtWidgets/QMainWindow>
 
 namespace Adapter
 {
-class VideoView;
+class BaseVideoView;
 }
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -42,12 +41,12 @@ public:
     void updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const;
     void AddDownloadTask(const std::string& gid) const;
     void addVideoCard(const std::string& bvid) const;
-    void updateVideoPage(const std::shared_ptr<Adapter::VideoView>& videoView) const;
+    void updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
 Q_SIGNALS:
     void AddUri(const std::string& uri);
     void onSettingPage();
     void themeChanged();
-    void downloadBtnClick(const std::shared_ptr<Adapter::VideoView>& videoView);
+    void downloadBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
 public slots:
     void SwitchTheme(int theme);

@@ -31,5 +31,5 @@ public slots:
     void updateDownloadStatus(const std::string& gid);
     void addUri(const std::list<std::string>& uris);
     void parseUri(const std::string& uri);
-    void addDownloadTask(const std::shared_ptr<Adapter::VideoView>& videoView);
+    void addDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 };

@@ -151,13 +151,30 @@ void App::parseUri(const std::string& uri)
     const auto res = biliClient.GetVideoView(uri);
     if (res.code == 0)
     {
+        const auto videoView = ConvertVideoView(res.data);
+        for (const auto& video : videoView)
+        {
+            downloadCover(video.Cover, video.Identifier);
+            maimWindow->addVideoCard(video.Identifier);
+        }
         // 更新并跳转到 video page
-        auto videoView = std::make_shared<Adapter::VideoView>(ConvertToVideoView(res.data));
-        downloadCover(videoView->Cover, videoView->Identifier);
-        maimWindow->updateVideoPage(videoView);
+        // if (checkSeason(res.data))
+        // {
+        //     const auto videoList = ConvertToVideoListView(res.data);
+        //     for (const auto& video : videoList)
+        //     {
+        //         downloadCover(video.Cover, video.Identifier);
+        //         maimWindow->updateVideoPage(std::make_shared<Adapter::BaseVideoView>(video));
+        //     }
+        // } else
+        // {
+        //     auto videoView = std::make_shared<Adapter::BaseVideoView>(ConvertToVideoView(res.data));
+        //     downloadCover(videoView->Cover, videoView->Identifier);
+        //     maimWindow->updateVideoPage(videoView);
+        // }
     }
 }
-void App::addDownloadTask(const std::shared_ptr<Adapter::VideoView>& videoView)
+void App::addDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
     const auto playUrl = biliClient.GetPlayUrl(std::stoll(videoView->VideoId), 64, videoView->Identifier);
     std::list<std::string> video_urls;
