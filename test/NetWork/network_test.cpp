@@ -18,7 +18,7 @@ TEST(Network_Test, HttpGet)
 
     CNetWork netWork;
     std::string response;
-    netWork.HttpGet("https://www.baidu.com", response);
+    netWork.HttpGet("https://www.baidu.com", response, TODO);
 
     EXPECT_EQ(response.empty(), false);
 }

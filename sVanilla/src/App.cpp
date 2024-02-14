@@ -6,9 +6,7 @@
 #include "ClientUi/Config/SingleConfig.h"
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "App.h"
-
 #include "BiliApi/BilibiliClient.h"
-
 #include <QStandardPaths>
 
 void App::init()
@@ -24,6 +22,7 @@ void App::init()
     // option.dir = SingleConfig::instance().getAriaConfig().downloadDir;
     const QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     option.dir = downloadPath.toStdString();
+
 }
 
 void App::setHighDpi()
@@ -145,27 +144,30 @@ void App::addUri(const std::list<std::string>& uris)
 void App::parseUri(const std::string& uri)
 {
     // if bili
+    const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
+    option.header = h;
     auto m_biliClient = BiliApi::BilibiliClient::globalClient();
     const auto res = m_biliClient.GetVideoView(uri);
-    qDebug() << "视频标题" << QString::fromStdString(res.data.title);
     const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
     if (playUrl.code != 0)
     {
-        qDebug() << "play url error" << QString::fromStdString(playUrl.message);
+        PRINTS("play url error", playUrl.message)
+        PRINTS("play url error", playUrl.message)
         return;
     }
 
     const auto videos = playUrl.data.durl;
-    qDebug() << "accept_format: " <<playUrl.data.accept_format;
+    PRINTS("accept_format: ", playUrl.data.accept_format)
     for (const auto& video : videos)
     {
         video_urls.push_back(video.url);
-        qDebug() << "video url" << QString::fromStdString(video.url);
+        PRINTS("video url", video.url)
     }
     if (!video_urls.empty())
     {
+        option.out = res.data.title + ".mp4";
         addUri(video_urls);
     }
 }

@@ -50,11 +50,7 @@ void AccountSetting::refreshQrCode(QLabel* label, const std::string& url)
 }
 void AccountSetting::checkLoginStatus(const std::string& qrcode)
 {
-    qDebug() << QString::fromStdString(qrcode);
     const auto loginStatus = m_biliClient.GetLoginStatus(qrcode);
-    // if (loginStatus.data.url != "")
-    qDebug() << QString::fromStdString(loginStatus.data.message);
-    qDebug() << loginStatus.message;
 
     while (true)
     {
@@ -75,7 +71,6 @@ void AccountSetting::checkLoginStatus(const std::string& qrcode)
         else
         {
             m_biliClient.ParseCookie(loginStatus.data.url);
-            qDebug() << "登录成功, cookie:\n" << QString::fromStdString(m_biliClient.m_cookie);
             break;
 
         }

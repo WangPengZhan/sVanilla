@@ -12,17 +12,17 @@ QString formatSize(T bytesPerSec)
     const double Kib = pow(2, 10);
     if (bytesPerSec >= Gib)
     {
-        return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB";
+        return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB/s";
     }
     if (bytesPerSec >= Mib)
     {
-        return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib";
+        return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib/s";
     }
     if (bytesPerSec >= Kib)
     {
-        return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib";
+        return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib/s";
     }
-    return QString::number(bytesPerSec, 'g', 3) + "B";
+    return QString::number(bytesPerSec, 'g', 3) + "B/s";
 }
 
 DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
@@ -47,7 +47,8 @@ void DownloadingItemWidget::signalsAndSlots()
 }
 void DownloadingItemWidget::updateStatus()
 {
-    ui->Title->setText(QString::fromStdString(status->result.dir));
+    const std::filesystem::path path(status->result.files.front().path);
+    ui->Title->setText(QString::fromStdString(path.stem().string()));
     ui->Speed->setText(formatSize(QString::fromStdString(status->result.downloadSpeed).toInt()));
     const auto progress = QString::fromStdString(status->result.completedLength).toInt() * 100 / QString::fromStdString(status->result.totalLength).toInt();
     ui->progressBar->setValue(progress);

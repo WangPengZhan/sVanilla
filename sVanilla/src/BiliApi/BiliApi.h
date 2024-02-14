@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
-#include <vector>
+#include <list>
 
 namespace BiliApi
 {
@@ -464,6 +464,8 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDash, video, audio, dolby)
 };
 
+
+
 class PlayUrlSupportFormat : public Protocol
 {
 public:
@@ -502,11 +504,75 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, accept_format, support_formats)
 };
 
+class Durl : public Protocol
+{
+public:
+    int order;
+    int length;
+    int size;
+    std::string ahead;
+    std::string vhead;
+    std::string url;
+    std::list<std::string> backup_url;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Durl, order, length, size, ahead, vhead, url, backup_url)
+};
+
+class SupportFormats: public Protocol
+{
+public:
+    int quality;
+    std::string format;
+    std::string new_description;
+    std::string display_desc;
+    std::string superscript;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SupportFormats, quality, format, new_description, display_desc, superscript)
+};
+
+class PlayUrlData : public Protocol
+{
+public:
+    std::string from;
+    std::string result;
+    std::string message;
+    int quality;
+    std::string format;
+    int timelength;
+    std::string accept_format;
+    std::list<std::string> accept_description;
+    std::list<int> accept_quality;
+    int video_codecid;
+    std::string seek_param;
+    std::string seek_type;
+    std::list<Durl> durl;
+    std::list<SupportFormats> support_formats;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlData, from, result, message, quality, format, timelength, accept_format, accept_description, accept_quality,
+                                   video_codecid, seek_param, seek_type, durl, support_formats)
+};
+
 class PlayUrlOrigin : public Protocol
 {
 public:
-    PlayUrl data;
+    PlayUrlData data;
     int code{};
+    int ttl;
     std::string message;
 
     std::string toString() override
@@ -516,7 +582,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlOrigin, data, code, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlOrigin, data, code, ttl, message)
 };
 
 // https://passport.bilibili.com/qrcode/getLoginUrl
@@ -588,10 +654,25 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, code, message)
 };
 
+class WbiImg : public Protocol
+{
+public:
+    std::string img_url;
+    std::string sub_url;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(WbiImg, img_url, sub_url)
+};
+
 class NavData : public Protocol
 {
 public:
-    std::vector<std::string> img;
+    bool isLogin;
+    WbiImg wbi_img;
 
     std::string toString() override
     {
@@ -600,7 +681,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, img)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, wbi_img)
 };
 
 class Nav final : public Protocol
@@ -654,4 +735,32 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusReady, code, status, data)
 };
 
+class Cookie : public Protocol
+{
+public:
+    std::time_t Expires;
+    std::string SESSDATA;
+    std::string bili_jct;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Cookie, Expires, SESSDATA, bili_jct)
+};
+
+class MixinKey : public Protocol
+{
+public:
+    std::time_t Expires;
+    std::string mixin_key;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MixinKey, Expires, mixin_key)
+};
 }  // namespace BiliApi

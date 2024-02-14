@@ -1,9 +1,9 @@
 #include <curl/curl.h>
-
 #include <nlohmann/json.hpp>
-
 #include "CNetWork.h"
 #include "NetworkLog.h"
+#include <QtCore/qstring.h>
+#include <QDebug>
 
 namespace
 {
@@ -104,79 +104,71 @@ void CNetWork::AppendHeaders(const std::string& header)
 {
     curl_slist_append(m_headers, header.c_str());
 }
+std::string CNetWork::ConcatenateParams(const ParamType& params)
+{
+    // Calculate the length of the final string in advance
+    size_t length = std::distance(params.begin(), params.end()) - 1;  // count of '&'
+    for (const auto& [fst, snd] : params)
+    {
+        length += fst.size() + snd.size() + 1;  // length of "key=value"
+    }
+
+    std::string result;
+    result.reserve(length + 1);  // include the length of '?'
+
+    result.push_back('?');
+    for (auto it = params.begin(); it != params.end();)
+    {
+        result += it->first;
+        result.push_back('=');
+        result += it->second;
+        if (++it != params.end())
+        {
+            result.push_back('&');
+        }
+    }
+
+    return result;
+}
 std::string CNetWork::getAgent()
 {
-    return std::string("user-agent: ") + chrome;
+    return std::string("User-Agent: ") + chrome;
 }
 
-void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::string& cookie)
+void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::list<std::string>& headers)
 {
-    std::string strParam;
-    for (const auto& param : params)
-    {
-        strParam += param.first + "=" + param.second + "&";
-    }
-
-    if (std::string::npos == url.find('?'))
-    {
-        strParam = "?" + strParam;
-    }
-
-    strParam.erase(strParam.end() - 1);
-
-    if (!cookie.empty())
-    {
-        return HttpGetWithCookie(url + strParam, response, cookie);
-    }
-    return HttpGet(url, strParam, response);
+    return HttpGet(url + ConcatenateParams(params), response, headers);
 }
 
-void CNetWork::HttpGet(const std::string& url, const std::string& params, std::string& response)
+void CNetWork::HttpGet(const std::string& url, std::string& response, const std::list<std::string>& headers)
 {
-    return HttpGet(url + params, response);
-}
+    PRINTS("HttpGet: ", url);
+    const CURLPtr curlHandle(curl_easy_init());
+    curl_slist *h = nullptr;
+    for (const auto& header : headers)
+    {
+        h = curl_slist_append(h, header.c_str());
+    }
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, h);
 
-void CNetWork::HttpGet(const std::string& url, std::string& response)
-{
-    CURLPtr curlHandle(curl_easy_init());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
-    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
     curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
-    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
-}
-void CNetWork::HttpGetWithCookie(const std::string& url, std::string& response, const std::string& cookie)
-{
-    CURLPtr curlHandle(curl_easy_init());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIE, cookie.c_str());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
-    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
-    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
-    CURLcode retCode = curl_easy_perform(curlHandle.get());
-    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
-    if (retCode != CURLE_OK)
+    if(h)
     {
-        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
+        curl_slist_free_all(h);
     }
 }
 
@@ -221,7 +213,7 @@ void CNetWork::HttpPost(const std::string& url, const std::string& params, std::
     curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIEFILE, "cookie.txt");
     CURLcode retCode = curl_easy_perform(curlHandle.get());
-
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);

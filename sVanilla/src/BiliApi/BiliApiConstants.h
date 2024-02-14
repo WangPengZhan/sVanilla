@@ -19,4 +19,9 @@ inline std::string View = std::string(apiBase) + "x/web-interface/view";
 inline std::string Playurl = std::string(apiBase) + "x/player/wbi/playurl";
 }  // namespace VideoURL
 
+namespace  Headers
+{
+inline std::string DefaultReferer = "Referer: https://www.bilibili.com";
+inline std::string PassportReferer = "Referer: https://passport.bilibili.com/";
+}
 }  // namespace BiliApi
