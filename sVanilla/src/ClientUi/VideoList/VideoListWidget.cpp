@@ -78,3 +78,7 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
     }
     QListWidget::mousePressEvent(event);
 }
+void VideoListWidget::clearVideo()
+{
+    this->clear();
+}

@@ -37,7 +37,7 @@
       </property>
       <widget class="::HomePage" name="homePage"/>
       <widget class="::VideoWidget" name="VideoPage"/>
-      <widget class="::DownloadingListWidget" name="DownloadPage"/>
+      <widget class="::DownloadWidget" name="downloadPage"/>
       <widget class="::SettingPage" name="settingPage"/>
      </widget>
     </item>
@@ -53,12 +53,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>::DownloadingListWidget</class>
-   <extends>QListWidget</extends>
-   <header>ClientUi/Download/DownloadingListWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>::SettingPage</class>
    <extends>QWidget</extends>
    <header>ClientUi/Setting/SettingPage.h</header>
@@ -68,6 +62,12 @@
    <class>::VideoWidget</class>
    <extends>QStackedWidget</extends>
    <header>ClientUi/VideoList/VideoWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::DownloadWidget</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Download/DownloadWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

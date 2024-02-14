@@ -129,6 +129,7 @@ class VideoPage : public Protocol
 public:
     long long cid;
     // int page;
+    std::string first_frame;
     std::string part;
     int duration;
     Dimension dimension;
@@ -140,7 +141,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoPage, cid, part, duration, dimension)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoPage, cid, first_frame, part, duration, dimension)
 };
 
 class SubtitleAuthor : public Protocol
@@ -292,7 +293,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSeason, id, title,intro, sections,ep_count)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSeason, id, title, intro, sections, ep_count)
 };
 
 class VideoView : public Protocol

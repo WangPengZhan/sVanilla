@@ -4,33 +4,16 @@
 
 namespace Adapter
 {
-class Protocol
-{
-public:
-    Protocol() = default;
-    virtual ~Protocol() = default;
-    virtual std::string toString() = 0;
-};
 
-class BaseVideoView : public Protocol
-{
-public:
+struct BaseVideoView {
     std::string Identifier;
     std::string AlternateId;
     std::string VideoId;
     std::string Title;
-    std::string Duration;
     std::string Publisher;
     std::string Cover;
+    std::string Duration;
     std::string Description;
-
-    std::string toString() override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump(4);
-    }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(BaseVideoView, Identifier, AlternateId, VideoId, Title, Duration, Publisher, Cover, Description)
 };
 
 using VideoView = std::vector<BaseVideoView>;

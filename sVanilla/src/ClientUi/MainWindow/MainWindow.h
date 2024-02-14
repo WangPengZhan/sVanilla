@@ -50,7 +50,7 @@ Q_SIGNALS:
 
 public slots:
     void SwitchTheme(int theme);
-
+    void ClearVideo(bool flag);
 protected:
     bool event(QEvent* event) override;
 

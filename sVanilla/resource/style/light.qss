@@ -119,7 +119,7 @@ SearchLineEdit#HomeLineEdit {
     padding: 8px 8px 8px 15px;
     background-color: transparent;
     min-height: 10px;
-    margin-right: 22px;
+    /* margin-right: 22px; */
 }
 
 SearchLineEdit:focus#HomeLineEdit {
@@ -131,7 +131,13 @@ SearchLineEdit::placeholder#HomeLineEdit {
     color: #767e89;
 }
 
-
+QPushButton#HomePageSubmit {
+    qproperty-icon: url(:/icon/home/enter.svg);
+    background-color: transparent;
+    color: #5c5c5c;
+    font-weight: 500;
+    font-size: 10px;
+}
 
 QPushButton#SearchBtn {
     qproperty-icon: url(:/icon/home/search.svg);
@@ -281,12 +287,12 @@ QListWidget::item:selected#VideoListWidget {
 
 /* Download Page */
 
-QListWidget#DownloadPage {
+QListWidget#DownloadListWidget {
     background-color: transparent;
     padding: 10px;
 }
 
-QListWidget::item:selected#DownloadPage {
+QListWidget::item:selected#DownloadListWidget {
     border: 2px solid #7077A1;
     border-radius: 5px;
     margin-top: 3px;

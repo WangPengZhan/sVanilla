@@ -42,6 +42,7 @@ public:
     ~VideoListWidget();
     void addVideoItem(const std::string& bvid);
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    void clearVideo();
 
 private:
     std::map<std::string, QListWidgetItem*> m_items;

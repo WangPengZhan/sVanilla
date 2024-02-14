@@ -167,3 +167,8 @@ bool VideoWidget::eventFilter(QObject* watched, QEvent* event)
 
     return processDetailsBtnClickEvent(watched) || precessDownloadBtnClickEvent(watched);
 }
+void VideoWidget::clearVideo()
+{
+    ui->VideoGridWidget->clearVideo();
+    ui->VideoListWidget->clearVideo();
+}

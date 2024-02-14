@@ -113,4 +113,7 @@ void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget) c
     connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
     connect(itemWidget,&VideoGridItemWidget::detailCheckBtnClick,this, &VideoGridWidget::handleDetialCheckBtnClick);
 }
-
+void VideoGridWidget::clearVideo()
+{
+  this->clear();
+}
