@@ -43,7 +43,7 @@ set(QT_COMPONENTS
     Gui
     Widgets
     Network
-        Svg
+    Svg
 )
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
@@ -85,7 +85,6 @@ add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 option(ENABLE_TEST "Enable Test" OFF)
-set(ENABLE_TEST ON)
 if (ENABLE_TEST)
     enable_testing()
     add_subdirectory(test)

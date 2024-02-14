@@ -1,21 +1,28 @@
 #include <openssl/md5.h>
 #include <openssl/evp.h>
-#include "BilibiliUtils.h"
 
 #include <iomanip>
 #include <numeric>
 #include <sstream>
+#include <algorithm>
+
 #include <curl/curl.h>
 
+#include "BilibiliUtils.h"
+
+namespace BiliApi
+{
 // 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
-void replaceAll(std::string& source, const std::string& from, const std::string& to) {
+void replaceAll(std::string& source, const std::string& from, const std::string& to) 
+{
     std::string newString;
     newString.reserve(source.length());  // 预分配足够空间
 
     std::string::size_type lastPos = 0;
     std::string::size_type findPos;
 
-    while (std::string::npos != (findPos = source.find(from, lastPos))) {
+    while (std::string::npos != (findPos = source.find(from, lastPos))) 
+    {
         newString.append(source, lastPos, findPos - lastPos);
         newString += to;
         lastPos = findPos + from.length();
@@ -113,3 +120,5 @@ void BiliApi::encWbi(CNetWork::ParamType& params, const std::string& mixin_key)
     // 计算 w_rid 字段
     params["w_rid"] = MD5Hash(query + mixin_key);
 }
+
+} // BiliApi

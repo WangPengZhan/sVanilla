@@ -29,10 +29,10 @@ signals:
     void result(const std::any& ret);
 };
 
-template <typename CALLBACK, typename = std::enable_if_t<std::is_invocable_v<CALLBACK>>> class TemplateSignalReturnTask : public SignalReturnTask
+template <typename CallBack, typename = std::enable_if_t<std::is_invocable_v<CallBack>>> class TemplateSignalReturnTask : public SignalReturnTask
 {
 public:
-    explicit TemplateSignalReturnTask(CALLBACK callback, QObject* parent = nullptr)
+    explicit TemplateSignalReturnTask(CallBack callback, QObject* parent = nullptr)
         : SignalReturnTask(parent)
         , m_callback(std::move(callback))
     {
@@ -45,5 +45,5 @@ public:
     }
 
 private:
-    CALLBACK m_callback;
+    CallBack m_callback;
 };

@@ -5,9 +5,6 @@
 #include "CNetWork.h"
 #include "NetworkLog.h"
 
-#include <QtCore/qstring.h>
-#include <QDebug>
-
 namespace
 {
 
@@ -127,7 +124,6 @@ void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::str
 
     strParam.erase(strParam.end() - 1);
 
-    qDebug() << "完整URL为：" << QString::fromStdString(url + strParam);
     if (!cookie.empty())
     {
         return HttpGetWithCookie(url + strParam, response, cookie);
@@ -205,7 +201,6 @@ void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& r
     strParam.erase(strParam.end() - 1);
 
     // nlohmann::json jsonParam = params;
-    qDebug() << "完整URL为：" << QString::fromStdString(url + strParam);
     HttpPost(url, strParam, response);
 }
 
