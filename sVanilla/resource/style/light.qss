@@ -286,6 +286,12 @@ QListWidget#DownloadPage {
     padding: 10px;
 }
 
+QListWidget::item:selected#DownloadPage {
+    border: 2px solid #7077A1;
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
 
 QPushButton#Delete {
     qproperty-icon: url(:/icon/download/delete.svg);

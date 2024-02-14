@@ -155,7 +155,7 @@ void App::parseUri(const std::string& uri)
         for (const auto& video : videoView)
         {
             downloadCover(video.Cover, video.Identifier);
-            maimWindow->addVideoCard(video.Identifier);
+            maimWindow->updateVideoPage(std::make_shared<Adapter::BaseVideoView>(video));
         }
         // 更新并跳转到 video page
         // if (checkSeason(res.data))

@@ -2,7 +2,7 @@
 
 #include <utility>
 #include "ui_DownloadingListWidget.h"
-
+#include "Theme/StyledItemDelegate.h"
 
 template <typename T>
 QString formatSize(T bytesPerSec)
@@ -59,6 +59,11 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
+    auto* delegate = new CustomVideoListItemDelegate();
+    this->setItemDelegate(delegate);
+    addTaskItem("1234");
+    addTaskItem("1235");
+    addTaskItem("1236");
 
 }
 void DownloadingListWidget::signalsAndSlots() const
