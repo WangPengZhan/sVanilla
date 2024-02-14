@@ -18,20 +18,32 @@
   </property>
   <layout class="QVBoxLayout" name="outsideLayout">
    <property name="leftMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <item>
     <widget class="QWidget" name="titleWidget" native="true">
      <layout class="QHBoxLayout" name="titleLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QLabel" name="Title">
         <property name="text">
@@ -43,12 +55,6 @@
        <spacer name="Spacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
         </property>
        </spacer>
       </item>
@@ -78,7 +84,7 @@
    <item>
     <widget class="QProgressBar" name="progressBar">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -91,6 +97,18 @@
    <item>
     <widget class="QWidget" name="btnWidget" native="true">
      <layout class="QHBoxLayout" name="btnLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QLabel" name="Size">
         <property name="text">
@@ -123,12 +141,6 @@
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
         </property>
        </spacer>
       </item>
@@ -166,18 +178,6 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -190,18 +190,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
         </property>
         <property name="text">
          <string/>

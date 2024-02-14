@@ -323,6 +323,19 @@ QPushButton#Detail {
     background-color: transparent;
 }
 
+QProgressBar {
+    border-radius: 2px;
+    text-align: center;
+    min-height: 6px;
+    max-height: 6px;
+}
+
+QProgressBar::chunk {
+    border-radius: 2px;
+    background-color: #5a7584;
+    margin: 0.5px;
+}
+
 /* Setting Page */
 
 QLabel {
