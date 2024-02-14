@@ -113,13 +113,22 @@ QPushButton#HomeBtn,
 
 /* Home Page */
 
+QLabel#Slogan {
+    background-color: transparent;
+    font-weight: 600;
+    font-size: 20px;
+    padding-top: 30px;
+    /* border: 1px solid #607274; */
+}
+
 SearchLineEdit#HomeLineEdit {
     border-radius: 5px;
     border: 1px solid #7077A1;
     padding: 8px 8px 8px 15px;
     background-color: transparent;
     min-height: 10px;
-    /* margin-right: 22px; */
+    margin-right: 15px;
+    margin-left: 15px;
 }
 
 SearchLineEdit:focus#HomeLineEdit {
@@ -137,6 +146,39 @@ QPushButton#HomePageSubmit {
     color: #5c5c5c;
     font-weight: 500;
     font-size: 10px;
+}
+
+QPushButton#LearnBtn {
+    qproperty-icon: url(:/icon/home/openurl.svg);
+    background-color: transparent;
+    color: #5c5c5c;
+    font-weight: 500;
+    font-size: 10px;
+    border: 1px solid #424769;
+    border-radius: 10px;
+    padding: 2px 6px;
+}
+
+QPushButton#LoadPluginBtn {
+    /* qproperty-icon: url(:/icon/home/enter.svg); */
+    background-color: transparent;
+    color: #5c5c5c;
+    font-weight: 500;
+    font-size: 10px;
+    border: 1px solid #424769;
+    border-radius: 10px;
+    padding: 2px 6px;
+}
+
+QPushButton#LoginWebsiteBtn {
+    /* qproperty-icon: url(:/icon/home/enter.svg); */
+    background-color: transparent;
+    color: #5c5c5c;
+    font-weight: 500;
+    font-size: 10px;
+    border: 1px solid #424769;
+    border-radius: 10px;
+    padding: 2px 6px;
 }
 
 QPushButton#SearchBtn {
