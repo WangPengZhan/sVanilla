@@ -73,7 +73,6 @@ bool VideoWidget::processDetailsBtnClickEvent(QObject* watched)
     if (const auto itemIdentifier = videoGridItemWidget->Identifier; detailSourceIdentifier != itemIdentifier)
     {
         //  可以在此处更新详情栏data
-        qDebug() << videoGridItemWidget->Identifier;
         detailSourceIdentifier = itemIdentifier;
         updateDetailPanel(videoGridItemWidget->m_videoView);
         return true;
