@@ -22,10 +22,13 @@ public:
     explicit Toast(QWidget* parent = nullptr);
     ~Toast();
 
+    static void showToast(const QString &msg, Level level = Info, int timeout = 3000, QWidget *parent  = nullptr);
+    void showWithAnimation(int timeout);
+
 private:
     void setUi();
     void signalsAndSlots();
-
+    void setText(const QString &msg);
 private:
     Ui::Toast* ui;
 };
