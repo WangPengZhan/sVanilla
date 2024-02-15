@@ -20,6 +20,16 @@ std::shared_ptr<download::AbstractDownloader> UiDownloader::realDownloader()
     return m_realDownloader;
 }
 
+void UiDownloader::setFileName(const std::string& filename)
+{
+    m_filename = filename;
+}
+
+const std::string& UiDownloader::filename() const
+{
+    return m_filename;
+}
+
 void UiDownloader::start()
 {
     m_realDownloader->start();

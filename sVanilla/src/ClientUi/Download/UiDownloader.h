@@ -17,6 +17,9 @@ public:
     void setRealDownloader(std::shared_ptr<download::AbstractDownloader> realDownloader);
     std::shared_ptr<download::AbstractDownloader> realDownloader();
 
+    void setFileName(const std::string& filename);
+    const std::string& filename() const;
+
     void start() override;
     void stop() override;
     void pause() override;
@@ -32,6 +35,7 @@ signals:
 
 private:
     std::shared_ptr<download::AbstractDownloader> m_realDownloader;
+    std::string m_filename;
 };
 
 

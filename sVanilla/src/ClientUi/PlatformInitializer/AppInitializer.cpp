@@ -74,7 +74,6 @@ void AppInitializer::signalsAndSlots()
 {
     connect(maimWindow.get(), &MainWindow::AddUri, this, &AppInitializer::addUri);
     connect(maimWindow.get(), &MainWindow::onSettingPage, this, &AppInitializer::updateAria2Version);
-    connect(downloadManager.get(), &DownloadManager::toRuquestStatus, this, &AppInitializer::updateDownloadStatus);
 }
 
 void AppInitializer::updateAria2Version()
@@ -111,19 +110,6 @@ void AppInitializer::updateDownloadStatus(const std::string& gid)
         {
             const auto& result = std::any_cast<aria2net::AriaTellStatus>(res);
             const auto status = std::make_shared<aria2net::AriaTellStatus>(result);
-            const auto error = downloadManager->updateDownloaderStatus(status);
-            if (const auto e = error.message; !e.empty())
-            {
-                updateHomeMsg(e);
-            }
-            else
-            {
-                const auto g = status->result.gid;
-                if (downloadManager->neededUpdate.count(g) > 0)
-                {
-                    maimWindow->updateDownloadStatus(status);
-                }
-            }
         }
         catch (const std::bad_any_cast& e)
         {
@@ -147,7 +133,7 @@ void AppInitializer::addUri(const std::list<std::string>& uris)
             {
                 auto gid = result.result;
                 maimWindow->AddDownloadTask(gid);
-                downloadManager->addDownloader(gid);
+                // downloadManager->addDownloader(gid);
                 updateHomeMsg("Add success");
             }
             else

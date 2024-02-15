@@ -12,6 +12,7 @@ public:
         Ready,
         Downloading,
         Paused,
+        Resume,
         Stopped,
         Finished,
         Error
