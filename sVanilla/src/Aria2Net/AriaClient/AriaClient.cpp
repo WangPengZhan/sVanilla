@@ -166,7 +166,7 @@ std::string AriaClient::ConstructSendData(std::string methodName, nlohmann::json
     {
         data.params[2] = nlohmann::json::object();
     }
-    qDebug() << "Aria2Client Rquest Body: " <<data.toString().c_str();
+    qDebug() << "Aria2Client Rquest Body: " << data.toString().c_str();
     return Request(ConstructURL(), data.toString());
 }
 

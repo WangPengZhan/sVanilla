@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
-    <height>144</height>
+    <width>969</width>
+    <height>477</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,20 +18,32 @@
   </property>
   <layout class="QVBoxLayout" name="outsideLayout">
    <property name="leftMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>10</number>
+    <number>5</number>
    </property>
    <item>
     <widget class="QWidget" name="titleWidget" native="true">
      <layout class="QHBoxLayout" name="titleLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QLabel" name="Title">
         <property name="text">
@@ -46,8 +58,8 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
-          <height>20</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
        </spacer>
@@ -61,6 +73,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="Delete">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -71,6 +89,12 @@
    </item>
    <item>
     <widget class="QProgressBar" name="progressBar">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="value">
       <number>24</number>
      </property>
@@ -79,6 +103,18 @@
    <item>
     <widget class="QWidget" name="btnWidget" native="true">
      <layout class="QHBoxLayout" name="btnLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QLabel" name="Size">
         <property name="text">
@@ -114,14 +150,20 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
-          <height>20</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
        <widget class="QPushButton" name="Pause">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -129,6 +171,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="Start">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -136,17 +184,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="Folder">
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="text">
          <string/>
@@ -155,17 +197,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="Detail">
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="text">
          <string/>

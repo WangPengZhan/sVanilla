@@ -9,6 +9,7 @@
 #include "ClientUi/Setting/SettingPage.h"
 #include "Sqlite/SQLiteManager.h"
 #include "ClientUi/Download/DownloadingListWidget.h"
+#include "ClientUi/VideoList/VideoWidget.h"
 #include "SUI/windowbutton.h"
 
 #include <QStackedWidget>
@@ -41,11 +42,19 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 }
 void MainWindow::updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const
 {
-    ui->downloadTab->updateItem(status);
+    ui->downloadPage->updateItem(status);
 }
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
-    ui->downloadTab->addTaskItem(gid);
+    ui->downloadPage->addTaskItem(gid);
+}
+void MainWindow::addVideoCard(const std::string& bvid) const
+{
+    ui->VideoPage->addVideoItem(bvid);
+}
+void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
+{
+    ui->VideoPage->updateVideoItem(videoView);
 }
 
 void MainWindow::installWindowAgent()
@@ -80,7 +89,9 @@ void MainWindow::signalsAndSlots()
     // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
     // connect(ui->homePage, &HomePage::updateMsg, this, &MainWindow::updateHomeMsg);
 
+    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
     connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
+    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)
@@ -228,4 +239,11 @@ void MainWindow::SwitchTheme(const int theme)
 #else
 
 #endif
+}
+void MainWindow::ClearVideo(bool flag)
+{
+    if (!flag)
+    {
+        ui->VideoPage->clearVideo();
+    }
 }

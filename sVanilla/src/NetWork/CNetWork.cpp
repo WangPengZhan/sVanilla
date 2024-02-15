@@ -20,6 +20,11 @@ size_t OnWriteDate(void* data, size_t size, size_t nmemb, void* stream)
     return size * nmemb;
 }
 
+size_t downloadCallback(void* ptr, size_t size, size_t nmemb, void* user_data) {
+    FILE* fp = (FILE*)user_data;
+    return fwrite(ptr, size, nmemb, fp);
+}
+
 constexpr char chrome[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
 constexpr char firefox[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0";
 constexpr char edge[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
@@ -144,7 +149,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response, const std:
 {
     PRINTS("HttpGet: ", url);
     const CURLPtr curlHandle(curl_easy_init());
-    curl_slist *h = nullptr;
+    curl_slist* h = nullptr;
     for (const auto& header : headers)
     {
         h = curl_slist_append(h, header.c_str());
@@ -157,18 +162,32 @@ void CNetWork::HttpGet(const std::string& url, std::string& response, const std:
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
-    // curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
-    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
-    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
-    if(h)
+    if (h)
     {
         curl_slist_free_all(h);
+    }
+}
+void CNetWork::HttpGet(const std::string& url, FILE* file)
+{
+    const CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, downloadCallback);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, file);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
+    CURLcode retCode = curl_easy_perform(curlHandle.get());
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
+    if (retCode != CURLE_OK)
+    {
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 

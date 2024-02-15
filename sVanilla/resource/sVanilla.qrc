@@ -1,37 +1,38 @@
 <RCC>
     <qresource prefix="/">
-        <file>icon/grid.svg</file>
-        <file>icon/file-text.svg</file>
-        <file>icon/server.svg</file>
-        <file>icon/search.svg</file>
-        <file>icon/sort.svg</file>
-        <file>icon/close.svg</file>
-        <file>icon/fullscreen.svg</file>
-        <file>icon/maximize.svg</file>
-        <file>icon/minimize.svg</file>
-        <file>icon/more-line.svg</file>
-        <file>icon/restore.svg</file>
-        <file>icon/clear.svg</file>
-        <file>icon/clipboard.svg</file>
-        <file>icon/history.svg</file>
+        <file>icon/bar/minimize.svg</file>
+        <file>icon/bar/maximize.svg</file>
+        <file>icon/bar/close.svg</file>
+        <file>icon/bar/download.svg</file>
+        <file>icon/bar/setting.svg</file>
+        <file>icon/bar/video.svg</file>
+        <file>icon/bar/home.svg</file>
+        <file>icon/home/icon.svg</file>
+        <file>icon/home/search.svg</file>
+        <file>icon/home/clear.svg</file>
+        <file>icon/home/clipboard.svg</file>
+        <file>icon/home/history.svg</file>
+        <file>icon/home/enter.svg</file>
+        <file>icon/home/openurl.svg</file>
+        <file>icon/video/grid.svg</file>
+        <file>icon/video/list.svg</file>
+        <file>icon/video/detail.svg</file>
+        <file>icon/video/download.svg</file>
+        <file>icon/video/close.svg</file>
+        <file>icon/download/delete.svg</file>
+        <file>icon/download/start.svg</file>
+        <file>icon/download/pause.svg</file>
+        <file>icon/download/folder.svg</file>
+        <file>icon/download/details.svg</file>
+        <file>icon/setting/arrow-down.svg</file>
+        <file>icon/setting/arrow-down-disable.svg</file>
+        <file>icon/setting/arrow-up.svg</file>
+        <file>icon/setting/arrow-up-disable.svg</file>
+        <file>icon/setting/checked.svg</file>
+        <file>icon/setting/unchecked.svg</file>
         <file>icon/account.svg</file>
-        <file>icon/download.svg</file>
-        <file>icon/setting.svg</file>
-        <file>icon/gallery.svg</file>
-        <file>icon/home.svg</file>
-        <file>icon/delete.svg</file>
-        <file>icon/start.svg</file>
-        <file>icon/pause.svg</file>
-        <file>icon/folder.svg</file>
-        <file>icon/details.svg</file>
-        <file>icon/arrow-down.svg</file>
-        <file>icon/arrow-down-disable.svg</file>
-        <file>icon/arrow-up.svg</file>
-        <file>icon/arrow-up-disable.svg</file>
-        <file>icon/checked.svg</file>
-        <file>icon/unchecked.svg</file>
-        <file>icon/anchor.svg</file>
         <file>style/dark.qss</file>
         <file>style/light.qss</file>
+        <file>CoverTest.jpeg</file>
     </qresource>
 </RCC>

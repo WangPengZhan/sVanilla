@@ -98,21 +98,21 @@ class UgcArc : public Protocol
 {
 public:
     long long aid;
-    int videos;
-    int type_id;
-    int type_name;
-    int copyright;
+    // int videos;
+    // int type_id;
+    // int type_name;
+    // int copyright;
     std::string pic;
     std::string title;
     long long pubdate;
-    int ctime;
+    // int ctime;
     std::string desc;
-    int state;
+    // int state;
     int duration;
-    VideoOwner author;
-    VideoStat stat;
-    std::string dynamic;
-    Dimension dimension;
+    // VideoOwner author;
+    // VideoStat stat;
+    // std::string dynamic;
+    // Dimension dimension;
 
     std::string toString() override
     {
@@ -121,22 +121,18 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcArc, aid, videos, type_id, type_name, copyright, pic, title, pubdate, ctime, desc, state, duration, author,
-                                                stat, dynamic, dimension)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcArc, aid, pic, title, pubdate, desc, duration)
 };
 
 class VideoPage : public Protocol
 {
 public:
     long long cid;
-    int page;
-    std::string from;
+    // int page;
+    std::string first_frame;
     std::string part;
     int duration;
-    std::string vid;
-    std::string weblink;
     Dimension dimension;
-    std::string first_frame;
 
     std::string toString() override
     {
@@ -145,7 +141,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoPage, cid, page, from, part, duration, vid, weblink, dimension, first_frame)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoPage, cid, first_frame, part, duration, dimension)
 };
 
 class SubtitleAuthor : public Protocol
@@ -231,13 +227,14 @@ public:
 class UgcEpisode : public Protocol
 {
 public:
-    long long season_id;
-    long long section_id;
-    long long id;
-    long long mid;
+    // long long season_id;
+    // long long section_id;
+    // long long id;
+    // long long mid;
+    long long aid;
     long long cid;
     std::string title;
-    int attribute;
+    // int attribute;
     UgcArc arc;
     VideoPage page;
     std::string bvid;
@@ -249,19 +246,19 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcEpisode, season_id, section_id, id, mid, cid, title, attribute, arc, page, bvid)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcEpisode, aid, cid, title, arc, page, bvid)
 };
 
 class UgcSection : public Protocol
 {
 public:
-    long long season_id;
-    long long id;
+    // long long season_id;
+    // long long id;
     std::string title;
-    int attribute;
-    UgcArc arc;
-    VideoPage page;
-    std::string type;
+    // int attribute;
+    // UgcArc arc;
+    // VideoPage page;
+    // std::string type;
     std::list<UgcEpisode> episodes;
 
     std::string toString() override
@@ -271,7 +268,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSection, season_id, id, title, attribute, arc, page, type, arc, episodes)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSection, title, episodes)
 };
 
 class UgcSeason : public Protocol
@@ -279,15 +276,15 @@ class UgcSeason : public Protocol
 public:
     long long id;
     std::string title;
-    std::string cover;
-    long long mid;
+    // std::string cover;
+    // long long mid;
     std::string intro;
-    int signState;
-    int attribute;
-    UgcSection sections;
-    UgcStat stat;
+    // int signState;
+    // int attribute;
+    std::list<UgcSection> sections;
+    // UgcStat stat;
     int ep_count;
-    int season_type;
+    // int season_type;
 
     std::string toString() override
     {
@@ -296,7 +293,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSeason, id, title, cover, mid, intro, signState, attribute, sections, stat, ep_count, season_type)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(UgcSeason, id, title, intro, sections, ep_count)
 };
 
 class VideoView : public Protocol
@@ -304,28 +301,18 @@ class VideoView : public Protocol
 public:
     std::string bvid;
     long long aid;
-    int videos;
     int tid;
     std::string tname;
-    int copyright;
     std::string pic;
     std::string title;
     long long pubdate;
-    int ctime;
     std::string desc;
-    int state;
     int duration;
-    std::string redirect_url;
-    long long mission_id;
-    VideoOwner owener;
-    VideoStat stat;
+    VideoOwner owner;
     std::string dynamic;
     long long cid;
-    Dimension dimension;
-    long long season_id;
-    std::string festival_jump_url;
     std::list<VideoPage> pages;
-    VideoSubtitle subtitle;
+    // VideoSubtitle subtitle;
     UgcSeason ugc_season;
 
     std::string toString() override
@@ -335,9 +322,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoView, bvid, aid, videos, tid, tname, copyright, pic, title, pubdate, ctime, desc, state, duration,
-                                                redirect_url, mission_id, owener, stat, dynamic, cid, dimension, season_id, festival_jump_url, pages, subtitle,
-                                                ugc_season)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoView, bvid, aid, tid, tname, pic, title, pubdate, desc, duration, owner, dynamic, cid, pages, ugc_season)
 };
 
 class VideoViewOrigin : public Protocol
@@ -354,6 +339,21 @@ public:
     }
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
 };
+
+// class VideoViewOrigin : public Protocol
+// {
+// public:
+//     VideoView data;
+//     int code{};
+//
+//     std::string toString() override
+//     {
+//         nlohmann::json json;
+//         to_json(json, *this);
+//         return json.dump(4);
+//     }
+//     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
+// };
 
 class SubtitleInfo : public Protocol
 {
@@ -523,7 +523,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Durl, order, length, size, ahead, vhead, url, backup_url)
 };
 
-class SupportFormats: public Protocol
+class SupportFormats : public Protocol
 {
 public:
     int quality;

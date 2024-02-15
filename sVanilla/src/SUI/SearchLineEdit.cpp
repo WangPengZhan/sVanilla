@@ -10,7 +10,7 @@ SearchLineEdit::SearchLineEdit(QWidget* parent)
 
     signalsAndSlots();
 
-    SetEditFinishedSearch(false);
+    SetEditFinishedSearch(true);
 }
 
 SearchLineEdit::~SearchLineEdit()
@@ -34,9 +34,9 @@ void SearchLineEdit::SetEditFinishedSearch(bool enabled)
 void SearchLineEdit::resizeEvent(QResizeEvent* event)
 {
     ui->ClearBtn->resize(height(), height());
-    ui->ClearBtn->move(width() - 60, 0);
-    ui->SearchBtn->resize(height(), height());
-    ui->SearchBtn->move(width() - 25, 0);
+    ui->ClearBtn->move(width() - 50, 0);
+//    ui->SearchBtn->resize(height(), height());
+//    ui->SearchBtn->move(width() - 25, 0);
     return QLineEdit::resizeEvent(event);
 }
 
@@ -47,7 +47,7 @@ void SearchLineEdit::setUi()
 
 void SearchLineEdit::signalsAndSlots()
 {
-    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
+//    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
         ui->ClearBtn->setVisible(!text.isEmpty());
     });

@@ -19,6 +19,7 @@ public:
     void setMsgLabel(const std::string& msg);
 signals:
     void AddUri(const std::string& uri);
+    void HasAdded(bool hasAdded);
 public slots:
     void updateMsg(const std::string& msg);
 
@@ -26,4 +27,6 @@ private:
     Ui::HomePage* ui;
     void signalsAndSlots();
     void getUrl(const std::string& uri);
+    bool hasAdded = false;
+
 };

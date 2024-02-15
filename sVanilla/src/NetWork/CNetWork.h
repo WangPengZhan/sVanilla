@@ -30,6 +30,7 @@ public:
     void HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::list<std::string>& headers);
     void HttpGet(const std::string& url, std::string& response, const std::list<std::string>& headers);
     // void HttpGetWithCookie(const std::string& url, std::string& response, const std::string& cookie);
+    void HttpGet(const std::string& url, FILE* file);
 
     void HttpPost(const std::string& url, ParamType params, std::string& response);
     void HttpPost(const std::string& url, const std::string& params, std::string& response);

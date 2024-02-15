@@ -166,7 +166,7 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
         return false;
     }
 
-    const std::filesystem::path& filePath = filePath;
+    const std::filesystem::path& filePath = filepath;
     if (parentdirName.empty())
     {
         std::filesystem::current_path(filePath.parent_path());
