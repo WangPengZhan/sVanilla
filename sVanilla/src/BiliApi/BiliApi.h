@@ -339,22 +339,6 @@ public:
     }
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
 };
-
-class VideoViewOrigin : public Protocol
-{
-public:
-    VideoView data;
-    int code{};
-
-    std::string toString() override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump(4);
-    }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
-};
-
 class SubtitleInfo : public Protocol
 {
 public:
@@ -523,11 +507,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Durl, order, length, size, ahead, vhead, url, backup_url)
 };
 
-<<<<<<< HEAD
 class SupportFormats : public Protocol
-=======
-class SupportFormats: public Protocol
->>>>>>> origin/dev
 {
 public:
     int quality;
