@@ -149,7 +149,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response, const std:
 {
     PRINTS("HttpGet: ", url);
     const CURLPtr curlHandle(curl_easy_init());
-    curl_slist *h = nullptr;
+    curl_slist* h = nullptr;
     for (const auto& header : headers)
     {
         h = curl_slist_append(h, header.c_str());
@@ -171,9 +171,23 @@ void CNetWork::HttpGet(const std::string& url, std::string& response, const std:
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
-    if(h)
+    if (h)
     {
         curl_slist_free_all(h);
+    }
+}
+void CNetWork::HttpGet(const std::string& url, FILE* file)
+{
+    const CURLPtr curlHandle(curl_easy_init());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, downloadCallback);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, file);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
+    CURLcode retCode = curl_easy_perform(curlHandle.get());
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
+    if (retCode != CURLE_OK)
+    {
+        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 
