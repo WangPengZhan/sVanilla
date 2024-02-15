@@ -55,7 +55,7 @@ void VideoGridItemWidget::signalsAndSlots()
 void VideoGridItemWidget::setCover(const std::string& id)
 {
     QString tempPath = QDir::tempPath();
-    tempPath.append("/").append(id).append("jpg");
+    tempPath.append("/").append(QString::fromStdString(id)).append("jpg");
     if (QFile::exists(tempPath))
     {
         QPixmap pixmap(tempPath);
