@@ -7,10 +7,16 @@
 #include <iostream>
 #include <numeric>
 #include <sstream>
+#include <algorithm>
+
 #include <curl/curl.h>
 
+#include "BilibiliUtils.h"
+
+namespace BiliApi
+{
 // 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
-void BiliApi::replaceCharacter(std::string& source, const std::string& from, const std::string& to)
+void replaceCharacter(std::string& source, const std::string& from, const std::string& to)
 {
     std::string newString;
     newString.reserve(source.length());  // 预分配足够空间
@@ -30,7 +36,7 @@ void BiliApi::replaceCharacter(std::string& source, const std::string& from, con
     source.swap(newString);
 }
 
-void BiliApi::saveJson(const std::string& filename, const nlohmann::json& content)
+void saveJson(const std::string& filename, const nlohmann::json& content)
 {
     std::ofstream o(filename);
     if (!o)
@@ -40,7 +46,7 @@ void BiliApi::saveJson(const std::string& filename, const nlohmann::json& conten
     o << content;
     o.close();
 }
-nlohmann::json BiliApi::readJson(const std::string& filename)
+nlohmann::json readJson(const std::string& filename)
 {
     std::ifstream file(filename);
     if (!file)
@@ -64,7 +70,7 @@ nlohmann::json BiliApi::readJson(const std::string& filename)
     }
     return j;
 }
-void BiliApi::updateData( const std::string& key, const nlohmann::json& value)
+void updateData( const std::string& key, const nlohmann::json& value)
 {
     const std::string filename = "sVanilla.data";
     nlohmann::json j = readJson(filename);
@@ -72,7 +78,7 @@ void BiliApi::updateData( const std::string& key, const nlohmann::json& value)
     saveJson(filename, j);
 }
 
-std::string BiliApi::filterCharacters(const std::string& input)
+std::string filterCharacters(const std::string& input)
 {
     const std::string charsToFilter = "!\'()*";
     std::string result = input;
@@ -86,14 +92,14 @@ std::string BiliApi::filterCharacters(const std::string& input)
 
     return result;
 }
-std::string BiliApi::urlEncode(const std::string& decoded)
+std::string urlEncode(const std::string& decoded)
 {
     const auto encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
     std::string result(encoded_value);
     curl_free(encoded_value);
     return result;
 }
-std::string BiliApi::urlDecode(const std::string& encoded)
+std::string urlDecode(const std::string& encoded)
 {
     int output_length;
     const auto decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
@@ -102,7 +108,7 @@ std::string BiliApi::urlDecode(const std::string& encoded)
     return result;
 }
 
-std::string BiliApi::GetMixinKey(const std::string& orig)
+std::string GetMixinKey(const std::string& orig)
 {
     std::string result;
     for (const int i : mixinKeyEncTab)
@@ -111,33 +117,34 @@ std::string BiliApi::GetMixinKey(const std::string& orig)
     }
     return result.substr(0, 32);
 }
-std::string BiliApi::MD5Hash(const std::string& str)
+std::string MD5Hash(const std::string& str)
 {
-    // unsigned char md_value[EVP_MAX_MD_SIZE];
-    // unsigned int md_len;
-    // // 创建和初始化摘要上下文
-    // EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
-    // const EVP_MD* md = EVP_md5();
-    // // 初始化摘要操作
-    // EVP_DigestInit_ex(mdctx, md, nullptr);
-    // // 提供要进行摘要计算的数据
-    // EVP_DigestUpdate(mdctx, str.c_str(), str.length());
-    // // 获取摘要结果
-    // EVP_DigestFinal_ex(mdctx, md_value, &md_len);
-    // // 清理上下文
-    // EVP_MD_CTX_free(mdctx);
-    // // 将摘要结果转换为字符串形式
-    // std::ostringstream oss;
-    // for (unsigned int i = 0; i < md_len; i++)
-    // {
-    //     oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
-    // }
-    //
-    // return oss.str();
-    return {};
+    unsigned char md_value[EVP_MAX_MD_SIZE];
+    unsigned int md_len;
+    // 创建和初始化摘要上下文
+    EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
+    const EVP_MD* md = EVP_md5();
+    // 初始化摘要操作
+    EVP_DigestInit_ex(mdctx, md, nullptr);
+    // 提供要进行摘要计算的数据
+    EVP_DigestUpdate(mdctx, str.c_str(), str.length());
+    // 获取摘要结果
+    EVP_DigestFinal_ex(mdctx, md_value, &md_len);
+    // 清理上下文
+    EVP_MD_CTX_free(mdctx);
+    // 将摘要结果转换为字符串形式
+    std::ostringstream oss;
+    for (unsigned int i = 0; i < md_len; i++)
+    {
+        oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
+    }
+
+    return oss.str();
 }
 
-bool BiliApi::isExpired(const std::time_t& expires)
+bool isExpired(const std::time_t& expires)
 {
     return expires < std::time(nullptr) / 86400;
 }
+
+} // BiliApi

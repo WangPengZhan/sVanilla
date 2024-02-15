@@ -149,7 +149,7 @@ void CNetWork::HttpGet(const std::string& url, std::string& response, const std:
 {
     PRINTS("HttpGet: ", url);
     const CURLPtr curlHandle(curl_easy_init());
-    curl_slist* h = nullptr;
+    curl_slist *h = nullptr;
     for (const auto& header : headers)
     {
         h = curl_slist_append(h, header.c_str());
@@ -162,32 +162,18 @@ void CNetWork::HttpGet(const std::string& url, std::string& response, const std:
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
-    // curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
-    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
-    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
-    if (h)
+    if(h)
     {
         curl_slist_free_all(h);
-    }
-}
-void CNetWork::HttpGet(const std::string& url, FILE* file)
-{
-    const CURLPtr curlHandle(curl_easy_init());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, downloadCallback);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, file);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
-    CURLcode retCode = curl_easy_perform(curlHandle.get());
-    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
-    if (retCode != CURLE_OK)
-    {
-        NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     }
 }
 
@@ -211,6 +197,7 @@ void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& r
 
     strParam.erase(strParam.end() - 1);
 
+    // nlohmann::json jsonParam = params;
     HttpPost(url, strParam, response);
 }
 

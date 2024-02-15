@@ -25,7 +25,6 @@ void App::init()
     const QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     option.dir = downloadPath.toStdString();
 
-
 }
 
 void App::setHighDpi()
@@ -148,35 +147,11 @@ void App::addUri(const std::list<std::string>& uris)
 void App::parseUri(const std::string& uri)
 {
     // if bili
-    const auto res = biliClient.GetVideoView(uri);
-    if (res.code == 0)
-    {
-        const auto videoView = ConvertVideoView(res.data);
-        for (const auto& video : videoView)
-        {
-            downloadCover(video.Cover, video.Identifier);
-            maimWindow->updateVideoPage(std::make_shared<Adapter::BaseVideoView>(video));
-        }
-        // 更新并跳转到 video page
-        // if (checkSeason(res.data))
-        // {
-        //     const auto videoList = ConvertToVideoListView(res.data);
-        //     for (const auto& video : videoList)
-        //     {
-        //         downloadCover(video.Cover, video.Identifier);
-        //         maimWindow->updateVideoPage(std::make_shared<Adapter::BaseVideoView>(video));
-        //     }
-        // } else
-        // {
-        //     auto videoView = std::make_shared<Adapter::BaseVideoView>(ConvertToVideoView(res.data));
-        //     downloadCover(videoView->Cover, videoView->Identifier);
-        //     maimWindow->updateVideoPage(videoView);
-        // }
-    }
-}
-void App::addDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
-{
-    const auto playUrl = biliClient.GetPlayUrl(std::stoll(videoView->VideoId), 64, videoView->Identifier);
+    const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
+    option.header = h;
+    auto m_biliClient = BiliApi::BilibiliClient::globalClient();
+    const auto res = m_biliClient.GetVideoView(uri);
+    const auto playUrl = m_biliClient.GetPlayUrl(res.data.cid, 64, res.data.bvid);
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
     if (playUrl.code != 0)
@@ -195,26 +170,11 @@ void App::addDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoVi
     }
     if (!video_urls.empty())
     {
-        const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
-        option.header = h;
-        option.out = videoView->Title + ".mp4";
+        option.out = res.data.title + ".mp4";
         addUri(video_urls);
     }
 }
 
-void App::downloadCover(const std::string& url, const std::string& Identifier)
-{
-    QString tempPath = QDir::tempPath();
-    tempPath.append("/").append(Identifier).append("jpg");
-    if (!QFile::exists(tempPath))
-    {
-        FILE* file = fopen(tempPath.toStdString().c_str(), "wb");
-        CNetWork netWork;
-        netWork.HttpGet(url, file);
-        fclose(file);
-    }
-
-}
 void App::updateHomeMsg(const std::string& msg) const
 {
     maimWindow->updateHomeMsg(msg);
