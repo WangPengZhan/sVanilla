@@ -1,4 +1,3 @@
-#include "Theme/theme.h"
 #include "Color.h"
 #include <QToolTip>
 #include <QApplication>

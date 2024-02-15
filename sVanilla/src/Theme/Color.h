@@ -1,6 +1,7 @@
 #pragma once
 #include <QColor>
 #include <QPalette>
+#include "Theme/Theme.h"
 
 namespace Theme
 {
