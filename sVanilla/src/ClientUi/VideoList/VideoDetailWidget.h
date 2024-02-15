@@ -4,7 +4,7 @@
 
 namespace Adapter
 {
-class BaseVideoView;
+struct BaseVideoView;
 }
 namespace Ui
 {
