@@ -25,7 +25,7 @@ public:
 
     void updateAria2Version();
     void updateDownloadStatus(const std::string& gid);
-    void addUri(const std::list<std::string>& uris);
+    void addUri(const std::string& uris);
 
 private:
     void updateHomeMsg(const std::string& msg) const;

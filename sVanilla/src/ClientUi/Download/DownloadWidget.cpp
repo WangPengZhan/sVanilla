@@ -22,9 +22,9 @@ DownloadWidget::~DownloadWidget()
 }
 void DownloadWidget::addTaskItem(const std::string& gid)
 {
-    ui->DownloadListWidget->addTaskItem(gid);
+
 }
 void DownloadWidget::updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status)
 {
-    ui->DownloadListWidget->updateItem(status);
+
 }

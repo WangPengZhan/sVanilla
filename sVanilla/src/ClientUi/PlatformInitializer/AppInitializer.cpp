@@ -119,10 +119,10 @@ void AppInitializer::updateDownloadStatus(const std::string& gid)
     ThreadPool::instance().enqueue(task);
 }
 
-void AppInitializer::addUri(const std::list<std::string>& uris)
+void AppInitializer::addUri(const std::string& uris)
 {
     auto taskFunc = [this, uris]() {
-        return ariaClient.AddUriAsync(uris, option, -1);
+        return ariaClient.AddUriAsync({uris}, option, -1);
     };
     auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
     connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
