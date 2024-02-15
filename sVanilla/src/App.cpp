@@ -211,7 +211,7 @@ void App::addDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoVi
 void App::downloadCover(const std::string& url, const std::string& Identifier)
 {
     QString tempPath = QDir::tempPath();
-    tempPath.append("/").append(Identifier).append("jpg");
+    tempPath.append("/").append(QString::fromStdString(Identifier)).append("jpg");
     if (!QFile::exists(tempPath))
     {
         FILE* file = fopen(tempPath.toStdString().c_str(), "wb");

@@ -1,5 +1,5 @@
 #include "ToggleSwitch.h"
-#include "Theme/color.h"
+#include "Theme/Color.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPainterPath>
