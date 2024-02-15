@@ -105,7 +105,7 @@ bool VideoWidget::precessDownloadBtnClickEvent(QObject* watched)
 }
 void VideoWidget::installBtnEventFilter()
 {
-    auto btns = findChildren<QPushButton*>(Qt::FindChildrenRecursively);
+    auto btns = findChildren<QPushButton*>();
     for (const auto btn : btns)
     {
         if (btn->objectName() == "VideoGridDetailsBtn" || btn->objectName() == "VideoGridDownloadBtn")
