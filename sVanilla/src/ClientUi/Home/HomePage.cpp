@@ -19,6 +19,8 @@ HomePage::HomePage(QWidget* parent)
         ui->ErrorMsgLabel->clear();
     });
     timer->start();
+
+
 }
 
 HomePage::~HomePage()
@@ -62,7 +64,7 @@ void HomePage::signalsAndSlots()
     //     ui->ErrorMsgLabel->setText(QString::fromStdString(msg));
     // });
 }
-void HomePage::getUrl(const std::list<std::string>& uris)
+void HomePage::getUrl(const std::string& uri)
 {
-    emit AddUri(uris);
+    emit AddUri(uri);
 }

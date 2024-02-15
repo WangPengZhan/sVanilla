@@ -43,9 +43,10 @@ set(QT_COMPONENTS
     Gui
     Widgets
     Network
+    Svg
 )
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 find_package(ZLIB)
 find_package(unofficial-breakpad CONFIG REQUIRED)
@@ -53,6 +54,14 @@ find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
+# 寻找OpenSSL库
+find_package(OpenSSL REQUIRED)
+
+# 如果OpenSSL被找到，包含OpenSSL的头文件目录
+if(OPENSSL_FOUND)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+endif()
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
@@ -76,7 +85,6 @@ add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 option(ENABLE_TEST "Enable Test" OFF)
-#set(ENABLE_TEST ON)
 if (ENABLE_TEST)
     enable_testing()
     add_subdirectory(test)
@@ -115,6 +123,7 @@ target_link_libraries(${PROJECT_NAME}
         QWindowKit::Widgets
         minizip
         spdlog
+        ${OPENSSL_LIBRARIES}
 )
 
 

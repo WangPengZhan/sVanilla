@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
-#include <vector>
+#include <list>
 
 namespace BiliApi
 {
@@ -340,6 +340,21 @@ public:
                                                 ugc_season)
 };
 
+class VideoViewOrigin : public Protocol
+{
+public:
+    VideoView data;
+    int code{};
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoViewOrigin, data, code)
+};
+
 class SubtitleInfo : public Protocol
 {
 public:
@@ -449,6 +464,8 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDash, video, audio, dolby)
 };
 
+
+
 class PlayUrlSupportFormat : public Protocol
 {
 public:
@@ -474,6 +491,7 @@ public:
     std::list<int> accept_quality;
     std::list<PlayUrlDurl> durl;
     PlayUrlDash dash;
+    std::string accept_format;
     std::list<PlayUrlSupportFormat> support_formats;
 
     std::string toString() override
@@ -483,63 +501,78 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, support_formats)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrl, accept_description, accept_quality, durl, dash, accept_format, support_formats)
 };
 
-// https://passport.bilibili.com/qrcode/getLoginUrl
-class LoginUrl : public Protocol
+class Durl : public Protocol
 {
 public:
-    std::string oauthKey;
+    int order;
+    int length;
+    int size;
+    std::string ahead;
+    std::string vhead;
     std::string url;
-
+    std::list<std::string> backup_url;
     std::string toString() override
     {
         nlohmann::json json;
         to_json(json, *this);
         return json.dump(4);
     }
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrl, oauthKey, url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Durl, order, length, size, ahead, vhead, url, backup_url)
 };
 
-class LoginUrlOrigin : public Protocol
+class SupportFormats: public Protocol
 {
 public:
-    LoginUrl data;
-    bool status;
-
+    int quality;
+    std::string format;
+    std::string new_description;
+    std::string display_desc;
+    std::string superscript;
     std::string toString() override
     {
         nlohmann::json json;
         to_json(json, *this);
         return json.dump(4);
     }
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrlOrigin, data, status)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SupportFormats, quality, format, new_description, display_desc, superscript)
 };
 
-// https://passport.bilibili.com/qrcode/getLoginInfo
-class LoginStatusData : public Protocol
+class PlayUrlData : public Protocol
 {
 public:
-    std::string url;
-
+    std::string from;
+    std::string result;
+    std::string message;
+    int quality;
+    std::string format;
+    int timelength;
+    std::string accept_format;
+    std::list<std::string> accept_description;
+    std::list<int> accept_quality;
+    int video_codecid;
+    std::string seek_param;
+    std::string seek_type;
+    std::list<Durl> durl;
+    std::list<SupportFormats> support_formats;
     std::string toString() override
     {
         nlohmann::json json;
         to_json(json, *this);
         return json.dump(4);
     }
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusData, url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlData, from, result, message, quality, format, timelength, accept_format, accept_description, accept_quality,
+                                   video_codecid, seek_param, seek_type, durl, support_formats)
 };
 
-class LoginStatusScanning : public Protocol
+class PlayUrlOrigin : public Protocol
 {
 public:
-    LoginStatusData data;
-    bool status;
+    PlayUrlData data;
+    int code{};
+    int ttl;
     std::string message;
 
     std::string toString() override
@@ -549,7 +582,123 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, status, message)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlOrigin, data, code, ttl, message)
+};
+
+// https://passport.bilibili.com/qrcode/getLoginUrl
+class LoginUrl : public Protocol
+{
+public:
+    std::string qrcode_key;
+    std::string url;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrl, qrcode_key, url)
+};
+
+class LoginUrlOrigin : public Protocol
+{
+public:
+    LoginUrl data;
+    int code;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginUrlOrigin, data, code)
+};
+
+// https://passport.bilibili.com/qrcode/getLoginInfo
+class LoginStatusData : public Protocol
+{
+public:
+    std::string url;
+    std::string refresh_token;
+    std::string message;
+    int code;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusData, url, refresh_token, message, code)
+};
+
+class LoginStatusScanning : public Protocol
+{
+public:
+    LoginStatusData data;
+    int code{};
+    std::string message;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusScanning, data, code, message)
+};
+
+class WbiImg : public Protocol
+{
+public:
+    std::string img_url;
+    std::string sub_url;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(WbiImg, img_url, sub_url)
+};
+
+class NavData : public Protocol
+{
+public:
+    bool isLogin;
+    WbiImg wbi_img;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(NavData, wbi_img)
+};
+
+class Nav final : public Protocol
+{
+public:
+    NavData data;
+    int code{};
+    std::string message;
+
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Nav, data, code, message)
 };
 
 class LoginStatus : public Protocol
@@ -586,4 +735,32 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LoginStatusReady, code, status, data)
 };
 
+class Cookie : public Protocol
+{
+public:
+    std::time_t Expires;
+    std::string SESSDATA;
+    std::string bili_jct;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Cookie, Expires, SESSDATA, bili_jct)
+};
+
+class MixinKey : public Protocol
+{
+public:
+    std::time_t Expires;
+    std::string mixin_key;
+    std::string toString() override
+    {
+        nlohmann::json json;
+        to_json(json, *this);
+        return json.dump(4);
+    }
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MixinKey, Expires, mixin_key)
+};
 }  // namespace BiliApi

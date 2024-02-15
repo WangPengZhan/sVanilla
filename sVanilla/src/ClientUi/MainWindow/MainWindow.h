@@ -38,7 +38,7 @@ public:
     void updateDownloadStatus(const std::shared_ptr<aria2net::AriaTellStatus>& status) const;
     void AddDownloadTask(const std::string& gid) const;
 Q_SIGNALS:
-    void AddUri(const std::list<std::string>& uris);
+    void AddUri(const std::string& uri);
     void onSettingPage();
     void themeChanged();
 

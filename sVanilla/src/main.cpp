@@ -4,6 +4,7 @@
 #include "ClientUi/MainWindow/SApplication.h"
 #include "ClientUi/MainWindow/MainWindow.h"
 #include "App.h"
+#include "BiliApi/BilibiliUtils.h"
 
 int main(int argc, char* argv[])
 {
@@ -24,7 +25,7 @@ int main(int argc, char* argv[])
     // MainWindow maimWindow;
     // maimWindow.show();
 
-    sVanilla.updateAria2Version();
-
+    // sVanilla.updateAria2Version();
+    // BiliApi::Get();
     return restarter.restartOrExit(SApplication::exec());
 }

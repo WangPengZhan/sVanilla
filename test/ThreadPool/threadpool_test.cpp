@@ -46,6 +46,6 @@ TEST(TheadPool_Test, EN)
         }
     };
 
-    TestTask* pTask = new TestTask;
+    auto pTask = std::make_shared<TestTask>();
     threadPool.enqueue(pTask);
 }

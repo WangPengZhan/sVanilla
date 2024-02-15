@@ -1,9 +1,9 @@
 #include <curl/curl.h>
-
 #include <nlohmann/json.hpp>
-
 #include "CNetWork.h"
 #include "NetworkLog.h"
+#include <QtCore/qstring.h>
+#include <QDebug>
 
 namespace
 {
@@ -104,49 +104,71 @@ void CNetWork::AppendHeaders(const std::string& header)
 {
     curl_slist_append(m_headers, header.c_str());
 }
-
-void CNetWork::HttpGet(const std::string& url, ParamType params, std::string& response)
+std::string CNetWork::ConcatenateParams(const ParamType& params)
 {
-    std::string strParam;
-    for (const auto& param : params)
+    // Calculate the length of the final string in advance
+    size_t length = std::distance(params.begin(), params.end()) - 1;  // count of '&'
+    for (const auto& [fst, snd] : params)
     {
-        strParam += param.first + "=" + param.second + "&";
+        length += fst.size() + snd.size() + 1;  // length of "key=value"
     }
 
-    if (std::string::npos == url.find("?"))
+    std::string result;
+    result.reserve(length + 1);  // include the length of '?'
+
+    result.push_back('?');
+    for (auto it = params.begin(); it != params.end();)
     {
-        strParam = "?" + strParam;
+        result += it->first;
+        result.push_back('=');
+        result += it->second;
+        if (++it != params.end())
+        {
+            result.push_back('&');
+        }
     }
 
-    strParam.erase(strParam.end() - 1);
-
-    return HttpGet(url, strParam, response);
+    return result;
+}
+std::string CNetWork::getAgent()
+{
+    return std::string("User-Agent: ") + chrome;
 }
 
-void CNetWork::HttpGet(const std::string& url, const std::string& params, std::string& response)
+void CNetWork::HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::list<std::string>& headers)
 {
-    return HttpGet(url + params, response);
+    return HttpGet(url + ConcatenateParams(params), response, headers);
 }
 
-void CNetWork::HttpGet(const std::string& url, std::string& response)
+void CNetWork::HttpGet(const std::string& url, std::string& response, const std::list<std::string>& headers)
 {
-    CURLPtr curlHandle(curl_easy_init());
-    curl_easy_setopt(curlHandle.get(), CURLOPT_CUSTOMREQUEST, "GET");
-    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, m_headers);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
+    PRINTS("HttpGet: ", url);
+    const CURLPtr curlHandle(curl_easy_init());
+    curl_slist *h = nullptr;
+    for (const auto& header : headers)
+    {
+        h = curl_slist_append(h, header.c_str());
+    }
+    curl_easy_setopt(curlHandle.get(), CURLOPT_HTTPHEADER, h);
+
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_HEADER, false);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_VERBOSE, 0);
     curl_easy_setopt(curlHandle.get(), CURLOPT_URL, url.c_str());
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEFUNCTION, OnWriteDate);
     curl_easy_setopt(curlHandle.get(), CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curlHandle.get(), CURLOPT_TIMEOUT, 5000);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
-    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
-    curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYPEER, false);
+    // curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     CURLcode retCode = curl_easy_perform(curlHandle.get());
     NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
+    }
+    if(h)
+    {
+        curl_slist_free_all(h);
     }
 }
 
@@ -157,10 +179,21 @@ void CNetWork::HttpPost(const std::string& url, ParamType params, std::string& r
     //{
     //     listParams.emplace_back(param.first + " " + param.second);
     // }
+    std::string strParam;
+    for (const auto& param : params)
+    {
+        strParam += param.first + "=" + param.second + "&";
+    }
 
-    nlohmann::json jsonParam = params;
+    if (std::string::npos == url.find('?'))
+    {
+        strParam = "?" + strParam;
+    }
 
-    HttpPost(url, jsonParam.dump(), response);
+    strParam.erase(strParam.end() - 1);
+
+    // nlohmann::json jsonParam = params;
+    HttpPost(url, strParam, response);
 }
 
 void CNetWork::HttpPost(const std::string& url, const std::string& params, std::string& response)
@@ -180,7 +213,7 @@ void CNetWork::HttpPost(const std::string& url, const std::string& params, std::
     curl_easy_setopt(curlHandle.get(), CURLOPT_SSL_VERIFYHOST, false);
     curl_easy_setopt(curlHandle.get(), CURLOPT_COOKIEFILE, "cookie.txt");
     CURLcode retCode = curl_easy_perform(curlHandle.get());
-
+    NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
     if (retCode != CURLE_OK)
     {
         NETWORK_LOG_ERROR("HttpGet occurred, error: {}, url: {}", static_cast<int>(retCode), url);
@@ -219,7 +252,7 @@ void CNetWork::InitDefaultHeaders()
 void CNetWork::InitDefaultHeadersLogin()
 {
     std::string userAgent = std::string("user-agent: ") + chrome;
-    std::string referer = "referer: https://passport.bilibili.com/login";
+    std::string referer = "referer: https://passport.bilibili.com";
     m_headers = curl_slist_append(m_headers, accept_language);
     m_headers = curl_slist_append(m_headers, userAgent.c_str());
     m_headers = curl_slist_append(m_headers, referer.c_str());

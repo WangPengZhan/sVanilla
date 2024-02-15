@@ -689,6 +689,7 @@ public:
     std::string all_proxy;
     std::string out;
     std::string dir;
+    std::list<std::string> header;
 
     std::string toString() const override
     {
@@ -711,6 +712,10 @@ public:
         {
             json["dir"] = ariaSendOption.dir;
         }
+        if (!ariaSendOption.header.empty())
+        {
+            json["header"] = ariaSendOption.header;
+        }
     }
 
     friend void from_json(const nlohmann::json& json, AriaSendOption& ariaSendOption)
@@ -726,6 +731,10 @@ public:
         if (json.contains("dir"))
         {
             ariaSendOption.dir = json["dir"].get<std::string>();
+        }
+        if (json.contains("headers"))
+        {
+            ariaSendOption.header = json["headers"].get<std::list<std::string>>();
         }
     }
 };
