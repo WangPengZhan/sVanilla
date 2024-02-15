@@ -16,7 +16,6 @@ VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     ui->setupUi(this);
     signalsAndSlots();
     ui->VideoGridDetailsBtn->installEventFilter(this);
-    qDebug() << "VideoGridItemWidget width" << this->width();
 }
 
 VideoGridItemWidget::~VideoGridItemWidget()
