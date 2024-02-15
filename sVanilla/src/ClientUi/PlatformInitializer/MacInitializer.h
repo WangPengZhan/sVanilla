@@ -1,9 +1,9 @@
 #ifdef __APPLE__
 #pragma once
 
-#include "PlatfromInitializer.h"
+#include "PlatformInitializer.h"
 
-class MacInitializer : public PlatfromInitializer
+class MacInitializer : public PlatformInitializer
 {
 public:
     MacInitializer();
