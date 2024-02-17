@@ -29,6 +29,11 @@ private:
     void setUi();
     void signalsAndSlots();
     void setText(const QString &msg);
+
+    Level m_level = Info;
 private:
     Ui::Toast* ui;
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
 };

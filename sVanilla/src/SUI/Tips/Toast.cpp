@@ -1,6 +1,10 @@
 #include "ui_Toast.h"
 #include "Toast.h"
+
+#include <QPainter>
+#include <QPainterPath>
 #include <QPropertyAnimation>
+#include <QSvgRenderer>
 #include <QTimer>
 
 Toast::Toast(QWidget* parent)
@@ -19,7 +23,8 @@ Toast::~Toast()
 }
 void Toast::showToast(const QString& msg, Level level, int timeout, QWidget* parent)
 {
-    auto toast = new Toast(parent);
+    const auto toast = new Toast(parent);
+    toast->m_level = level;
     toast->setText(msg);
     toast->adjustSize();
 
@@ -48,6 +53,39 @@ void Toast::setText(const QString& msg)
 {
     ui->label->setText(msg);
     ui->label->resize(ui->label->width() + 20, ui->label->height() + 25);
+    ui->label->setStyleSheet("QLabel {margin-left: 20px;}");
+}
+void Toast::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::black);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QPainterPath path;
+    path.addRoundedRect(rect(), 10, 10);
+    painter.setClipPath(path);
+    painter.setBrush(QBrush(QColor(249, 247, 247)));
+    painter.drawRect(rect());
+    const auto iconRect = QRect(rect().x() + 10, rect().y() + 10, rect().height() - 20, rect().height() - 20);
+    QSvgRenderer grid;
+    if (m_level == Success)
+    {
+        grid.load(QString(":/icon/common/success.svg"));
+    }
+    else if (m_level == Info)
+    {
+        grid.load(QString(":/icon/common/info.svg"));
+    }
+    else if (m_level == Warn)
+    {
+        grid.load(QString(":/icon/common/warn.svg"));
+    }
+    else if (m_level == Error)
+    {
+        grid.load(QString(":/icon/common/error.svg"));
+    }
+
+    grid.render(&painter, iconRect);
 }
 void Toast::showWithAnimation(const int timeout)
 {
@@ -66,7 +104,7 @@ void Toast::showWithAnimation(const int timeout)
         closeAnimation->start();
         connect(closeAnimation, &QPropertyAnimation::finished, [&] {
             close();
-            deleteLater();  //关闭后析构
+            deleteLater();  // 关闭后析构
         });
     });
 

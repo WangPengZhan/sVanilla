@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
+        <file>icon/common/success.svg</file>
+        <file>icon/common/info.svg</file>
+        <file>icon/common/warn.svg</file>
+        <file>icon/common/error.svg</file>
         <file>icon/bar/minimize.svg</file>
         <file>icon/bar/maximize.svg</file>
         <file>icon/bar/close.svg</file>
