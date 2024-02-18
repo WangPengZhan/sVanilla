@@ -7,6 +7,8 @@
 #include <QSvgRenderer>
 #include <QTimer>
 
+std::unique_ptr<Toast> Toast::instance;
+
 Toast::Toast(QWidget* parent)
     : QWidget(parent)
     , timer(new QTimer(this))
@@ -15,12 +17,16 @@ Toast::Toast(QWidget* parent)
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    hide();
 }
 
 void Toast::Show(const QString& msg, const Level level)
 {
-    static std::unique_ptr<Toast> instance(new Toast);
-    instance->showMessage(msg, level);
+    instance->signalShowMessage(msg, level);
+}
+void Toast::create(QWidget* parent)
+{
+    instance = std::unique_ptr<Toast>(new Toast(parent));
 }
 
 void Toast::setUi()
@@ -33,13 +39,14 @@ void Toast::setUi()
     {
         this->setParent(window);
     }
-
 }
 
 void Toast::signalsAndSlots()
 {
     connect(timer, &QTimer::timeout, this, &Toast::showNextMessage);
+    connect(this, &Toast::signalShowMessage, this, &Toast::showMessage);
 }
+
 void Toast::showMessage(const QString& msg, const Level level)
 {
     m_messageQueue.enqueue(std::make_pair(msg, level));
@@ -58,8 +65,15 @@ void Toast::showNextMessage()
         adjustSize();
         movePosition();
         show();
+        // auto animation = new QPropertyAnimation(this, "pos");
+        // animation->setDuration(500);
+        // animation->setEasingCurve(QEasingCurve::InCubic);
+        // animation->setStartValue(QPoint(this->width(), -this->y()));
+        // animation->setEndValue(QPoint(this->x(), this->y()));
+        // animation->start();
         timer->start();
-    } else
+    }
+    else
     {
         hideMessage();
     }
@@ -68,6 +82,14 @@ void Toast::hideMessage()
 {
     timer->stop();
     hide();
+    // const auto closeAnimation = new QPropertyAnimation(this, "pos");
+    // closeAnimation->setDuration(500);
+    // closeAnimation->setStartValue(QPoint(this->x(), this->y()));
+    // closeAnimation->setEndValue(QPoint(this->height(), -this->y()));
+    // closeAnimation->start();
+    // connect(closeAnimation, &QPropertyAnimation::finished, [&] {
+        // hide();
+    // });
 }
 
 void Toast::setText(const QString& msg) const
@@ -84,7 +106,7 @@ void Toast::movePosition()
 {
     if (parentWidget())
     {
-        move(parentWidget()->width() / 2 - width() / 2, 20);
+        move(parentWidget()->width() - width() - 10, 30);
     }
 }
 QWidget* Toast::windowObj()

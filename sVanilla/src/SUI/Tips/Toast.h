@@ -21,6 +21,9 @@ public:
         Error,
     };
     static void Show(const QString& msg, Level level = Info);
+    static void create(QWidget* parent = nullptr);
+signals:
+    void signalShowMessage(const QString& msg, Level level);
 
 private:
     explicit Toast(QWidget* parent = nullptr);
@@ -38,6 +41,9 @@ private:
     Level m_level = Info;
     QTimer* timer;
     Ui::Toast* ui;
+
+public:
+    static std::unique_ptr<Toast> instance;
 
 protected:
     void paintEvent(QPaintEvent *event) override;

@@ -11,7 +11,7 @@
 #include "ClientUi/Download/DownloadingListWidget.h"
 #include "ClientUi/VideoList/VideoWidget.h"
 #include "SUI/windowbutton.h"
-
+#include "SUI/Tips/Toast.h"
 #include <QStackedWidget>
 #include <QtWidgets/QLabel>
 #include <ui_MainWindow.h>
@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget* parent)
     loadStyleSheet(Light);
     signalsAndSlots();
     resize(800, 600);
+
+    Toast::create(this);
 }
 
 MainWindow::~MainWindow() = default;
