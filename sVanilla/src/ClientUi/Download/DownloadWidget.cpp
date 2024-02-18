@@ -24,10 +24,9 @@ DownloadWidget::~DownloadWidget()
     delete ui;
 }
 
-void DownloadWidget::addTaskItem(const std::list<std::string> videos, const std::list<std::string> audios)
+void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName)
 {
-    static int i = 0;
-    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "out", std::to_string(i++));
+    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "out", fileName);
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
     ui->DownloadListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);

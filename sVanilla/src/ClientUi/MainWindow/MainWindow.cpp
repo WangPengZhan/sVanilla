@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget* parent)
     Toast::create(this);
 
     ui->downloadPage->addTaskItem({"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43.arxml"},
-                                  {"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43111.arxml"});
+                                  {"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43111.arxml"}, TODO);
 }
 
 MainWindow::~MainWindow() = default;
@@ -48,7 +48,8 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
-    ui->downloadPage->addTaskItem({"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43.arxml"}, {"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43111.arxml"});
+    ui->downloadPage->addTaskItem({"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43.arxml"},
+                                  {"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43111.arxml"}, TODO);
 }
 void MainWindow::addVideoCard(const std::string& bvid) const
 {

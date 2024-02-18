@@ -35,6 +35,7 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
     , m_downloader(downloader)
 {
     ui->setupUi(this);
+    signalsAndSlots();
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -118,7 +119,7 @@ void DownloadingItemWidget::signalsAndSlots()
         ui->labelSpeed->setText(formatSize(info.speed));
         if (info.total != 0)
         {
-            ui->progressBar->setValue(info.complete / double(info.total) * 100);
+            ui->progressBar->setValue(info.complete / static_cast<double>(info.total) * 100);
         }
     });
 
@@ -139,7 +140,6 @@ void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>&
     pItem->setSizeHint(QSize(0, 60));
     setItemWidget(pItem, pWidget);
     m_items.insert({downloader->guid(), pItem});
-
 }
 
 void DownloadingListWidget::removeDownloadItem(const std::string& guid)

@@ -18,7 +18,7 @@ class DownloadWidget : public QWidget
 public:
     explicit DownloadWidget(QWidget* parent = nullptr);
     ~DownloadWidget() override;
-    void addTaskItem(const std::list<std::string> videos, const std::list<std::string> audios);
+    void addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName);
 
 private:
     Ui::DownloadWidget* ui;

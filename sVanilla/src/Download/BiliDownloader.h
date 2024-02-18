@@ -22,7 +22,7 @@ class BiliDownloader : public AbstractDownloader
 {
 public:
     BiliDownloader();
-    BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUri, 
+    BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUri = {},
         std::string path = "", std::string filename = "");
     ~BiliDownloader() = default;
 
