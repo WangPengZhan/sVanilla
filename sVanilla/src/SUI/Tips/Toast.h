@@ -1,11 +1,13 @@
 #pragma once
-
 #include <QWidget>
+#include <QQueue>
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 
 namespace Ui
 {
 class Toast;
-};
+}
 
 class Toast : public QWidget
 {
@@ -18,22 +20,26 @@ public:
         Warn,
         Error,
     };
-
-    explicit Toast(QWidget* parent = nullptr);
-    ~Toast();
-
-    static void showToast(const QString &msg, Level level = Info, int timeout = 3000, QWidget *parent  = nullptr);
-    void showWithAnimation(int timeout);
+    static void Show(const QString& msg, Level level = Info);
 
 private:
+    explicit Toast(QWidget* parent = nullptr);
     void setUi();
     void signalsAndSlots();
-    void setText(const QString &msg);
+    void showMessage(const QString& msg, Level level);
+    void showNextMessage();
+    void hideMessage();
+    void setText(const QString &msg) const;
+    void setLevel(Level level);
+    void movePosition();
+    static QWidget* windowObj();
 
+    QQueue<std::pair<QString, Level>> m_messageQueue;
     Level m_level = Info;
-private:
+    QTimer* timer;
     Ui::Toast* ui;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
 };

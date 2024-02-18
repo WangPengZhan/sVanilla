@@ -3,57 +3,100 @@
 
 #include <QPainter>
 #include <QPainterPath>
-#include <QPropertyAnimation>
+#include <QMouseEvent>
 #include <QSvgRenderer>
 #include <QTimer>
 
 Toast::Toast(QWidget* parent)
     : QWidget(parent)
+    , timer(new QTimer(this))
     , ui(new Ui::Toast())
 {
     ui->setupUi(this);
     setUi();
-
     signalsAndSlots();
 }
 
-Toast::~Toast()
+void Toast::Show(const QString& msg, const Level level)
 {
-    delete ui;
-}
-void Toast::showToast(const QString& msg, Level level, int timeout, QWidget* parent)
-{
-    const auto toast = new Toast(parent);
-    toast->m_level = level;
-    toast->setText(msg);
-    toast->adjustSize();
-
-    auto topLevelWidgets = QApplication::topLevelWidgets();
-    for (auto widget : topLevelWidgets)
-    {
-        if (widget->isWindow() && widget->isVisible() && widget->objectName() == "MainWindow")
-        {
-            toast->move((widget->width() - toast->width()) / 2 + widget->pos().x(), 20 + widget->pos().y());
-            toast->showWithAnimation(timeout);
-            break;
-        }
-    }
+    static std::unique_ptr<Toast> instance(new Toast);
+    instance->showMessage(msg, level);
 }
 
 void Toast::setUi()
 {
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::Tool);  // 无边框 无任务栏
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
+
+    timer->setInterval(3000);
+    if (const auto window = windowObj())
+    {
+        this->setParent(window);
+    }
+
 }
 
 void Toast::signalsAndSlots()
 {
+    connect(timer, &QTimer::timeout, this, &Toast::showNextMessage);
 }
-void Toast::setText(const QString& msg)
+void Toast::showMessage(const QString& msg, const Level level)
+{
+    m_messageQueue.enqueue(std::make_pair(msg, level));
+    if (!timer->isActive())
+    {
+        showNextMessage();
+    }
+}
+void Toast::showNextMessage()
+{
+    if (!m_messageQueue.empty())
+    {
+        auto [text, level] = m_messageQueue.dequeue();
+        setText(text);
+        setLevel(level);
+        adjustSize();
+        movePosition();
+        show();
+        timer->start();
+    } else
+    {
+        hideMessage();
+    }
+}
+void Toast::hideMessage()
+{
+    timer->stop();
+    hide();
+}
+
+void Toast::setText(const QString& msg) const
 {
     ui->label->setText(msg);
     ui->label->resize(ui->label->width() + 20, ui->label->height() + 25);
     ui->label->setStyleSheet("QLabel {margin-left: 20px;}");
+}
+void Toast::setLevel(const Level level)
+{
+    m_level = level;
+}
+void Toast::movePosition()
+{
+    if (parentWidget())
+    {
+        move(parentWidget()->width() / 2 - width() / 2, 20);
+    }
+}
+QWidget* Toast::windowObj()
+{
+    for (auto topLevelWidgets = QApplication::topLevelWidgets(); const auto widget : topLevelWidgets)
+    {
+        if (widget->isWindow() && widget->isVisible() && widget->objectName() == "MainWindow")
+        {
+            return widget;
+        }
+    }
+    return nullptr;
 }
 void Toast::paintEvent(QPaintEvent* event)
 {
@@ -68,44 +111,15 @@ void Toast::paintEvent(QPaintEvent* event)
     painter.drawRect(rect());
     const auto iconRect = QRect(rect().x() + 10, rect().y() + 10, rect().height() - 20, rect().height() - 20);
     QSvgRenderer grid;
-    if (m_level == Success)
-    {
-        grid.load(QString(":/icon/common/success.svg"));
-    }
-    else if (m_level == Info)
-    {
-        grid.load(QString(":/icon/common/info.svg"));
-    }
-    else if (m_level == Warn)
-    {
-        grid.load(QString(":/icon/common/warn.svg"));
-    }
-    else if (m_level == Error)
-    {
-        grid.load(QString(":/icon/common/error.svg"));
-    }
-
+    const auto level = QStringList{"success", "info", "warn", "error"}[m_level];
+    const QString iconPath = QString(":/icon/common/") + level + ".svg";
+    grid.load(iconPath);
     grid.render(&painter, iconRect);
 }
-void Toast::showWithAnimation(const int timeout)
+void Toast::mousePressEvent(QMouseEvent* event)
 {
-    auto animation = new QPropertyAnimation(this, "windowOpacity");
-    animation->setDuration(500);
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-    animation->start();
-    show();
-    QTimer::singleShot(timeout, [&] {
-        // 结束动画
-        const auto closeAnimation = new QPropertyAnimation(this, "windowOpacity");
-        closeAnimation->setDuration(500);
-        closeAnimation->setStartValue(1);
-        closeAnimation->setEndValue(0);
-        closeAnimation->start();
-        connect(closeAnimation, &QPropertyAnimation::finished, [&] {
-            close();
-            deleteLater();  // 关闭后析构
-        });
-    });
-
+    if (event->button() == Qt::LeftButton)
+    {
+        showNextMessage();
+    }
 }

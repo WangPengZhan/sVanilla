@@ -8,15 +8,12 @@ DownloadWidget::DownloadWidget(QWidget* parent)
 {
     ui->setupUi(this);
     connect(ui->pushButton, &QPushButton::clicked, this, [this] {
-        Toast::showToast("loogloogloogloogloogloogloogloogloogloog msg", Toast::Level::Success, 3000, this);
-    });
-    connect(ui->pushButton_2, &QPushButton::clicked, this, [this] {
-        Toast::showToast("Hello World", Toast::Level::Info, 3000, this);
+        Toast::Show("1: looglooogloogloog success", Toast::Level::Success);
+        Toast::Show("2: this is a info", Toast::Level::Info);
+        Toast::Show("3: this is a warn", Toast::Level::Warn);
+        Toast::Show("4: this is a error", Toast::Level::Error);
     });
 
-    connect(ui->pushButton_3, &QPushButton::clicked, this, [this] {
-    Toast::showToast("Hello World", Toast::Level::Error, 3000, this);
-});
 }
 
 DownloadWidget::~DownloadWidget()
