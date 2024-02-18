@@ -9,6 +9,15 @@
 namespace download
 {
 
+struct FinishedItem
+{
+    std::string uniqueId;
+    std::string filePath;
+    std::string bvid;
+    std::string title;
+    int duration;
+};
+
 class BiliDownloader : public AbstractDownloader
 {
 public:

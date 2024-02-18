@@ -33,6 +33,7 @@ const std::string& UiDownloader::filename() const
 void UiDownloader::start()
 {
     m_realDownloader->start();
+    m_status = Downloading;
 }
 
 void UiDownloader::stop()
@@ -53,6 +54,7 @@ void UiDownloader::resume()
 void UiDownloader::downloadStatus()
 {
     m_realDownloader->downloadStatus();
+    emit update(m_realDownloader->info(), QString::fromStdString(m_realDownloader->stage()));
 }
 
 void UiDownloader::finish()

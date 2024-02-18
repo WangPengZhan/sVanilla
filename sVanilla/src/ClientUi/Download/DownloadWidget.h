@@ -1,6 +1,8 @@
 #pragma once
 #include <QWidget>
+
 #include "Aria2Net/Protocol/Protocol.h"
+#include "DownloadManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -16,10 +18,9 @@ class DownloadWidget : public QWidget
 public:
     explicit DownloadWidget(QWidget* parent = nullptr);
     ~DownloadWidget() override;
-    void addTaskItem(const std::string& gid);
-
-    void updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status);
+    void addTaskItem(const std::list<std::string> videos, const std::list<std::string> audios);
 
 private:
     Ui::DownloadWidget* ui;
+    DownloadManager* m_downloadManager;
 };

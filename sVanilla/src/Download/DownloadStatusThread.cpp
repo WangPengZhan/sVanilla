@@ -41,7 +41,7 @@ void DownloadStatusThread::downloadThread()
     {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_condition.wait(lock, [&] {
-            return !m_downloadTasks.empty();
+            return !m_downloadTasks.empty() || !m_running.load();
         });
         std::vector<std::string> removeKeys;
         for (auto& [key, value] : m_downloadTasks)

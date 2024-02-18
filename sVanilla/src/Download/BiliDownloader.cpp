@@ -1,4 +1,6 @@
 #include "BiliDownloader.h"
+#include "Sqlite/SQLiteManager.h"
+#include "FFmpeg//FFmpegHelper.h"
 
 namespace download
 {
@@ -17,35 +19,66 @@ BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::
     m_videoDownloader.setFilename(baseName + "_video.mp4");
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
 }
+
 void BiliDownloader::start()
 {
+    m_videoDownloader.start();
+    m_audioDownloader.start();
+    m_status = Downloading;
 }
 
 void BiliDownloader::stop()
 {
+    m_videoDownloader.stop();
+    m_audioDownloader.stop();
 }
 
 void BiliDownloader::pause()
 {
+    m_videoDownloader.pause();
+    m_audioDownloader.pause();
 }
 
 void BiliDownloader::resume()
 {
+    m_videoDownloader.resume();
+    m_audioDownloader.resume();
 }
 
 void BiliDownloader::downloadStatus()
 {
+    m_audioDownloader.downloadStatus();
+    m_videoDownloader.downloadStatus();
+    auto video = m_videoDownloader.info();
+    auto audio = m_audioDownloader.info();
+
+    m_info.total = video.total + audio.total;
+    m_info.complete = video.complete + audio.complete;
+    m_info.speed = video.speed + audio.speed;
+
+    if (m_info.total == m_info.complete)
+    {
+        ffmpeg::MergeInfo merge;
+        merge.audio = m_audioDownloader.path() + "/" + m_audioDownloader.filename();
+        merge.video = m_videoDownloader.path() + "/" + m_videoDownloader.filename();
+        merge.targetVideo = path() + "/" + filename();
+        
+        ffmpeg::FFmpegHelper::mergeVideo(merge);
+
+        m_status = Finished;
+    }
 }
 
 void BiliDownloader::finish()
 {
-    // merge video and audio
-
     m_finished = true;
 
     // send finish signal
 
     // write to sqlite
+    auto finishedItem = SQLite::SQLiteManager::getInstance().finishedItemTable();
+    download::FinishedItem item;
+    finishedItem.insertItem({item});
 }
 
 void BiliDownloader::setVideoUris(const std::list<std::string>& videoUris)

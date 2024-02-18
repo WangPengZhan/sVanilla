@@ -124,7 +124,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="Speed">
+       <widget class="QLabel" name="labelSpeed">
         <property name="text">
          <string/>
         </property>

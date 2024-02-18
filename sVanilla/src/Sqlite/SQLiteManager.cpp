@@ -15,8 +15,14 @@ SQLiteManager& SQLiteManager::getInstance()
     return sqliteManager;
 }
 
+FinishedItemTable& SQLiteManager::finishedItemTable()
+{
+    return m_finishedItemTable;
+}
+
 SQLiteManager::SQLiteManager()
     : m_db("data.db")
+    , m_finishedItemTable(m_db, "FinishedItem")
 {
     initSqlite();
 }

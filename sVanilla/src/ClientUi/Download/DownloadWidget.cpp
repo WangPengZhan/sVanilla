@@ -1,10 +1,13 @@
 #include "DownloadWidget.h"
 #include "ui_DownloadWidget.h"
+#include "UiDownloader.h"
+#include "Download/BiliDownloader.h"
 #include "SUI/Tips/Toast.h"
 
 DownloadWidget::DownloadWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadWidget)
+    , m_downloadManager(new DownloadManager(this))
 {
     ui->setupUi(this);
     connect(ui->pushButton, &QPushButton::clicked, this, [this] {
@@ -20,11 +23,13 @@ DownloadWidget::~DownloadWidget()
 {
     delete ui;
 }
-void DownloadWidget::addTaskItem(const std::string& gid)
-{
 
-}
-void DownloadWidget::updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status)
+void DownloadWidget::addTaskItem(const std::list<std::string> videos, const std::list<std::string> audios)
 {
-
+    static int i = 0;
+    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "out", std::to_string(i++));
+    auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
+    ui->DownloadListWidget->addDownloadItem(uiDownloader);
+    m_downloadManager->addItem(uiDownloader);
 }
+

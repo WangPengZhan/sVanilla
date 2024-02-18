@@ -113,8 +113,13 @@ void DownloadingItemWidget::signalsAndSlots()
         process.start(explorerCommand, arguments);
     });
 
-    connect(m_downloader.get(), &UiDownloader::update, this, [this](QString strMsg) {
-        ui->labelStatus->setText(strMsg);    
+    connect(m_downloader.get(), &UiDownloader::update, this, [this](download::DownloadInfo info) {
+        ui->labelStatus->setText(QString::fromStdString(info.stage));
+        ui->labelSpeed->setText(formatSize(info.speed));
+        if (info.total != 0)
+        {
+            ui->progressBar->setValue(info.complete / double(info.total) * 100);
+        }
     });
 
 }

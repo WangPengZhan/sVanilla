@@ -27,6 +27,7 @@ void AriaDownloader::start()
     }
 
     m_gid = result.result;
+    m_status = Downloading;
 }
 
 void AriaDownloader::stop()
@@ -52,6 +53,10 @@ void AriaDownloader::downloadStatus()
         // to do
         return;
     }
+
+    m_info.total = std::stoi(m_downloadTellStatus.result.totalLength);
+    m_info.complete = std::stoi(m_downloadTellStatus.result.completedLength);
+    m_info.speed = std::stoi( m_downloadTellStatus.result.downloadSpeed);
 }
 
 void AriaDownloader::finish()

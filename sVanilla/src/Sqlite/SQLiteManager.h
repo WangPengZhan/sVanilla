@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "SQLiteDatabase.h"
+#include "FinishedItemTable.h"
 
 namespace SQLite
 {
@@ -20,6 +21,8 @@ public:
     SQLiteManager(SQLiteManager&& other) = delete;
     SQLiteManager& operator=(SQLiteManager&& other) = delete;
 
+    FinishedItemTable& finishedItemTable();
+
 private:
     SQLiteManager();
     ~SQLiteManager();
@@ -29,6 +32,7 @@ private:
 private:
     static std::once_flag m_createFlag;
     SQLiteDatabase m_db;
+    FinishedItemTable m_finishedItemTable;
 };
 
 }  // namespace SQLite

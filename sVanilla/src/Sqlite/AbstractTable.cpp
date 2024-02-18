@@ -51,6 +51,16 @@ AbstractTable::AbstractTable(SQLiteDatabase& db, const std::string& nameTable)
 {
 }
 
+void AbstractTable::initTable()
+{
+    createTable(m_db);
+}
+
+bool AbstractTable::createTable(SQLiteDatabase& db)
+{
+    return db.execute(createTableSql());
+}
+
 const std::string& AbstractTable::name() const
 {
     return m_name;

@@ -1,11 +1,13 @@
 #pragma once
 #include <QObject>
+#include <QString>
 
 #include <list>
 #include <memory>
 
 #include "Download/AbstractDownloader.h"
 
+Q_DECLARE_METATYPE(download::DownloadInfo)
 
 class UiDownloader : public QObject, public download::AbstractDownloader
 {
@@ -31,7 +33,7 @@ public:
 signals:
     void finished(QString msg);
     void statusChanged();
-    void update(QString msg);
+    void update(download::DownloadInfo downloadInfo, QString msg);
 
 private:
     std::shared_ptr<download::AbstractDownloader> m_realDownloader;

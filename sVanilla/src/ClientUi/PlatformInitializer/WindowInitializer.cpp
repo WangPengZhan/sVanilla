@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include "WindowInitializer.h"
 
 WindowInitializer::WindowInitializer()
@@ -19,3 +20,5 @@ void WindowInitializer::init()
 void WindowInitializer::deinit()
 {
 }
+
+#endif  // _WIN32
