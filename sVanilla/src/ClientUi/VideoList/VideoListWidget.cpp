@@ -1,7 +1,7 @@
 #include "VideoListWidget.h"
+#include "VideoDetailWidget.h"
 #include "ui_VideoListWidget.h"
 #include "Theme/StyledItemDelegate.h"
-
 #include <QtGui/QMouseEvent>
 
 VideoListItemWidget::VideoListItemWidget(std::string bvid, QWidget* parent)
@@ -34,17 +34,15 @@ void VideoListItemWidget::setUi()
 
 void VideoListItemWidget::signalsAndSlots()
 {
-    // connect(ui->VideoListDetailsBtn, &QPushButton::clicked, this, &VideoListItemWidget::detailBtnClick);
+    connect(ui->VideoListDetailsBtn, &QPushButton::clicked, this, &VideoListItemWidget::detailBtnClick);
 }
 
 VideoListWidget::VideoListWidget(QWidget* parent)
 {
     auto* delegate = new CustomVideoListItemDelegate();
-    this->setItemDelegate(delegate);
-    this->setSelectionMode(ExtendedSelection);
+    setItemDelegate(delegate);
+    setSelectionMode(ExtendedSelection);
 }
-
-VideoListWidget::~VideoListWidget() = default;
 
 void VideoListWidget::addVideoItem(const std::string& bvid)
 {
@@ -53,7 +51,7 @@ void VideoListWidget::addVideoItem(const std::string& bvid)
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
     m_items.insert(std::make_pair(bvid, item));
-    // connect(videoItem, &VideoListItemWidget::detailBtnClick, this, &VideoListWidget::itemDetailBtnClick);
+    connectItemSingal(videoItem);
 }
 void VideoListWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
@@ -83,4 +81,54 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
 void VideoListWidget::clearVideo()
 {
     this->clear();
+}
+void VideoListWidget::getSignalPointer(QSplitter* splitter)
+{
+    m_splitter = splitter;
+}
+void VideoListWidget::connectItemSingal(const VideoListItemWidget* itemWidget)
+{
+    connect(itemWidget, &VideoListItemWidget::detailBtnClick, this, [this, itemWidget]() {
+        const auto itemIdentifier = itemWidget->Identifier;
+        if (!detailPanelVisible())
+        {
+            showDetailPanel();
+        }
+        else
+        {
+            if (currentIdentifier == itemIdentifier)
+            {
+                hideDetailPanel();
+            }
+            else
+            {
+                showDetailPanel();
+            }
+        }
+        if (currentIdentifier != itemIdentifier)
+        {
+            currentIdentifier = itemIdentifier;
+            detailWidget()->updateUi(itemWidget->m_videoView);
+        }
+    });
+}
+void VideoListWidget::showDetailPanel()
+{
+    if (!detailWidget()->isVisible())
+    {
+        detailWidget()->show();
+    }
+    m_splitter->setSizes({sizeHint().height(), detailWidget()->sizeHint().height()});
+}
+void VideoListWidget::hideDetailPanel()
+{
+    m_splitter->setSizes({1, 0});
+}
+bool VideoListWidget::detailPanelVisible() const
+{
+    return m_splitter->sizes()[1] != 0;
+}
+VideoDetailWidget* VideoListWidget::detailWidget() const
+{
+    return qobject_cast<VideoDetailWidget*>(m_splitter->widget(1));
 }
