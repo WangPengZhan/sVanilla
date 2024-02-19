@@ -56,7 +56,7 @@ void VideoGridItemWidget::setCover(const std::string& id)
     if (QFile::exists(tempPath))
     {
         const QPixmap pixmap(tempPath);
-        const auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
+        const auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
         ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
         ui->Cover->setPixmap(scaledPixmap);
     }
@@ -79,12 +79,9 @@ void VideoGridItemWidget::updateVideoCard() const
 VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    // this->setFrameShape(NoFrame);
     setFlow(LeftToRight);
     setWrapping(true);
     setResizeMode(Adjust);
-    setSelectionMode(NoSelection);
-    // setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 void VideoGridWidget::addVideoItem(const std::string& bvid)
