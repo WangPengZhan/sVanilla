@@ -1,9 +1,10 @@
 #include "RoundImageWidget.h"
 #include <QPainterPath>
+#include <utility>
 
-RoundImageWidget::RoundImageWidget(QWidget* parent, const QPixmap& pixmap)
+RoundImageWidget::RoundImageWidget(QWidget* parent, QPixmap  pixmap)
     : QWidget(parent)
-    , m_pixmap(pixmap)
+    , m_pixmap(std::move(pixmap))
 {
     // setAttribute(Qt::WA_OpaquePaintEvent);
 }
@@ -24,9 +25,9 @@ void RoundImageWidget::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);  // Enable antialiasing
     // Create a rounded rectangle path
     QPainterPath path;
-    path.addRoundedRect(0, 0, width()-20, height()-20, 15, 15);
+    path.addRoundedRect(rect().toRectF(), 15, 15);
     // Clip the painting area to the path
     painter.setClipPath(path);
     // Draw the image
-    painter.drawPixmap(0, 0, width()-20, height()-20, m_pixmap);
+    painter.drawPixmap(rect(), m_pixmap);
 }

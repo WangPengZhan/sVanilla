@@ -1,4 +1,5 @@
 #include "VideoGridWidget.h"
+#include "VideoDetailWidget.h"
 #include "ui_VideoGridWidget.h"
 #include "BiliApi/BilibiliClient.h"
 #include "SUI/RoundImageWidget.h"
@@ -8,6 +9,19 @@
 #include <QPainterPath>
 #include <QPixmap>
 
+void elideText(QLabel* label, const QString& text)
+{
+    if (const QFontMetrics fontMetrics(label->font()); fontMetrics.horizontalAdvance(text) > label->width())
+    {
+        const auto elidedText = fontMetrics.elidedText(text, Qt::ElideRight, label->width());
+        label->setText(elidedText);
+        label->setToolTip(text);
+    }
+    else
+    {
+        label->setText(text);
+    }
+}
 VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoGridItemWidget)
@@ -29,27 +43,11 @@ void VideoGridItemWidget::setUi()
 
 void VideoGridItemWidget::signalsAndSlots()
 {
-    // connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, [this]() {
-    //     // emit downloadBtnClick(m_videoView);
-    //     auto m_biliClient = BiliApi::BilibiliClient::globalClient();
-    //     const auto playUrl = m_biliClient.GetPlayUrl(std::stoll(m_videoView->VideoId), 64, m_videoView->Identifier);
-    //     std::list<std::string> video_urls;
-    //     std::list<std::string> audio_urls;
-    //     if (playUrl.code != 0)
-    //     {
-    //         PRINTS("play url error", playUrl.message)
-    //         PRINTS("play url error", playUrl.message)
-    //         return;
-    //     }
-    //
-    //     const auto videos = playUrl.data.durl;
-    //     PRINTS("accept_format: ", playUrl.data.accept_format)
-    //     for (const auto& video : videos)
-    //     {
-    //         video_urls.push_back(video.url);
-    //         PRINTS("video url", video.url)
-    //     }
-    // });
+    connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
+}
+QSize VideoGridItemWidget::sizeHint() const
+{
+    return {320,300};
 }
 void VideoGridItemWidget::setCover(const std::string& id)
 {
@@ -58,14 +56,14 @@ void VideoGridItemWidget::setCover(const std::string& id)
     if (QFile::exists(tempPath))
     {
         const QPixmap pixmap(tempPath);
-        const auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        const auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
         ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
         ui->Cover->setPixmap(scaledPixmap);
     }
     else
     {
         QPixmap pixmap(":/CoverTest.jpeg");
-        auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
         ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
         ui->Cover->setPixmap(scaledPixmap);
     }
@@ -73,9 +71,9 @@ void VideoGridItemWidget::setCover(const std::string& id)
 
 void VideoGridItemWidget::updateVideoCard() const
 {
-    ui->VideoGridTitle->setText(QString::fromStdString(m_videoView->Title));
+    elideText(ui->VideoGridTitle, QString::fromStdString(m_videoView->Title));
     ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
-    ui->VideoGridAuthor->setText(QString::fromStdString(m_videoView->Publisher));
+    elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->Publisher));
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -85,10 +83,9 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
     setFlow(LeftToRight);
     setWrapping(true);
     setResizeMode(Adjust);
+    setSelectionMode(NoSelection);
     // setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
-
-VideoGridWidget::~VideoGridWidget() = default;
 
 void VideoGridWidget::addVideoItem(const std::string& bvid)
 {
@@ -98,7 +95,7 @@ void VideoGridWidget::addVideoItem(const std::string& bvid)
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
     m_items.insert(std::make_pair(bvid, item));
-    // connectItemSingal(videoItem);
+    connectItemSingal(videoItem);
 }
 void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
@@ -108,12 +105,68 @@ void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoVi
     widget->m_videoView = videoView;
     widget->updateVideoCard();
 }
-void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget) const
+
+void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget)
 {
-    connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, &VideoGridWidget::itemDetailBtnClick);
-    connect(itemWidget,&VideoGridItemWidget::detailCheckBtnClick,this, &VideoGridWidget::handleDetialCheckBtnClick);
+    connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, [this, itemWidget]() {
+        const auto itemIdentifier = itemWidget->Identifier;
+        if (!detailPanelVisible())
+        {
+            showDetailPanel();
+        }
+        else
+        {
+            if (currentIdentifier == itemIdentifier)
+            {
+                hideDetailPanel();
+            }
+            else
+            {
+                showDetailPanel();
+            }
+        }
+        if (currentIdentifier != itemIdentifier)
+        {
+            currentIdentifier = itemIdentifier;
+            detailWidget()->updateUi(itemWidget->m_videoView);
+        }
+    });
 }
+
+void VideoGridWidget::showDetailPanel()
+{
+    if (!detailWidget()->isVisible())
+    {
+        detailWidget()->show();
+    }
+
+    const auto gridItem = itemWidget(item(0));
+    const auto gridItemWidth = gridItem->width();
+    const auto totalWith = m_splitter->width() - detailWidget()->minimumWidth();
+    const auto gridWidth = gridItemWidth * (totalWith / gridItemWidth);
+    const auto detailWidth = totalWith % gridItemWidth;
+    m_splitter->setSizes(QList({gridWidth, detailWidth}));
+    update();
+}
+void VideoGridWidget::hideDetailPanel() const
+{
+    m_splitter->setSizes({1, 0});
+}
+bool VideoGridWidget::detailPanelVisible() const
+{
+    return m_splitter->sizes()[1] != 0;
+}
+
+VideoDetailWidget* VideoGridWidget::detailWidget() const
+{
+    return qobject_cast<VideoDetailWidget*>(m_splitter->widget(1));
+}
+
 void VideoGridWidget::clearVideo()
 {
-  this->clear();
+    this->clear();
+}
+void VideoGridWidget::getSignalPointer(QSplitter* splitter)
+{
+    m_splitter = splitter;
 }

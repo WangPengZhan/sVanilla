@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Adapter/BaseVideoView.h"
-
 #include <QWidget>
 #include <QListWidget>
+#include <QSplitter>
+
+class VideoDetailWidget;
 
 namespace Ui
 {
@@ -20,6 +22,7 @@ public:
 
     void updateVideoItem();
     std::shared_ptr<Adapter::BaseVideoView> m_videoView;
+    std::string Identifier;
 
 private:
     void setUi();
@@ -27,7 +30,6 @@ private:
 
 private:
     Ui::VideoListItemWidget* ui;
-    std::string Identifier;
 signals:
     void detailBtnClick();
     void detailCheckBtnClick(bool isChecked);
@@ -39,16 +41,22 @@ class VideoListWidget : public QListWidget
 
 public:
     explicit VideoListWidget(QWidget* parent = nullptr);
-    ~VideoListWidget();
     void addVideoItem(const std::string& bvid);
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
+    void getSignalPointer(QSplitter* splitter);
 
 private:
+    void connectItemSingal(const VideoListItemWidget* itemWidget);
+    void showDetailPanel();
+    void hideDetailPanel();
+    [[nodiscard]] bool detailPanelVisible() const;
+    [[nodiscard]] VideoDetailWidget* detailWidget() const;
+
     std::map<std::string, QListWidgetItem*> m_items;
+    QSplitter* m_splitter = nullptr;
+    std::string currentIdentifier;
+
 protected:
     void mousePressEvent(QMouseEvent* event) override;
-signals:
-    void itemDetailBtnClick();
-    void itemDetailCheckBtnClick(bool isChecked);
 };

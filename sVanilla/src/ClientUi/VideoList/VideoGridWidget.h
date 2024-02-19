@@ -1,14 +1,21 @@
 #pragma once
 
 #include "Adapter/BaseVideoView.h"
-#include "BiliApi/BiliApi.h"
-
 #include <QWidget>
 #include <QListWidget>
+#include <QSplitter>
+#include <QtWidgets/QLabel>
+
+class VideoDetailWidget;
+
+
 namespace Ui
 {
 class VideoGridItemWidget;
 }
+
+void elideText(QLabel* label, const QString& text);
+
 
 class VideoGridItemWidget : public QWidget
 {
@@ -21,12 +28,14 @@ public:
     void updateVideoCard() const;
     std::shared_ptr<Adapter::BaseVideoView> m_videoView;
 
+    [[nodiscard]] QSize sizeHint() const override;
 private:
     void setUi();
     void signalsAndSlots();
 
 private:
     Ui::VideoGridItemWidget* ui;
+
 public:
     std::string Identifier;
 signals:
@@ -40,20 +49,21 @@ class VideoGridWidget : public QListWidget
 
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
-    ~VideoGridWidget();
 
     void addVideoItem(const std::string& bvid);
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
-private:
-    std::map<std::string, QListWidgetItem*> m_items;
-    void connectItemSingal(const VideoGridItemWidget* itemWidget) const;
+    void getSignalPointer(QSplitter* splitter);
 
-signals:
-    void itemDetailBtnClick();
-    void itemDetailCheckBtnClick(bool isChecked);
-    // void itemDownloadBtnClick(std::shared_ptr<BiliApi::VideoView> videoView);
-public slots:
-    signals:
-    void handleDetialCheckBtnClick(bool isChecked);
+private:
+    void connectItemSingal(const VideoGridItemWidget* itemWidget);
+    void showDetailPanel();
+    void hideDetailPanel() const;
+    [[nodiscard]] bool detailPanelVisible() const;
+    [[nodiscard]] VideoDetailWidget* detailWidget() const;
+
+    std::map<std::string, QListWidgetItem*> m_items;
+    QSplitter* m_splitter = nullptr;
+    std::string currentIdentifier;
+
 };

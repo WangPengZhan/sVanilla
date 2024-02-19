@@ -29,13 +29,13 @@ void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::BaseVideoView>& 
 
 void VideoDetailWidget::setUi()
 {
-    // hide();
-    // this->setMaximumWidth(150);
+    hide();
+    this->setMinimumWidth(150);
 }
 
 void VideoDetailWidget::signalsAndSlots()
 {
-    connect(ui->DetailPanelCloseBtn, &QPushButton::clicked,this, [this]() {
+    connect(ui->DetailPanelCloseBtn, &QPushButton::clicked, this, [this]() {
         this->hide();
     });
 }
