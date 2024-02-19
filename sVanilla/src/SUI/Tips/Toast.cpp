@@ -121,12 +121,11 @@ void Toast::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::black);
     painter.setRenderHint(QPainter::Antialiasing);
     QPainterPath path;
     path.addRoundedRect(rect(), 10, 10);
     painter.setClipPath(path);
-    painter.setBrush(QBrush(QColor(249, 247, 247)));
+    painter.setBrush(QBrush(QColor(249, 247, 247, 100)));
     painter.drawRect(rect());
     const auto iconRect = QRect(rect().x() + 10, rect().y() + 10, rect().height() - 20, rect().height() - 20);
     QSvgRenderer grid;
