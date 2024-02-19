@@ -1,6 +1,5 @@
 
 #include "VideoDetailWidget.h"
-#include <utility>
 #include "ui_VideoDetailWidget.h"
 #include "Adapter/BaseVideoView.h"
 

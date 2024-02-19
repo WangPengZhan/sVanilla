@@ -18,7 +18,7 @@ public:
     explicit VideoGridItemWidget(std::string bvid, QWidget* parent = nullptr);
     ~VideoGridItemWidget();
     void setCover(const std::string& id);
-    void updateVideoCard();
+    void updateVideoCard() const;
     std::shared_ptr<Adapter::BaseVideoView> m_videoView;
 
 private:

@@ -118,12 +118,6 @@ void MainWindow::AddDownloadTask(const std::string& gid) const
     ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"},
                                   {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"}, "test");
 }
-
-void MainWindow::addVideoCard(const std::string& bvid) const
-{
-    ui->VideoPage->addVideoItem(bvid);
-}
-
 void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
 {
     ui->VideoPage->updateVideoItem(videoView);

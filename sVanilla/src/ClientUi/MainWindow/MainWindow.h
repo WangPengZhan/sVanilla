@@ -59,7 +59,6 @@ public:
     void updateHomeMsg(const std::string& msg) const;
     void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
     void AddDownloadTask(const std::string& gid) const;
-    void addVideoCard(const std::string& bvid) const;
     void updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
 Q_SIGNALS:
     void AddUri(const std::string& uri);
