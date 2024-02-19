@@ -11,6 +11,7 @@ std::unique_ptr<Toast> Toast::instance;
 
 Toast::Toast(QWidget* parent)
     : QWidget(parent)
+    , m_animation(new QPropertyAnimation(this, "pos"))
     , timer(new QTimer(this))
     , ui(new Ui::Toast())
 {
@@ -39,6 +40,8 @@ void Toast::setUi()
     {
         this->setParent(window);
     }
+    m_animation->setDuration(300);
+    m_animation->setEasingCurve(QEasingCurve::Linear);
 }
 
 void Toast::signalsAndSlots()
@@ -65,12 +68,9 @@ void Toast::showNextMessage()
         adjustSize();
         movePosition();
         show();
-        // auto animation = new QPropertyAnimation(this, "pos");
-        // animation->setDuration(500);
-        // animation->setEasingCurve(QEasingCurve::InCubic);
-        // animation->setStartValue(QPoint(this->width(), -this->y()));
-        // animation->setEndValue(QPoint(this->x(), this->y()));
-        // animation->start();
+        m_animation->setStartValue(geometry().topRight());
+        m_animation->setEndValue(geometry().topLeft());
+        m_animation->start();
         timer->start();
     }
     else
@@ -80,16 +80,13 @@ void Toast::showNextMessage()
 }
 void Toast::hideMessage()
 {
-    timer->stop();
-    hide();
-    // const auto closeAnimation = new QPropertyAnimation(this, "pos");
-    // closeAnimation->setDuration(500);
-    // closeAnimation->setStartValue(QPoint(this->x(), this->y()));
-    // closeAnimation->setEndValue(QPoint(this->height(), -this->y()));
-    // closeAnimation->start();
-    // connect(closeAnimation, &QPropertyAnimation::finished, [&] {
-        // hide();
-    // });
+    m_animation->setStartValue(geometry().topLeft());
+    m_animation->setEndValue(geometry().topRight());
+    m_animation->start();
+    connect(m_animation, &QPropertyAnimation::finished, [&] {
+        timer->stop();
+        hide();
+    });
 }
 
 void Toast::setText(const QString& msg) const

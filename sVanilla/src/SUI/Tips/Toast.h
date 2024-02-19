@@ -36,7 +36,7 @@ private:
     void setLevel(Level level);
     void movePosition();
     static QWidget* windowObj();
-
+    QPropertyAnimation* m_animation{};
     QQueue<std::pair<QString, Level>> m_messageQueue;
     Level m_level = Info;
     QTimer* timer;
