@@ -34,41 +34,30 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="VideoLayoutWidget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QStackedWidget" name="VideoStackedPage">
-        <widget class="QWidget" name="VideoGrid">
-         <layout class="QVBoxLayout" name="VideoTabLayout">
-          <item>
-           <widget class="::VideoGridWidget" name="VideoGridWidget">
-            <property name="selectionMode">
-             <enum>QAbstractItemView::NoSelection</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
+    <widget class="QStackedWidget" name="VideoStackedPage">
+     <widget class="QSplitter" name="VideoGrid">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="::VideoGridWidget" name="VideoGridWidget"/>
+      <widget class="::VideoDetailWidget" name="VideoGridDetailWidget" native="true"/>
+     </widget>
+     <widget class="QWidget" name="VideoListPage">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QSplitter" name="VideoList">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="::VideoListWidget" name="VideoListWidget"/>
+         <widget class="::VideoDetailWidget" name="VideoListDetailWidget" native="true"/>
         </widget>
-        <widget class="QWidget" name="VideoList">
-         <layout class="QVBoxLayout" name="VideoListLayout">
-          <item>
-           <widget class="::VideoListWidget" name="VideoListWidget"/>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-      <item>
-       <widget class="::VideoDetailWidget" name="VideoDetailWidget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-     </layout>
+       </item>
+       <item>
+        <widget class="QWidget" name="ActionBtns" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

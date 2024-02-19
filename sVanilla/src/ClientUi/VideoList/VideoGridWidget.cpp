@@ -57,8 +57,8 @@ void VideoGridItemWidget::setCover(const std::string& id)
     tempPath.append("/").append(QString::fromStdString(id)).append("jpg");
     if (QFile::exists(tempPath))
     {
-        QPixmap pixmap(tempPath);
-        auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        const QPixmap pixmap(tempPath);
+        const auto scaledPixmap = pixmap.scaledToWidth(this->width(), Qt::SmoothTransformation);
         ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
         ui->Cover->setPixmap(scaledPixmap);
     }
@@ -71,7 +71,7 @@ void VideoGridItemWidget::setCover(const std::string& id)
     }
 }
 
-void VideoGridItemWidget::updateVideoCard()
+void VideoGridItemWidget::updateVideoCard() const
 {
     ui->VideoGridTitle->setText(QString::fromStdString(m_videoView->Title));
     ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
@@ -82,9 +82,10 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
     // this->setFrameShape(NoFrame);
-    this->setFlow(LeftToRight);
-    this->setWrapping(true);
-    this->setResizeMode(Adjust);
+    setFlow(LeftToRight);
+    setWrapping(true);
+    setResizeMode(Adjust);
+    // setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 VideoGridWidget::~VideoGridWidget() = default;

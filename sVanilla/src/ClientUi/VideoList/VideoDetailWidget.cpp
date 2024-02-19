@@ -1,6 +1,5 @@
 
 #include "VideoDetailWidget.h"
-#include <utility>
 #include "ui_VideoDetailWidget.h"
 #include "Adapter/BaseVideoView.h"
 
@@ -30,7 +29,8 @@ void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::BaseVideoView>& 
 
 void VideoDetailWidget::setUi()
 {
-    this->setMaximumWidth(150);
+    // hide();
+    // this->setMaximumWidth(150);
 }
 
 void VideoDetailWidget::signalsAndSlots()

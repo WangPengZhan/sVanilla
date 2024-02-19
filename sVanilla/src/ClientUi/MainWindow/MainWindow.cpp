@@ -50,10 +50,6 @@ void MainWindow::AddDownloadTask(const std::string& gid) const
 {
     ui->downloadPage->addTaskItem(gid);
 }
-void MainWindow::addVideoCard(const std::string& bvid) const
-{
-    ui->VideoPage->addVideoItem(bvid);
-}
 void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
 {
     ui->VideoPage->updateVideoItem(videoView);
@@ -93,7 +89,7 @@ void MainWindow::signalsAndSlots()
 
     connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
     connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
-    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
+    // connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
 }
 
 void MainWindow::loadStyleSheet(const Theme theme)

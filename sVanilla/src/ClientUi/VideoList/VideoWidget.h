@@ -25,31 +25,30 @@ public:
     explicit VideoWidget(QWidget* parent = nullptr);
     ~VideoWidget() override;
 
-    void addVideoItem(const std::string& bvid) const;
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
-    void updateDetailPanel(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
+    // void updateDetailPanel(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
     void clearVideo();
 
 private:
     Ui::VideoPage* ui;
     std::shared_ptr<GeometryAnimation> detailAnimation;
-    bool processDetailsBtnClickEvent(QObject* watched);
-    bool precessDownloadBtnClickEvent(QObject* watched);
-    void installBtnEventFilter();
-    std::list<QPushButton*> eventBtns;
+    // bool processDetailsBtnClickEvent(QObject* watched);
+    // bool precessDownloadBtnClickEvent(QObject* watched);
+    // void installBtnEventFilter();
+    // std::list<QPushButton*> eventBtns;
     std::string detailSourceIdentifier;
 
-    [[nodiscard]] VideoDetailWidget* detailPanel() const;
-    [[nodiscard]] bool detailPanelVisible() const;
-    void showDetailPanel() const;
-    void hideDetailPanel() const;
-    void updateDetailPanelWidth();
+    // [[nodiscard]] VideoDetailWidget* detailPanel() const;
+    // [[nodiscard]] bool detailPanelVisible() const;
+    // void showDetailPanel() const;
+    // void hideDetailPanel() const;
+    // void updateDetailPanelWidth();
 
-signals:
-    void downloadBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+// signals:
+//     void downloadBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
-protected:
-    bool eventFilter(QObject* watched, QEvent* event) override;
+// protected:
+    // bool eventFilter(QObject* watched, QEvent* event) override;
 };
 
 #endif  // VIDEOWIDGET_H
