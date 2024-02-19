@@ -18,6 +18,7 @@ public:
     explicit VideoWidget(QWidget* parent = nullptr);
     ~VideoWidget() override;
 
+    void addVideoItem(const std::string& bvid) const;
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo() const;
 
