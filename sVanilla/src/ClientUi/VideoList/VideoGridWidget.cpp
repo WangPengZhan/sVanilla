@@ -50,7 +50,7 @@ void VideoGridItemWidget::signalsAndSlots()
 }
 QSize VideoGridItemWidget::sizeHint() const
 {
-    return {320,300};
+    return {320, 300};
 }
 void VideoGridItemWidget::setCover(const std::string& id)
 {
@@ -112,21 +112,15 @@ void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget)
 {
     connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, [this, itemWidget]() {
         const auto itemIdentifier = itemWidget->Identifier;
-        if (!detailPanelVisible())
+        if (detailPanelVisible() && currentIdentifier == itemIdentifier)
         {
-            showDetailPanel();
+            hideDetailPanel();
         }
         else
         {
-            if (currentIdentifier == itemIdentifier)
-            {
-                hideDetailPanel();
-            }
-            else
-            {
-                showDetailPanel();
-            }
+            showDetailPanel();
         }
+
         if (currentIdentifier != itemIdentifier)
         {
             currentIdentifier = itemIdentifier;

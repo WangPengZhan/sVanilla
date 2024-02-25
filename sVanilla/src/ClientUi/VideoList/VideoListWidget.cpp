@@ -90,20 +90,13 @@ void VideoListWidget::connectItemSingal(const VideoListItemWidget* itemWidget)
 {
     connect(itemWidget, &VideoListItemWidget::detailBtnClick, this, [this, itemWidget]() {
         const auto itemIdentifier = itemWidget->Identifier;
-        if (!detailPanelVisible())
+        if (detailPanelVisible() && currentIdentifier == itemIdentifier)
         {
-            showDetailPanel();
+            hideDetailPanel();
         }
         else
         {
-            if (currentIdentifier == itemIdentifier)
-            {
-                hideDetailPanel();
-            }
-            else
-            {
-                showDetailPanel();
-            }
+            showDetailPanel();
         }
         if (currentIdentifier != itemIdentifier)
         {
