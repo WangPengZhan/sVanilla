@@ -150,7 +150,6 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
     setBackgroundRole(QPalette::NoRole);
-
 }
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
