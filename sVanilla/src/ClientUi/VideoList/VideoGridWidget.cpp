@@ -14,6 +14,7 @@ VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     , Identifier(std::move(bvid))
 {
     ui->setupUi(this);
+    setUi();
     signalsAndSlots();
     ui->VideoGridDetailsBtn->installEventFilter(this);
 }
@@ -25,6 +26,8 @@ VideoGridItemWidget::~VideoGridItemWidget()
 
 void VideoGridItemWidget::setUi()
 {
+    ui->VideoGridDetailsBtn->setIcon(QIcon(":/icon/video/detail.svg"));
+    ui->VideoGridDownloadBtn->setIcon(QIcon(":/icon/video/download.svg"));
 }
 
 void VideoGridItemWidget::signalsAndSlots()
@@ -85,6 +88,7 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
     this->setFlow(LeftToRight);
     this->setWrapping(true);
     this->setResizeMode(Adjust);
+    setProperty("noBackground", true);
 }
 
 VideoGridWidget::~VideoGridWidget() = default;

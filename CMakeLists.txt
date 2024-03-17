@@ -84,6 +84,7 @@ endif()
 add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/vanillastyle EXCLUDE_FROM_ALL)
 option(ENABLE_TEST "Enable Test" OFF)
 if (ENABLE_TEST)
     enable_testing()
@@ -124,6 +125,7 @@ target_link_libraries(${PROJECT_NAME}
         minizip
         spdlog
         ${OPENSSL_LIBRARIES}
+        VanillaStyle
 )
 
 

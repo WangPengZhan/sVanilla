@@ -18,6 +18,7 @@ public:
 
     void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version);
 
+    Q_SIGNAL void UpdateTheme(int theme);
 private:
     Ui::SettingPage* ui;
 };

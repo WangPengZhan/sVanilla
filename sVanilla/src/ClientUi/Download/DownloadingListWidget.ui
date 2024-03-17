@@ -72,7 +72,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnDelete">
+       <widget class="VanillaStyle::IconButton" name="btnDelete">
         <property name="text">
          <string/>
         </property>
@@ -151,7 +151,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="btnPause">
+       <widget class="VanillaStyle::IconButton" name="btnPause">
         <property name="text">
          <string/>
         </property>
@@ -161,7 +161,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnFolder">
+       <widget class="VanillaStyle::IconButton" name="btnFolder">
         <property name="minimumSize">
          <size>
           <width>32</width>
@@ -180,18 +180,25 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnDetail">
+       <widget class="VanillaStyle::IconButton" name="btnDetail">
         <property name="minimumSize">
          <size>
           <width>32</width>
           <height>32</height>
          </size>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="VanillaStyle::IconButton" name="btnDetail">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="text">
          <string/>
@@ -204,6 +211,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>VanillaStyle::IconButton</class>
+   <extends>QPushButton</extends>
+   <header>VanillaStyle/Widgets/IconButton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

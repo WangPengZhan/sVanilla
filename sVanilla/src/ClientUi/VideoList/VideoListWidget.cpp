@@ -28,6 +28,8 @@ void VideoListItemWidget::updateVideoItem()
 
 void VideoListItemWidget::setUi()
 {
+    ui->VideoListDetailsBtn->setIcon(QIcon(":/icon/video/detail.svg"));
+    ui->VideoListDownloadBtn->setIcon(QIcon(":/icon/video/download.svg"));
 }
 
 void VideoListItemWidget::signalsAndSlots()

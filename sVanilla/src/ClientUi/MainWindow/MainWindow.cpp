@@ -16,43 +16,114 @@
 #include <QtWidgets/QLabel>
 #include <ui_MainWindow.h>
 
+#include "VanillaStyle/Style.h"
+#include "VanillaStyle/Style/VanillaStyle.h"
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
-    , windowAgent(new QWK::WidgetWindowAgent(this))
-    , windowBar(new WindowBar(this))
     , ui(new Ui::MainWindow)
+    , windowAgent(new QWK::WidgetWindowAgent(this))
+    , styleAgent(new QWK::StyleAgent(this))
+    , windowBar(new WindowBar(this))
 {
     installWindowAgent();
     ui->setupUi(this);
     windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
-    loadStyleSheet(Light);
     signalsAndSlots();
     resize(800, 600);
-
     ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
                                   {"https://testfile.org/files-5GB-zip"}, "local");
+    setLightTheme();
 }
 
 MainWindow::~MainWindow() = default;
+
+void MainWindow::signalsAndSlots()
+{
+    // tab bar btn click event to change stacked page
+    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+
+    connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
+        if (index == 3)
+        {
+            Q_EMIT onSettingPage();
+        }
+    });
+    connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
+    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
+    connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
+    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
+}
+
+void MainWindow::setLightTheme()
+{
+    VanillaStyle::Style::setStyleFromName("LightVanillaStyle");
+#ifdef Q_OS_WIN
+    setBlurEffect(AcrylicMaterial);
+#elif defined(Q_OS_MAC)
+    setBlurEffect(LightBlur);
+#endif
+}
+
+void MainWindow::setDarkTheme()
+{
+    VanillaStyle::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
+#ifdef Q_OS_WIN
+    setBlurEffect(AcrylicMaterial);
+#elif defined(Q_OS_MAC)
+    setBlurEffect(DarkBlur);
+#endif
+}
+
+void MainWindow::setAutoTheme()
+{
+    const auto theme = styleAgent->systemTheme();
+    theme == QWK::StyleAgent::SystemTheme::Dark ? setDarkTheme() : setLightTheme();
+}
+
+void MainWindow::setTheme(const int theme)
+{
+    if (theme != 2)
+    {
+        disconnect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme);
+        if (theme == 0)
+        {
+            setLightTheme();
+        }
+        else
+        {
+            setDarkTheme();
+        }
+    }
+    else
+    {
+        connect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme);
+        setAutoTheme();
+    }
+}
 
 void MainWindow::updateHomeMsg(const std::string& msg) const
 {
     ui->homePage->updateMsg(msg);
 }
+
 void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
 {
     ui->settingPage->updateAria2Version(version);
 }
+
 
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
     ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"},
                                   {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"}, "test");
 }
+
 void MainWindow::addVideoCard(const std::string& bvid) const
 {
     ui->VideoPage->addVideoItem(bvid);
 }
+
 void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
 {
     ui->VideoPage->updateVideoItem(videoView);
@@ -67,7 +138,7 @@ void MainWindow::installWindowAgent()
     setMenuWidget(windowBar);
 
 #ifdef Q_OS_WIN
-    loadWindowsSystemButton();
+    loadSystemButton();
 #endif
 }
 
@@ -75,43 +146,47 @@ void MainWindow::SearchUrl()
 {
 }
 
-void MainWindow::signalsAndSlots()
+void MainWindow::setBlurEffect(const BlurEffect effect)
 {
-    // tab bar btn click event to change stacked page
-    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
-
-    connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
-        if (index == 3)
-        {
-            Q_EMIT onSettingPage();
-        }
-    });
-    // theme QRadioBtn toggle event to change theme
-    // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
-    // connect(ui->homePage, &HomePage::updateMsg, this, &MainWindow::updateHomeMsg);
-
-    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
-    connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
-    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
-}
-
-void MainWindow::loadStyleSheet(const Theme theme)
-{
-    if (!styleSheet().isEmpty() && theme == currentTheme)
+    switch (effect)
     {
-        return;
-    }
+    case NoBlur:
+#ifdef Q_OS_WIN
+        windowAgent->setWindowAttribute(currentBlurEffect, false);
+        break;
+#elif defined(Q_OS_MAC)
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "none");
+#endif
 
-    currentTheme = theme;
-
-    QString styleSheetPath = theme == Dark ? ":/style/dark.qss" : ":/style/light.qss";
-    QFile qss(styleSheetPath);
-    if (qss.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        setStyleSheet(QString::fromUtf8(qss.readAll()));
-        emit themeChanged();
-        qss.close();
+#ifdef Q_OS_WIN
+    case DWMBlur:
+        windowAgent->setWindowAttribute(QStringLiteral("dwm-blur"), true);
+        currentBlurEffect = QStringLiteral("dwm-blur");
+        break;
+    case AcrylicMaterial:
+        windowAgent->setWindowAttribute(QStringLiteral("acrylic-material"), true);
+        currentBlurEffect = "acrylic-material");
+        break;
+    case Mica:
+        windowAgent->setWindowAttribute(QStringLiteral("mica"), true);
+        currentBlurEffect = QStringLiteral("mica");
+        break;
+    case MicaAlt:
+        windowAgent->setWindowAttribute(QStringLiteral("mica-alt"), true);
+        currentBlurEffect = QStringLiteral("mica-alt");
+        break;
+#elif defined(Q_OS_MAC)
+    case DarkBlur:
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
+        break;
+    case LightBlur:
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
+        break;
+#endif
+    default:
+        break;
     }
+    style()->polish(this);
 }
 
 bool MainWindow::event(QEvent* event)
@@ -138,15 +213,16 @@ bool MainWindow::event(QEvent* event)
     return QMainWindow::event(event);
 }
 
+#ifndef Q_OS_MAC
 static inline void emulateLeaveEvent(QWidget* widget)
 {
     Q_ASSERT(widget);
     QTimer::singleShot(0, widget, [widget]() {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+#    if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
         const QScreen* screen = widget->screen();
-#else
+#    else
         const QScreen *screen = widget->windowHandle()->screen();
-#endif
+#    endif
         const QPoint globalPos = QCursor::pos(screen);
         if (!QRect(widget->mapToGlobal(QPoint{0, 0}), widget->size()).contains(globalPos))
         {
@@ -157,23 +233,23 @@ static inline void emulateLeaveEvent(QWidget* widget)
                 const QPoint scenePos = widget->window()->mapFromGlobal(globalPos);
                 static constexpr const auto oldPos = QPoint{};
                 const Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers();
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 4, 0))
+#    if (QT_VERSION >= QT_VERSION_CHECK(6, 4, 0))
                 const auto event = new QHoverEvent(QEvent::HoverLeave, scenePos, globalPos, oldPos, modifiers);
                 Q_UNUSED(localPos);
-#elif (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+#    elif (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
                 const auto event =  new QHoverEvent(QEvent::HoverLeave, localPos, globalPos, oldPos, modifiers);
                 Q_UNUSED(scenePos);
-#else
+#    else
                 const auto event =  new QHoverEvent(QEvent::HoverLeave, localPos, oldPos, modifiers);
                 Q_UNUSED(scenePos);
-#endif
+#    endif
                 QCoreApplication::postEvent(widget, event);
             }
         }
     });
 }
 
-void MainWindow::loadWindowsSystemButton()
+void MainWindow::loadSystemButton()
 {
     const auto minButton = new QPushButton();
     minButton->setObjectName(QStringLiteral("min-button"));
@@ -218,29 +294,8 @@ void MainWindow::loadWindowsSystemButton()
     });
     connect(windowBar, &WindowBar::closeRequested, this, &QWidget::close);
 }
-
-void MainWindow::SwitchTheme(const int theme)
-{
-#ifdef Q_OS_WIN
-
-#elif defined(Q_OS_MAC)
-    if (theme == 0)
-    {
-        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
-        loadStyleSheet(Light);
-    }
-    else if (theme == 1)
-    {
-        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
-        loadStyleSheet(Dark);
-    }
-    setProperty("custom-style", true);
-    style()->polish(this);
-
-#else
-
 #endif
-}
+
 void MainWindow::ClearVideo(bool flag)
 {
     if (!flag)

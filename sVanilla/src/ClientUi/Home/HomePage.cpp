@@ -6,6 +6,8 @@
 #include "ui_HomePage.h"
 #include "Util/UrlProcess.h"
 
+#include <QPushButton>
+
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::HomePage)
@@ -20,7 +22,15 @@ HomePage::HomePage(QWidget* parent)
     });
     timer->start();
 
-
+    ui->HistoryBtn->setIcon(QIcon(":icon/home/history.svg"));
+    ui->ClipBoardBtn->setIcon(QIcon(":icon/home/clipboard.svg"));
+    ui->HomePageSubmit->setIcon(QIcon(":icon/home/enter.svg"));
+    ui->HomePageSubmit->setLabel(QStringLiteral("Submit"));
+    ui->HomePageSubmit->setIconFirst(false);
+    ui->IconBtn->setIcon(QIcon(":icon/home/icon.svg"));
+    ui->IconBtn->setIconSize({40,40});
+    ui->LearnBtn->setIcon(QIcon(":icon/home/openurl.svg"));
+    ui->HomeLineEdit->setFixedHeight(30);
 }
 
 HomePage::~HomePage()

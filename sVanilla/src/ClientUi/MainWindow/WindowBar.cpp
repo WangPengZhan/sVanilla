@@ -8,6 +8,12 @@ WindowBar::WindowBar(QWidget* parent)
 {
     ui->setupUi(this);
     signalsAndSlots();
+    const QStringList horizonNavigation({QStringLiteral(":/icon/bar/home.svg"), QStringLiteral(":/icon/bar/video.svg"),
+                                         QStringLiteral(":/icon/bar/download.svg"), QStringLiteral(":/icon/bar/setting.svg")});
+    ui->Hit->setItemList(horizonNavigation);
+    ui->Hit->setColumnWidth(45);
+    ui->Hit->setFixedWidth(horizonNavigation.length() * ui->Hit->columnWidth());
+    connect(ui->Hit, &VanillaStyle::ToggleButton::currentItemChanged, this, &WindowBar::BarBtnClick);
 }
 
 WindowBar::~WindowBar()
@@ -38,11 +44,4 @@ void WindowBar::setCloseButton(QAbstractButton* btn)
 
 void WindowBar::signalsAndSlots()
 {
-    QList<QPushButton*> btns = ui->Hit->findChildren<QPushButton*>();  // find all btns in Hit widget
-    for (int i = 0; i < btns.size(); ++i)
-    {
-        connect(btns[i], &QPushButton::clicked, [this, i] {
-            emit BarBtnClick(i);
-        });
-    }
 }

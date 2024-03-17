@@ -4,6 +4,8 @@
 #include "ui_VideoDetailWidget.h"
 #include "Adapter/BaseVideoView.h"
 
+#include <QPushButton>
+
 VideoDetailWidget::VideoDetailWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoDetailWidget)
@@ -31,6 +33,7 @@ void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::BaseVideoView>& 
 void VideoDetailWidget::setUi()
 {
     this->setMaximumWidth(150);
+    ui->DetailPanelCloseBtn->setIcon(QIcon(":icon/video/close.svg"));
 }
 
 void VideoDetailWidget::signalsAndSlots()

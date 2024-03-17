@@ -8,6 +8,8 @@
 #include "ui_DownloadingListWidget.h"
 #include "Theme/StyledItemDelegate.h"
 
+#include <QPushButton>
+
 template <typename T>
 QString formatSize(T bytesPerSec)
 {
@@ -40,6 +42,12 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
 {
     ui->setupUi(this);
     signalsAndSlots();
+    ui->Start->setIcon(QIcon(":icon/download/start.svg"));
+    ui->Pause->setIcon(QIcon(":icon/download/pause.svg"));
+    ui->Delete->setIcon(QIcon(":icon/download/delete.svg"));
+    ui->Folder->setIcon(QIcon(":icon/download/folder.svg"));
+    ui->Detail->setIcon(QIcon(":icon/download/details.svg"));
+    setBackgroundRole(QPalette::NoRole);
     ui->Title->setText(QString::fromStdString(downloader->filename()));
 }
 
@@ -136,6 +144,8 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
+    setBackgroundRole(QPalette::NoRole);
+
 }
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
