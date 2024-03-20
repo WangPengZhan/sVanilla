@@ -17,6 +17,7 @@ class AbstractDownloader
 public:
     enum Status
     {
+        Wait,
         Ready,
         Downloading,
         Paused,
@@ -44,7 +45,7 @@ public:
     Status status() const;
 
 protected:
-    std::atomic<Status> m_status;
+    std::atomic<Status> m_status = Wait;
     std::string m_guid;
     std::string m_stage;
     DownloadInfo m_info;

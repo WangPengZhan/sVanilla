@@ -7,7 +7,10 @@ namespace download
 BiliDownloader::BiliDownloader()
     : m_finished(false)
 {
+    m_videoDownloader.setStatus(Ready);
+    m_audioDownloader.setStatus(Ready);
 }
+
 BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUri, std::string path, std::string filename)
     : m_finished(false)
     , m_path(std::move(path))
@@ -18,12 +21,15 @@ BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::
     std::string baseName = std::filesystem::path(m_filename).stem().string();
     m_videoDownloader.setFilename(baseName + "_video.mp4");
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
+    m_videoDownloader.setStatus(Ready);
+    m_audioDownloader.setStatus(Ready);
 }
 
 void BiliDownloader::start()
 {
     m_videoDownloader.start();
     m_audioDownloader.start();
+    m_info.stage = "audio/video downloading";
     m_status = Downloading;
 }
 
@@ -31,18 +37,21 @@ void BiliDownloader::stop()
 {
     m_videoDownloader.stop();
     m_audioDownloader.stop();
+    m_status = Wait;
 }
 
 void BiliDownloader::pause()
 {
     m_videoDownloader.pause();
     m_audioDownloader.pause();
+    m_status = Wait;
 }
 
 void BiliDownloader::resume()
 {
     m_videoDownloader.resume();
     m_audioDownloader.resume();
+    m_status = Downloading;
 }
 
 void BiliDownloader::downloadStatus()
@@ -62,6 +71,7 @@ void BiliDownloader::downloadStatus()
         merge.audio = m_audioDownloader.path() + "/" + m_audioDownloader.filename();
         merge.video = m_videoDownloader.path() + "/" + m_videoDownloader.filename();
         merge.targetVideo = path() + "/" + filename();
+        m_info.stage = "ffmpeg mixed!";
         
         ffmpeg::FFmpegHelper::mergeVideo(merge);
 

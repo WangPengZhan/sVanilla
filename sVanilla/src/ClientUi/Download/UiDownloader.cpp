@@ -4,6 +4,7 @@ UiDownloader::UiDownloader(std::shared_ptr<download::AbstractDownloader> downloa
     : QObject(parent) 
     , m_realDownloader(std::move(downloader))
 {
+    setStatus(Ready);
 }
 
 UiDownloader::~UiDownloader()
@@ -33,28 +34,35 @@ const std::string& UiDownloader::filename() const
 void UiDownloader::start()
 {
     m_realDownloader->start();
-    m_status = Downloading;
+    setStatus(Downloading);
 }
 
 void UiDownloader::stop()
 {
     m_realDownloader->stop();
+    setStatus(Wait);
 }
 
 void UiDownloader::pause()
 {
     m_realDownloader->pause();
+    setStatus(Wait);
 }
 
 void UiDownloader::resume()
 {
     m_realDownloader->resume();
+    setStatus(Downloading);
 }
 
 void UiDownloader::downloadStatus()
 {
     m_realDownloader->downloadStatus();
     emit update(m_realDownloader->info(), QString::fromStdString(m_realDownloader->stage()));
+    if (m_realDownloader->status() == Finished)
+    {
+        setStatus(Finished);
+    }
 }
 
 void UiDownloader::finish()

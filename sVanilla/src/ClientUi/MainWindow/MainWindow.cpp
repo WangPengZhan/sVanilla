@@ -29,10 +29,11 @@ MainWindow::MainWindow(QWidget* parent)
     signalsAndSlots();
     resize(800, 600);
 
+    // test test test
+    ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"},
+                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"}, "test");
     Toast::create(this);
 
-    ui->downloadPage->addTaskItem({"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43.arxml"},
-                                  {"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43111.arxml"}, TODO);
 }
 
 MainWindow::~MainWindow() = default;
@@ -48,8 +49,8 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
-    ui->downloadPage->addTaskItem({"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43.arxml"},
-                                  {"http://172.20.10.2:8080/CU_STAR_3_Ecu_Extract_2022_29a0_AR43111.arxml"}, TODO);
+    ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"},
+                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"}, "test");
 }
 void MainWindow::addVideoCard(const std::string& bvid) const
 {

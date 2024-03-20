@@ -22,7 +22,7 @@ void AriaDownloader::start()
     if (result.error.code != 0)
     {
         // to do
-
+        m_status = Error;
         return;
     }
 
@@ -33,16 +33,19 @@ void AriaDownloader::start()
 void AriaDownloader::stop()
 {
     aria2net::AriaClient::globalClient().RemoveAsync(m_gid);
+    m_status = Wait;
 }
 
 void AriaDownloader::pause()
 {
     aria2net::AriaClient::globalClient().PauseAsync(m_gid);
+    m_status = Wait;
 }
 
 void AriaDownloader::resume()
 {
     aria2net::AriaClient::globalClient().UnpauseAsync(m_gid);
+    m_status = Downloading;
 }
 
 void AriaDownloader::downloadStatus()
@@ -51,12 +54,18 @@ void AriaDownloader::downloadStatus()
     if (m_downloadTellStatus.error.code != 0)
     {
         // to do
+        m_status = Error;
         return;
     }
 
     m_info.total = std::stoi(m_downloadTellStatus.result.totalLength);
     m_info.complete = std::stoi(m_downloadTellStatus.result.completedLength);
     m_info.speed = std::stoi( m_downloadTellStatus.result.downloadSpeed);
+
+    if (m_info.complete == m_info.total)
+    {
+        m_status = Finished;
+    }
 }
 
 void AriaDownloader::finish()
