@@ -55,6 +55,9 @@ public:
     // AriaTellStatusList TellStoppedAsync(int offset, int num);
     AriaAddUri AddUriAsync(const ListString& uris, AriaSendOption option, int position = -1);
     AriaTellStatus TellStatus(const std::string& gid);
+    AriaRemove RemoveAsync(const std::string& gid);
+    AriaPause PauseAsync(const std::string& gid);
+    AriaPause UnpauseAsync(const std::string& gid);
 
 private:
     static constexpr char JSONRPC[] = "2.0";

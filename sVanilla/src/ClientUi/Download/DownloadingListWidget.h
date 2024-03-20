@@ -7,24 +7,26 @@ namespace Ui
 class DownloadingItemWidget;
 }
 
+class UiDownloader;
 class DownloadingItemWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit DownloadingItemWidget(std::string gid, QWidget* parent = nullptr);
-    ~DownloadingItemWidget() override;
+    explicit DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent = nullptr);
+    ~DownloadingItemWidget();
+
+    void setListWidget(QListWidget* listWidget);
+    QListWidget* listWidget() const;
+    std::shared_ptr<UiDownloader> downloaoder();
 
 private:
     void signalsAndSlots();
-    Ui::DownloadingItemWidget* ui;
-signals:
-    void deleteBtnClick(std::string);
 
-public:
-    std::string m_gid;
-    std::shared_ptr<aria2net::AriaTellStatus> status;
-    void updateStatus();
+private:
+    Ui::DownloadingItemWidget* ui;
+    QListWidget* m_listWidget;
+    std::shared_ptr<UiDownloader> m_downloader;
 };
 
 class DownloadingListWidget : public QListWidget
@@ -33,16 +35,15 @@ class DownloadingListWidget : public QListWidget
 
 public:
     explicit DownloadingListWidget(QWidget* parent = nullptr);
-    void addTaskItem(const std::string& gid);
 
-public slots:
-    void updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status);
-    void deleteItem(const std::string&);
-    // void openInfoDialog(const std::string& gid);
+    void addDownloadItem(const std::shared_ptr<UiDownloader>& downloader);
+
+    void removeDownloadItem(const std::string& guid);
+    QListWidgetItem* itemFromWidget(QWidget* target);
 
 private:
     void signalsAndSlots() const;
-    // QTimer* downloadIntervalTimer;
-    // bool isTiemrStart = false;
+
+private:
     std::unordered_map<std::string, QListWidgetItem*> m_items;
 };
