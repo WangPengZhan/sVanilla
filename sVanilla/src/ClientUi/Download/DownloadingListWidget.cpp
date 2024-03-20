@@ -26,6 +26,10 @@ QString formatSize(T bytesPerSec)
     }
     else if (bytesPerSec >= Kib)
     {
+        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib/s";
+    }
+    else if (bytesPerSec >= Kib)
+    {
         return QString::number(bytesPerSec / Kib, 'f', 2) + "Kib/s";
     }
     else
@@ -42,6 +46,7 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
 {
     ui->setupUi(this);
     signalsAndSlots();
+    ui->Title->setText(QString::fromStdString(downloader->filename()));
     ui->Start->setIcon(QIcon(":icon/download/start.svg"));
     ui->Pause->setIcon(QIcon(":icon/download/pause.svg"));
     ui->Delete->setIcon(QIcon(":icon/download/delete.svg"));

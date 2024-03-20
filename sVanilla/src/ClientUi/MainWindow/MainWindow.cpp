@@ -34,6 +34,9 @@ MainWindow::MainWindow(QWidget* parent)
     ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
                                   {"https://testfile.org/files-5GB-zip"}, "local");
     setLightTheme();
+
+    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
+                                  {"https://testfile.org/files-5GB-zip"}, "local");
 }
 
 MainWindow::~MainWindow() = default;
@@ -111,7 +114,6 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 {
     ui->settingPage->updateAria2Version(version);
 }
-
 
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
