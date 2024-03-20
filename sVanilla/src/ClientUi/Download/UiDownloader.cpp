@@ -1,6 +1,6 @@
 #include "UiDownloader.h"
 
-UiDownloader::UiDownloader(std::shared_ptr<download::AbstractDownloader> downloader, QObject* parent)
+UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, QObject* parent)
     : QObject(parent) 
     , m_realDownloader(std::move(downloader))
 {
@@ -11,7 +11,7 @@ UiDownloader::~UiDownloader()
 {
 }
 
-void UiDownloader::setRealDownloader(std::shared_ptr<download::AbstractDownloader> realDownloader)
+void UiDownloader::setRealDownloader(std::shared_ptr<AbstractDownloader> realDownloader)
 {
     m_realDownloader = realDownloader;
 }
@@ -40,13 +40,13 @@ void UiDownloader::start()
 void UiDownloader::stop()
 {
     m_realDownloader->stop();
-    setStatus(Wait);
+    setStatus(Waitting);
 }
 
 void UiDownloader::pause()
 {
     m_realDownloader->pause();
-    setStatus(Wait);
+    setStatus(Waitting);
 }
 
 void UiDownloader::resume()

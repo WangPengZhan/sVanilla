@@ -10,13 +10,6 @@ DownloadWidget::DownloadWidget(QWidget* parent)
     , m_downloadManager(new DownloadManager(this))
 {
     ui->setupUi(this);
-    connect(ui->pushButton, &QPushButton::clicked, this, [this] {
-        Toast::Show("1: looglooogloogloog success", Toast::Level::Success);
-        Toast::Show("2: this is a info", Toast::Level::Info);
-        Toast::Show("3: this is a warn", Toast::Level::Warn);
-        Toast::Show("4: this is a error", Toast::Level::Error);
-    });
-
 }
 
 DownloadWidget::~DownloadWidget()
@@ -26,12 +19,10 @@ DownloadWidget::~DownloadWidget()
 
 void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName)
 {
-    // static int i = 0;
-    std::string path = "/Users/alanus/Downloads/testFolder";
-    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output", fileName);
+    // param path: come from config file or custom setting in the future
+    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output" , fileName);
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
     uiDownloader->setFileName(biliDownlaoder->filename());
     ui->DownloadListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }
-

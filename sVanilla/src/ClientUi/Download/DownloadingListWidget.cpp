@@ -11,9 +11,9 @@
 template <typename T>
 QString formatSize(T bytesPerSec)
 {
-    const double Gib = 1073741824.0;
-    const double Mib = 1048576.0;
-    const double Kib = 1024.0;
+    constexpr double Gib = 1073741824.0;
+    constexpr double Mib = 1048576.0;
+    constexpr double Kib = 1024.0;
     if (bytesPerSec >= Gib)
     {
         return QString::number(bytesPerSec / Gib, 'f', 2) + "GiB/s";
@@ -35,8 +35,8 @@ QString formatSize(T bytesPerSec)
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadingItemWidget)
-    , m_downloader(downloader)
     , m_listWidget(nullptr)
+    , m_downloader(downloader)
 {
     ui->setupUi(this);
     signalsAndSlots();
@@ -53,7 +53,7 @@ void DownloadingItemWidget::setListWidget(QListWidget* listWidget)
     m_listWidget = listWidget;
 }
 
-QListWidget* DownloadingItemWidget::listWidget()
+QListWidget* DownloadingItemWidget::listWidget() const
 {
     return m_listWidget;
 }
@@ -84,12 +84,12 @@ void DownloadingItemWidget::signalsAndSlots()
         }
     });
     connect(ui->btnPause, &QPushButton::clicked, this, [this](bool isResume) {
-        if (!isResume && (m_downloader->status() == download::AbstractDownloader::Paused || m_downloader->status() == download::AbstractDownloader::Wait))
+        if (!isResume && (m_downloader->status() == download::AbstractDownloader::Paused || m_downloader->status() == download::AbstractDownloader::Waitting))
         {
-            m_downloader->setStatus(download::AbstractDownloader::Resume);
+            m_downloader->setStatus(download::AbstractDownloader::Resumed);
         }
         else if (isResume &&
-                 (m_downloader->status() == download::AbstractDownloader::Downloading || m_downloader->status() == download::AbstractDownloader::Resume))
+                 (m_downloader->status() == download::AbstractDownloader::Downloading || m_downloader->status() == download::AbstractDownloader::Resumed))
         {
             m_downloader->setStatus(download::AbstractDownloader::Paused);
         }
@@ -107,7 +107,6 @@ void DownloadingItemWidget::signalsAndSlots()
 
         QStringList arguments;
 
-        // 根据操作系统设置不同的命令和参数
 #ifdef _WIN32
         QString explorerCommand = "explorer";
         arguments << "/select," << QDir::toNativeSeparators(filePath);

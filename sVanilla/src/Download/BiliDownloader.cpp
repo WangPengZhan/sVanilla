@@ -37,14 +37,14 @@ void BiliDownloader::stop()
 {
     m_videoDownloader.stop();
     m_audioDownloader.stop();
-    m_status = Wait;
+    m_status = Waitting;
 }
 
 void BiliDownloader::pause()
 {
     m_videoDownloader.pause();
     m_audioDownloader.pause();
-    m_status = Wait;
+    m_status = Waitting;
 }
 
 void BiliDownloader::resume()

@@ -63,7 +63,7 @@ void DownloadStatusThread::downloadThread()
                 value->pause();
                 break;
             }
-            case AbstractDownloader::Resume:
+            case AbstractDownloader::Resumed:
             {
                 value->resume();
                 break;

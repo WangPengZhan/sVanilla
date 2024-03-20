@@ -13,11 +13,11 @@ class UiDownloader : public QObject, public download::AbstractDownloader
 {
     Q_OBJECT
 public:
-    UiDownloader(std::shared_ptr<download::AbstractDownloader> downloader, QObject* parent = nullptr);
+    UiDownloader(std::shared_ptr<AbstractDownloader> downloader, QObject* parent = nullptr);
     ~UiDownloader();
 
-    void setRealDownloader(std::shared_ptr<download::AbstractDownloader> realDownloader);
-    std::shared_ptr<download::AbstractDownloader> realDownloader();
+    void setRealDownloader(std::shared_ptr<AbstractDownloader> realDownloader);
+    std::shared_ptr<AbstractDownloader> realDownloader();
 
     void setFileName(const std::string& filename);
     const std::string& filename() const;
@@ -28,7 +28,6 @@ public:
     void resume() override;
     void downloadStatus() override;
     void finish() override;
-    // in slot changed status and DownloadStatusTread to do in real
 
 signals:
     void finished(QString msg);

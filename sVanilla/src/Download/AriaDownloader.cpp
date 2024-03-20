@@ -33,13 +33,13 @@ void AriaDownloader::start()
 void AriaDownloader::stop()
 {
     aria2net::AriaClient::globalClient().RemoveAsync(m_gid);
-    m_status = Wait;
+    m_status = Waitting;
 }
 
 void AriaDownloader::pause()
 {
     aria2net::AriaClient::globalClient().PauseAsync(m_gid);
-    m_status = Wait;
+    m_status = Waitting;
 }
 
 void AriaDownloader::resume()

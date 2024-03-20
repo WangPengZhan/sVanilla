@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget* parent)
     signalsAndSlots();
     resize(800, 600);
 
-    // test test test
     ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
                                   {"https://testfile.org/files-5GB-zip"}, "local");
 }

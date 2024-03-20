@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <atomic>
+
 namespace download
 {
 
@@ -17,11 +18,11 @@ class AbstractDownloader
 public:
     enum Status
     {
-        Wait,
+        Waitting,
         Ready,
         Downloading,
         Paused,
-        Resume,
+        Resumed,
         Stopped,
         Finished,
         Error
@@ -45,7 +46,7 @@ public:
     Status status() const;
 
 protected:
-    std::atomic<Status> m_status = Wait;
+    std::atomic<Status> m_status = Waitting;
     std::string m_guid;
     std::string m_stage;
     DownloadInfo m_info;

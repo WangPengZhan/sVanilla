@@ -17,7 +17,7 @@ public:
     ~DownloadingItemWidget();
 
     void setListWidget(QListWidget* listWidget);
-    QListWidget* listWidget();
+    QListWidget* listWidget() const;
     std::shared_ptr<UiDownloader> downloaoder();
 
 private:
