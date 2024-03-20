@@ -1,17 +1,17 @@
 #pragma once
-#ifdef __APPLE__
+#ifdef __linux__
 
 #include "PlatformInitializer.h"
 
-class MacInitializer : public PlatformInitializer
+class LinuxInitializer : public PlatformInitializer
 {
 public:
-    MacInitializer();
-    ~MacInitializer();
+    LinuxInitializer();
+    ~LinuxInitializer();
 
     void initApplicationBefore() override;
     void init() override;
     void deinit() override;
 };
 
-#endif  // __APPLE__
+#endif  // __linux__

@@ -1,5 +1,5 @@
-#ifdef _WIN32
 #pragma once
+#ifdef _WIN32
 
 #include "PlatformInitializer.h"
 

@@ -10,6 +10,7 @@
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "MacInitializer.h"
 #include "WindowInitializer.h"
+#include "LinuxInitializer.h"
 #include "AppInitializer.h"
 
 AppInitializer::AppInitializer()
@@ -17,8 +18,7 @@ AppInitializer::AppInitializer()
 #ifdef _WIN32
     m_initializer = std::make_unique<WindowInitializer>();
 #elif __linux__
-    google_breakpad::MinidumpDescriptor descriptor("./dump");
-    google_breakpad::ExceptionHandler eh(descriptor, NULL, dumpCallback, NULL, true, -1);
+    m_initializer = std::make_unique<LinuxInitializer>();
 #elif __APPLE__
     m_initializer = std::make_unique<MacInitializer>();
 #endif
