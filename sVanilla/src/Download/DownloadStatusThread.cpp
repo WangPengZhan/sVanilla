@@ -41,7 +41,7 @@ void DownloadStatusThread::downloadThread()
     {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_condition.wait(lock, [&] {
-            return !m_downloadTasks.empty();
+            return !m_downloadTasks.empty() || !m_running.load();
         });
         std::vector<std::string> removeKeys;
         for (auto& [key, value] : m_downloadTasks)
@@ -61,7 +61,11 @@ void DownloadStatusThread::downloadThread()
             case AbstractDownloader::Paused:
             {
                 value->pause();
-                removeKeys.push_back(key);
+                break;
+            }
+            case AbstractDownloader::Resumed:
+            {
+                value->resume();
                 break;
             }
             case AbstractDownloader::Stopped:
@@ -71,11 +75,11 @@ void DownloadStatusThread::downloadThread()
                 break;
             }
             case AbstractDownloader::Finished:
-            case AbstractDownloader::Error:
             {
                 removeKeys.push_back(key);
                 break;
             }
+            case AbstractDownloader::Error:
             default:
                 break;
             }
@@ -86,7 +90,7 @@ void DownloadStatusThread::downloadThread()
             m_downloadTasks.erase(key);
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(600));
     }
 }
 

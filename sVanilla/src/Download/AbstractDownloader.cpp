@@ -2,6 +2,16 @@
 
 namespace download
 {
+const DownloadInfo& AbstractDownloader::info() const
+{
+    return m_info;
+}
+
+const std::string& AbstractDownloader::stage() const
+{
+    return m_stage;
+}
+
 std::string AbstractDownloader::guid() const
 {
     return m_guid;

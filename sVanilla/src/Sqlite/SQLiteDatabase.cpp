@@ -541,6 +541,12 @@ void SQLiteDatabase::updateLastError()
     SQLITE_LOG_ERROR("sqlite3 errmsg: {}", m_lastError);
 }
 
+void SQLiteDatabase::initDb()
+{
+    execute("PRAGMA journal_mode=WAL;");
+    execute("PRAGMA synchronous=OFF;");
+}
+
 sqlite3* SQLiteDatabase::handle() const
 {
     return m_db;

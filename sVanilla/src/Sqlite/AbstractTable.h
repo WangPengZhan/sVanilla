@@ -25,8 +25,8 @@ public:
     AbstractTable(SQLiteDatabase& db, const std::string& nameTable);
     virtual ~AbstractTable() = default;
 
-    virtual void initTable() = 0;
-
+    // can"t create table when name and headers is empty
+    void initTable();
     bool createTable(SQLiteDatabase& db);
 
     const std::string& name() const;

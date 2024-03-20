@@ -18,6 +18,7 @@ private:
     SQLiteDatabase& operator=(const SQLiteDatabase& other) = delete;
 
 public:
+    using dbPtr = std::shared_ptr<SQLiteDatabase>;
     enum NextStatus
     {
         Row,
@@ -60,6 +61,10 @@ protected:
     void finalize();
     void updateLastError();
 
+private:
+    void initDb();
+
+protected:
     sqlite3* m_db;
     sqlite3_stmt* m_stmt;
     std::string m_lastError;

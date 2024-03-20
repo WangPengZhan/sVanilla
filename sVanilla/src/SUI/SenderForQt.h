@@ -60,7 +60,7 @@ class TransceiverForQt
 {
 public:
     TransceiverForQt();
-    ~TransceiverForQt();
+    ~TransceiverForQt() = default;
 
     template<typename Lambda>
     void sendTask(Lambda &&lambda) const

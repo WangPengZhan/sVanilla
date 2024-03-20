@@ -7,8 +7,6 @@
 #include <memory>
 #include <condition_variable>
 
-class AbstractDownloader;
-
 namespace download
 {
 

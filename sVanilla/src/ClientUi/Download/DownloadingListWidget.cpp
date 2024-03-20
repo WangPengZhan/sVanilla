@@ -1,37 +1,46 @@
-#include "DownloadingListWidget.h"
+#include <QProcess>
+#include <QDir>
 
 #include <utility>
+
+#include "UiDownloader.h"
+#include "DownloadingListWidget.h"
 #include "ui_DownloadingListWidget.h"
 #include "Theme/StyledItemDelegate.h"
 
 template <typename T>
 QString formatSize(T bytesPerSec)
 {
-    const double Gib = pow(2, 30);
-    const double Mib = pow(2, 20);
-    const double Kib = pow(2, 10);
+    constexpr double Gib = 1073741824.0;
+    constexpr double Mib = 1048576.0;
+    constexpr double Kib = 1024.0;
     if (bytesPerSec >= Gib)
     {
-        return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB/s";
+        return QString::number(bytesPerSec / Gib, 'f', 2) + "GiB/s";
     }
-    if (bytesPerSec >= Mib)
+    else if (bytesPerSec >= Mib)
     {
-        return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib/s";
+        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib/s";
     }
-    if (bytesPerSec >= Kib)
+    else if (bytesPerSec >= Kib)
     {
-        return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib/s";
+        return QString::number(bytesPerSec / Kib, 'f', 2) + "Kib/s";
     }
-    return QString::number(bytesPerSec, 'g', 3) + "B/s";
+    else
+    {
+        return QString::number(bytesPerSec, 'f', 3) + "B/s";
+    }
 }
 
-DownloadingItemWidget::DownloadingItemWidget(std::string gid, QWidget* parent)
+DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadingItemWidget)
-    , m_gid(std::move(gid))
+    , m_listWidget(nullptr)
+    , m_downloader(downloader)
 {
     ui->setupUi(this);
     signalsAndSlots();
+    ui->Title->setText(QString::fromStdString(downloader->filename()));
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -39,19 +48,87 @@ DownloadingItemWidget::~DownloadingItemWidget()
     delete ui;
 }
 
+void DownloadingItemWidget::setListWidget(QListWidget* listWidget)
+{
+    m_listWidget = listWidget;
+}
+
+QListWidget* DownloadingItemWidget::listWidget() const
+{
+    return m_listWidget;
+}
+
+std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder()
+{
+    return m_downloader;
+}
+
 void DownloadingItemWidget::signalsAndSlots()
 {
-    connect(ui->Delete, &QPushButton::clicked, this, [this] {
-        emit deleteBtnClick(m_gid);
+    connect(ui->btnDelete, &QPushButton::clicked, this, [this]() {
+        m_downloader->setStatus(download::AbstractDownloader::Stopped);
+        if (!m_listWidget)
+        {
+            return;
+        }
+
+        int count = m_listWidget->count();
+        for (int i = 0; i < count; ++i)
+        {
+            if (m_listWidget->itemWidget(m_listWidget->item(i)) == this)
+            {
+                auto item = m_listWidget->takeItem(i);
+                delete item;
+                return;
+            }
+        }
     });
-}
-void DownloadingItemWidget::updateStatus()
-{
-    const std::filesystem::path path(status->result.files.front().path);
-    ui->Title->setText(QString::fromStdString(path.stem().string()));
-    ui->Speed->setText(formatSize(QString::fromStdString(status->result.downloadSpeed).toInt()));
-    const auto progress = QString::fromStdString(status->result.completedLength).toInt() * 100 / QString::fromStdString(status->result.totalLength).toInt();
-    ui->progressBar->setValue(progress);
+    connect(ui->btnPause, &QPushButton::clicked, this, [this](bool isResume) {
+        if (!isResume && (m_downloader->status() == download::AbstractDownloader::Paused || m_downloader->status() == download::AbstractDownloader::Waitting))
+        {
+            m_downloader->setStatus(download::AbstractDownloader::Resumed);
+        }
+        else if (isResume &&
+                 (m_downloader->status() == download::AbstractDownloader::Downloading || m_downloader->status() == download::AbstractDownloader::Resumed))
+        {
+            m_downloader->setStatus(download::AbstractDownloader::Paused);
+        }
+        else
+        {
+            ui->btnPause->setChecked(!isResume);
+        }
+    });
+    connect(ui->btnFolder, &QPushButton::clicked, this, [this]() {
+        QString filePath = QString::fromStdString(m_downloader->filename());
+        if (std::filesystem::path(m_downloader->filename()).is_relative())
+        {
+            filePath = QApplication::applicationDirPath() + "/" + filePath;
+        }
+
+        QStringList arguments;
+
+#ifdef _WIN32
+        QString explorerCommand = "explorer";
+        arguments << "/select," << QDir::toNativeSeparators(filePath);
+#elif __linux__
+        QString explorerCommand = "open";
+        arguments << "-R" << filePath;
+#elif __APPLE__
+        QString explorerCommand = "open";
+        arguments << QStringLiteral("-R") << "\"" << filePath << "\"";
+#endif
+
+        QProcess::startDetached(explorerCommand, arguments);
+    });
+
+    connect(m_downloader.get(), &UiDownloader::update, this, [this](download::DownloadInfo info) {
+        ui->labelStatus->setText(QString::fromStdString(info.stage));
+        ui->labelSpeed->setText(formatSize(info.speed));
+        if (info.total != 0)
+        {
+            ui->progressBar->setValue(info.complete / static_cast<double>(info.total) * 100);
+        }
+    });
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
@@ -59,41 +136,45 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
-    auto* delegate = new CustomVideoListItemDelegate();
-    this->setItemDelegate(delegate);
-    addTaskItem("1234");
-    addTaskItem("1235");
-    addTaskItem("1236");
-
 }
+void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
+{
+    auto pWidget = new DownloadingItemWidget(downloader, this);
+    pWidget->setListWidget(this);
+    auto pItem = new QListWidgetItem(this);
+    // pItem->setSizeHint(QSize(0, 60));
+    pItem->setSizeHint(pWidget->sizeHint());
+    setItemWidget(pItem, pWidget);
+    m_items.insert({downloader->guid(), pItem});
+}
+
+void DownloadingListWidget::removeDownloadItem(const std::string& guid)
+{
+    if (m_items.find(guid) != m_items.end())
+    {
+        if (m_items[guid])
+        {
+            delete m_items[guid];
+        }
+        m_items.erase(guid);
+    }
+}
+
+QListWidgetItem* DownloadingListWidget::itemFromWidget(QWidget* target)
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        if (itemWidget(item(i)) == target)
+        {
+            return item(i);
+        }
+    }
+
+    return nullptr;
+}
+
 void DownloadingListWidget::signalsAndSlots() const
 {
 
 }
 
-void DownloadingListWidget::addTaskItem(const std::string& gid)
-{
-    const auto newItem = new DownloadingItemWidget(gid, this);
-    const auto listWidgetItem = new QListWidgetItem(this);
-    listWidgetItem->setSizeHint(newItem->sizeHint());
-    this->setItemWidget(listWidgetItem, newItem);
-    m_items.insert(std::make_pair(gid, listWidgetItem));
-    connect(newItem, &DownloadingItemWidget::deleteBtnClick, this, &DownloadingListWidget::deleteItem);
-}
-
-void DownloadingListWidget::updateItem(const std::shared_ptr<aria2net::AriaTellStatus>& status)
-{
-    const auto gid = status->result.gid;
-    const auto item = itemWidget(m_items[gid]);
-    const auto widget = qobject_cast<DownloadingItemWidget*>(item);
-    widget->status = status;
-    widget->updateStatus();
-}
-
-void DownloadingListWidget::deleteItem(const std::string& gid)
-{
-    const int row = this->row(m_items[gid]);
-    this->takeItem(row);
-    this->update();
-    m_items.erase(gid);
-}
