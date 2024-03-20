@@ -56,8 +56,16 @@ void BiliDownloader::resume()
 
 void BiliDownloader::downloadStatus()
 {
-    m_audioDownloader.downloadStatus();
-    m_videoDownloader.downloadStatus();
+    if (m_audioDownloader.status() == Downloading)
+    {
+        m_audioDownloader.downloadStatus();
+    }
+
+    if (m_videoDownloader.status() == Downloading)
+    {
+        m_videoDownloader.downloadStatus();
+    }
+
     auto video = m_videoDownloader.info();
     auto audio = m_audioDownloader.info();
 

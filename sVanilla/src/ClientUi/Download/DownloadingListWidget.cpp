@@ -11,22 +11,25 @@
 template <typename T>
 QString formatSize(T bytesPerSec)
 {
-    const double Gib = pow(2, 30);
-    const double Mib = pow(2, 20);
-    const double Kib = pow(2, 10);
+    const double Gib = 1073741824.0;
+    const double Mib = 1048576.0;
+    const double Kib = 1024.0;
     if (bytesPerSec >= Gib)
     {
-        return QString::number(bytesPerSec / Gib, 'g', 2) + "GiB/s";
+        return QString::number(bytesPerSec / Gib, 'f', 2) + "GiB/s";
     }
-    if (bytesPerSec >= Mib)
+    else if (bytesPerSec >= Mib)
     {
-        return QString::number(bytesPerSec / Mib, 'g', 2) + "Mib/s";
+        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib/s";
     }
-    if (bytesPerSec >= Kib)
+    else if (bytesPerSec >= Kib)
     {
-        return QString::number(bytesPerSec / Kib, 'g', 2) + "Kib/s";
+        return QString::number(bytesPerSec / Kib, 'f', 2) + "Kib/s";
     }
-    return QString::number(bytesPerSec, 'g', 3) + "B/s";
+    else
+    {
+        return QString::number(bytesPerSec, 'f', 3) + "B/s";
+    }
 }
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
@@ -37,6 +40,7 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
 {
     ui->setupUi(this);
     signalsAndSlots();
+    ui->Title->setText(QString::fromStdString(downloader->filename()));
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -80,12 +84,12 @@ void DownloadingItemWidget::signalsAndSlots()
         }
     });
     connect(ui->btnPause, &QPushButton::clicked, this, [this](bool isResume) {
-        if (isResume && m_downloader->status() == download::AbstractDownloader::Paused)
+        if (!isResume && (m_downloader->status() == download::AbstractDownloader::Paused || m_downloader->status() == download::AbstractDownloader::Wait))
         {
             m_downloader->setStatus(download::AbstractDownloader::Resume);
-
         }
-        else if (m_downloader->status() == download::AbstractDownloader::Downloading || m_downloader->status() == download::AbstractDownloader::Resume)
+        else if (isResume &&
+                 (m_downloader->status() == download::AbstractDownloader::Downloading || m_downloader->status() == download::AbstractDownloader::Resume))
         {
             m_downloader->setStatus(download::AbstractDownloader::Paused);
         }
@@ -97,7 +101,7 @@ void DownloadingItemWidget::signalsAndSlots()
     connect(ui->btnFolder, &QPushButton::clicked, this, [this]() {
         QString filePath = QString::fromStdString(m_downloader->filename());
 
-        QProcess process;
+        // QProcess process;
         QStringList arguments;
 
         // 根据操作系统设置不同的命令和参数
@@ -108,11 +112,13 @@ void DownloadingItemWidget::signalsAndSlots()
         QString explorerCommand = "open";
         arguments << "-R" << filePath;
 #elif __APPLE__
-        QString explorerCommand = "xdg-open";
-        arguments << QDir::toNativeSeparators(filePath);
+        QString explorerCommand = "open";
+        QString file = QApplication::applicationDirPath() + "/" + filePath;
+        qDebug() << file;
+        arguments << QStringLiteral("-R") <<"\"" <<file << "\"";
 #endif
 
-        process.start(explorerCommand, arguments);
+        QProcess::startDetached(explorerCommand, arguments);
     });
 
     connect(m_downloader.get(), &UiDownloader::update, this, [this](download::DownloadInfo info) {
@@ -123,23 +129,21 @@ void DownloadingItemWidget::signalsAndSlots()
             ui->progressBar->setValue(info.complete / static_cast<double>(info.total) * 100);
         }
     });
-
 }
-
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
     : QListWidget(parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
-
 }
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
     auto pWidget = new DownloadingItemWidget(downloader, this);
     pWidget->setListWidget(this);
     auto pItem = new QListWidgetItem(this);
-    pItem->setSizeHint(QSize(0, 60));
+    // pItem->setSizeHint(QSize(0, 60));
+    pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
     m_items.insert({downloader->guid(), pItem});
 }

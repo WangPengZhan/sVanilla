@@ -30,10 +30,8 @@ MainWindow::MainWindow(QWidget* parent)
     resize(800, 600);
 
     // test test test
-    ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"},
-                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"}, "test");
-    Toast::create(this);
-
+    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
+                                  {"https://testfile.org/files-5GB-zip"}, "local");
 }
 
 MainWindow::~MainWindow() = default;

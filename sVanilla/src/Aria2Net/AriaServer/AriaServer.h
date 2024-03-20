@@ -1,6 +1,7 @@
 #pragma once
 #include <future>
 
+class TransceiverForQt;
 class QProcess;
 
 namespace aria2net
@@ -27,6 +28,7 @@ private:
     std::function<void()> m_errorFunc;
     std::function<void()> m_closeFunc;
     std::unique_ptr<QProcess> m_aria2Process;
+    std::unique_ptr<TransceiverForQt> m_transceiver;
 };
 
 }  // namespace aria2net

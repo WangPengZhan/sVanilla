@@ -51,18 +51,16 @@ void AriaDownloader::resume()
 void AriaDownloader::downloadStatus()
 {
     m_downloadTellStatus = aria2net::AriaClient::globalClient().TellStatus(m_gid);
-    if (m_downloadTellStatus.error.code != 0)
+    qDebug() << "Aria2Client tellStatus response: " << m_downloadTellStatus.toString().c_str();
+    if (m_downloadTellStatus.error.code != 0 || !m_downloadTellStatus.result.errorCode.empty())
     {
-        // to do
         m_status = Error;
         return;
     }
-
-    m_info.total = std::stoi(m_downloadTellStatus.result.totalLength);
-    m_info.complete = std::stoi(m_downloadTellStatus.result.completedLength);
-    m_info.speed = std::stoi( m_downloadTellStatus.result.downloadSpeed);
-
-    if (m_info.complete == m_info.total)
+    m_info.complete = std::stoull(m_downloadTellStatus.result.completedLength);
+    m_info.speed = std::stoull(m_downloadTellStatus.result.downloadSpeed);
+    m_info.total = std::stoull(m_downloadTellStatus.result.totalLength);
+    if (m_info.complete == m_info.total && m_downloadTellStatus.result.status == "complete")
     {
         m_status = Finished;
     }

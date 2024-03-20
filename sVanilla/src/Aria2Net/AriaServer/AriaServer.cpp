@@ -7,23 +7,33 @@
 
 #include "AriaServer.h"
 #include "Aria2Net/AriaLog.h"
+#include "SUI/SenderForQt.h"
 
 namespace aria2net
 {
 
 AriaServer::AriaServer()
     : m_aria2Process(nullptr)
+    , m_transceiver(new TransceiverForQt)
 {
 }
 
 AriaServer::~AriaServer()
 {
-    forceCloseServer();
+    m_transceiver->sendTask([this]() {
+        if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
+        {
+            m_aria2Process->kill();
+            m_aria2Process->waitForFinished();
+            m_aria2Process.reset();
+        }
+    });
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 void AriaServer::startLocalServerAsync()
 {
-    m_future = std::async(std::launch::async, [&]() {
+    m_transceiver->sendTask([&]() {
         m_aria2Process = std::make_unique<QProcess>();
         QString ariaPath = QApplication::applicationDirPath() + "/aria/";
         QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
@@ -98,20 +108,26 @@ void AriaServer::startLocalServerAsync()
 
 void AriaServer::closeServer()
 {
-    if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
-    {
-        m_aria2Process->kill();
-        m_aria2Process->waitForFinished();
-    }
+    m_transceiver->sendTask([this]() {
+        if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
+        {
+            m_aria2Process->kill();
+            m_aria2Process->waitForFinished();
+            m_aria2Process.reset();
+        }
+    });
 }
 
 void AriaServer::forceCloseServer()
 {
-    if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
-    {
-        m_aria2Process->kill();
-        m_aria2Process->waitForFinished();
-    }
+    m_transceiver->sendTask([this]() {
+        if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
+        {
+            m_aria2Process->kill();
+            m_aria2Process->waitForFinished();
+            m_aria2Process.reset();
+        }
+    });
 }
 
 void AriaServer::testServer()
