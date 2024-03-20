@@ -33,6 +33,7 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
     : QWidget(parent)
     , ui(new Ui::DownloadingItemWidget)
     , m_downloader(downloader)
+    , m_listWidget(nullptr)
 {
     ui->setupUi(this);
     signalsAndSlots();
@@ -43,7 +44,7 @@ DownloadingItemWidget::~DownloadingItemWidget()
     delete ui;
 }
 
-void DownloadingItemWidget::setListView(QListWidget* listWidget)
+void DownloadingItemWidget::setListWidget(QListWidget* listWidget)
 {
     m_listWidget = listWidget;
 }
@@ -136,6 +137,7 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
     auto pWidget = new DownloadingItemWidget(downloader, this);
+    pWidget->setListWidget(this);
     auto pItem = new QListWidgetItem(this);
     pItem->setSizeHint(QSize(0, 60));
     setItemWidget(pItem, pWidget);

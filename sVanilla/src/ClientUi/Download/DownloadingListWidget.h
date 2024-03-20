@@ -16,7 +16,7 @@ public:
     explicit DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent = nullptr);
     ~DownloadingItemWidget();
 
-    void setListView(QListWidget* listWidget);
+    void setListWidget(QListWidget* listWidget);
     QListWidget* listWidget();
     std::shared_ptr<UiDownloader> downloaoder();
 
