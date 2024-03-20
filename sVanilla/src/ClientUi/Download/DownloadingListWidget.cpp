@@ -100,8 +100,11 @@ void DownloadingItemWidget::signalsAndSlots()
     });
     connect(ui->btnFolder, &QPushButton::clicked, this, [this]() {
         QString filePath = QString::fromStdString(m_downloader->filename());
+        if (std::filesystem::path(m_downloader->filename()).is_relative())
+        {
+            filePath = QApplication::applicationDirPath() + "/" + filePath;
+        }
 
-        // QProcess process;
         QStringList arguments;
 
         // 根据操作系统设置不同的命令和参数
@@ -113,9 +116,7 @@ void DownloadingItemWidget::signalsAndSlots()
         arguments << "-R" << filePath;
 #elif __APPLE__
         QString explorerCommand = "open";
-        QString file = QApplication::applicationDirPath() + "/" + filePath;
-        qDebug() << file;
-        arguments << QStringLiteral("-R") <<"\"" <<file << "\"";
+        arguments << QStringLiteral("-R") << "\"" << filePath << "\"";
 #endif
 
         QProcess::startDetached(explorerCommand, arguments);

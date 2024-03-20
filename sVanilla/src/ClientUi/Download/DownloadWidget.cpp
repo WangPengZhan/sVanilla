@@ -28,7 +28,7 @@ void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std
 {
     // static int i = 0;
     std::string path = "/Users/alanus/Downloads/testFolder";
-    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, path, fileName);
+    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output", fileName);
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
     uiDownloader->setFileName(biliDownlaoder->filename());
     ui->DownloadListWidget->addDownloadItem(uiDownloader);

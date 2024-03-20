@@ -60,6 +60,7 @@ void AriaDownloader::downloadStatus()
     m_info.complete = std::stoull(m_downloadTellStatus.result.completedLength);
     m_info.speed = std::stoull(m_downloadTellStatus.result.downloadSpeed);
     m_info.total = std::stoull(m_downloadTellStatus.result.totalLength);
+
     if (m_info.complete == m_info.total && m_downloadTellStatus.result.status == "complete")
     {
         m_status = Finished;

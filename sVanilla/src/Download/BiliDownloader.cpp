@@ -56,6 +56,12 @@ void BiliDownloader::resume()
 
 void BiliDownloader::downloadStatus()
 {
+    if (m_videoDownloader.status() == Error || m_audioDownloader.status() == Error)
+    {
+        m_status = Error;
+        return;
+    }
+
     if (m_audioDownloader.status() == Downloading)
     {
         m_audioDownloader.downloadStatus();
@@ -73,14 +79,14 @@ void BiliDownloader::downloadStatus()
     m_info.complete = video.complete + audio.complete;
     m_info.speed = video.speed + audio.speed;
 
-    if (m_info.total == m_info.complete)
+    if (m_info.total == m_info.complete && m_videoDownloader.status() == Finished && m_audioDownloader.status() == Finished)
     {
         ffmpeg::MergeInfo merge;
         merge.audio = m_audioDownloader.path() + "/" + m_audioDownloader.filename();
         merge.video = m_videoDownloader.path() + "/" + m_videoDownloader.filename();
         merge.targetVideo = path() + "/" + filename();
         m_info.stage = "ffmpeg mixed!";
-        
+
         ffmpeg::FFmpegHelper::mergeVideo(merge);
 
         m_status = Finished;
