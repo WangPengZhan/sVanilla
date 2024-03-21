@@ -50,7 +50,7 @@ class VideoGridWidget : public QListWidget
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
 
-    void addVideoItem(const std::string& bvid);
+    void addVideoItem(const std::string& identifier);
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
     void getSignalPointer(QSplitter* splitter);

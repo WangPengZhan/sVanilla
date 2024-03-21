@@ -23,19 +23,6 @@ public:
     void signalsAndSlots();
     static void setHighDpi();
 
-    void updateAria2Version();
-    void updateDownloadStatus(const std::string& gid);
-    void addUri(const std::string& uris);
-
-private:
-    void updateHomeMsg(const std::string& msg) const;
-
 private:
     std::unique_ptr<PlatformInitializer> m_initializer;
-    std::unique_ptr<MainWindow> maimWindow;
-    std::shared_ptr<DownloadManager> downloadManager;
-    aria2net::AriaSendOption option;
-    aria2net::AriaClient& ariaClient = aria2net::AriaClient::globalClient();
-
-    bool isConnect = false;
 };

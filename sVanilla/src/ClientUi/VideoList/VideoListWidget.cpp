@@ -2,12 +2,14 @@
 #include "VideoDetailWidget.h"
 #include "ui_VideoListWidget.h"
 #include "Theme/StyledItemDelegate.h"
+
+#include <QPushButton>
 #include <QtGui/QMouseEvent>
 
-VideoListItemWidget::VideoListItemWidget(std::string bvid, QWidget* parent)
+VideoListItemWidget::VideoListItemWidget(std::string identifier, QWidget* parent)
     : QWidget(parent)
+    , Identifier(std::move(identifier))
     , ui(new Ui::VideoListItemWidget())
-    , Identifier(std::move(bvid))
 {
     ui->setupUi(this);
     setUi();
@@ -19,6 +21,7 @@ VideoListItemWidget::~VideoListItemWidget()
 {
     delete ui;
 }
+
 void VideoListItemWidget::updateVideoItem()
 {
     ui->Title->setText(QString::fromStdString(m_videoView->Title));
@@ -39,28 +42,30 @@ void VideoListItemWidget::signalsAndSlots()
 
 VideoListWidget::VideoListWidget(QWidget* parent)
 {
-    auto* delegate = new CustomVideoListItemDelegate();
-    setItemDelegate(delegate);
+    // auto* delegate = new CustomVideoListItemDelegate();
+    // setItemDelegate(delegate);
     setSelectionMode(ExtendedSelection);
 }
 
-void VideoListWidget::addVideoItem(const std::string& bvid)
+void VideoListWidget::addVideoItem(const std::string& identifier)
 {
-    const auto videoItem = new VideoListItemWidget(bvid, this);
+    const auto videoItem = new VideoListItemWidget(identifier, this);
     const auto item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(bvid, item));
+    m_items.insert(std::make_pair(identifier, item));
     connectItemSingal(videoItem);
 }
+
 void VideoListWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
-    const auto bvid = videoView->Identifier;
-    const auto item = itemWidget(m_items[bvid]);
+    const auto identifier = videoView->Identifier;
+    const auto item = itemWidget(m_items[identifier]);
     const auto widget = qobject_cast<VideoListItemWidget*>(item);
     widget->m_videoView = videoView;
     widget->updateVideoItem();
 }
+
 void VideoListWidget::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
@@ -78,14 +83,17 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
     }
     QListWidget::mousePressEvent(event);
 }
+
 void VideoListWidget::clearVideo()
 {
-    this->clear();
+    clear();
 }
+
 void VideoListWidget::getSignalPointer(QSplitter* splitter)
 {
     m_splitter = splitter;
 }
+
 void VideoListWidget::connectItemSingal(const VideoListItemWidget* itemWidget)
 {
     connect(itemWidget, &VideoListItemWidget::detailBtnClick, this, [this, itemWidget]() {
@@ -105,22 +113,29 @@ void VideoListWidget::connectItemSingal(const VideoListItemWidget* itemWidget)
         }
     });
 }
+
 void VideoListWidget::showDetailPanel()
 {
     if (!detailWidget()->isVisible())
     {
         detailWidget()->show();
     }
-    m_splitter->setSizes({sizeHint().height(), detailWidget()->sizeHint().height()});
+    m_splitter->setSizes(QList({4, 1}));
+    // m_splitter->setMinimumWidth(width());
+
+    m_splitter->update();
 }
+
 void VideoListWidget::hideDetailPanel()
 {
     m_splitter->setSizes({1, 0});
 }
+
 bool VideoListWidget::detailPanelVisible() const
 {
     return m_splitter->sizes()[1] != 0;
 }
+
 VideoDetailWidget* VideoListWidget::detailWidget() const
 {
     return qobject_cast<VideoDetailWidget*>(m_splitter->widget(1));

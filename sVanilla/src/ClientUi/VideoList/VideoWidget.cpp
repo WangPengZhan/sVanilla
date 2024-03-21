@@ -11,10 +11,15 @@ VideoWidget::VideoWidget(QWidget* parent)
 {
     ui->setupUi(this);
 
-    // ui->VideoDetailWidget->hide();
     ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
-    connect(ui->SwitchBtn, &ToggleSwitch::toggled, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
-
+    const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg") });
+    ui->SwitchBtn->setColumnWidth(45);
+    ui->SwitchBtn->setItemList(horizonNavigation);
+    connect(ui->SwitchBtn, &VanillaStyle::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->VideoStackedPage,&QStackedWidget::currentChanged, this, [this]() {
+        ui->VideoGrid->widget(1)->hide();
+        ui->VideoList->widget(1)->hide();
+    });
     ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
     ui->VideoListWidget->getSignalPointer(ui->VideoList);
 #if 1

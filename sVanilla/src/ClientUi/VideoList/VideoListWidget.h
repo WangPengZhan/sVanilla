@@ -17,7 +17,7 @@ class VideoListItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit VideoListItemWidget(std::string bvid, QWidget* parent = nullptr);
+    explicit VideoListItemWidget(std::string identifier, QWidget* parent = nullptr);
     ~VideoListItemWidget();
 
     void updateVideoItem();
@@ -41,7 +41,7 @@ class VideoListWidget : public QListWidget
 
 public:
     explicit VideoListWidget(QWidget* parent = nullptr);
-    void addVideoItem(const std::string& bvid);
+    void addVideoItem(const std::string& identifier);
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
     void getSignalPointer(QSplitter* splitter);
@@ -59,4 +59,5 @@ private:
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
+    // void resizeEvent(QResizeEvent* event) override;
 };

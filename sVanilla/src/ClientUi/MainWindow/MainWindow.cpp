@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget* parent)
                                   {"https://testfile.org/files-5GB-zip"}, "local");
     setLightTheme();
 
-    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
-                                  {"https://testfile.org/files-5GB-zip"}, "local");
+    // ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
+                                  // {"https://testfile.org/files-5GB-zip"}, "local");
 }
 
 MainWindow::~MainWindow() = default;
@@ -49,13 +49,11 @@ void MainWindow::signalsAndSlots()
     connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
         if (index == 3)
         {
-            Q_EMIT onSettingPage();
+            Q_EMIT ui->settingPage->connectAria2Server();
         }
     });
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
     connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
-    connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
-    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
 }
 
 void MainWindow::setLightTheme()
@@ -143,7 +141,6 @@ void MainWindow::SearchUrl()
 {
 }
 
-void MainWindow::setBlurEffect(const BlurEffect effect)
 void MainWindow::setBlurEffect(const BlurEffect effect)
 {
     switch (effect)

@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmap>
+#include <QPushButton>
 
 void elideText(QLabel* label, const QString& text)
 {
@@ -82,27 +83,26 @@ void VideoGridItemWidget::updateVideoCard() const
 VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    // this->setFrameShape(NoFrame);
     this->setFlow(LeftToRight);
     this->setWrapping(true);
     this->setResizeMode(Adjust);
     setProperty("noBackground", true);
 }
 
-void VideoGridWidget::addVideoItem(const std::string& bvid)
+void VideoGridWidget::addVideoItem(const std::string& identifier)
 {
-    const auto videoItem = new VideoGridItemWidget(bvid, this);
-    videoItem->setCover(bvid);
+    const auto videoItem = new VideoGridItemWidget(identifier, this);
+    videoItem->setCover(identifier);
     const auto item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(bvid, item));
+    m_items.insert(std::make_pair(identifier, item));
     connectItemSingal(videoItem);
 }
 void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
-    const auto bvid = videoView->Identifier;
-    const auto item = itemWidget(m_items[bvid]);
+    const auto identifier = videoView->Identifier;
+    const auto item = itemWidget(m_items[identifier]);
     const auto widget = qobject_cast<VideoGridItemWidget*>(item);
     widget->m_videoView = videoView;
     widget->updateVideoCard();
@@ -160,7 +160,7 @@ VideoDetailWidget* VideoGridWidget::detailWidget() const
 
 void VideoGridWidget::clearVideo()
 {
-    this->clear();
+    clear();
 }
 void VideoGridWidget::getSignalPointer(QSplitter* splitter)
 {
