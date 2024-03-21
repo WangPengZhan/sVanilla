@@ -3,7 +3,6 @@
 #include "ui_VideoGridWidget.h"
 #include "BiliApi/BilibiliClient.h"
 #include "SUI/RoundImageWidget.h"
-
 #include <QDir>
 #include <QPainter>
 #include <QPainterPath>
@@ -23,6 +22,7 @@ void elideText(QLabel* label, const QString& text)
         label->setText(text);
     }
 }
+
 VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoGridItemWidget)
@@ -49,10 +49,12 @@ void VideoGridItemWidget::signalsAndSlots()
 {
     connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
 }
+
 QSize VideoGridItemWidget::sizeHint() const
 {
     return {320, 300};
 }
+
 void VideoGridItemWidget::setCover(const std::string& id)
 {
     QString tempPath = QDir::tempPath();
@@ -99,6 +101,7 @@ void VideoGridWidget::addVideoItem(const std::string& identifier)
     m_items.insert(std::make_pair(identifier, item));
     connectItemSingal(videoItem);
 }
+
 void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
     const auto identifier = videoView->Identifier;
@@ -144,10 +147,12 @@ void VideoGridWidget::showDetailPanel()
     m_splitter->setSizes(QList({gridWidth, detailWidth}));
     update();
 }
+
 void VideoGridWidget::hideDetailPanel() const
 {
     m_splitter->setSizes({1, 0});
 }
+
 bool VideoGridWidget::detailPanelVisible() const
 {
     return m_splitter->sizes()[1] != 0;

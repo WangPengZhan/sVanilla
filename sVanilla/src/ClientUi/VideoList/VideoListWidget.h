@@ -59,5 +59,4 @@ private:
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
-    // void resizeEvent(QResizeEvent* event) override;
 };

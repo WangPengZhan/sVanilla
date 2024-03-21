@@ -20,11 +20,9 @@ int main(int argc, char* argv[])
 
     AppInitializer sVanilla;
     sVanilla.init();
-    //
+
     MainWindow maimWindow;
     maimWindow.show();
 
-    // sVanilla.updateAria2Version();
-    // BiliApi::Get();
     return restarter.restartOrExit(SApplication::exec());
 }

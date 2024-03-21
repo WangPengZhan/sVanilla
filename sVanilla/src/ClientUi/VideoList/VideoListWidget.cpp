@@ -42,8 +42,6 @@ void VideoListItemWidget::signalsAndSlots()
 
 VideoListWidget::VideoListWidget(QWidget* parent)
 {
-    // auto* delegate = new CustomVideoListItemDelegate();
-    // setItemDelegate(delegate);
     setSelectionMode(ExtendedSelection);
 }
 

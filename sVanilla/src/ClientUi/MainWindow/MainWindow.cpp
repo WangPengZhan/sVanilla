@@ -28,15 +28,10 @@ MainWindow::MainWindow(QWidget* parent)
 {
     installWindowAgent();
     ui->setupUi(this);
-    windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
     signalsAndSlots();
     resize(800, 600);
-    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
-                                  {"https://testfile.org/files-5GB-zip"}, "local");
     setLightTheme();
-
-    // ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
-                                  // {"https://testfile.org/files-5GB-zip"}, "local");
+    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"}, {"https://testfile.org/files-5GB-zip"}, "local");
 }
 
 MainWindow::~MainWindow() = default;
@@ -59,9 +54,9 @@ void MainWindow::signalsAndSlots()
 void MainWindow::setLightTheme()
 {
     VanillaStyle::Style::setStyleFromName("LightVanillaStyle");
-#ifdef Q_OS_WIN
+#ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
-#elif defined(Q_OS_MAC)
+#elif __APPLE__
     setBlurEffect(LightBlur);
 #endif
 }
@@ -69,9 +64,9 @@ void MainWindow::setLightTheme()
 void MainWindow::setDarkTheme()
 {
     VanillaStyle::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
-#ifdef Q_OS_WIN
+#ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
-#elif defined(Q_OS_MAC)
+#elif __APPLE__
     setBlurEffect(DarkBlur);
 #endif
 }
@@ -116,7 +111,8 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
     ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"},
-                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"}, "test");
+                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"},
+                                  "test");
 }
 
 void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
@@ -132,7 +128,7 @@ void MainWindow::installWindowAgent()
 
     setMenuWidget(windowBar);
 
-#ifdef Q_OS_WIN
+#ifdef _WIN32
     loadSystemButton();
 #endif
 }
@@ -146,21 +142,21 @@ void MainWindow::setBlurEffect(const BlurEffect effect)
     switch (effect)
     {
     case NoBlur:
-#ifdef Q_OS_WIN
+#ifdef _WIN32
         windowAgent->setWindowAttribute(currentBlurEffect, false);
         break;
-#elif defined(Q_OS_MAC)
+#elif __APPLE__
         windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "none");
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef _WIN32
     case DWMBlur:
         windowAgent->setWindowAttribute(QStringLiteral("dwm-blur"), true);
         currentBlurEffect = QStringLiteral("dwm-blur");
         break;
     case AcrylicMaterial:
         windowAgent->setWindowAttribute(QStringLiteral("acrylic-material"), true);
-        currentBlurEffect = "acrylic-material");
+        currentBlurEffect = QStringLiteral("acrylic-material");
         break;
     case Mica:
         windowAgent->setWindowAttribute(QStringLiteral("mica"), true);
@@ -170,7 +166,7 @@ void MainWindow::setBlurEffect(const BlurEffect effect)
         windowAgent->setWindowAttribute(QStringLiteral("mica-alt"), true);
         currentBlurEffect = QStringLiteral("mica-alt");
         break;
-#elif defined(Q_OS_MAC)
+#elif __APPLE__
     case DarkBlur:
         windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
         break;
@@ -208,16 +204,17 @@ bool MainWindow::event(QEvent* event)
     return QMainWindow::event(event);
 }
 
-#ifndef Q_OS_MAC
+#ifndef __APPLE__
+// clang-format off
 static inline void emulateLeaveEvent(QWidget* widget)
 {
     Q_ASSERT(widget);
     QTimer::singleShot(0, widget, [widget]() {
-#    if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
         const QScreen* screen = widget->screen();
-#    else
+#else
         const QScreen *screen = widget->windowHandle()->screen();
-#    endif
+#endif
         const QPoint globalPos = QCursor::pos(screen);
         if (!QRect(widget->mapToGlobal(QPoint{0, 0}), widget->size()).contains(globalPos))
         {
@@ -228,22 +225,22 @@ static inline void emulateLeaveEvent(QWidget* widget)
                 const QPoint scenePos = widget->window()->mapFromGlobal(globalPos);
                 static constexpr const auto oldPos = QPoint{};
                 const Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers();
-#    if (QT_VERSION >= QT_VERSION_CHECK(6, 4, 0))
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 4, 0))
                 const auto event = new QHoverEvent(QEvent::HoverLeave, scenePos, globalPos, oldPos, modifiers);
                 Q_UNUSED(localPos);
-#    elif (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+#elif (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
                 const auto event =  new QHoverEvent(QEvent::HoverLeave, localPos, globalPos, oldPos, modifiers);
                 Q_UNUSED(scenePos);
-#    else
+#else
                 const auto event =  new QHoverEvent(QEvent::HoverLeave, localPos, oldPos, modifiers);
                 Q_UNUSED(scenePos);
-#    endif
+#endif
                 QCoreApplication::postEvent(widget, event);
             }
         }
     });
 }
-
+// clang-format on
 void MainWindow::loadSystemButton()
 {
     const auto minButton = new QPushButton();

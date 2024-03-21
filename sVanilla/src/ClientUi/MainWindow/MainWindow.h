@@ -50,7 +50,7 @@ private:
     void setAutoTheme();
     void setBlurEffect(MainWindow::BlurEffect effect);
     Q_SLOT void setTheme(int theme);
-#ifndef Q_OS_MAC
+#ifndef __APPLE__
     void loadSystemButton();
     QString currentBlurEffect;
 #endif
