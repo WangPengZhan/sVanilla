@@ -41,7 +41,7 @@ void SettingPage::connectAria2Server()
     ThreadPool::instance().enqueue(task);
 }
 
-inline void SettingPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
+void SettingPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
 {
     ui->defaultSetting->updateAria2Version(version);
 }

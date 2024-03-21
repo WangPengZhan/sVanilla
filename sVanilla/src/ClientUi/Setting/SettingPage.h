@@ -16,7 +16,7 @@ class SettingPage final : public QWidget
 public:
     explicit SettingPage(QWidget* parent = nullptr);
 
-    inline void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
+    void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
 
     bool isConnect = false;
     Q_SLOT void connectAria2Server();
