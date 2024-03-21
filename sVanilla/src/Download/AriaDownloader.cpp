@@ -57,9 +57,16 @@ void AriaDownloader::downloadStatus()
         m_status = Error;
         return;
     }
-    m_info.complete = std::stoull(m_downloadTellStatus.result.completedLength);
-    m_info.speed = std::stoull(m_downloadTellStatus.result.downloadSpeed);
-    m_info.total = std::stoull(m_downloadTellStatus.result.totalLength);
+    try
+    {
+        m_info.complete = std::stoull(m_downloadTellStatus.result.completedLength);
+        m_info.speed = std::stoull(m_downloadTellStatus.result.downloadSpeed);
+        m_info.total = std::stoull(m_downloadTellStatus.result.totalLength);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 
     if (m_info.complete == m_info.total && m_downloadTellStatus.result.status == "complete")
     {
