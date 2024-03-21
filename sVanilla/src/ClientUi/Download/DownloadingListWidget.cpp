@@ -55,12 +55,10 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
     ui->labelTitle->setText(QString::fromStdString(downloader->filename()));
 
     ui->btnPause->setIcon(QIcon(":icon/download/start.svg"));
-    // ui->btnPause->setIcon(QIcon(":icon/download/pause.svg"));
     ui->btnDelete->setIcon(QIcon(":icon/download/delete.svg"));
     ui->btnFolder->setIcon(QIcon(":icon/download/folder.svg"));
     ui->btnDetail->setIcon(QIcon(":icon/download/details.svg"));
     setBackgroundRole(QPalette::NoRole);
-    ui->Title->setText(QString::fromStdString(downloader->filename()));
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
