@@ -151,6 +151,21 @@ void DownloadingItemWidget::signalsAndSlots()
             ui->labelSize->setText(formatSize(info.total));
         }
     });
+    connect(m_downloader.get(), &UiDownloader::finished, this, [this]() {
+        ui->progressBar->setValue(100);
+        ui->labelStatus->setText("finished");
+
+        // int count = m_listWidget->count();
+        // for (int i = 0; i < count; ++i)
+        // {
+        //     if (m_listWidget->itemWidget(m_listWidget->item(i)) == this)
+        //     {
+        //         auto item = m_listWidget->takeItem(i);
+        //         delete item;
+        //         return;
+        //     }
+        // }
+    });
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
@@ -198,6 +213,4 @@ QListWidgetItem* DownloadingListWidget::itemFromWidget(QWidget* target)
 
 void DownloadingListWidget::signalsAndSlots() const
 {
-
 }
-

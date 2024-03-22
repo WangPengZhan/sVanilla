@@ -4,6 +4,10 @@
 #include "Aria2Net/Protocol/Protocol.h"
 #include "DownloadManager.h"
 
+namespace download
+{
+struct ResourseInfo;
+}
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -19,7 +23,7 @@ public:
     explicit DownloadWidget(QWidget* parent = nullptr);
     ~DownloadWidget() override;
     void addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName);
-
+    void addDownloadTask(const download::ResourseInfo& info);
 private:
     Ui::DownloadWidget* ui;
     DownloadManager* m_downloadManager;

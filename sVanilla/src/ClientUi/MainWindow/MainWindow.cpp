@@ -1,24 +1,25 @@
 #include <QDir>
-#include <QtCore/QDebug>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QFile>
+#include <QTimer>
+#include <QStackedWidget>
+
+#include <VanillaStyle/Style.h>
+#include <VanillaStyle/Style/VanillaStyle.h>
+#include <VanillaStyle/Widgets/IconButton.h>
+
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
+
+#include "ClientUi/Setting/SettingPage.h"
+#include "ClientUi/VideoList/VideoWidget.h"
+#include "Sqlite/SQLiteManager.h"
+#include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"
-#include "ClientUi/Setting/SettingPage.h"
-#include "Sqlite/SQLiteManager.h"
-#include "ClientUi/Download/DownloadingListWidget.h"
-#include "ClientUi/VideoList/VideoWidget.h"
-#include "SUI/windowbutton.h"
-#include "SUI/Tips/Toast.h"
-#include <QStackedWidget>
-#include <QtWidgets/QLabel>
-#include <ui_MainWindow.h>
+#include "ui_MainWindow.h"
 
-#include "VanillaStyle/Style.h"
-#include "VanillaStyle/Style/VanillaStyle.h"
-#include <VanillaStyle/Widgets/IconButton.h>
+
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -31,11 +32,38 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
     signalsAndSlots();
     resize(800, 600);
+    Toast::create(this);
     setLightTheme();
-    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"}, {"https://testfile.org/files-5GB-zip"}, "local");
+#if 0
+    const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
+    const std::list<std::string> audios = {};
+    download::ResourseInfo info;
+    info.videoUris = videos;
+    info.audioUris = audios;
+    info.option.dir = "output";
+    info.option.out = "test";
+    ui->downloadPage->addDownloadTask(info);
+#endif
 }
 
 MainWindow::~MainWindow() = default;
+
+#include <QDir>
+
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+#if 0
+    QString path = QApplication::applicationDirPath();
+    auto outPath = path + "/output";
+    auto sessionPath = path + "/aria/aira.session";
+    auto logPath = path + "/aria/aira.log";
+    QDir(outPath).removeRecursively();
+    QFile::remove(sessionPath);
+    QFile::remove(logPath);
+#endif
+    QMainWindow::closeEvent(event);
+}
 
 void MainWindow::signalsAndSlots()
 {
@@ -50,6 +78,9 @@ void MainWindow::signalsAndSlots()
     });
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
     connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
+
+    connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::loadBiliViewView);
+    connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
 }
 
 void MainWindow::setLightTheme()
@@ -99,28 +130,6 @@ void MainWindow::setTheme(const int theme)
     }
 }
 
-void MainWindow::updateHomeMsg(const std::string& msg) const
-{
-    ui->homePage->updateMsg(msg);
-}
-
-void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
-{
-    ui->settingPage->updateAria2Version(version);
-}
-
-void MainWindow::AddDownloadTask(const std::string& gid) const
-{
-    ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"},
-                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"},
-                                  "test");
-}
-
-void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
-{
-    ui->VideoPage->updateVideoItem(videoView);
-}
-
 void MainWindow::installWindowAgent()
 {
     windowAgent->setup(this);
@@ -132,10 +141,6 @@ void MainWindow::installWindowAgent()
 #ifdef _WIN32
     loadSystemButton();
 #endif
-}
-
-void MainWindow::SearchUrl()
-{
 }
 
 void MainWindow::setBlurEffect(const BlurEffect effect)

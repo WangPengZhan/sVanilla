@@ -1,34 +1,59 @@
 #include "BiliDownloader.h"
+
+#include <utility>
 #include "Sqlite/SQLiteManager.h"
-#include "FFmpeg//FFmpegHelper.h"
+#include "FFmpeg/FFmpegHelper.h"
 
 namespace download
 {
 BiliDownloader::BiliDownloader()
     : m_finished(false)
+    , m_haveTwoPart(false)
 {
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
 }
 
-BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUri, std::string path, std::string filename)
+BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUris, std::string path, std::string filename)
     : m_finished(false)
+    , m_haveTwoPart(false)
     , m_path(std::move(path))
     , m_filename(std::move(filename))
     , m_videoDownloader(videoUris, m_path)
-    , m_audioDownloader(audioUri, m_path)
+    , m_audioDownloader(audioUris, m_path)
 {
     std::string baseName = std::filesystem::path(m_filename).stem().string();
     m_videoDownloader.setFilename(baseName + "_video.mp4");
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
+    m_haveTwoPart = !videoUris.empty() && !audioUris.empty();
+}
+
+BiliDownloader::BiliDownloader(ResourseInfo info)
+    : m_resourseInfo(std::move(info))
+    , m_haveTwoPart(false)
+    , m_path(m_resourseInfo.option.dir)
+    , m_filename(m_resourseInfo.option.out)
+    , m_videoDownloader(m_resourseInfo.videoUris, m_resourseInfo.option)
+    , m_audioDownloader(m_resourseInfo.audioUris, m_resourseInfo.option)
+    , m_finished(false)
+{
+    std::string baseName = std::filesystem::path(m_resourseInfo.option.out).stem().string();
+    m_videoDownloader.setFilename(baseName + "_video.mp4");
+    m_audioDownloader.setFilename(baseName + "_audio.mp3");
+    m_videoDownloader.setStatus(Ready);
+    m_audioDownloader.setStatus(Ready);
+    m_haveTwoPart = !m_resourseInfo.videoUris.empty() && !m_resourseInfo.audioUris.empty();
 }
 
 void BiliDownloader::start()
 {
     m_videoDownloader.start();
-    m_audioDownloader.start();
+    if (m_haveTwoPart)
+    {
+        m_audioDownloader.start();
+    }
     m_info.stage = "audio/video downloading";
     m_status = Downloading;
 }
@@ -36,27 +61,36 @@ void BiliDownloader::start()
 void BiliDownloader::stop()
 {
     m_videoDownloader.stop();
-    m_audioDownloader.stop();
+    if (m_haveTwoPart)
+    {
+        m_audioDownloader.stop();
+    }
     m_status = Waitting;
 }
 
 void BiliDownloader::pause()
 {
     m_videoDownloader.pause();
-    m_audioDownloader.pause();
+    if (m_haveTwoPart)
+    {
+        m_audioDownloader.pause();
+    }
     m_status = Waitting;
 }
 
 void BiliDownloader::resume()
 {
     m_videoDownloader.resume();
-    m_audioDownloader.resume();
+    if (m_haveTwoPart)
+    {
+        m_audioDownloader.resume();
+    }
     m_status = Downloading;
 }
 
 void BiliDownloader::downloadStatus()
 {
-    if (m_videoDownloader.status() == Error || m_audioDownloader.status() == Error)
+    if (m_videoDownloader.status() == Error || (m_haveTwoPart && m_audioDownloader.status() == Error))
     {
         m_status = Error;
         return;
@@ -79,15 +113,18 @@ void BiliDownloader::downloadStatus()
     m_info.complete = video.complete + audio.complete;
     m_info.speed = video.speed + audio.speed;
 
-    if (m_info.total == m_info.complete && m_videoDownloader.status() == Finished && m_audioDownloader.status() == Finished)
+    if (m_info.total == m_info.complete && m_videoDownloader.status() == Finished && (!m_haveTwoPart || m_audioDownloader.status() == Finished))
     {
-        ffmpeg::MergeInfo merge;
-        merge.audio = m_audioDownloader.path() + "/" + m_audioDownloader.filename();
-        merge.video = m_videoDownloader.path() + "/" + m_videoDownloader.filename();
-        merge.targetVideo = path() + "/" + filename();
-        m_info.stage = "ffmpeg mixed!";
+        if (m_haveTwoPart)
+        {
+            ffmpeg::MergeInfo merge;
+            merge.audio = m_audioDownloader.path() + "/" + m_audioDownloader.filename();
+            merge.video = m_videoDownloader.path() + "/" + m_videoDownloader.filename();
+            merge.targetVideo = path() + "/" + filename();
+            m_info.stage = "ffmpeg mixed!";
 
-        ffmpeg::FFmpegHelper::mergeVideo(merge);
+            ffmpeg::FFmpegHelper::mergeVideo(merge);
+        }
 
         m_status = Finished;
     }
@@ -113,6 +150,7 @@ void BiliDownloader::setVideoUris(const std::list<std::string>& videoUris)
 void BiliDownloader::setAudioUris(const std::list<std::string>& audioUri)
 {
     m_audioDownloader.setUris(audioUri);
+    m_haveTwoPart = !audioUri.empty();
 }
 
 void BiliDownloader::setPath(std::string path)

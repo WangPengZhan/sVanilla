@@ -20,7 +20,15 @@ DownloadWidget::~DownloadWidget()
 void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName)
 {
     // param path: come from config file or custom setting in the future
-    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output" , fileName);
+    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output", fileName);
+    auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
+    uiDownloader->setFileName(biliDownlaoder->filename());
+    ui->DownloadListWidget->addDownloadItem(uiDownloader);
+    m_downloadManager->addItem(uiDownloader);
+}
+void DownloadWidget::addDownloadTask(const download::ResourseInfo& info)
+{
+    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(info);
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
     uiDownloader->setFileName(biliDownlaoder->filename());
     ui->DownloadListWidget->addDownloadItem(uiDownloader);

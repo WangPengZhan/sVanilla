@@ -22,8 +22,8 @@ public:
     };
     static void Show(const QString& msg, Level level = Info);
     static void create(QWidget* parent = nullptr);
-signals:
-    void signalShowMessage(const QString& msg, Level level);
+
+    Q_SIGNAL void signalShowMessage(const QString& msg, Level level);
 
 private:
     explicit Toast(QWidget* parent = nullptr);
@@ -35,17 +35,18 @@ private:
     void setText(const QString &msg) const;
     void setLevel(Level level);
     void movePosition();
-    static QWidget* windowObj();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+
+public:
+    static Toast* instance;
+
+private:
     QPropertyAnimation* m_animation{};
     QQueue<std::pair<QString, Level>> m_messageQueue;
     Level m_level = Info;
     QTimer* timer;
     Ui::Toast* ui;
-
-public:
-    static std::unique_ptr<Toast> instance;
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void mousePressEvent(QMouseEvent* event) override;
 };

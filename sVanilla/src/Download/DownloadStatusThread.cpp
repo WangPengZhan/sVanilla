@@ -76,6 +76,7 @@ void DownloadStatusThread::downloadThread()
             }
             case AbstractDownloader::Finished:
             {
+                value->finish();
                 removeKeys.push_back(key);
                 break;
             }

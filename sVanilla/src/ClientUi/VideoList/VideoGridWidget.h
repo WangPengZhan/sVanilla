@@ -22,10 +22,10 @@ class VideoGridItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit VideoGridItemWidget(std::string bvid, QWidget* parent = nullptr);
+    explicit VideoGridItemWidget(std::string identifier, QWidget* parent = nullptr);
     ~VideoGridItemWidget();
     void setCover(const std::string& id);
-    void updateVideoCard() const;
+    void updateVideoCard();
     std::shared_ptr<Adapter::BaseVideoView> m_videoView;
 
     [[nodiscard]] QSize sizeHint() const override;
@@ -40,6 +40,7 @@ public:
     std::string Identifier;
 signals:
     void detailBtnClick();
+    void downloadBtnClick();
     void detailCheckBtnClick(bool isChecked);
 };
 
@@ -54,6 +55,7 @@ public:
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
     void getSignalPointer(QSplitter* splitter);
+    Q_SIGNAL void downloandBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
 private:
     void connectItemSingal(const VideoGridItemWidget* itemWidget);

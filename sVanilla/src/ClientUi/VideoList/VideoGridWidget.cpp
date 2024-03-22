@@ -23,10 +23,10 @@ void elideText(QLabel* label, const QString& text)
     }
 }
 
-VideoGridItemWidget::VideoGridItemWidget(std::string bvid, QWidget* parent)
+VideoGridItemWidget::VideoGridItemWidget(std::string identifier, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoGridItemWidget)
-    , Identifier(std::move(bvid))
+    , Identifier(std::move(identifier))
 {
     ui->setupUi(this);
     setUi();
@@ -48,6 +48,7 @@ void VideoGridItemWidget::setUi()
 void VideoGridItemWidget::signalsAndSlots()
 {
     connect(ui->VideoGridDetailsBtn, &QPushButton::clicked, this, &VideoGridItemWidget::detailBtnClick);
+    connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, this, &VideoGridItemWidget::downloadBtnClick);
 }
 
 QSize VideoGridItemWidget::sizeHint() const
@@ -57,14 +58,15 @@ QSize VideoGridItemWidget::sizeHint() const
 
 void VideoGridItemWidget::setCover(const std::string& id)
 {
-    QString tempPath = QDir::tempPath();
-    tempPath.append("/").append(QString::fromStdString(id)).append("jpg");
-    if (QFile::exists(tempPath))
+    const QString tempPath = QDir::tempPath();
+    const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg");
+    if (QFile::exists(fullPath))
     {
-        const QPixmap pixmap(tempPath);
+        const QPixmap pixmap(fullPath);
         const auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
         ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
         ui->Cover->setPixmap(scaledPixmap);
+        update();
     }
     else
     {
@@ -75,11 +77,12 @@ void VideoGridItemWidget::setCover(const std::string& id)
     }
 }
 
-void VideoGridItemWidget::updateVideoCard() const
+void VideoGridItemWidget::updateVideoCard()
 {
     elideText(ui->VideoGridTitle, QString::fromStdString(m_videoView->Title));
     ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
     elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->Publisher));
+    setCover(Identifier);
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -94,7 +97,6 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
 void VideoGridWidget::addVideoItem(const std::string& identifier)
 {
     const auto videoItem = new VideoGridItemWidget(identifier, this);
-    videoItem->setCover(identifier);
     const auto item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
@@ -129,6 +131,10 @@ void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget)
             currentIdentifier = itemIdentifier;
             detailWidget()->updateUi(itemWidget->m_videoView);
         }
+    });
+
+    connect(itemWidget, &VideoGridItemWidget::downloadBtnClick, this, [this, itemWidget]() {
+        emit downloandBtnClick(itemWidget->m_videoView);
     });
 }
 

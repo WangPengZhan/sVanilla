@@ -59,13 +59,14 @@ void UiDownloader::downloadStatus()
 {
     m_realDownloader->downloadStatus();
     emit update(m_realDownloader->info(), QString::fromStdString(m_realDownloader->stage()));
-    if (m_realDownloader->status() == Finished)
+    if (m_realDownloader->status() != Downloading)
     {
-        setStatus(Finished);
+        setStatus(m_realDownloader->status());
     }
 }
 
 void UiDownloader::finish()
 {
+    m_realDownloader->finish();
     emit finished(QString());
 }
