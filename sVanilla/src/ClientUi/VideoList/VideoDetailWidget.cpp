@@ -1,9 +1,10 @@
 
+#include <QPushButton>
+
+#include "Adapter/BaseVideoView.h"
 #include "VideoDetailWidget.h"
 #include "ui_VideoDetailWidget.h"
-#include "Adapter/BaseVideoView.h"
 
-#include <QPushButton>
 
 VideoDetailWidget::VideoDetailWidget(QWidget* parent)
     : QWidget(parent)

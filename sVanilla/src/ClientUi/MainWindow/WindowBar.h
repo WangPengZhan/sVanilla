@@ -1,6 +1,7 @@
 #pragma once
 #include <QFrame>
 #include <QToolButton>
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -21,13 +22,12 @@ public:
     void setMinButton(QAbstractButton* btn);
     void setMaxButton(QAbstractButton* btn);
     void setCloseButton(QAbstractButton* btn);
+
 private:
     void signalsAndSlots();
 
 signals:
     void BarBtnClick(int index);
-
-    Q_SIGNALS:
     void minimizeRequested();
     void maximizeRequested(bool max = false);
     void closeRequested();

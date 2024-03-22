@@ -1,10 +1,11 @@
 #include <QClipboard>
 #include <QTimer>
 #include <QDebug>
+#include <QStandardPaths>
+
+#include "Util/UrlProcess.h"
 #include "HomePage.h"
 #include "ui_HomePage.h"
-#include "Util/UrlProcess.h"
-#include <QStandardPaths>
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)

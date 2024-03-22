@@ -1,14 +1,12 @@
 #include <QProcess>
 #include <QDir>
-
+#include <QPushButton>
 #include <utility>
 
 #include "UiDownloader.h"
 #include "DownloadingListWidget.h"
 #include "ui_DownloadingListWidget.h"
-#include "Theme/StyledItemDelegate.h"
 
-#include <QPushButton>
 
 template <typename T>
 QString formatSize(T bytesPerSec)

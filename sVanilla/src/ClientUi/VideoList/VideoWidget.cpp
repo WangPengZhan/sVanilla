@@ -1,17 +1,18 @@
-#include "VideoWidget.h"
-#include "ui_VideoWidget.h"
-#include "VideoGridWidget.h"
-#include "Adapter/BilibiliVideoView.h"
-#include "ThreadPool/Task.h"
-#include "ThreadPool/ThreadPool.h"
-#include "Util/CoverUtil.h"
-#include "BiliApi/BilibiliClient.h"
-#include "SUI/Tips/Toast.h"
-#include "Download/AbstractDownloader.h"
 #include <QDir>
 #include <QPushButton>
 #include <QStandardPaths>
-#include <QtWidgets/QLabel>
+#include <QLabel>
+
+#include "Download/AbstractDownloader.h"
+#include "Adapter/BilibiliVideoView.h"
+#include "BiliApi/BilibiliClient.h"
+#include "ThreadPool/ThreadPool.h"
+#include "ThreadPool/Task.h"
+#include "Util/CoverUtil.h"
+#include "SUI/Tips/Toast.h"
+#include "VideoGridWidget.h"
+#include "VideoWidget.h"
+#include "ui_VideoWidget.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)

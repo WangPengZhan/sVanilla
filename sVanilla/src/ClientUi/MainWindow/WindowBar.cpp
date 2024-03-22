@@ -1,6 +1,7 @@
 #include <QButtonGroup>
-#include "ui_WindowBar.h"
+
 #include "WindowBar.h"
+#include "ui_WindowBar.h"
 
 WindowBar::WindowBar(QWidget* parent)
     : QFrame(parent)

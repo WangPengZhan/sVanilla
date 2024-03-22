@@ -1,13 +1,14 @@
-#include "VideoGridWidget.h"
-#include "VideoDetailWidget.h"
-#include "ui_VideoGridWidget.h"
-#include "BiliApi/BilibiliClient.h"
-#include "SUI/RoundImageWidget.h"
 #include <QDir>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmap>
 #include <QPushButton>
+
+#include "VideoGridWidget.h"
+#include "VideoDetailWidget.h"
+#include "ui_VideoGridWidget.h"
+#include "BiliApi/BilibiliClient.h"
+#include "SUI/RoundImageWidget.h"
 
 void elideText(QLabel* label, const QString& text)
 {

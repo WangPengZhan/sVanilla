@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Adapter/BaseVideoView.h"
 #include <QStackedWidget>
+
+#include "Adapter/BaseVideoView.h"
 
 namespace download
 {
@@ -26,8 +27,7 @@ class VideoWidget : public QWidget
 
 public:
     explicit VideoWidget(QWidget* parent = nullptr);
-    ~VideoWidget() override;
-    void signalsAndSlots();
+    ~VideoWidget();
 
     void loadBiliViewView(const std::string& uri);
     void prepareBiliVideoView(const std::string& uri);
@@ -44,9 +44,12 @@ public:
     void clearVideo() const;
 
 private:
+    void signalsAndSlots();
+    Q_SIGNAL void coverReady() const;
+
+private:
     Ui::VideoPage* ui;
 
-    Q_SIGNAL void coverReady() const;
     unsigned long totalCoverSize = 0;
     unsigned long currentCoverSize = 0;
 

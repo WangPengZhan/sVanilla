@@ -14,7 +14,6 @@ class VideoDetailWidget;
 class VideoDetailWidget : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit VideoDetailWidget(QWidget* parent = nullptr);
     ~VideoDetailWidget();
@@ -24,6 +23,7 @@ private:
     void setUi();
     void signalsAndSlots();
 
+public:
     std::string m_bvid;
 
 private:

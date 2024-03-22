@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget* parent)
     signalsAndSlots();
     resize(800, 600);
     Toast::create(this);
-    setLightTheme();
+    // setLightTheme();
 #if 0
     const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
     const std::list<std::string> audios = {};
@@ -47,9 +47,6 @@ MainWindow::MainWindow(QWidget* parent)
 }
 
 MainWindow::~MainWindow() = default;
-
-#include <QDir>
-
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {

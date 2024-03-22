@@ -1,10 +1,10 @@
+#include <QPushButton>
+#include <QMouseEvent>
+
 #include "VideoListWidget.h"
 #include "VideoDetailWidget.h"
 #include "ui_VideoListWidget.h"
-#include "Theme/StyledItemDelegate.h"
 
-#include <QPushButton>
-#include <QtGui/QMouseEvent>
 
 VideoListItemWidget::VideoListItemWidget(std::string identifier, QWidget* parent)
     : QWidget(parent)
