@@ -1,7 +1,3 @@
-//
-// Created by Alanus Meminius on 2024/1/7.
-//
-
 #ifndef _ADVANCESETTING_H_
 #define _ADVANCESETTING_H_
 

@@ -1,7 +1,10 @@
 #pragma once
+
 #include <QTimer>
 #include <QListWidget>
+
 #include "Aria2Net/Protocol/Protocol.h"
+
 namespace Ui
 {
 class DownloadingItemWidget;

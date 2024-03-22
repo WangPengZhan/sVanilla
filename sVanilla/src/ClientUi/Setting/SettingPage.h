@@ -1,7 +1,8 @@
 #pragma once
-#include "Aria2Net/Protocol/Protocol.h"
 
 #include <QWidget>
+
+#include "Aria2Net/Protocol/Protocol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -17,10 +18,13 @@ public:
     explicit SettingPage(QWidget* parent = nullptr);
 
     void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
+    void connectAria2Server();
 
-    bool isConnect = false;
-    Q_SLOT void connectAria2Server();
     Q_SIGNAL void UpdateTheme(int theme);
+
+public:
+    bool isConnect = false;
+
 private:
     Ui::SettingPage* ui;
 };

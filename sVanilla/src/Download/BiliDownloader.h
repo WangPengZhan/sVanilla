@@ -5,7 +5,6 @@
 #include "AbstractDownloader.h"
 #include "AriaDownloader.h"
 
-
 namespace download
 {
 
@@ -22,8 +21,8 @@ class BiliDownloader : public AbstractDownloader
 {
 public:
     BiliDownloader();
-    BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUri = {},
-        std::string path = "", std::string filename = "");
+    BiliDownloader(std::list<std::string> videoUris, std::list<std::string> audioUri = {}, std::string path = "", std::string filename = "");
+    explicit BiliDownloader(ResourseInfo info);
     ~BiliDownloader() = default;
 
     void start() override;
@@ -45,12 +44,14 @@ public:
     std::string nowDownload() const;
 
 private:
+    ResourseInfo m_resourseInfo;
     std::string m_path;
     std::string m_filename;
     std::string m_uniqueId;
     AriaDownloader m_videoDownloader;
     AriaDownloader m_audioDownloader;
     bool m_finished;
+    bool m_haveTwoPart;
 };
 
 }  // namespace download

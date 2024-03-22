@@ -1,4 +1,5 @@
 #pragma once
+#include "Aria2Net/Protocol/Protocol.h"
 #include <string>
 #include <atomic>
 
@@ -11,6 +12,13 @@ struct DownloadInfo
     std::size_t complete = 0;
     std::size_t speed = 0;
     std::string stage;
+};
+
+struct ResourseInfo
+{
+    std::list<std::string> videoUris;
+    std::list<std::string> audioUris;
+    aria2net::AriaSendOption option;
 };
 
 class AbstractDownloader

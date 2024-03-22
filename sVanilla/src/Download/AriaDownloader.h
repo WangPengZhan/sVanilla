@@ -11,6 +11,7 @@ class AriaDownloader : public AbstractDownloader
 public:
     AriaDownloader();
     AriaDownloader(std::list<std::string> uris, std::string path = "", std::string filename = "");
+    explicit AriaDownloader(std::list<std::string> uris, const aria2net::AriaSendOption& option);
     ~AriaDownloader() = default;
 
     void start() override;

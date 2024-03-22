@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -17,16 +16,17 @@ public:
     explicit HomePage(QWidget* parent = nullptr);
     ~HomePage() override;
     void setMsgLabel(const std::string& msg);
+    void updateMsg(const std::string& msg);
+
 signals:
     void HasAdded(bool hasAdded);
-public slots:
-    void updateMsg(const std::string& msg);
+    void loadBiliViewView(const std::string& uri);
+
+private:
+    void signalsAndSlots();
+    void parseUri(const std::string& uri);
 
 private:
     Ui::HomePage* ui;
-    void signalsAndSlots();
-    void parseUri(const std::string& uri);
-    void addUri(const std::list<std::string>& uris);
     bool hasAdded = false;
-
 };

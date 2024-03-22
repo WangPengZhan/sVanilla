@@ -1,7 +1,7 @@
-#include "SettingPage.h"
-#include "ui_SettingPage.h"
 #include "Aria2Net/AriaClient/AriaClient.h"
 #include "ThreadPool/ThreadPool.h"
+#include "SettingPage.h"
+#include "ui_SettingPage.h"
 
 SettingPage::SettingPage(QWidget* parent)
     : QWidget(parent)

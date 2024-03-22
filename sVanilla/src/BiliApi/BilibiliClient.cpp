@@ -1,16 +1,18 @@
 #include <QApplication>
+
+#include <curl/curl.h>
+#include <regex>
+#include <filesystem>
+#include <sstream>
+#include <string>
 #include <fstream>
+
 #include "BilibiliClient.h"
 #include "Logger/Logger.h"
 #include "Util/JsonProcess.h"
 #include "BiliApiConstants.h"
 #include "BilibiliUtils.h"
 #include "NetWork/NetworkLog.h"
-#include <curl/curl.h>
-#include <regex>
-#include <filesystem>
-#include <sstream>
-#include <string>
 
 namespace BiliApi
 {

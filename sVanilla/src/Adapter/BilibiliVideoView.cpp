@@ -70,6 +70,7 @@ Adapter::BaseVideoView ConvertEpisodes(const BiliApi::UgcEpisode& data)
     return Adapter::BaseVideoView{
         .Identifier = data.bvid,
         .AlternateId = std::to_string(data.aid),
+        .VideoId = std::to_string(data.cid),
         .Title = data.title,
         .Cover = data.arc.pic,
         .Duration = formatDuration(data.page.duration),
@@ -82,6 +83,7 @@ Adapter::BaseVideoView ConvertPages(const BiliApi::VideoPage& data)
     return Adapter::BaseVideoView{
         //        .Identifier = data.bvid,
         .AlternateId = std::to_string(data.cid),
+        .VideoId = std::to_string(data.cid),
         .Title = data.part,
         .Cover = data.first_frame,
         .Duration = formatDuration(data.duration),

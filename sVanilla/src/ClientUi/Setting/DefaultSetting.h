@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Aria2Net/Protocol/Protocol.h"
-
 #include <QButtonGroup>
 #include <QWidget>
+
+#include "Aria2Net/Protocol/Protocol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -24,13 +24,15 @@ public:
     void updateStatus(const std::string& status);
     void updateVersion(const std::string& version);
     void updateFeatures(const std::string& features);
-signals:
-    void UpdateTheme(int theme);
+
+    Q_SIGNAL void UpdateTheme(int theme);
+
+private:
+    void signalsAndSlots();
+    inline void setRedStatus();
+    inline void setGreenStatus();
 
 private:
     Ui::DefaultSetting* ui;
-    void signalsAndSlots();
     QButtonGroup* m_themeGroup;
-    inline void setRedStatus();
-    inline void setGreenStatus();
 };

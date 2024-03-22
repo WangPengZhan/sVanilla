@@ -21,10 +21,11 @@ FinishedItemTable& SQLiteManager::finishedItemTable()
 }
 
 SQLiteManager::SQLiteManager()
-    : m_db("data.db")
+    : m_db(std::string(dbDir) + "/data.db")
     , m_finishedItemTable(m_db, "FinishedItem")
 {
     initSqlite();
+    m_finishedItemTable.initTable();
 }
 
 SQLiteManager::~SQLiteManager()
@@ -36,8 +37,7 @@ void SQLiteManager::initSqlite()
 {
     std::call_once(m_createFlag, []() {
         sqlite3_config(SQLITE_CONFIG_MULTITHREAD);
-
-        if (std::filesystem::is_directory(dbDir))
+        if (!std::filesystem::is_directory(dbDir))
         {
             std::filesystem::create_directory(dbDir);
         }

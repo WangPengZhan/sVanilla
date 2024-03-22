@@ -7,7 +7,7 @@
 #include <QSvgRenderer>
 #include <QTimer>
 
-std::unique_ptr<Toast> Toast::instance;
+Toast* Toast::instance;
 
 Toast::Toast(QWidget* parent)
     : QWidget(parent)
@@ -25,9 +25,10 @@ void Toast::Show(const QString& msg, const Level level)
 {
     instance->signalShowMessage(msg, level);
 }
+
 void Toast::create(QWidget* parent)
 {
-    instance = std::unique_ptr<Toast>(new Toast(parent));
+    instance = new Toast(parent);
 }
 
 void Toast::setUi()
@@ -36,10 +37,6 @@ void Toast::setUi()
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     timer->setInterval(3000);
-    if (const auto window = windowObj())
-    {
-        this->setParent(window);
-    }
     m_animation->setDuration(300);
     m_animation->setEasingCurve(QEasingCurve::Linear);
 }
@@ -58,6 +55,7 @@ void Toast::showMessage(const QString& msg, const Level level)
         showNextMessage();
     }
 }
+
 void Toast::showNextMessage()
 {
     if (!m_messageQueue.empty())
@@ -78,6 +76,7 @@ void Toast::showNextMessage()
         hideMessage();
     }
 }
+
 void Toast::hideMessage()
 {
     m_animation->setStartValue(geometry().topLeft());
@@ -95,10 +94,12 @@ void Toast::setText(const QString& msg) const
     ui->label->resize(ui->label->width() + 20, ui->label->height() + 25);
     ui->label->setStyleSheet("QLabel {margin-left: 20px;}");
 }
+
 void Toast::setLevel(const Level level)
 {
     m_level = level;
 }
+
 void Toast::movePosition()
 {
     if (parentWidget())
@@ -106,17 +107,7 @@ void Toast::movePosition()
         move(parentWidget()->width() - width() - 10, 30);
     }
 }
-QWidget* Toast::windowObj()
-{
-    for (auto topLevelWidgets = QApplication::topLevelWidgets(); const auto widget : topLevelWidgets)
-    {
-        if (widget->isWindow() && widget->isVisible() && widget->objectName() == "MainWindow")
-        {
-            return widget;
-        }
-    }
-    return nullptr;
-}
+
 void Toast::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);

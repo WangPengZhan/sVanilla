@@ -1,5 +1,7 @@
 #include <sstream>
+
 #include <QButtonGroup>
+
 #include "DefaultSetting.h"
 #include "ui_DefaultSetting.h"
 

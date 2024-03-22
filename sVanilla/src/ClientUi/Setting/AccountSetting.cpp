@@ -1,18 +1,14 @@
-//
-// Created by Alanus Meminius on 2024/1/7.
-//
+#include <QHBoxLayout>
+#include <QLabel>
+#include <SUI/QrCodeGenerator.h>
+#include <QDebug>
+#include <QPushButton>
 
-// You may need to build the project (run Qt uic code generator) to get "ui_AccountSetting.h" resolved
+#include <regex>
 
 #include "AccountSetting.h"
 #include "ui_AccountSetting.h"
 
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <SUI/QrCodeGenerator.h>
-#include <QDebug>
-#include <regex>
-#include <QtWidgets/QPushButton>
 AccountSetting::AccountSetting(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::AccountSetting)
@@ -26,7 +22,7 @@ AccountSetting::AccountSetting(QWidget* parent)
     const auto refreshBtn = new QPushButton("refresh");
     layout->addWidget(refreshBtn);
     connect(refreshBtn, &QPushButton::clicked, [this, label]() {
-        const auto login = m_biliClient.GetLoginUrl();
+        const auto login = BiliApi::BilibiliClient::globalClient().GetLoginUrl();
         m_qrcode_key = login.data.qrcode_key;
         refreshQrCode(label, login.data.url);
     });
@@ -50,7 +46,7 @@ void AccountSetting::refreshQrCode(QLabel* label, const std::string& url)
 }
 void AccountSetting::checkLoginStatus(const std::string& qrcode)
 {
-    const auto loginStatus = m_biliClient.GetLoginStatus(qrcode);
+    const auto loginStatus = BiliApi::BilibiliClient::globalClient().GetLoginStatus(qrcode);
 
     while (true)
     {
@@ -70,7 +66,7 @@ void AccountSetting::checkLoginStatus(const std::string& qrcode)
         }
         else
         {
-            m_biliClient.ParseCookie(loginStatus.data.url);
+            BiliApi::BilibiliClient::globalClient().ParseCookie(loginStatus.data.url);
             break;
 
         }
