@@ -16,29 +16,94 @@
 #include <QtWidgets/QLabel>
 #include <ui_MainWindow.h>
 
+#include "VanillaStyle/Style.h"
+#include "VanillaStyle/Style/VanillaStyle.h"
+#include <VanillaStyle/Widgets/IconButton.h>
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
-    , windowAgent(new QWK::WidgetWindowAgent(this))
-    , windowBar(new WindowBar(this))
     , ui(new Ui::MainWindow)
+    , windowAgent(new QWK::WidgetWindowAgent(this))
+    , styleAgent(new QWK::StyleAgent(this))
+    , windowBar(new WindowBar(this))
 {
     installWindowAgent();
     ui->setupUi(this);
-    windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
-    loadStyleSheet(Light);
     signalsAndSlots();
     resize(800, 600);
-
-    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"},
-                                  {"https://testfile.org/files-5GB-zip"}, "local");
+    setLightTheme();
+    ui->downloadPage->addTaskItem({"https://testfile.org/files-5GB-zip"}, {"https://testfile.org/files-5GB-zip"}, "local");
 }
 
 MainWindow::~MainWindow() = default;
+
+void MainWindow::signalsAndSlots()
+{
+    // tab bar btn click event to change stacked page
+    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+
+    connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
+        if (index == 3)
+        {
+            Q_EMIT ui->settingPage->connectAria2Server();
+        }
+    });
+    connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
+    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
+}
+
+void MainWindow::setLightTheme()
+{
+    VanillaStyle::Style::setStyleFromName("LightVanillaStyle");
+#ifdef _WIN32
+    setBlurEffect(AcrylicMaterial);
+#elif __APPLE__
+    setBlurEffect(LightBlur);
+#endif
+}
+
+void MainWindow::setDarkTheme()
+{
+    VanillaStyle::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
+#ifdef _WIN32
+    setBlurEffect(AcrylicMaterial);
+#elif __APPLE__
+    setBlurEffect(DarkBlur);
+#endif
+}
+
+void MainWindow::setAutoTheme()
+{
+    const auto theme = styleAgent->systemTheme();
+    theme == QWK::StyleAgent::SystemTheme::Dark ? setDarkTheme() : setLightTheme();
+}
+
+void MainWindow::setTheme(const int theme)
+{
+    if (theme != 2)
+    {
+        disconnect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme);
+        if (theme == 0)
+        {
+            setLightTheme();
+        }
+        else
+        {
+            setDarkTheme();
+        }
+    }
+    else
+    {
+        connect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme);
+        setAutoTheme();
+    }
+}
 
 void MainWindow::updateHomeMsg(const std::string& msg) const
 {
     ui->homePage->updateMsg(msg);
 }
+
 void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
 {
     ui->settingPage->updateAria2Version(version);
@@ -47,12 +112,10 @@ void MainWindow::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>
 void MainWindow::AddDownloadTask(const std::string& gid) const
 {
     ui->downloadPage->addTaskItem({"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/origin/develop_vbt_v100.zip"},
-                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"}, "test");
+                                  {"http://192.168.2.88:10240/job/VBT_storage_upgrade_prerelease/lastSuccessfulBuild/artifact/tsp2_installer_BN100.exe"},
+                                  "test");
 }
-void MainWindow::addVideoCard(const std::string& bvid) const
-{
-    ui->VideoPage->addVideoItem(bvid);
-}
+
 void MainWindow::updateVideoPage(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
 {
     ui->VideoPage->updateVideoItem(videoView);
@@ -66,8 +129,8 @@ void MainWindow::installWindowAgent()
 
     setMenuWidget(windowBar);
 
-#ifdef Q_OS_WIN
-    loadWindowsSystemButton();
+#ifdef _WIN32
+    loadSystemButton();
 #endif
 }
 
@@ -75,43 +138,47 @@ void MainWindow::SearchUrl()
 {
 }
 
-void MainWindow::signalsAndSlots()
+void MainWindow::setBlurEffect(const BlurEffect effect)
 {
-    // tab bar btn click event to change stacked page
-    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
-
-    connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
-        if (index == 3)
-        {
-            Q_EMIT onSettingPage();
-        }
-    });
-    // theme QRadioBtn toggle event to change theme
-    // connect(ui->settingPage->defaultPage, &DefaultSetting::UpdateTheme, this, &MainWindow::SwitchTheme);
-    // connect(ui->homePage, &HomePage::updateMsg, this, &MainWindow::updateHomeMsg);
-
-    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
-    connect(ui->homePage, &HomePage::AddUri, this, &MainWindow::AddUri);
-    connect(ui->VideoPage, &VideoWidget::downloadBtnClick, this, &MainWindow::downloadBtnClick);
-}
-
-void MainWindow::loadStyleSheet(const Theme theme)
-{
-    if (!styleSheet().isEmpty() && theme == currentTheme)
+    switch (effect)
     {
-        return;
-    }
+    case NoBlur:
+#ifdef _WIN32
+        windowAgent->setWindowAttribute(currentBlurEffect, false);
+        break;
+#elif __APPLE__
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "none");
+#endif
 
-    currentTheme = theme;
-
-    QString styleSheetPath = theme == Dark ? ":/style/dark.qss" : ":/style/light.qss";
-    QFile qss(styleSheetPath);
-    if (qss.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        setStyleSheet(QString::fromUtf8(qss.readAll()));
-        emit themeChanged();
-        qss.close();
+#ifdef _WIN32
+    case DWMBlur:
+        windowAgent->setWindowAttribute(QStringLiteral("dwm-blur"), true);
+        currentBlurEffect = QStringLiteral("dwm-blur");
+        break;
+    case AcrylicMaterial:
+        windowAgent->setWindowAttribute(QStringLiteral("acrylic-material"), true);
+        currentBlurEffect = QStringLiteral("acrylic-material");
+        break;
+    case Mica:
+        windowAgent->setWindowAttribute(QStringLiteral("mica"), true);
+        currentBlurEffect = QStringLiteral("mica");
+        break;
+    case MicaAlt:
+        windowAgent->setWindowAttribute(QStringLiteral("mica-alt"), true);
+        currentBlurEffect = QStringLiteral("mica-alt");
+        break;
+#elif __APPLE__
+    case DarkBlur:
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
+        break;
+    case LightBlur:
+        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
+        break;
+#endif
+    default:
+        break;
     }
+    style()->polish(this);
 }
 
 bool MainWindow::event(QEvent* event)
@@ -138,6 +205,8 @@ bool MainWindow::event(QEvent* event)
     return QMainWindow::event(event);
 }
 
+#ifndef __APPLE__
+// clang-format off
 static inline void emulateLeaveEvent(QWidget* widget)
 {
     Q_ASSERT(widget);
@@ -172,17 +241,21 @@ static inline void emulateLeaveEvent(QWidget* widget)
         }
     });
 }
-
-void MainWindow::loadWindowsSystemButton()
+// clang-format on
+void MainWindow::loadSystemButton()
 {
-    const auto minButton = new QPushButton();
+    const auto minButton = new VanillaStyle::IconButton();
+    minButton->setIcon(QIcon(QStringLiteral(":/icon/bar/minimize.svg")));
+    minButton->setIconSize(QSize(12, 12));
     minButton->setObjectName(QStringLiteral("min-button"));
     minButton->setProperty("system-button", true);
     minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     windowBar->setMinButton(minButton);
     windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
 
-    const auto maxButton = new QPushButton();
+    const auto maxButton = new VanillaStyle::IconButton();
+    maxButton->setIcon(QIcon(QStringLiteral(":/icon/bar/maximize.svg")));
+    maxButton->setIconSize(QSize(12, 12));
     maxButton->setCheckable(true);
     maxButton->setObjectName(QStringLiteral("max-button"));
     maxButton->setProperty("system-button", true);
@@ -190,7 +263,9 @@ void MainWindow::loadWindowsSystemButton()
     windowBar->setMaxButton(maxButton);
     windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
 
-    const auto closeButton = new QPushButton();
+    const auto closeButton = new VanillaStyle::IconButton();
+    closeButton->setIcon(QIcon(QStringLiteral(":/icon/bar/close.svg")));
+    closeButton->setIconSize(QSize(12, 12));
     closeButton->setObjectName(QStringLiteral("close-button"));
     closeButton->setProperty("system-button", true);
     closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -218,29 +293,8 @@ void MainWindow::loadWindowsSystemButton()
     });
     connect(windowBar, &WindowBar::closeRequested, this, &QWidget::close);
 }
-
-void MainWindow::SwitchTheme(const int theme)
-{
-#ifdef Q_OS_WIN
-
-#elif defined(Q_OS_MAC)
-    if (theme == 0)
-    {
-        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "light");
-        loadStyleSheet(Light);
-    }
-    else if (theme == 1)
-    {
-        windowAgent->setWindowAttribute(QStringLiteral("blur-effect"), "dark");
-        loadStyleSheet(Dark);
-    }
-    setProperty("custom-style", true);
-    style()->polish(this);
-
-#else
-
 #endif
-}
+
 void MainWindow::ClearVideo(bool flag)
 {
     if (!flag)

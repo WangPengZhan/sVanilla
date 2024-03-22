@@ -8,6 +8,8 @@
 #include "ui_DownloadingListWidget.h"
 #include "Theme/StyledItemDelegate.h"
 
+#include <QPushButton>
+
 template <typename T>
 QString formatSize(T bytesPerSec)
 {
@@ -16,11 +18,15 @@ QString formatSize(T bytesPerSec)
     constexpr double Kib = 1024.0;
     if (bytesPerSec >= Gib)
     {
-        return QString::number(bytesPerSec / Gib, 'f', 2) + "GiB/s";
+        return QString::number(bytesPerSec / Gib, 'f', 2) + "GiB";
     }
     else if (bytesPerSec >= Mib)
     {
-        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib/s";
+        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib";
+    }
+    else if (bytesPerSec >= Kib)
+    {
+        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib";
     }
     else if (bytesPerSec >= Kib)
     {
@@ -28,8 +34,14 @@ QString formatSize(T bytesPerSec)
     }
     else
     {
-        return QString::number(bytesPerSec, 'f', 3) + "B/s";
+        return QString::number(bytesPerSec, 'f', 3) + "B";
     }
+}
+
+template <typename T>
+QString formatSpeed(T bytesPerSec)
+{
+    return formatSize(bytesPerSec) + "/s";
 }
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
@@ -40,7 +52,13 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
 {
     ui->setupUi(this);
     signalsAndSlots();
-    ui->Title->setText(QString::fromStdString(downloader->filename()));
+    ui->labelTitle->setText(QString::fromStdString(downloader->filename()));
+
+    ui->btnPause->setIcon(QIcon(":icon/download/start.svg"));
+    ui->btnDelete->setIcon(QIcon(":icon/download/delete.svg"));
+    ui->btnFolder->setIcon(QIcon(":icon/download/folder.svg"));
+    ui->btnDetail->setIcon(QIcon(":icon/download/details.svg"));
+    setBackgroundRole(QPalette::NoRole);
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -121,12 +139,16 @@ void DownloadingItemWidget::signalsAndSlots()
         QProcess::startDetached(explorerCommand, arguments);
     });
 
-    connect(m_downloader.get(), &UiDownloader::update, this, [this](download::DownloadInfo info) {
+    connect(m_downloader.get(), &UiDownloader::update, this, [this](const download::DownloadInfo& info) {
         ui->labelStatus->setText(QString::fromStdString(info.stage));
-        ui->labelSpeed->setText(formatSize(info.speed));
+        ui->labelSpeed->setText(formatSpeed(info.speed));
         if (info.total != 0)
         {
             ui->progressBar->setValue(info.complete / static_cast<double>(info.total) * 100);
+        }
+        if (ui->labelSize->text().isEmpty())
+        {
+            ui->labelSize->setText(formatSize(info.total));
         }
     });
 }
@@ -136,6 +158,7 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 {
     this->setObjectName(QStringLiteral("DownloadingListWidget"));
     signalsAndSlots();
+    setBackgroundRole(QPalette::NoRole);
 }
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {

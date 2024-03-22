@@ -18,7 +18,6 @@ public:
     ~HomePage() override;
     void setMsgLabel(const std::string& msg);
 signals:
-    void AddUri(const std::string& uri);
     void HasAdded(bool hasAdded);
 public slots:
     void updateMsg(const std::string& msg);
@@ -26,7 +25,8 @@ public slots:
 private:
     Ui::HomePage* ui;
     void signalsAndSlots();
-    void getUrl(const std::string& uri);
+    void parseUri(const std::string& uri);
+    void addUri(const std::list<std::string>& uris);
     bool hasAdded = false;
 
 };

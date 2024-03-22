@@ -45,8 +45,6 @@ void DefaultSetting::updateAria2Version(const std::shared_ptr<aria2net::AriaVers
 }
 void DefaultSetting::signalsAndSlots()
 {
-    // transfer theme btn click signal to core to update theme(ui -> core)
-    // connect(Event::getInstance(), &Event::updateAria2Version, this, &DefaultSetting::UpdateAria2Version);
     connect(m_themeGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
         const int id = m_themeGroup->id(button);
         emit UpdateTheme(id);
@@ -55,6 +53,7 @@ void DefaultSetting::signalsAndSlots()
 void DefaultSetting::updateStatus(const std::string& status)
 {
     ui->Aria2Status->setText(QString::fromStdString(status));
+    // ui->Aria2Status->setPalette(QColor(255, 255, 255));
 }
 void DefaultSetting::updateVersion(const std::string& version)
 {
@@ -66,9 +65,13 @@ void DefaultSetting::updateFeatures(const std::string& features)
 }
 void DefaultSetting::setRedStatus()
 {
-    ui->Aria2Status->setStyleSheet("color: rgb(191,49,49);");
+    auto palette = ui->Aria2Status->palette();
+    palette.setColor(QPalette::WindowText, QColor(191, 49, 49));
+    ui->Aria2Status->setPalette(palette);
 }
 void DefaultSetting::setGreenStatus()
 {
-    ui->Aria2Status->setStyleSheet("color: rgb(115,144,114);");
+    auto palette = ui->Aria2Status->palette();
+    palette.setColor(QPalette::WindowText, QColor(115, 144, 114));
+    ui->Aria2Status->setPalette(palette);
 }

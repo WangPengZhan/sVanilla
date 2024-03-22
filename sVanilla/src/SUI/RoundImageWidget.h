@@ -7,7 +7,7 @@ class RoundImageWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit RoundImageWidget(QWidget* parent = nullptr, const QPixmap& pixmap = QPixmap());
+    explicit RoundImageWidget(QWidget* parent = nullptr, QPixmap  pixmap = QPixmap());
 
     void setPixmap(const QPixmap& pixmap);
 

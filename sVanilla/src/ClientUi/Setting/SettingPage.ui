@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="HorizonNavigation" name="horizonNavigation" native="true"/>
+    <widget class="VanillaStyle::ToggleButton" name="horizonNavigation" native="true"/>
    </item>
    <item>
     <widget class="QStackedWidget" name="settingStackedPage">
@@ -39,11 +39,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>HorizonNavigation</class>
-   <extends>QWidget</extends>
-   <header>SUI/HorizonNavigation.h</header>
-  </customwidget>
   <customwidget>
    <class>::DefaultSetting</class>
    <extends>QWidget</extends>
@@ -60,6 +55,12 @@
    <class>::AdvanceSetting</class>
    <extends>QWidget</extends>
    <header>ClientUi/Setting/AdvanceSetting.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VanillaStyle::ToggleButton</class>
+   <extends>QWidget</extends>
+   <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

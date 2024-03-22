@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
+    <width>374</width>
     <height>146</height>
    </rect>
   </property>
@@ -45,7 +45,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="Title">
+       <widget class="QLabel" name="labelTitle">
         <property name="text">
          <string>-</string>
         </property>
@@ -72,7 +72,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnDelete">
+       <widget class="VanillaStyle::IconButton" name="btnDelete">
         <property name="text">
          <string/>
         </property>
@@ -90,7 +90,7 @@
       </sizepolicy>
      </property>
      <property name="value">
-      <number>24</number>
+      <number>0</number>
      </property>
     </widget>
    </item>
@@ -110,14 +110,14 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="Size">
+       <widget class="QLabel" name="labelSize">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="RemainingTime">
+       <widget class="QLabel" name="labelRemainingTime">
         <property name="text">
          <string/>
         </property>
@@ -131,7 +131,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="Duration">
+       <widget class="QLabel" name="labelDuration">
         <property name="text">
          <string/>
         </property>
@@ -151,7 +151,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="btnPause">
+       <widget class="VanillaStyle::IconButton" name="btnPause">
         <property name="text">
          <string/>
         </property>
@@ -161,7 +161,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnFolder">
+       <widget class="VanillaStyle::IconButton" name="btnFolder">
         <property name="minimumSize">
          <size>
           <width>32</width>
@@ -180,18 +180,12 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnDetail">
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
+       <widget class="VanillaStyle::IconButton" name="btnDetail">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="text">
          <string/>
@@ -204,6 +198,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>VanillaStyle::IconButton</class>
+   <extends>QPushButton</extends>
+   <header>VanillaStyle/Widgets/IconButton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
