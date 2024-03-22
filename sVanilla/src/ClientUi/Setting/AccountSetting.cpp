@@ -45,7 +45,7 @@ AccountSetting::~AccountSetting()
 void AccountSetting::refreshQrCode(QLabel* label, const std::string& url)
 {
     QrCodeGenerator qrCodeGenerator;
-    const auto image =  qrCodeGenerator.generateQR(QString::fromStdString(url));
+    const auto image = qrCodeGenerator.generateQR(QString::fromStdString(url));
     label->setPixmap(QPixmap::fromImage(image));
 }
 void AccountSetting::checkLoginStatus(const std::string& qrcode)
@@ -56,17 +56,17 @@ void AccountSetting::checkLoginStatus(const std::string& qrcode)
     {
         if (loginStatus.code == 86038)
         {
-            qDebug() << "二维码过期";
+            qDebug() << "QR code expired";
             break;
         }
         else if (loginStatus.code == 86101)
         {
-            qDebug() << "等待扫码";
+            qDebug() << "Wait for scan code";
             continue;
         }
         else if (loginStatus.code == 86090)
         {
-            qDebug() << "等待确认";
+            qDebug() << "Waiting for confirmation";
         }
         else
         {

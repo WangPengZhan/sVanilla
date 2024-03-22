@@ -25,7 +25,7 @@ void RoundImageWidget::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);  // Enable antialiasing
     // Create a rounded rectangle path
     QPainterPath path;
-    path.addRoundedRect(rect().toRectF(), 15, 15);
+    path.addRoundedRect(rect(), 15, 15);
     // Clip the painting area to the path
     painter.setClipPath(path);
     // Draw the image

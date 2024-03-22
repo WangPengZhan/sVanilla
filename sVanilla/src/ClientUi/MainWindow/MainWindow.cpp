@@ -18,6 +18,7 @@
 
 #include "VanillaStyle/Style.h"
 #include "VanillaStyle/Style/VanillaStyle.h"
+#include <VanillaStyle/Widgets/IconButton.h>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -243,14 +244,18 @@ static inline void emulateLeaveEvent(QWidget* widget)
 // clang-format on
 void MainWindow::loadSystemButton()
 {
-    const auto minButton = new QPushButton();
+    const auto minButton = new VanillaStyle::IconButton();
+    minButton->setIcon(QIcon(QStringLiteral(":/icon/bar/minimize.svg")));
+    minButton->setIconSize(QSize(12, 12));
     minButton->setObjectName(QStringLiteral("min-button"));
     minButton->setProperty("system-button", true);
     minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     windowBar->setMinButton(minButton);
     windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
 
-    const auto maxButton = new QPushButton();
+    const auto maxButton = new VanillaStyle::IconButton();
+    maxButton->setIcon(QIcon(QStringLiteral(":/icon/bar/maximize.svg")));
+    maxButton->setIconSize(QSize(12, 12));
     maxButton->setCheckable(true);
     maxButton->setObjectName(QStringLiteral("max-button"));
     maxButton->setProperty("system-button", true);
@@ -258,7 +263,9 @@ void MainWindow::loadSystemButton()
     windowBar->setMaxButton(maxButton);
     windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
 
-    const auto closeButton = new QPushButton();
+    const auto closeButton = new VanillaStyle::IconButton();
+    closeButton->setIcon(QIcon(QStringLiteral(":/icon/bar/close.svg")));
+    closeButton->setIconSize(QSize(12, 12));
     closeButton->setObjectName(QStringLiteral("close-button"));
     closeButton->setProperty("system-button", true);
     closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);

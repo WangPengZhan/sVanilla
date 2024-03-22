@@ -11,7 +11,8 @@ WindowBar::WindowBar(QWidget* parent)
     const QStringList horizonNavigation({QStringLiteral(":/icon/bar/home.svg"), QStringLiteral(":/icon/bar/video.svg"),
                                          QStringLiteral(":/icon/bar/download.svg"), QStringLiteral(":/icon/bar/setting.svg")});
     ui->Hit->setItemList(horizonNavigation);
-    ui->Hit->setColumnWidth(45);
+    ui->Hit->setColumnWidth(35);
+    ui->horizontalLayout->setSpacing(20);
     connect(ui->Hit, &VanillaStyle::ToggleButton::currentItemChanged, this, &WindowBar::BarBtnClick);
 }
 

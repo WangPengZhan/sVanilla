@@ -24,7 +24,7 @@ LoginUrlOrigin BilibiliClient::GetLoginUrl()
 {
     std::string response;
     Rquest(GET, PassportURL::QRCode, {}, response, getPassportHeaders(), false);
-    PRINTJ("login response：", response);
+    PRINTJ("login response: ", response);
     return LoginUrlOrigin(GetDataFromRespones(response));
 }
 
@@ -35,7 +35,7 @@ LoginStatusScanning BilibiliClient::GetLoginStatus(const std::string& qrcode_key
 
     std::string response;
     Rquest(GET, PassportURL::LoginStatus, param, response, getPassportHeaders(), false);
-    PRINTJ("login status response：", response);
+    PRINTJ("login status response: ", response);
     return LoginStatusScanning(GetDataFromRespones(response));
 }
 
@@ -46,7 +46,7 @@ VideoViewOrigin BilibiliClient::GetVideoView(const std::string& bvid)
 
     std::string response;
     Rquest(GET, VideoURL::View, param, response, getDefalutHeaders(), false);
-    PRINTJ("view response：", response);
+    PRINTJ("view response: ", response);
     return VideoViewOrigin(GetDataFromRespones(response));
 }
 
@@ -65,7 +65,7 @@ PlayUrlOrigin BilibiliClient::GetPlayUrl(long long cid, long long qn, const std:
     std::string response;
     Rquest(GET, VideoURL::Playurl, param, response, getDefalutHeaders(), true);
 
-    PRINTJ("playurl response：", response);
+    PRINTJ("playurl response: ", response);
     return PlayUrlOrigin(GetDataFromRespones(response));
 }
 
@@ -101,7 +101,7 @@ void BilibiliClient::ResetWbi()
 {
     std::string response;
     Rquest(GET, PassportURL::WebNav, {}, response, getDefalutHeaders(), false);
-    PRINTJ("nav response：", response);
+    PRINTJ("nav response: ", response);
     std::string img_url;
     std::string sub_url;
     try
