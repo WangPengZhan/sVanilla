@@ -9,8 +9,8 @@ namespace Plugin
 
 #if C_EXPORT_PLUGIN
 
-typedef const char* (PluginNameFunc)();
-typedef const char* (PluginVersionFunc)();
+typedef const char*(PluginNameFunc)();
+typedef const char*(PluginVersionFunc)();
 
 struct IPlugin
 {
@@ -29,4 +29,4 @@ public:
 };
 #endif
 
-} // namespace Plugin
+}  // namespace Plugin

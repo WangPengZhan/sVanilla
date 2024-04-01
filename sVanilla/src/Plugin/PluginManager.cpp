@@ -4,7 +4,7 @@
 
 #include "PluginManager.h"
 
-namespace  Plugin
+namespace Plugin
 {
 
 std::string PluginManager::m_pluginDir = "plugin/";
@@ -22,7 +22,6 @@ PluginManager::~PluginManager()
 
 void PluginManager::addPlugin(const std::string& pluginName)
 {
-    
 }
 
 std::shared_ptr<IPlugin> PluginManager::getPlugin(const std::string& pluginName)
@@ -69,5 +68,5 @@ void PluginManager::saveConfig() const
     o << json.dump(4);
     m_configChanged = false;
 }
-    
-} // namespace  Plugin
+
+}  // namespace  Plugin

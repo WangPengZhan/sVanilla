@@ -1,9 +1,9 @@
 #ifdef _WIN32
-    #ifndef _WINSOCKAPI_
-        #include <Windows.h>
-    #endif
+#    ifndef _WINSOCKAPI_
+#        include <Windows.h>
+#    endif
 #else
-    #include <dlfcn.h>
+#    include <dlfcn.h>
 #endif
 
 #include "DynamicLibLoader.h"
