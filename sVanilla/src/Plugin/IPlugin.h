@@ -2,6 +2,9 @@
 #include <string>
 #include <atomic>
 
+namespace Plugin
+{
+
 #define C_EXPORT_PLUGIN 0
 
 #if C_EXPORT_PLUGIN
@@ -18,3 +21,5 @@ public:
     virtual const std::string& pluginVersion() const = 0;
 };
 #endif
+
+} // namespace Plugin

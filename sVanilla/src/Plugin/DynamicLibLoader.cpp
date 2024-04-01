@@ -7,6 +7,8 @@
 #endif
 
 #include "DynamicLibLoader.h"
+namespace Plugin
+{
 
 DynamicLibLoader::DynamicLibLoader(std::string libPath)
     : m_libPath(std::move(libPath))
@@ -81,10 +83,10 @@ void* DynamicLibLoader::loadLibrary(const std::string& path)
 #endif
 }
 
-void* DynamicLibLoader::loadSymbol(void* handle, const std::string& symbolName) 
+void* DynamicLibLoader::loadSymbol(void* handle, const std::string& symbolName)
 {
     void* symbol = nullptr;
-    if (handle) 
+    if (handle)
     {
 #ifdef _WIN32
         symbol = GetProcAddress(reinterpret_cast<HMODULE>(handle), symbolName.c_str());
@@ -92,25 +94,17 @@ void* DynamicLibLoader::loadSymbol(void* handle, const std::string& symbolName)
         symbol = dlsym(handle, symbolName.c_str());
 #endif
 
-        if (!symbol) 
+        if (!symbol)
         {
             char* error_message = nullptr;
 
 #ifdef _WIN32
             DWORD error_code = GetLastError();
-            FormatMessageA(
-                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                nullptr,
-                error_code,
-                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                reinterpret_cast<LPSTR>(&error_message),
-                0,
-                nullptr
-            );
+            FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error_code,
+                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&error_message), 0, nullptr);
 #else
             error_message = dlerror();
 #endif
-
 
 #ifdef _WIN32
             // Required to release memory allocated by FormatMessageA()
@@ -121,9 +115,9 @@ void* DynamicLibLoader::loadSymbol(void* handle, const std::string& symbolName)
     return symbol;
 }
 
-void DynamicLibLoader::unloadLibrary(void* handle) 
+void DynamicLibLoader::unloadLibrary(void* handle)
 {
-    if (handle) 
+    if (handle)
     {
 #ifdef _WIN32
         FreeLibrary(reinterpret_cast<HMODULE>(handle));
@@ -132,3 +126,5 @@ void DynamicLibLoader::unloadLibrary(void* handle)
 #endif
     }
 }
+
+}  // namespace Plugin
