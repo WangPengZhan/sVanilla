@@ -8,9 +8,16 @@ namespace Plugin
 #define C_EXPORT_PLUGIN 0
 
 #if C_EXPORT_PLUGIN
+
+typedef const char* (PluginNameFunc)();
+typedef const char* (PluginVersionFunc)();
+
 struct IPlugin
 {
+    PluginNameFunc pluginName;
+    PluginVersionFunc pluginFunc;
 };
+
 #else
 class IPlugin
 {

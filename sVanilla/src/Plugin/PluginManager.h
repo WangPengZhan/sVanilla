@@ -45,7 +45,7 @@ private:
     static std::string m_pluginDir;
     static std::string m_configPath;
 
-    std::atomic_bool m_configChanged;
+    mutable std::atomic_bool m_configChanged;
     std::vector<PluginConfig> m_pluginConfig;
 };
 
