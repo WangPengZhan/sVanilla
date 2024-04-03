@@ -20,6 +20,20 @@ PluginManager::~PluginManager()
     saveConfig();
 }
 
+void PluginManager::loadPlugins()
+{
+    std::filesystem::path plugPath(m_pluginDir);
+    std::string allPath = std::filesystem::absolute(plugPath).string();
+    auto pLoader = std::make_shared<DynamicLibLoader>(allPath + "TemplatePlugin.dll");
+    pLoader->loadLibrary();
+    auto plugin = pLoader->loadPluginSymbol();
+    if (plugin)
+    {
+        m_libHandles.insert({"TemplatePlugin", pLoader});
+        m_plugins.insert({"TemplatePlugin", plugin});
+    }
+}
+
 void PluginManager::addPlugin(const std::string& pluginName)
 {
 }

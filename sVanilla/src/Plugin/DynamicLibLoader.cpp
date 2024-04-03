@@ -5,8 +5,25 @@
 #else
 #    include <dlfcn.h>
 #endif
+#include <locale>
 
 #include "DynamicLibLoader.h"
+#include "IPlugin.h"
+
+namespace
+{
+#ifdef _WIN32
+#    include <windows.h>
+
+std::wstring stringToWideString(const std::string& str)
+{
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+    std::wstring wstrTo(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wstrTo[0], size_needed);
+    return wstrTo;
+}
+#endif
+}  // namespace
 namespace Plugin
 {
 
@@ -35,13 +52,24 @@ bool DynamicLibLoader::loadLibrary()
     }
 
     m_libHandle = loadLibrary(m_libPath);
-    m_loaded = (m_libHandle == nullptr);
+    m_loaded = (m_libHandle != nullptr);
     return m_loaded;
 }
 
 std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
 {
-    return std::shared_ptr<IPlugin>();
+    std::shared_ptr<IPlugin> res = std::make_shared<IPlugin>();
+#if C_EXPORT_PLUGIN
+    res->pluginName = static_cast<PluginNameFunc>(loadSymbol(m_libHandle, "pluginName"));
+    res->pluginVersion = static_cast<PluginVersionFunc>(loadSymbol(m_libHandle, "pluginVersion"));
+#else
+    auto pluginFunc = static_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "plugin"));
+    if (pluginFunc)
+    {
+        res.reset(pluginFunc());
+    }
+#endif
+    return res;
 }
 
 void DynamicLibLoader::unloadLibrary()
@@ -77,7 +105,8 @@ void DynamicLibLoader::setLibraryPath(const std::string& libPath)
 void* DynamicLibLoader::loadLibrary(const std::string& path)
 {
 #ifdef _WIN32
-    return LoadLibrary(LPCWSTR(path.c_str()));
+    std::wstring wpath = stringToWideString(path);
+    return LoadLibrary(LPCWSTR(wpath.c_str()));
 #else
     return dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
 #endif

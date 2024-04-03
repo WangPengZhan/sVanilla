@@ -39,7 +39,7 @@ public:
 
 private:
     std::unordered_map<std::string, std::shared_ptr<IPlugin>> m_plugins;
-    std::unordered_map<std::string, DynamicLibLoader> m_libHandles;
+    std::unordered_map<std::string, std::shared_ptr<DynamicLibLoader>> m_libHandles;
     std::recursive_mutex plugins_mutex_;
 
     static std::string m_pluginDir;
