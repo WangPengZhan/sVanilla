@@ -36,6 +36,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 20)
 
 cmake_policy(SET CMP0087 NEW)
+cmake_policy(SET CMP0079 NEW)
 
 # qt
 set(QT_COMPONENTS
@@ -85,6 +86,8 @@ add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/vanillastyle EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
+
 option(ENABLE_TEST "Enable Test" OFF)
 if (ENABLE_TEST)
     enable_testing()
@@ -112,6 +115,7 @@ foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
 
+add_dependencies(${PROJECT_NAME} sVanillaPlugins)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
@@ -166,3 +170,32 @@ install(FILES "$<TARGET_FILE:QWindowKit::Widgets>" DESTINATION ${CMAKE_INSTALL_P
 install(FILES "$<TARGET_FILE:QWindowKit::Core>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
+file(GLOB VCPAKG_DEP_DIRS LIST_DIRECTORIES true "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/packages/*")
+message( "VCPKG ${VCPAKG_DEP_DIRS}")
+if (VCPAKG_DEP_DIRS)
+    foreach(VCPAKG_DEP_DIR ${VCPAKG_DEP_DIRS})
+        message(${CMAKE_BUILD_TYPE})
+        if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
+            set(VCPKG_LIB ${VCPAKG_DEP_DIR}/debug/bin/)
+        else()
+            set(VCPKG_LIB ${VCPAKG_DEP_DIR}/bin/)
+        endif()
+        
+        if (EXISTS ${VCPKG_LIB}/)
+            message("${VCPKG_LIB}")
+            install(DIRECTORY ${VCPKG_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+        endif()
+    endforeach()
+endif()
+
+get_target_property(PLUGINS sVanillaPlugins _PLUGINS_)
+if (PLUGINS)
+    foreach(PLUGIN ${PLUGINS})
+        add_custom_command(TARGET ${PROJECT_NAME}
+            POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${PROJECT_NAME}>/plugin
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PLUGIN}> $<TARGET_FILE_DIR:${PROJECT_NAME}>/plugin
+        )
+        install(FILES "$<TARGET_FILE:${PLUGIN}>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/plugin)
+    endforeach()
+endif()

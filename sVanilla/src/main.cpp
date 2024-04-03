@@ -4,6 +4,7 @@
 #include "ClientUi/MainWindow/SApplication.h"
 #include "ClientUi/MainWindow/MainWindow.h"
 #include "ClientUi/PlatformInitializer/AppInitializer.h"
+#include "Plugin/PluginManager.h"
 
 int main(int argc, char* argv[])
 {
@@ -20,6 +21,9 @@ int main(int argc, char* argv[])
 
     AppInitializer sVanilla;
     sVanilla.init();
+
+    Plugin::PluginManager pluginManager;
+    pluginManager.loadPlugins();
 
     MainWindow maimWindow;
     maimWindow.show();

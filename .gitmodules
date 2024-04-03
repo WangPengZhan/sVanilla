@@ -13,3 +13,6 @@
 [submodule "ThirdParty/vanillastyle"]
 	path = ThirdParty/vanillastyle
 	url = https://github.com/AlanusMeminius/VanillaStyle.git
+[submodule "ThirdParty/sVanillaPlugins"]
+	path = ThirdParty/sVanillaPlugins
+	url = https://github.com/WangPengZhan/sVanillaPlugins.git

@@ -4,7 +4,7 @@
 
 #include "PluginManager.h"
 
-namespace  Plugin
+namespace Plugin
 {
 
 std::string PluginManager::m_pluginDir = "plugin/";
@@ -20,9 +20,22 @@ PluginManager::~PluginManager()
     saveConfig();
 }
 
+void PluginManager::loadPlugins()
+{
+    std::filesystem::path plugPath(m_pluginDir);
+    std::string allPath = std::filesystem::absolute(plugPath).string();
+    auto pLoader = std::make_shared<DynamicLibLoader>(allPath + "TemplatePlugin.dll");
+    pLoader->loadLibrary();
+    auto plugin = pLoader->loadPluginSymbol();
+    if (plugin)
+    {
+        m_libHandles.insert({"TemplatePlugin", pLoader});
+        m_plugins.insert({"TemplatePlugin", plugin});
+    }
+}
+
 void PluginManager::addPlugin(const std::string& pluginName)
 {
-    
 }
 
 std::shared_ptr<IPlugin> PluginManager::getPlugin(const std::string& pluginName)
@@ -69,5 +82,5 @@ void PluginManager::saveConfig() const
     o << json.dump(4);
     m_configChanged = false;
 }
-    
-} // namespace  Plugin
+
+}  // namespace  Plugin
