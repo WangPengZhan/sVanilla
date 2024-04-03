@@ -60,10 +60,10 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
 {
     std::shared_ptr<IPlugin> res = std::make_shared<IPlugin>();
 #if C_EXPORT_PLUGIN
-    res->pluginName = static_cast<PluginNameFunc>(loadSymbol(m_libHandle, "pluginName"));
-    res->pluginVersion = static_cast<PluginVersionFunc>(loadSymbol(m_libHandle, "pluginVersion"));
+    res->pluginName = reinterpret_cast<PluginNameFunc>(loadSymbol(m_libHandle, "pluginName"));
+    res->pluginVersion = reinterpret_cast<PluginVersionFunc>(loadSymbol(m_libHandle, "pluginVersion"));
 #else
-    auto pluginFunc = static_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "plugin"));
+    auto pluginFunc = reinterpret_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "plugin"));
     if (pluginFunc)
     {
         res.reset(pluginFunc());
