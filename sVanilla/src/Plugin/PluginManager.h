@@ -35,16 +35,22 @@ public:
 
     void addPlugin(const std::string& pluginPath);
     std::shared_ptr<IPlugin> getPlugin(const std::string& pluginName);
+    void removePlugin(const std::string& pluginName);
+
+    void pluginDirFileAdded();
 
     void loadConfig();
     void saveConfig() const;
 
+private:
     void initPluginPaths();
+    static std::vector<std::string> pluginDirHaving();
+
 private:
     std::unordered_map<std::string, std::shared_ptr<DynamicLibLoader>> m_libHandles;
     std::unordered_map<std::string, std::shared_ptr<IPlugin>> m_plugins;
     std::unordered_set<std::string> m_pluginsPaths;
-    std::recursive_mutex plugins_mutex_;
+    std::recursive_mutex m_pluginsMutex;
 
     static const std::string m_pluginDir;
     static const std::string m_configPath;
