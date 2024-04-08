@@ -69,11 +69,14 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         pluginConfig.pluginName = plugin->pluginName();
         pluginConfig.libName = std::filesystem::path(pluginPath).stem().string();
         pluginConfig.version = plugin->pluginVersion();
+        m_pluginConfig.emplace_back(pluginConfig);
     }
-
-    m_libHandles.insert({plugin->pluginName(), pLoader});
-    m_plugins.insert({plugin->pluginName(), plugin});
     
+    if (pluginConfig.enabled)
+    {
+        m_libHandles.insert({plugin->pluginName(), pLoader});
+        m_plugins.insert({plugin->pluginName(), plugin});
+    }
 }
 
 std::shared_ptr<IPlugin> PluginManager::getPlugin(const std::string& pluginName)
