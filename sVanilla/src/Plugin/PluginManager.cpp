@@ -43,6 +43,13 @@ void PluginManager::loadPlugins()
     }
 }
 
+void PluginManager::unloadPlugins()
+{
+    std::lock_guard lk(m_pluginsMutex);
+    m_plugins.clear();
+    m_libHandles.clear();
+}
+
 void PluginManager::addPlugin(const std::string& pluginPath)
 {
     auto pLoader = std::make_shared<DynamicLibLoader>(pluginPath);
@@ -69,11 +76,13 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         pluginConfig.pluginName = plugin->pluginName();
         pluginConfig.libName = std::filesystem::path(pluginPath).stem().string();
         pluginConfig.version = plugin->pluginVersion();
+        m_configChanged = true;
         m_pluginConfig.emplace_back(pluginConfig);
     }
-    
+
     if (pluginConfig.enabled)
     {
+        std::lock_guard lk(m_pluginsMutex);
         m_libHandles.insert({plugin->pluginName(), pLoader});
         m_plugins.insert({plugin->pluginName(), plugin});
     }
@@ -81,12 +90,33 @@ void PluginManager::addPlugin(const std::string& pluginPath)
 
 std::shared_ptr<IPlugin> PluginManager::getPlugin(const std::string& pluginName)
 {
+    std::lock_guard lk(m_pluginsMutex);
     if (m_plugins.find(pluginName) != m_plugins.end())
     {
         return m_plugins.at(pluginName);
     }
 
     return std::shared_ptr<IPlugin>();
+}
+
+void PluginManager::removePlugin(const std::string& pluginName)
+{
+    std::lock_guard lk(m_pluginsMutex);
+    m_plugins.erase(pluginName);
+    m_libHandles.erase(pluginName);
+}
+
+void PluginManager::pluginDirFileAdded()
+{
+    auto pluginPaths = pluginDirHaving();
+    for (const auto& pluginPath : pluginPaths)
+    {
+        auto [_, successed] = m_pluginsPaths.insert(pluginPath);
+        if (successed)
+        {
+            addPlugin(pluginPath);
+        }
+    }
 }
 
 void PluginManager::loadConfig()
@@ -126,15 +156,25 @@ void PluginManager::saveConfig() const
 
 void PluginManager::initPluginPaths()
 {
+    auto pluginPaths = pluginDirHaving();
+    std::lock_guard lk(m_pluginsMutex);
+    m_pluginsPaths.insert(pluginPaths.begin(), pluginPaths.end());
+}
+
+std::vector<std::string> PluginManager::pluginDirHaving()
+{
+    std::vector<std::string> res;
     std::filesystem::path plugPath(m_pluginDir);
 
-    for (const auto& entry : std::filesystem::directory_iterator(plugPath)) 
+    for (const auto& entry : std::filesystem::directory_iterator(plugPath))
     {
-        if (entry.path().extension() == m_dynamicExtension) 
+        if (entry.path().extension() == m_dynamicExtension)
         {
-            m_pluginsPaths.insert(std::filesystem::absolute(entry.path()).string());
+            res.emplace_back(std::filesystem::absolute(entry.path()).string());
         }
     }
+
+    return res;
 }
 
 }  // namespace  Plugin
