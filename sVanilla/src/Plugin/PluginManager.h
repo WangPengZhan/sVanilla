@@ -3,6 +3,7 @@
 #include <atomic>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <mutex>
 
 #include <nlohmann/json.hpp>
@@ -28,22 +29,26 @@ public:
     PluginManager();
     ~PluginManager();
 
+    static std::string pluginDir();
     void loadPlugins();
     void unloadPlugins();
 
-    void addPlugin(const std::string& pluginName);
+    void addPlugin(const std::string& pluginPath);
     std::shared_ptr<IPlugin> getPlugin(const std::string& pluginName);
 
     void loadConfig();
     void saveConfig() const;
 
+    void initPluginPaths();
 private:
-    std::unordered_map<std::string, std::shared_ptr<IPlugin>> m_plugins;
     std::unordered_map<std::string, std::shared_ptr<DynamicLibLoader>> m_libHandles;
+    std::unordered_map<std::string, std::shared_ptr<IPlugin>> m_plugins;
+    std::unordered_set<std::string> m_pluginsPaths;
     std::recursive_mutex plugins_mutex_;
 
-    static std::string m_pluginDir;
-    static std::string m_configPath;
+    static const std::string m_pluginDir;
+    static const std::string m_configPath;
+    static const std::string m_dynamicExtension;
 
     mutable std::atomic_bool m_configChanged;
     std::vector<PluginConfig> m_pluginConfig;

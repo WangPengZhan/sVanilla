@@ -11,11 +11,20 @@ namespace Plugin
 
 typedef const char* (*PluginNameFunc)();
 typedef const char* (*PluginVersionFunc)();
+typedef void(*PluginDeinitFunc)();
 
 struct IPlugin
 {
+    ~IPlugin()
+    {
+        if (pluginDeinit)
+        {
+            pluginDeinit();
+        }
+    }
     PluginNameFunc pluginName = nullptr;
     PluginVersionFunc pluginVersion = nullptr;
+    PluginDeinitFunc pluginDeinit = nullptr;
 };
 
 #else

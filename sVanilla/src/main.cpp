@@ -1,3 +1,5 @@
+#include <QFileSystemWatcher>
+
 #include "Logger/Dump.h"
 #include "ClientUi/MainWindow/Restarter.h"
 #include "ClientUi/MainWindow/SingleAppHelper.h"
@@ -24,6 +26,15 @@ int main(int argc, char* argv[])
 
     Plugin::PluginManager pluginManager;
     pluginManager.loadPlugins();
+
+    QFileSystemWatcher watcher;
+    watcher.addPath(SApplication::applicationDirPath() + "/" + QString::fromStdString(Plugin::PluginManager::pluginDir()));
+    QObject::connect(&watcher, &QFileSystemWatcher::directoryChanged,[&pluginManager](const QString& path){
+        if (QFile::exists(path))
+        {
+            pluginManager.addPlugin(path.toStdString());
+        }
+    });
 
     MainWindow maimWindow;
     maimWindow.show();
