@@ -59,3 +59,45 @@ protected:
 
     static CurlHelp m_curlHelp;
 };
+
+#include "NetWork/CurlCpp/CurlHeader.h"
+#include "NetWork/CurlCpp/CurlOption.h"
+
+namespace network
+{
+
+enum class HttpMethod {
+    DEL,
+    PUT,
+    GET,
+    HEAD,
+    POST,
+    PATCH,
+    OPTIONS
+};
+
+class NetWork
+{
+public:
+    using CurlOptions = std::vector<std::shared_ptr<AbstractOption>>;
+    NetWork() = default;
+    virtual ~NetWork() = default;
+
+    const std::vector<CurlHeader>& commonHeaders() const;
+    void setCommonHeaders(const std::vector<CurlHeader>& commonsHeaders);
+    const CurlOptions& commonOptions() const;
+    void setCommonOptions(const CurlOptions& options);
+
+protected:
+
+private:
+
+protected:
+
+private:
+    std::vector<CurlHeader> m_commonHeaders;
+    CurlOptions m_commonOptions;
+
+};
+
+} // namespace network

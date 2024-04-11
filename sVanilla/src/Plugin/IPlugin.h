@@ -9,9 +9,9 @@ namespace Plugin
 
 #if C_EXPORT_PLUGIN
 
-typedef const char* (*PluginNameFunc)();
-typedef const char* (*PluginVersionFunc)();
-typedef void(*PluginDeinitFunc)();
+using PluginNameFunc = const char* (*)();
+using PluginVersionFunc = const char* (*)();
+using PluginDeinitFunc = void(*)();
 
 struct IPlugin
 {

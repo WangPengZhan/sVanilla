@@ -276,3 +276,27 @@ void CNetWork::InitDefaultHeadersLogin()
     m_headers = curl_slist_append(m_headers, userAgent.c_str());
     m_headers = curl_slist_append(m_headers, referer.c_str());
 }
+
+namespace network
+{
+
+const std::vector<CurlHeader>& NetWork::commonHeaders() const
+{
+    return m_commonHeaders;
+}
+
+void NetWork::setCommonHeaders(const std::vector<CurlHeader>& commonsHeaders)
+{
+    m_commonHeaders = commonsHeaders;
+}
+const NetWork::CurlOptions& NetWork::commonOptions() const
+{
+    return m_commonOptions;
+}
+
+void NetWork::setCommonOptions(const CurlOptions& options)
+{
+    m_commonOptions = options;
+}
+
+}  // namespace network
