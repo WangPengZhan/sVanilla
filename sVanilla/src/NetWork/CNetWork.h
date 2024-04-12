@@ -60,13 +60,16 @@ protected:
     static CurlHelp m_curlHelp;
 };
 
+#include <unordered_map>
+
 #include "NetWork/CurlCpp/CurlHeader.h"
 #include "NetWork/CurlCpp/CurlOption.h"
 
 namespace network
 {
 
-enum class HttpMethod {
+enum class HttpMethod
+{
     DEL,
     PUT,
     GET,
@@ -79,25 +82,28 @@ enum class HttpMethod {
 class NetWork
 {
 public:
-    using CurlOptions = std::vector<std::shared_ptr<AbstractOption>>;
+    using CurlOptions = std::unordered_map<CURLoption, std::shared_ptr<AbstractOption>>;
+    using ParamType = std::map<std::string, std::string>;
+
     NetWork() = default;
     virtual ~NetWork() = default;
 
-    const std::vector<CurlHeader>& commonHeaders() const;
-    void setCommonHeaders(const std::vector<CurlHeader>& commonsHeaders);
+    const CurlHeader& commonHeaders() const;
+    void setCommonHeaders(const CurlHeader& commonsHeaders);
     const CurlOptions& commonOptions() const;
     void setCommonOptions(const CurlOptions& options);
 
+    void addCommonOption(std::shared_ptr<AbstractOption> option);
+    void addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>& options);
+    std::shared_ptr<AbstractOption> getOption(CURLoption opt) const;
+
 protected:
-
 private:
-
 protected:
-
-private:
-    std::vector<CurlHeader> m_commonHeaders;
+    CurlHeader m_commonHeaders;
     CurlOptions m_commonOptions;
 
+private:
 };
 
-} // namespace network
+}  // namespace network

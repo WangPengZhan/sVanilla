@@ -1,6 +1,5 @@
 #include "CurlEasy.h"
 
-
 namespace network
 {
 
@@ -29,6 +28,24 @@ void CurlEasy::perform()
 void CurlEasy::reset()
 {
     curl_easy_reset(handle());
+}
+
+void CurlEasy::setOption(const AbstractOption& option)
+{
+    setOption(&option);
+}
+
+void CurlEasy::setOption(std::unique_ptr<AbstractOption> option)
+{
+    setOption(option.get());
+}
+
+void CurlEasy::setOption(const AbstractOption* option)
+{
+    if (option)
+    {
+        option->setToCurl(handle());
+    }
 }
 
 CURL* CurlEasy::handle() const

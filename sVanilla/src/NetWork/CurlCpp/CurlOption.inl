@@ -1,7 +1,18 @@
-
+#pragma once
+#include <type_traits>
 
 namespace network
 {
+
+template <typename COValueType>
+inline CurlValueOption<COValueType>::~CurlValueOption()
+{
+    if constexpr (std::is_pointer_v<COValueType>)
+    {
+        delete m_value;
+        m_value = nullptr;
+    }
+}
 
 template <typename COValueType>
 inline void CurlValueOption<COValueType>::setValue(const ValueType& value)
@@ -18,27 +29,70 @@ inline const typename CurlValueOption<COValueType>::ValueType& CurlValueOption<C
 template <typename COValueType>
 inline CurlValueOption<COValueType>* CurlValueOption<COValueType>::clone() const
 {
-    return CurlValueOption<COValueType>();
-}
-
-template <typename COValueType>
-inline void CurlValueOption<COValueType>::clear()
-{
+    return new CurlValueOption<COValueType>(*this);
 }
 
 template <typename COValueType>
 inline void CurlValueOption<COValueType>::updateOption(const AbstractOption& other)
 {
+    auto* pOther = dynamic_cast<const CurlValueOption<COValueType>*>(&other);
+    if (pOther)
+    {
+        setValue(pOther->getValue());
+    }
+}
+
+template <typename COValueType>
+inline void CurlValueOption<COValueType>::setToCurl(CURL* handle) const
+{
+    const CURLcode ret = curl_easy_setopt(handle, m_curlOption, m_value);
 }
 
 template <typename COValueType>
 inline CurlValueOption<COValueType>::CurlValueOption(ValueType value, CURLoption option)
+    : AbstractOption(option)
+    , m_value(std::move(value))
 {
 }
 
 template <typename COValueType>
+inline CurlValueOption<COValueType>::CurlValueOption(const CurlValueOption<COValueType>& other)
+{
+    if constexpr (std::is_pointer_v<COValueType>)
+    {
+        using value_type = typename std::is_pointer<COValueType>::type;
+        m_value = new value_type(*other.m_value);
+    }
+    else
+    {
+        m_value = other.m_value;
+    }
+
+    m_curlOption = other.m_curlOption;
+}
+
+template <typename COValueType>
 inline CurlValueOption<COValueType>::CurlValueOption(CURLoption option)
+    : AbstractOption(option)
 {
 }
 
-} // namespace network
+template <typename COValueType, CURLoption op>
+inline CurlOption<COValueType, op>::CurlOption(typename CurlValueOption<COValueType>::ValueType value)
+    : CurlValueOption<COValueType>(value, opt)
+{
+}
+
+template <CURLoption op>
+inline NoValueCurlOption<op>::NoValueCurlOption()
+    : CurlOption<bool, op>(false)
+{
+}
+
+template <CURLoption op>
+inline NoValueCurlOption<op>* NoValueCurlOption<op>::clone() const
+{
+    return new NoValueCurlOption<op>();
+}
+
+}  // namespace network

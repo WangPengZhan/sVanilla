@@ -3,13 +3,13 @@
 
 #include <curl/curl.h>
 
+#include "CurlOption.h"
+
 namespace network
 {
 
-
 class CurlEasy
 {
-
 public:
     struct Deleter
     {
@@ -21,25 +21,29 @@ public:
     CurlEasy(CURL* handle);
     virtual ~CurlEasy();
 
-    CurlEasy(const CurlEasy & other) = delete;
+    CurlEasy(const CurlEasy& other) = delete;
     CurlEasy& operator=(const CurlEasy& other) = delete;
 
     void perform();
     void reset();
 
-    template<typename OptionType>
-    void option(CURLoption option, OptionType value);
-
-    template<typename OptionType, CURLoption optionType>
-    void option(OptionType value);
+    void setOption(const AbstractOption& option);
+    void setOption(std::unique_ptr<AbstractOption> option);
+    void setOption(const AbstractOption* option);
+    template <typename CurlOption>
+    void setOption(typename CurlOption::ValueType const& value);
+    template <typename InputIterator>
+    void setOption(InputIterator first, InputIterator last);
 
     CURL* handle() const;
 
-    template<typename T>
-    void getInfo(CURLINFO info, T & value) const;
+    template <typename T>
+    void getInfo(CURLINFO info, T& value) const;
 
 private:
     CURLPtr m_curl;
 };
 
-} // namespace network
+}  // namespace network
+
+#include "CurlEasy.inl"

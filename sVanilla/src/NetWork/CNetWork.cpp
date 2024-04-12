@@ -20,7 +20,8 @@ size_t OnWriteDate(void* data, size_t size, size_t nmemb, void* stream)
     return size * nmemb;
 }
 
-size_t downloadCallback(void* ptr, size_t size, size_t nmemb, void* user_data) {
+size_t downloadCallback(void* ptr, size_t size, size_t nmemb, void* user_data)
+{
     FILE* fp = (FILE*)user_data;
     return fwrite(ptr, size, nmemb, fp);
 }
@@ -280,15 +281,16 @@ void CNetWork::InitDefaultHeadersLogin()
 namespace network
 {
 
-const std::vector<CurlHeader>& NetWork::commonHeaders() const
+const CurlHeader& NetWork::commonHeaders() const
 {
     return m_commonHeaders;
 }
 
-void NetWork::setCommonHeaders(const std::vector<CurlHeader>& commonsHeaders)
+void NetWork::setCommonHeaders(const CurlHeader& commonsHeaders)
 {
     m_commonHeaders = commonsHeaders;
 }
+
 const NetWork::CurlOptions& NetWork::commonOptions() const
 {
     return m_commonOptions;
@@ -297,6 +299,31 @@ const NetWork::CurlOptions& NetWork::commonOptions() const
 void NetWork::setCommonOptions(const CurlOptions& options)
 {
     m_commonOptions = options;
+}
+
+void NetWork::addCommonOption(std::shared_ptr<AbstractOption> option)
+{
+    m_commonOptions.insert({option->getOption(), option});
+}
+
+void NetWork::addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>& options)
+{
+    for (const auto& option : options)
+    {
+        addCommonOption(option);
+    }
+}
+
+std::shared_ptr<AbstractOption> NetWork::getOption(CURLoption opt) const
+{
+    if (m_commonOptions.find(opt) != m_commonOptions.end())
+    {
+        return m_commonOptions.at(opt);
+    }
+    else
+    {
+        return std::shared_ptr<AbstractOption>();
+    }
 }
 
 }  // namespace network
