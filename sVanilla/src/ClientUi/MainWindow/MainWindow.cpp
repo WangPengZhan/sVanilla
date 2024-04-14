@@ -19,8 +19,6 @@
 #include "MainWindowlog.h"
 #include "ui_MainWindow.h"
 
-
-
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -82,7 +80,7 @@ void MainWindow::signalsAndSlots()
 
 void MainWindow::setLightTheme()
 {
-    VanillaStyle::Style::setStyleFromName("LightVanillaStyle");
+    Vanilla::Style::setStyleFromName("LightVanillaStyle");
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
 #elif __APPLE__
@@ -92,7 +90,7 @@ void MainWindow::setLightTheme()
 
 void MainWindow::setDarkTheme()
 {
-    VanillaStyle::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
+    Vanilla::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
 #elif __APPLE__
@@ -246,7 +244,7 @@ static inline void emulateLeaveEvent(QWidget* widget)
 // clang-format on
 void MainWindow::loadSystemButton()
 {
-    const auto minButton = new VanillaStyle::IconButton();
+    const auto minButton = new Vanilla::IconButton();
     minButton->setIcon(QIcon(QStringLiteral(":/icon/bar/minimize.svg")));
     minButton->setIconSize(QSize(12, 12));
     minButton->setObjectName(QStringLiteral("min-button"));
@@ -255,7 +253,7 @@ void MainWindow::loadSystemButton()
     windowBar->setMinButton(minButton);
     windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
 
-    const auto maxButton = new VanillaStyle::IconButton();
+    const auto maxButton = new Vanilla::IconButton();
     maxButton->setIcon(QIcon(QStringLiteral(":/icon/bar/maximize.svg")));
     maxButton->setIconSize(QSize(12, 12));
     maxButton->setCheckable(true);
@@ -265,7 +263,7 @@ void MainWindow::loadSystemButton()
     windowBar->setMaxButton(maxButton);
     windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
 
-    const auto closeButton = new VanillaStyle::IconButton();
+    const auto closeButton = new Vanilla::IconButton();
     closeButton->setIcon(QIcon(QStringLiteral(":/icon/bar/close.svg")));
     closeButton->setIconSize(QSize(12, 12));
     closeButton->setObjectName(QStringLiteral("close-button"));

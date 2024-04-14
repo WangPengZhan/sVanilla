@@ -125,7 +125,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="VanillaStyle::IconButton" name="DetailPanelCloseBtn">
+       <widget class="Vanilla::IconButton" name="DetailPanelCloseBtn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -165,7 +165,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>VanillaStyle::IconButton</class>
+   <class>Vanilla::IconButton</class>
    <extends>QPushButton</extends>
    <header>VanillaStyle/Widgets/IconButton.h</header>
   </customwidget>

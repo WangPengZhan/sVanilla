@@ -28,7 +28,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="VanillaStyle::IconButton" name="IconBtn">
+       <widget class="Vanilla::IconButton" name="IconBtn">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -89,7 +89,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="VanillaStyle::IconLabel" name="HomePageSubmit" native="true"/>
+       <widget class="Vanilla::IconLabel" name="HomePageSubmit" native="true"/>
       </item>
      </layout>
     </widget>
@@ -225,7 +225,7 @@
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="VanillaStyle::IconButton" name="ClipBoardBtn">
+       <widget class="Vanilla::IconButton" name="ClipBoardBtn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -244,7 +244,7 @@
        </widget>
       </item>
       <item>
-       <widget class="VanillaStyle::IconButton" name="HistoryBtn">
+       <widget class="Vanilla::IconButton" name="HistoryBtn">
         <property name="text">
          <string/>
         </property>
@@ -282,12 +282,12 @@
    <header>SUI/SearchLineEdit.h</header>
   </customwidget>
   <customwidget>
-   <class>VanillaStyle::IconButton</class>
+   <class>Vanilla::IconButton</class>
    <extends>QPushButton</extends>
    <header>VanillaStyle/Widgets/IconButton.h</header>
   </customwidget>
   <customwidget>
-   <class>VanillaStyle::IconLabel</class>
+   <class>Vanilla::IconLabel</class>
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/IconLabel.h</header>
    <container>1</container>

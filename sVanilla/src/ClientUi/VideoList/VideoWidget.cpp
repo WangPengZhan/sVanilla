@@ -24,7 +24,7 @@ VideoWidget::VideoWidget(QWidget* parent)
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
     ui->SwitchBtn->setColumnWidth(45);
     ui->SwitchBtn->setItemList(horizonNavigation);
-    connect(ui->SwitchBtn, &VanillaStyle::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->SwitchBtn, &Vanilla::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
     connect(ui->VideoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
         ui->VideoGrid->widget(1)->hide();
         ui->VideoList->widget(1)->hide();

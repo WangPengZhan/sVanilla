@@ -12,6 +12,9 @@ int main(int argc, char* argv[])
 
     Restarter restarter(argc, argv);
 
+    AppInitializer sVanilla;
+    sVanilla.initApplicationBefore();
+
     SApplication application(argc, argv);
     SingleAppHelper singleAppHelper;
     if (singleAppHelper.isHaveInstance())
@@ -19,7 +22,6 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    AppInitializer sVanilla;
     sVanilla.init();
 
     application.pluginManager().loadPlugins();
