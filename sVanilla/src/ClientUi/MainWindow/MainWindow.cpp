@@ -65,16 +65,16 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::signalsAndSlots()
 {
     // tab bar btn click event to change stacked page
-    connect(windowBar, &WindowBar::BarBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    connect(windowBar, &WindowBar::barBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
     connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
         if (index == 3)
         {
-            Q_EMIT ui->settingPage->connectAria2Server();
+            ui->settingPage->connectAria2Server();
         }
     });
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
-    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::ClearVideo);
+    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::clearVideo);
 
     connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::loadBiliViewView);
     connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
@@ -131,7 +131,7 @@ void MainWindow::installWindowAgent()
 {
     windowAgent->setup(this);
     windowAgent->setTitleBar(windowBar);
-    windowAgent->setHitTestVisible(windowBar->GetHitWidget(), true);
+    windowAgent->setHitTestVisible(windowBar->getHitWidget(), true);
 
     setMenuWidget(windowBar);
 
@@ -297,7 +297,7 @@ void MainWindow::loadSystemButton()
 }
 #endif
 
-void MainWindow::ClearVideo(bool flag)
+void MainWindow::clearVideo(bool flag)
 {
     if (!flag)
     {

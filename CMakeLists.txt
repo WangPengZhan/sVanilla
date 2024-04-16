@@ -27,10 +27,6 @@ add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP${CPU_NUMBER_OF_LOGICAL_CORES}>
 
 add_compile_definitions(UNICODE)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 20)
@@ -87,6 +83,10 @@ add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/vanillastyle EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 option(ENABLE_TEST "Enable Test" OFF)
 if (ENABLE_TEST)

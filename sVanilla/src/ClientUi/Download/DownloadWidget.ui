@@ -13,38 +13,86 @@
   <property name="windowTitle">
    <string>DownloadWidget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="::DownloadingListWidget" name="DownloadListWidget"/>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="VanillaStyle::ToggleButton" name="horizonNavigation" native="true"/>
    </item>
-   <item>
-    <widget class="QWidget" name="DownloadInfoamationWidget" native="true"/>
-   </item>
-   <item>
-    <widget class="QWidget" name="DownloadPageBtns" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="btnStopAll">
-        <property name="text">
-         <string>Stop All</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnStartAll">
-        <property name="text">
-         <string>Start All</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnDeleteAll">
-        <property name="text">
-         <string>Delete All</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+   <item row="1" column="0">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="widgetDownloading">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="::DownloadingListWidget" name="DownloadListWidget"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="DownloadInfoamationWidget" native="true"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QWidget" name="DownloadPageBtns" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="btnStopAll">
+            <property name="text">
+             <string>Stop All</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnStartAll">
+            <property name="text">
+             <string>Start All</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnDeleteAll">
+            <property name="text">
+             <string>Delete All</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="widgetDownloaded">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="::DownloadingListWidget" name="listWidgetDownloaded"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="DownloadedBtnGroup" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="btnClearAll">
+            <property name="text">
+             <string>Clear All</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRedownload">
+            <property name="text">
+             <string>Reloaded All</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnScaned">
+            <property name="text">
+             <string>Scan</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -54,6 +102,12 @@
    <class>::DownloadingListWidget</class>
    <extends>QListWidget</extends>
    <header>ClientUi/Download/DownloadingListWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VanillaStyle::ToggleButton</class>
+   <extends>QWidget</extends>
+   <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

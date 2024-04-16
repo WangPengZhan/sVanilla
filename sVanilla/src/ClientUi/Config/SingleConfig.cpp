@@ -35,15 +35,6 @@ Aria2Config SingleConfig::getAriaConfig() const
     return config;
 }
 
-void SingleConfig::setAriaSettings(const Aria2Settings& settings)
-{
-}
-
-Aria2Settings SingleConfig::getAriaSettings() const
-{
-    return Aria2Settings();
-}
-
 SingleConfig::SingleConfig()
 {
     iniConfig();

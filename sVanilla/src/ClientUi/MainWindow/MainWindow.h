@@ -43,7 +43,8 @@ public:
 
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
-    void ClearVideo(bool flag);
+
+    void clearVideo(bool flag);
 
 protected:
     bool event(QEvent* event) override;
@@ -59,17 +60,14 @@ private:
 #ifndef __APPLE__
     void loadSystemButton();
 #endif
+    void installWindowAgent();
 
 signals:
-    void AddUri(const std::string& uri);
     void onSettingPage();
     void downloadBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
-
-
 private:
     Ui::MainWindow* ui;
-    void installWindowAgent();
     QWK::WidgetWindowAgent* windowAgent;
     QWK::StyleAgent* styleAgent;
     WindowBar* windowBar;

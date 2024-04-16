@@ -17,7 +17,7 @@ public:
     explicit WindowBar(QWidget* parent = nullptr);
     ~WindowBar();
 
-    [[nodiscard]] QWidget* GetHitWidget() const;
+    [[nodiscard]] QWidget* getHitWidget() const;
 
     void setMinButton(QAbstractButton* btn);
     void setMaxButton(QAbstractButton* btn);
@@ -27,7 +27,7 @@ private:
     void signalsAndSlots();
 
 signals:
-    void BarBtnClick(int index);
+    void barBtnClick(int index);
     void minimizeRequested();
     void maximizeRequested(bool max = false);
     void closeRequested();

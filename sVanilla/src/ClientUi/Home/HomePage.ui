@@ -175,7 +175,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Load Plugin</string>
+         <string>Import Plugin</string>
         </property>
        </widget>
       </item>
@@ -188,7 +188,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Login Website</string>
+         <string>Login Download Website</string>
         </property>
        </widget>
       </item>
