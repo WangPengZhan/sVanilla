@@ -44,6 +44,7 @@ public:
 
 private:
     void initPluginPaths();
+    void createPluginDir();
     static std::vector<std::string> pluginDirHaving();
 
 private:

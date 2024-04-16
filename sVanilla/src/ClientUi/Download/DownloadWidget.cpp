@@ -10,6 +10,8 @@ DownloadWidget::DownloadWidget(QWidget* parent)
     , m_downloadManager(new DownloadManager(this))
 {
     ui->setupUi(this);
+    setUi();
+    signalsAndSlots();
 }
 
 DownloadWidget::~DownloadWidget()
@@ -26,6 +28,7 @@ void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std
     ui->DownloadListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }
+
 void DownloadWidget::addDownloadTask(const download::ResourseInfo& info)
 {
     auto biliDownlaoder = std::make_shared<download::BiliDownloader>(info);
@@ -33,4 +36,20 @@ void DownloadWidget::addDownloadTask(const download::ResourseInfo& info)
     uiDownloader->setFileName(biliDownlaoder->filename());
     ui->DownloadListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
+}
+
+void DownloadWidget::setUi()
+{
+    const QStringList horizonNavigationBtn = {tr("Downloading"), tr("Downloaded")};
+    ui->horizonNavigation->setItemList(horizonNavigationBtn);
+    ui->horizonNavigation->setUseIcon(false);
+    ui->horizonNavigation->setColumnWidth(100);
+    connect(ui->horizonNavigation, &VanillaStyle::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+}
+
+void DownloadWidget::signalsAndSlots()
+{
+    connect(ui->btnStartAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::startAll);
+    connect(ui->btnStopAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::stopAll);
+    connect(ui->btnDeleteAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::deleteAll);
 }

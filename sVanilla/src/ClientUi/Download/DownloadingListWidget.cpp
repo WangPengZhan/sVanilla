@@ -7,7 +7,6 @@
 #include "DownloadingListWidget.h"
 #include "ui_DownloadingListWidget.h"
 
-
 template <typename T>
 QString formatSize(T bytesPerSec)
 {
@@ -77,6 +76,24 @@ QListWidget* DownloadingItemWidget::listWidget() const
 std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder()
 {
     return m_downloader;
+}
+
+void DownloadingItemWidget::setStart()
+{
+    if (m_downloader->status() != download::AbstractDownloader::Downloading && m_downloader->status() != download::AbstractDownloader::Finished)
+    {
+        m_downloader->setStatus(download::AbstractDownloader::Ready);
+        ui->btnPause->setChecked(false);
+    }
+}
+
+void DownloadingItemWidget::setStop()
+{
+    if (m_downloader->status() == download::AbstractDownloader::Downloading)
+    {
+        m_downloader->setStatus(download::AbstractDownloader::Stopped);
+        ui->btnPause->setChecked(true);
+    }
 }
 
 void DownloadingItemWidget::signalsAndSlots()
@@ -184,6 +201,36 @@ void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>&
     m_items.insert({downloader->guid(), pItem});
 }
 
+void DownloadingListWidget::startAll()
+{
+    int nCount = count();
+    for (int i = 0; i < nCount; ++i)
+    {
+        if (downloadItemWidget(i))
+        {
+            downloadItemWidget(i)->setStart();
+        }
+    }
+}
+
+void DownloadingListWidget::stopAll()
+{
+    int nCount = count();
+    for (int i = 0; i < nCount; ++i)
+    {
+        if (downloadItemWidget(i))
+        {
+            downloadItemWidget(i)->setStop();
+        }
+    }
+}
+
+void DownloadingListWidget::deleteAll()
+{
+    m_items.clear();
+    clear();
+}
+
 void DownloadingListWidget::removeDownloadItem(const std::string& guid)
 {
     if (m_items.find(guid) != m_items.end())
@@ -207,6 +254,11 @@ QListWidgetItem* DownloadingListWidget::itemFromWidget(QWidget* target)
     }
 
     return nullptr;
+}
+
+DownloadingItemWidget* DownloadingListWidget::downloadItemWidget(int row) const
+{
+    return qobject_cast<DownloadingItemWidget*>(itemWidget(item(row)));
 }
 
 void DownloadingListWidget::signalsAndSlots() const

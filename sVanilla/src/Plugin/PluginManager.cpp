@@ -21,6 +21,7 @@ std::string const PluginManager::m_dynamicExtension = ".dylib";
 
 PluginManager::PluginManager()
 {
+    createPluginDir();
     loadConfig();
     initPluginPaths();
 }
@@ -159,6 +160,14 @@ void PluginManager::initPluginPaths()
     auto pluginPaths = pluginDirHaving();
     std::lock_guard lk(m_pluginsMutex);
     m_pluginsPaths.insert(pluginPaths.begin(), pluginPaths.end());
+}
+
+void PluginManager::createPluginDir()
+{
+    if (!std::filesystem::is_directory(m_pluginDir))
+    {
+        std::filesystem::create_directory(m_pluginDir);
+    }
 }
 
 std::vector<std::string> PluginManager::pluginDirHaving()

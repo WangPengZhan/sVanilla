@@ -23,6 +23,9 @@ public:
     QListWidget* listWidget() const;
     std::shared_ptr<UiDownloader> downloaoder();
 
+    void setStart();
+    void setStop();
+
 private:
     void signalsAndSlots();
 
@@ -41,8 +44,13 @@ public:
 
     void addDownloadItem(const std::shared_ptr<UiDownloader>& downloader);
 
+    void startAll();
+    void stopAll();
+    void deleteAll();
+
     void removeDownloadItem(const std::string& guid);
     QListWidgetItem* itemFromWidget(QWidget* target);
+    DownloadingItemWidget* downloadItemWidget(int row) const;
 
 private:
     void signalsAndSlots() const;

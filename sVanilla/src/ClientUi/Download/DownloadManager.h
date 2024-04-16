@@ -5,8 +5,6 @@
 
 #include <unordered_set>
 
-
-
 class DownloadManager final : public QObject
 {
     Q_OBJECT

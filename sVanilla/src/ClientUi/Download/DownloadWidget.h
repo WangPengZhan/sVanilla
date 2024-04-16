@@ -21,9 +21,15 @@ class DownloadWidget : public QWidget
 
 public:
     explicit DownloadWidget(QWidget* parent = nullptr);
-    ~DownloadWidget() override;
+    ~DownloadWidget();
+
     void addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName);
     void addDownloadTask(const download::ResourseInfo& info);
+
+private:
+    void setUi();
+    void signalsAndSlots();
+
 private:
     Ui::DownloadWidget* ui;
     DownloadManager* m_downloadManager;
