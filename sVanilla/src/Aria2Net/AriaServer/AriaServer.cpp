@@ -20,15 +20,17 @@ AriaServer::AriaServer()
 
 AriaServer::~AriaServer()
 {
-    m_transceiver->sendTask([this]() {
+    std::promise<void> promise;
+    m_transceiver->sendTask([this, &promise]() {
         if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
         {
             m_aria2Process->kill();
             m_aria2Process->waitForFinished();
             m_aria2Process.reset();
         }
+        promise.set_value();
     });
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    promise.get_future().get();
 }
 
 void AriaServer::startLocalServerAsync()
