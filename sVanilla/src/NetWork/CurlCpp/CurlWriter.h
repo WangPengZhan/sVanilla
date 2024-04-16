@@ -30,12 +30,12 @@ class ContextWriter<std::string>
     }
 };
 
-template <typename Context, typename Writer = CurlWriter<Context>>
+template <typename Context, typename Writer = ContextWriter<Context>>
 class CurlWriter
 {
 public:
-    CurlWriter(Context* ctx);
-    CurlWriter(Context* ctx, Writer writer);
+    CurlWriter(Context& ctx);
+    CurlWriter(Context& ctx, Writer writer);
 
     void setToCurl(CURL* handle);
     void setToCurl(CurlEasy* easy);
@@ -44,7 +44,24 @@ public:
 
 private:
     Writer m_writer;
-    Context* m_pContext;
+    Context& m_context;
+};
+
+template <typename Response>
+class CurlResponseWrapper
+{
+public:
+    CurlResponseWrapper(Response& response);
+
+    void setToCurl(CURL* handle);
+    void setToCurl(CurlEasy* easy);
+
+    void readAfter(CURL* handle);
+    void readAfter(CurlEasy* easy);
+
+private:
+    Response& m_response;
+    CurlWriter<Response> m_writer;
 };
 
 }  // namespace network

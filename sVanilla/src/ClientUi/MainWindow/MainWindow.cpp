@@ -82,7 +82,7 @@ void MainWindow::setLightTheme()
 {
     Vanilla::Style::setStyleFromName("LightVanillaStyle");
 #ifdef _WIN32
-    setBlurEffect(AcrylicMaterial);
+    setBlurEffect(DWMBlur);
 #elif __APPLE__
     setBlurEffect(LightBlur);
 #endif

@@ -64,6 +64,7 @@ protected:
 
 #include "NetWork/CurlCpp/CurlHeader.h"
 #include "NetWork/CurlCpp/CurlOption.h"
+#include "NetWork/CurlCpp/CurlWriter.h"
 
 namespace network
 {
@@ -88,14 +89,28 @@ public:
     NetWork() = default;
     virtual ~NetWork() = default;
 
+    // headers
     const CurlHeader& commonHeaders() const;
     void setCommonHeaders(const CurlHeader& commonsHeaders);
+
+    // options
     const CurlOptions& commonOptions() const;
     void setCommonOptions(const CurlOptions& options);
-
     void addCommonOption(std::shared_ptr<AbstractOption> option);
     void addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>& options);
     std::shared_ptr<AbstractOption> getOption(CURLoption opt) const;
+
+    template <typename Response>
+    bool get(const std::string& url, Response& response);
+    template <typename Response>
+    bool get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false);
+    template <typename Response>
+    bool get(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
+    template <typename Response>
+    bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false,
+             const CurlOptions& options = {}, bool optionsAdd = false);
 
 protected:
 private:
@@ -105,5 +120,122 @@ protected:
 
 private:
 };
+
+template <typename Response>
+inline bool NetWork::get(const std::string& url, Response& response)
+{
+    CurlEasy easy;
+    CurlResponseWrapper writer(response);
+
+    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, m_commonHeaders.get());
+    for (const auto& option : m_commonOptions)
+    {
+        option.second->setToCurl(easy);
+    }
+    writer.setToCurl(easy);
+
+    easy.perform();
+    writer.readAfter(easy);
+
+    return;
+}
+
+template <typename Response>
+inline bool NetWork::get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd)
+{
+    CurlEasy easy;
+    CurlResponseWrapper writer(response);
+
+    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
+    if (headersAdd)
+    {
+        CurlHeader headersCopy(headers);
+        auto common = std::vector<std::string>(m_commonHeaders);
+        headersCopy.add(common.begin(), common.end());
+        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
+    }
+    else
+    {
+        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
+    }
+    for (const auto& option : m_commonOptions)
+    {
+        option.second->setToCurl(easy);
+    }
+    writer.setToCurl(easy);
+
+    easy.perform();
+    writer.readAfter(easy);
+}
+
+template <typename Response>
+inline bool NetWork::get(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd)
+{
+    CurlEasy easy;
+    CurlResponseWrapper writer(response);
+
+    curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, m_commonHeaders.get());
+
+    for (const auto& option : options)
+    {
+        option.second->setToCurl(easy);
+    }
+    if (optionsAdd)
+    {
+        for (const auto& option : m_commonOptions)
+        {
+            option.second->setToCurl(easy);
+        }
+    }
+
+    for (const auto& option : m_commonOptions)
+    {
+        option.second->setToCurl(easy);
+    }
+    writer.setToCurl(easy);
+
+    easy.perform();
+    writer.readAfter(easy);
+}
+
+template <typename Response>
+inline bool NetWork::get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd,
+                         const CurlOptions& options, bool optionsAdd)
+{
+    CurlEasy easy;
+    CurlResponseWrapper writer(response);
+
+    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
+    if (headersAdd)
+    {
+        CurlHeader headersCopy(headers);
+        auto common = std::vector<std::string>(m_commonHeaders);
+        headersCopy.add(common.begin(), common.end());
+        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
+    }
+    else
+    {
+        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
+    }
+    for (const auto& option : options)
+    {
+        option.second->setToCurl(easy);
+    }
+    if (optionsAdd)
+    {
+        for (const auto& option : m_commonOptions)
+        {
+            option.second->setToCurl(easy);
+        }
+    }
+
+    writer.setToCurl(easy);
+
+    easy.perform();
+    writer.readAfter(easy);
+
+    return true;
+}
 
 }  // namespace network

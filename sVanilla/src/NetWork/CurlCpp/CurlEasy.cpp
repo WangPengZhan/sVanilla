@@ -11,6 +11,11 @@ void CurlEasy::Deleter::operator()(CURL* curl)
     }
 }
 
+CurlEasy::CurlEasy()
+{
+    m_curl.reset(curl_easy_init());
+}
+
 CurlEasy::CurlEasy(CURL* handle)
 {
     m_curl.reset(handle);

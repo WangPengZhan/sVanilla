@@ -110,6 +110,7 @@ void CNetWork::AppendHeaders(const std::string& header)
 {
     curl_slist_append(m_headers, header.c_str());
 }
+
 std::string CNetWork::ConcatenateParams(const ParamType& params)
 {
     // Calculate the length of the final string in advance
