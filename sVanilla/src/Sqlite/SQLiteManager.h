@@ -3,7 +3,7 @@
 #include <mutex>
 #include <unordered_map>
 
-#include "SQLiteDatabase.h"
+#include "Sqlite/Database/SQLiteDatabase.h"
 #include "FinishedItemTable.h"
 
 namespace SQLite

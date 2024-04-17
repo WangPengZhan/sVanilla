@@ -1,9 +1,7 @@
 #pragma once
 #include <string>
-#include <any>
 #include <set>
-
-#include "SQLiteUtility.h"
+#include <memory>
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -18,7 +16,13 @@ private:
     SQLiteDatabase& operator=(const SQLiteDatabase& other) = delete;
 
 public:
+    struct Deleter
+    {
+        void operator()(sqlite3* dbHandle);
+    };
+    using sqlitePtr = std::unique_ptr<sqlite3, Deleter>;
     using dbPtr = std::shared_ptr<SQLiteDatabase>;
+
     enum NextStatus
     {
         Row,
@@ -30,43 +34,33 @@ public:
     virtual ~SQLiteDatabase();
 
     bool isOpen() const;
+    const std::string& fileName() const;
 
     std::set<std::string> tables();
     std::set<std::string> views();
 
-    bool prepare(const std::string& sql);
-    NextStatus next();
-    bool execute(const std::string& sql);
-    bool reset();
+    bool tableExists(const std::string& tableName);
+    int64_t lastInsertRowid() const;
 
-    bool prepare(const std::string& sql, SQLiteStmtPtr& stmt);
-    NextStatus next(SQLiteStmtPtr stmt);
+    int errorCode() const;
+    int extendedErrorCode() const;
+    std::string errorMsg() const;
+    std::string lastError() const;
+
+    bool execute(const std::string& sql);
 
     bool transaction();
     bool commit();
     bool rollback();
 
-    std::any value(int index) const;
-    bool bind(int index, int type, const std::any& value);
-
-    static std::any value(int index, SQLiteStmtPtr stmt);
-    static bool bind(int index, int type, const std::any& value, SQLiteStmtPtr stmt);
-
-    std::string lastError() const;
-
     sqlite3* handle() const;
 
 protected:
-    void close();
-    void finalize();
     void updateLastError();
 
-private:
-    void initDb();
-
 protected:
-    sqlite3* m_db;
-    sqlite3_stmt* m_stmt;
+    sqlitePtr m_db;
+    std::string m_fileName;
     std::string m_lastError;
 };
 
