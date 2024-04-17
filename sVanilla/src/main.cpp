@@ -5,9 +5,15 @@
 #include "ClientUi/MainWindow/MainWindow.h"
 #include "ClientUi/PlatformInitializer/AppInitializer.h"
 #include "Plugin/PluginManager.h"
+#include "NetWork/CNetWork.h"
+#include "NetWork/CurlCpp/CurlGlobal.h"
 
 int main(int argc, char* argv[])
 {
+    network::CurlGlobal curlGlobal;
+    network::NetWork testNetwork;
+    std::string response;
+    testNetwork.get("https://www.baidu.com", response);
     DumpColletor::registerDumpHandle();
 
     Restarter restarter(argc, argv);

@@ -100,6 +100,10 @@ public:
     void addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>& options);
     std::shared_ptr<AbstractOption> getOption(CURLoption opt) const;
 
+    // request for all
+    bool request();
+
+    // get
     template <typename Response>
     bool get(const std::string& url, Response& response);
     template <typename Response>
@@ -107,10 +111,35 @@ public:
     template <typename Response>
     bool get(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
+    bool get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options,
+             bool optionsAdd = false);
+    template <typename Response>
     bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
     template <typename Response>
     bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false,
              const CurlOptions& options = {}, bool optionsAdd = false);
+
+    // post
+    template <typename Response>
+    bool post(const std::string& url, Response& response);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options,
+              bool optionsAdd = false);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false,
+              const CurlOptions& options = {}, bool optionsAdd = false);
+
+    // head
+    template <typename Response>
+    bool head(const std::string& url, Response& response);
+    template <typename Response>
+    bool head(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false);
 
 protected:
 private:
@@ -131,14 +160,14 @@ inline bool NetWork::get(const std::string& url, Response& response)
     curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, m_commonHeaders.get());
     for (const auto& option : m_commonOptions)
     {
-        option.second->setToCurl(easy);
+        option.second->setToCurl(&easy);
     }
     writer.setToCurl(easy);
 
     easy.perform();
     writer.readAfter(easy);
 
-    return;
+    return true;
 }
 
 template <typename Response>
@@ -167,6 +196,8 @@ inline bool NetWork::get(const std::string& url, Response& response, const CurlH
 
     easy.perform();
     writer.readAfter(easy);
+
+    return true;
 }
 
 template <typename Response>
@@ -189,14 +220,12 @@ inline bool NetWork::get(const std::string& url, Response& response, const CurlO
         }
     }
 
-    for (const auto& option : m_commonOptions)
-    {
-        option.second->setToCurl(easy);
-    }
     writer.setToCurl(easy);
 
     easy.perform();
     writer.readAfter(easy);
+
+    return true;
 }
 
 template <typename Response>
@@ -218,6 +247,7 @@ inline bool NetWork::get(const std::string& url, Response& response, const Param
     {
         curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
     }
+
     for (const auto& option : options)
     {
         option.second->setToCurl(easy);

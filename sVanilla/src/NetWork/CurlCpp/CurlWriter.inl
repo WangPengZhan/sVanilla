@@ -1,40 +1,32 @@
 #pragma once
+#include <functional>
+
 namespace network
 {
-template <typename Context, typename Writer>
-inline CurlWriter<Context, Writer>::CurlWriter(Context& ctx)
+template <typename Context>
+inline CurlWriter<Context>::CurlWriter(Context& ctx)
     : m_context(ctx)
 {
 }
 
-template <typename Context, typename Writer>
-inline CurlWriter<Context, Writer>::CurlWriter(Context& ctx, Writer writer)
-    : m_context(ctx)
-    , m_writer(writer)
-{
-}
-
-template <typename Context, typename Writer>
-inline void CurlWriter<Context, Writer>::setToCurl(CURL* handle)
+template <typename Context>
+inline void CurlWriter<Context>::setToCurl(CURL* handle)
 {
     if (handle)
     {
-        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, m_writer);
+        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, writeFunc<Context>);
         curl_easy_setopt(handle, CURLOPT_WRITEDATA, &m_context);
     }
 }
 
-template <typename Context, typename Writer>
-inline void CurlWriter<Context, Writer>::setToCurl(CurlEasy* easy)
+template <typename Context>
+inline void CurlWriter<Context>::setToCurl(CurlEasy& easy)
 {
-    if (easy)
-    {
-        setToCurl(easy->handle());
-    }
+    setToCurl(easy.handle());
 }
 
-template <typename Context, typename Writer>
-inline void CurlWriter<Context, Writer>::isValid() const
+template <typename Context>
+inline void CurlWriter<Context>::isValid() const
 {
     return true;
 }
@@ -57,12 +49,9 @@ inline void CurlResponseWrapper<Response>::setToCurl(CURL* handle)
 }
 
 template <typename Response>
-inline void CurlResponseWrapper<Response>::setToCurl(CurlEasy* easy)
+inline void CurlResponseWrapper<Response>::setToCurl(CurlEasy& easy)
 {
-    if (easy)
-    {
-        setToCurl(easy->handle());
-    }
+    setToCurl(easy.handle());
 }
 
 template <typename Response>
@@ -71,12 +60,9 @@ inline void CurlResponseWrapper<Response>::readAfter(CURL* handle)
 }
 
 template <typename Response>
-inline void CurlResponseWrapper<Response>::readAfter(CurlEasy* easy)
+inline void CurlResponseWrapper<Response>::readAfter(CurlEasy& easy)
 {
-    if (easy)
-    {
-        readAfter(easy->handle());
-    }
+    readAfter(easy.handle());
 }
 
 }  // namespace network
