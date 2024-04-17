@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <list>
 
-namespace BiliApi
+namespace biliapi
 {
 // 协议基类
 class Protocol
@@ -464,8 +464,6 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlDash, video, audio, dolby)
 };
 
-
-
 class PlayUrlSupportFormat : public Protocol
 {
 public:
@@ -763,4 +761,4 @@ public:
     }
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MixinKey, Expires, mixin_key)
 };
-}  // namespace BiliApi
+}  // namespace biliapi

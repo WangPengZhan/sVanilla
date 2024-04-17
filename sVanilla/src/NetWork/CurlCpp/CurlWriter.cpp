@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cstdio>
 
 #include "CurlWriter.h"
 
@@ -22,6 +23,13 @@ size_t writeFunc<std::string>(void* data, size_t size, size_t nmemb, void* strea
     std::string* const ctx = static_cast<std::string*>(stream);
     ctx->append(static_cast<const char*>(data), realsize);
     return realsize;
+}
+
+template <>
+size_t writeFunc<FILE*>(void* data, size_t size, size_t nmemb, void* stream)
+{
+    FILE* fp = static_cast<FILE*>(stream);
+    return fwrite(data, size, nmemb, fp);
 }
 
 }  // namespace network

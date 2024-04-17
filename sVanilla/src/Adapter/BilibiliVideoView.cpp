@@ -20,7 +20,7 @@ std::string formatDuration(const int duration)
     return formattedDuration.str();
 }
 
-Adapter::VideoView ConvertVideoView(const BiliApi::VideoView& data)
+Adapter::VideoView ConvertVideoView(const biliapi::VideoView& data)
 {
     Adapter::VideoView videoListView;
     if (checkSeason(data))
@@ -51,7 +51,7 @@ Adapter::VideoView ConvertVideoView(const BiliApi::VideoView& data)
     return videoListView;
 }
 
-bool checkSeason(const BiliApi::VideoView& data)
+bool checkSeason(const biliapi::VideoView& data)
 {
     if (data.ugc_season.sections.empty())
     {
@@ -60,12 +60,12 @@ bool checkSeason(const BiliApi::VideoView& data)
     return !data.ugc_season.sections.front().episodes.empty();
 }
 
-bool checkPages(const BiliApi::VideoView& data)
+bool checkPages(const biliapi::VideoView& data)
 {
     return data.pages.size() > 1;
 }
 
-Adapter::BaseVideoView ConvertEpisodes(const BiliApi::UgcEpisode& data)
+Adapter::BaseVideoView ConvertEpisodes(const biliapi::UgcEpisode& data)
 {
     return Adapter::BaseVideoView{
         .Identifier = data.bvid,
@@ -78,20 +78,17 @@ Adapter::BaseVideoView ConvertEpisodes(const BiliApi::UgcEpisode& data)
     };
 }
 
-Adapter::BaseVideoView ConvertPages(const BiliApi::VideoPage& data)
+Adapter::BaseVideoView ConvertPages(const biliapi::VideoPage& data)
 {
     return Adapter::BaseVideoView{
         //        .Identifier = data.bvid,
-        .AlternateId = std::to_string(data.cid),
-        .VideoId = std::to_string(data.cid),
-        .Title = data.part,
-        .Cover = data.first_frame,
+        .AlternateId = std::to_string(data.cid),   .VideoId = std::to_string(data.cid), .Title = data.part, .Cover = data.first_frame,
         .Duration = formatDuration(data.duration),
         //        .Description = data.desc,
     };
 }
 
-Adapter::BaseVideoView ConvertSingleVideo(const BiliApi::VideoView& data)
+Adapter::BaseVideoView ConvertSingleVideo(const biliapi::VideoView& data)
 {
     return Adapter::BaseVideoView{
         .Identifier = data.bvid,

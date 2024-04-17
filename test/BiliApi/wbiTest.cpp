@@ -3,7 +3,7 @@
 #include "BiliApi/BilibiliUtils.h"
 
 using namespace testing;
-using namespace BiliApi;
+using namespace biliapi;
 
 class BiliApiTest : public Test
 {
@@ -43,7 +43,7 @@ TEST_F(BiliApiTest, URL)
 
 TEST_F(BiliApiTest, URLEncode)
 {
-    encoded = BiliApi::urlEncode(query);
+    encoded = biliapi::urlEncode(query);
     ASSERT_THAT(encoded, Eq("bar%3D514%26foo%3D114%26wts%3D1702204169%26zab%3D1919810"));
 }
 
@@ -51,13 +51,13 @@ TEST_F(BiliApiTest, MixinKey)
 {
     const std::string img_key = "7cd084941338484aae1ad9425b84077c";
     const std::string sub_key = "4932caff0ff746eab6f01bf08b70ac45";
-    auto const mixin_key = BiliApi::GetMixinKey(img_key + sub_key);
+    auto const mixin_key = biliapi::GetMixinKey(img_key + sub_key);
     ASSERT_THAT(mixin_key, Eq("ea1db124af3c7062474693fa704f4ff8"));
 }
 
 TEST_F(BiliApiTest, MD5)
 {
     auto const origin = "bar=514&foo=114&wts=1702204169&zab=1919810ea1db124af3c7062474693fa704f4ff8";
-    auto const w_rid = BiliApi::MD5Hash(origin);
+    auto const w_rid = biliapi::MD5Hash(origin);
     ASSERT_THAT(w_rid, Eq("8f6f2b5b3d485fe1886cec6a0be8c5d4"));
 }

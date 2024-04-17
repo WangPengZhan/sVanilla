@@ -14,7 +14,7 @@ WindowBar::WindowBar(QWidget* parent)
     ui->Hit->setItemList(horizonNavigation);
     ui->Hit->setColumnWidth(35);
     ui->horizontalLayout->setSpacing(20);
-    connect(ui->Hit, &Vanilla::ToggleButton::currentItemChanged, this, &WindowBar::BarBtnClick);
+    connect(ui->Hit, &Vanilla::ToggleButton::currentItemChanged, this, &WindowBar::barBtnClick);
 }
 
 WindowBar::~WindowBar()

@@ -12,6 +12,9 @@ size_t writeFunc(void* data, size_t size, size_t nmemb, void* stream);
 template <>
 size_t writeFunc<std::string>(void* data, size_t size, size_t nmemb, void* stream);
 
+template <>
+size_t writeFunc<FILE*>(void* data, size_t size, size_t nmemb, void* stream);
+
 template <typename Context>
 class CurlWriter
 {
@@ -21,7 +24,7 @@ public:
     void setToCurl(CURL* handle);
     void setToCurl(CurlEasy& easy);
 
-    void isValid() const;
+    bool isValid() const;
 
 private:
     Context& m_context;

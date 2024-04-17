@@ -12,4 +12,4 @@ AbstractOption::AbstractOption(CURLoption option)
 {
 }
 
-} // namespace network
+}  // namespace network

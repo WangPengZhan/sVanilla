@@ -3,63 +3,6 @@
 #include <map>
 #include <iostream>
 #include <list>
-#define PRINT(x)       std::cout << "Variable: " << #x << ", Value: " << x << std::endl;
-#define PRINTS(str, x) std::cout << str << ", Value: " << x << std::endl;
-#define PRINTJ(str, x) std::cout << str << nlohmann::json::parse(x).dump(4) << std::endl;
-
-struct curl_slist;
-
-class CNetWork
-{
-public:
-    enum HpptType
-    {
-        GET,
-        POST,
-        PUT,
-    };
-
-    using ParamType = std::map<std::string, std::string>;
-    // using OrderParamType = std::map<std::string, std::string>;
-
-public:
-    CNetWork();
-    ~CNetWork();
-
-    // void HttpGet(const std::string& url,  const ParamType& params, std::string& response, const std::string& cookie = "");
-    void HttpGet(const std::string& url, const ParamType& params, std::string& response, const std::list<std::string>& headers);
-    void HttpGet(const std::string& url, std::string& response, const std::list<std::string>& headers);
-    // void HttpGetWithCookie(const std::string& url, std::string& response, const std::string& cookie);
-    void HttpGet(const std::string& url, FILE* file);
-
-    void HttpPost(const std::string& url, ParamType params, std::string& response);
-    void HttpPost(const std::string& url, const std::string& params, std::string& response);
-    void HttpPost(const std::string& url, std::string& response);
-
-    void HttpPut(const std::string& url, ParamType params, std::string& response);
-    void HttpPut(const std::string& url, std::string& response);
-
-    void SetHeaders(curl_slist* headers);
-    void AppendHeaders(curl_slist* headers);
-    void AppendHeaders(const std::string& header);
-    static std::string ConcatenateParams(const ParamType& params);
-    std::string getAgent();
-
-protected:
-    void InitDefaultHeaders();
-    void InitDefaultHeadersLogin();
-
-    curl_slist* m_headers;
-    class CurlHelp
-    {
-    public:
-        CurlHelp();
-        ~CurlHelp();
-    };
-
-    static CurlHelp m_curlHelp;
-};
-
 #include <unordered_map>
 
 #include "NetWork/CurlCpp/CurlHeader.h"
@@ -68,6 +11,20 @@ protected:
 
 namespace network
 {
+
+constexpr char chrome[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
+constexpr char firefox[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0";
+constexpr char edge[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
+constexpr char opera[] =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+constexpr char ie[] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299";
+constexpr char safari[] =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 OPR/45.0.2552.8 (EdgE)";
+
+constexpr char const accept[] = "Accept: application/json";
+constexpr char const accept_encoding[] = "Accept-Encoding: gzip, deflate, br";
+constexpr char const accept_language[] = "Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
+constexpr char const connect_type[] = "Connection: keep-alive";
 
 enum class HttpMethod
 {
@@ -79,6 +36,8 @@ enum class HttpMethod
     PATCH,
     OPTIONS
 };
+
+std::string to_string(HttpMethod method);
 
 class NetWork
 {
@@ -101,7 +60,15 @@ public:
     std::shared_ptr<AbstractOption> getOption(CURLoption opt) const;
 
     // request for all
-    bool request();
+    template <typename Response>
+    bool request(const std::string& url, Response& response, HttpMethod medthod = HttpMethod::GET);
+    template <typename Response>
+    bool request(const std::string& url, Response& response, HttpMethod medthod, const CurlHeader& headers, bool headersAdd = false);
+    template <typename Response>
+    bool request(const std::string& url, Response& response, HttpMethod medthod, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool request(const std::string& url, Response& response, HttpMethod medthod, const CurlHeader& headers, bool headersAdd = false,
+                 const CurlOptions& options = {}, bool optionsAdd = false);
 
     // get
     template <typename Response>
@@ -132,11 +99,11 @@ public:
     bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options = {},
               bool optionsAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
+    bool post(const std::string& url, Response& response, const std::string& params, const CurlHeader& headers, bool headersAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const ParamType& params, const CurlOptions& options, bool optionsAdd = false);
+    bool post(const std::string& url, Response& response, const std::string& params, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers = {}, bool headersAdd = false,
+    bool post(const std::string& url, Response& response, const std::string& params, const CurlHeader& headers = {}, bool headersAdd = false,
               const CurlOptions& options = {}, bool optionsAdd = false);
 
     // head

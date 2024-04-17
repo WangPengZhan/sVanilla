@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 #include <curl/curl.h>
 
@@ -53,7 +54,7 @@ template <typename COValueType, CURLoption op>
 class CurlOption : public CurlValueOption<COValueType>
 {
 public:
-    static constexpr CurlOption opt = op;
+    static constexpr CURLoption opt = op;
     CurlOption(typename CurlValueOption<COValueType>::ValueType value);
 };
 
@@ -69,6 +70,11 @@ public:
 using Verbose = CurlOption<bool, CURLOPT_VERBOSE>;
 using Header = CurlOption<bool, CURLOPT_HEADER>;
 using NoProgress = CurlOption<bool, CURLOPT_NOPROGRESS>;
+using TimeOut = CurlOption<long, CURLOPT_TIMEOUT>;
+using AcceptEncoding = CurlOption<const char*, CURLOPT_ACCEPT_ENCODING>;
+using SSLVerifyPeer = CurlOption<bool, CURLOPT_SSL_VERIFYPEER>;
+using SSLVerifyHost = CurlOption<bool, CURLOPT_SSL_VERIFYHOST>;
+using PostFields = CurlOption<std::string, CURLOPT_POSTFIELDS>;
 
 }  // namespace network
 

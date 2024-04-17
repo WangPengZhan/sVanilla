@@ -10,13 +10,12 @@
 #include "NetWork/CNetWork.h"
 #include "Aria2Net/Protocol/Protocol.h"
 
-
 namespace aria2net
 {
 std::string GetRpcUri(int listenPort = 6800);
 std::string GetGuid();
 
-class AriaClient : public CNetWork
+class AriaClient : public network::NetWork
 {
 public:
     enum HowChangePosition

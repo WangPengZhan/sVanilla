@@ -8,11 +8,11 @@ namespace download
 {
 struct ResourseInfo;
 }
-namespace BiliApi
+namespace biliapi
 {
 class PlayUrlOrigin;
 class VideoViewOrigin;
-}
+}  // namespace biliapi
 struct CoverInfo;
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -31,14 +31,14 @@ public:
 
     void loadBiliViewView(const std::string& uri);
     void prepareBiliVideoView(const std::string& uri);
-    void prepareVideoItem(const std::shared_ptr<BiliApi::VideoViewOrigin>& videoView);
+    void prepareVideoItem(const std::shared_ptr<biliapi::VideoViewOrigin>& videoView);
     void downloadCover(const CoverInfo& coverInfo);
     void addVideoItem(const std::string& identifier) const;
     void updateVideoItem(const Adapter::BaseVideoView& videoView) const;
 
     void prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void getBiliUrl();
-    void praseBiliDownloadUrl(const BiliApi::PlayUrlOrigin& playUrl);
+    void praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl);
     Q_SIGNAL void createBiliDownloadTask(const download::ResourseInfo& info) const;
 
     void clearVideo() const;

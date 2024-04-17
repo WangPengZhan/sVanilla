@@ -26,7 +26,7 @@ inline void CurlWriter<Context>::setToCurl(CurlEasy& easy)
 }
 
 template <typename Context>
-inline void CurlWriter<Context>::isValid() const
+inline bool CurlWriter<Context>::isValid() const
 {
     return true;
 }

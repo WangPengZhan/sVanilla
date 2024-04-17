@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     spdlog::rotating_logger_mt<spdlog::async_factory>("Network", "log/Network.log", 1024 * 1024 * 10, 100);
 
     using namespace aria2net;
-    using namespace BiliApi;
+    using namespace biliapi;
     using namespace ffmpeg;
 
     int a = 0;

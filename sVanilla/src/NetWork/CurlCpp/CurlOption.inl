@@ -45,7 +45,14 @@ inline void CurlValueOption<COValueType>::updateOption(const AbstractOption& oth
 template <typename COValueType>
 inline void CurlValueOption<COValueType>::setToCurl(CURL* handle) const
 {
-    const CURLcode ret = curl_easy_setopt(handle, m_curlOption, m_value);
+    if constexpr (std::is_same_v<std::string, COValueType>)
+    {
+        const CURLcode ret = curl_easy_setopt(handle, getOption(), m_value.c_str());
+    }
+    else
+    {
+        const CURLcode ret = curl_easy_setopt(handle, getOption(), m_value);
+    }
 }
 
 template <typename COValueType>
@@ -57,18 +64,17 @@ inline CurlValueOption<COValueType>::CurlValueOption(ValueType value, CURLoption
 
 template <typename COValueType>
 inline CurlValueOption<COValueType>::CurlValueOption(const CurlValueOption<COValueType>& other)
+    : AbstractOption(other.getOption())
 {
     if constexpr (std::is_pointer_v<COValueType>)
     {
-        using value_type = typename std::is_pointer<COValueType>::type;
+        using value_type = std::remove_pointer_t<COValueType>;
         m_value = new value_type(*other.m_value);
     }
     else
     {
         m_value = other.m_value;
     }
-
-    m_curlOption = other.m_curlOption;
 }
 
 template <typename COValueType>
