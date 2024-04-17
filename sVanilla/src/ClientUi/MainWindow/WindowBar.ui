@@ -50,7 +50,7 @@
     </widget>
    </item>
    <item>
-    <widget class="VanillaStyle::ToggleButton" name="Hit" native="true">
+    <widget class="Vanilla::ToggleButton" name="Hit" native="true">
      <layout class="QHBoxLayout" name="IconLayout">
       <property name="leftMargin">
        <number>0</number>
@@ -95,7 +95,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>VanillaStyle::ToggleButton</class>
+   <class>Vanilla::ToggleButton</class>
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>

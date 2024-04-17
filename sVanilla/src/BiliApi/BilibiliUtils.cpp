@@ -13,7 +13,7 @@
 
 #include "BilibiliUtils.h"
 
-namespace BiliApi
+namespace biliapi
 {
 // 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
 void replaceCharacter(std::string& source, const std::string& from, const std::string& to)
@@ -54,7 +54,8 @@ nlohmann::json readJson(const std::string& filename)
         return nlohmann::json::object();
     }
     // 检查文件是否为空
-    if (file.peek() == std::ifstream::traits_type::eof()) {
+    if (file.peek() == std::ifstream::traits_type::eof())
+    {
         // 文件为空，返回空的json对象
         return nlohmann::json::object();
     }
@@ -70,7 +71,7 @@ nlohmann::json readJson(const std::string& filename)
     }
     return j;
 }
-void updateData( const std::string& key, const nlohmann::json& value)
+void updateData(const std::string& key, const nlohmann::json& value)
 {
     const std::string filename = "sVanilla.data";
     nlohmann::json j = readJson(filename);
@@ -147,4 +148,4 @@ bool isExpired(const std::time_t& expires)
     return expires < std::time(nullptr) / 86400;
 }
 
-} // BiliApi
+}  // namespace biliapi

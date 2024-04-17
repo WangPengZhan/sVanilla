@@ -151,7 +151,7 @@ AriaChangeOption AriaClient::ChangeOptionAsync(const std::string& gid, const Lis
 std::string AriaClient::Request(const std::string& url, const std::string& param)
 {
     std::string strResponse;
-    HttpPost(url, param, strResponse);
+    post(url, strResponse, param);
     return strResponse;
 }
 

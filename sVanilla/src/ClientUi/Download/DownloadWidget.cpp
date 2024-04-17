@@ -44,7 +44,7 @@ void DownloadWidget::setUi()
     ui->horizonNavigation->setItemList(horizonNavigationBtn);
     ui->horizonNavigation->setUseIcon(false);
     ui->horizonNavigation->setColumnWidth(100);
-    connect(ui->horizonNavigation, &VanillaStyle::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 }
 
 void DownloadWidget::signalsAndSlots()

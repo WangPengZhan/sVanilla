@@ -24,7 +24,7 @@ VideoWidget::VideoWidget(QWidget* parent)
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
     ui->SwitchBtn->setColumnWidth(45);
     ui->SwitchBtn->setItemList(horizonNavigation);
-    connect(ui->SwitchBtn, &VanillaStyle::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->SwitchBtn, &Vanilla::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
     connect(ui->VideoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
         ui->VideoGrid->widget(1)->hide();
         ui->VideoList->widget(1)->hide();
@@ -63,18 +63,18 @@ void VideoWidget::loadBiliViewView(const std::string& uri)
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
 {
     auto taskFunc = [this, uri]() {
-        return BiliApi::BilibiliClient::globalClient().GetVideoView(uri);
+        return biliapi::BilibiliClient::globalClient().getVideoView(uri);
     };
     auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
     connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
         try
         {
-            const auto& result = std::any_cast<BiliApi::VideoViewOrigin>(res);
+            const auto& result = std::any_cast<biliapi::VideoViewOrigin>(res);
             if (result.code != 0)
             {
                 return;
             }
-            prepareVideoItem(std::make_shared<BiliApi::VideoViewOrigin>(result));
+            prepareVideoItem(std::make_shared<biliapi::VideoViewOrigin>(result));
         }
         catch (const std::bad_any_cast& e)
         {
@@ -83,7 +83,7 @@ void VideoWidget::prepareBiliVideoView(const std::string& uri)
     ThreadPool::instance().enqueue(task);
 }
 
-void VideoWidget::prepareVideoItem(const std::shared_ptr<BiliApi::VideoViewOrigin>& videoView)
+void VideoWidget::prepareVideoItem(const std::shared_ptr<biliapi::VideoViewOrigin>& videoView)
 {
     // after get video view:
     // 1. add 'download cover image' task
@@ -158,13 +158,13 @@ void VideoWidget::prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoVi
 void VideoWidget::getBiliUrl()
 {
     auto taskFunc = [this]() {
-        return BiliApi::BilibiliClient::globalClient().GetPlayUrl(std::stoll(m_currentView->VideoId), 64, m_currentView->Identifier);
+        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(m_currentView->VideoId), 64, m_currentView->Identifier);
     };
     auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
     connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
         try
         {
-            const auto& result = std::any_cast<BiliApi::PlayUrlOrigin>(res);
+            const auto& result = std::any_cast<biliapi::PlayUrlOrigin>(res);
             if (result.code != 0)
             {
                 return;
@@ -178,7 +178,7 @@ void VideoWidget::getBiliUrl()
     ThreadPool::instance().enqueue(task);
 }
 
-void VideoWidget::praseBiliDownloadUrl(const BiliApi::PlayUrlOrigin& playUrl)
+void VideoWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl)
 {
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;

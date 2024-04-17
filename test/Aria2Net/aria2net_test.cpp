@@ -27,7 +27,7 @@ TEST(Aria2Net_Test, STARTSERVER)
 TEST(Aria2Net_Test, AriaClient)
 {
     using namespace aria2net;
-    using namespace BiliApi;
+    using namespace biliapi;
     using namespace ffmpeg;
 
     int a = 0;

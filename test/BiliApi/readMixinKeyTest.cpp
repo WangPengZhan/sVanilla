@@ -9,8 +9,7 @@
 #include <QDebug>
 
 using namespace testing;
-using namespace BiliApi;
-
+using namespace biliapi;
 
 class ReadMixinKeyTesting : public Test
 {
@@ -22,7 +21,6 @@ public:
         spdlog::rotating_logger_mt<spdlog::async_factory>("Network", "log/Network.log", 1024 * 1024 * 10, 100);
         // spdlog::rotating_logger_mt<spdlog::async_factory>("Aria2Net", "log/Aria2Net.log", 1024 * 1024 * 10, 100);
     }
-
 };
 
 TEST_F(ReadMixinKeyTesting, ReadMixinKey)
@@ -44,6 +42,6 @@ TEST_F(ReadMixinKeyTesting, ReadMixinKey)
     }
 
     const auto mixinKey = MixinKey(cookie);
-    qDebug() << "mixin" <<QString::fromStdString(mixinKey.mixin_key);
+    qDebug() << "mixin" << QString::fromStdString(mixinKey.mixin_key);
     ASSERT_THAT(mixinKey.mixin_key, Not(IsEmpty()));
 }

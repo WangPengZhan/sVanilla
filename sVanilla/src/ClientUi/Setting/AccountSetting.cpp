@@ -22,7 +22,7 @@ AccountSetting::AccountSetting(QWidget* parent)
     const auto refreshBtn = new QPushButton("refresh");
     layout->addWidget(refreshBtn);
     connect(refreshBtn, &QPushButton::clicked, [this, label]() {
-        const auto login = BiliApi::BilibiliClient::globalClient().GetLoginUrl();
+        const auto login = biliapi::BilibiliClient::globalClient().getLoginUrl();
         m_qrcode_key = login.data.qrcode_key;
         refreshQrCode(label, login.data.url);
     });
@@ -46,7 +46,7 @@ void AccountSetting::refreshQrCode(QLabel* label, const std::string& url)
 }
 void AccountSetting::checkLoginStatus(const std::string& qrcode)
 {
-    const auto loginStatus = BiliApi::BilibiliClient::globalClient().GetLoginStatus(qrcode);
+    const auto loginStatus = biliapi::BilibiliClient::globalClient().getLoginStatus(qrcode);
 
     while (true)
     {
@@ -66,10 +66,8 @@ void AccountSetting::checkLoginStatus(const std::string& qrcode)
         }
         else
         {
-            BiliApi::BilibiliClient::globalClient().ParseCookie(loginStatus.data.url);
+            biliapi::BilibiliClient::globalClient().parseCookie(loginStatus.data.url);
             break;
-
         }
     }
-
 }

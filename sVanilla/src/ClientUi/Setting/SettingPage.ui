@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="VanillaStyle::ToggleButton" name="horizonNavigation" native="true"/>
+    <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true"/>
    </item>
    <item>
     <widget class="QStackedWidget" name="settingStackedPage">
@@ -58,7 +58,7 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>VanillaStyle::ToggleButton</class>
+   <class>Vanilla::ToggleButton</class>
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>

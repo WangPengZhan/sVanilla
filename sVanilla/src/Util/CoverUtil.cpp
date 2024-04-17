@@ -8,13 +8,15 @@ bool downloadCoverImage(const CoverInfo& coverInfo)
     const QString tempPath = QString::fromStdString(coverInfo.path);
     const QString fileName = QString::fromStdString(coverInfo.fileName);
     const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + fileName + ".jpg");
-    if (!QFile::exists(fullPath))
-    {
-        FILE* file = fopen(fullPath.toStdString().c_str(), "wb");
-        CNetWork netWork;
-        netWork.HttpGet(coverInfo.url, file);
-        fclose(file);
-    }
+
+    QFile::remove(fullPath);
+
+    std::string path = tempPath.toStdString();
+    FILE* file = fopen(path.c_str(), "wb");
+    network::NetWork netWork;
+    netWork.get(coverInfo.url, file);
+    fclose(file);
+
     if (QFile::exists(fullPath))
     {
         return true;

@@ -8,8 +8,7 @@
 #include <QDebug>
 
 using namespace testing;
-using namespace BiliApi;
-
+using namespace biliapi;
 
 class NavUserInfoTesting : public Test
 {
@@ -21,7 +20,6 @@ public:
         spdlog::rotating_logger_mt<spdlog::async_factory>("Network", "log/Network.log", 1024 * 1024 * 10, 100);
         // spdlog::rotating_logger_mt<spdlog::async_factory>("Aria2Net", "log/Aria2Net.log", 1024 * 1024 * 10, 100);
     }
-
 };
 
 TEST_F(NavUserInfoTesting, GetUserInfo)
@@ -30,5 +28,4 @@ TEST_F(NavUserInfoTesting, GetUserInfo)
     client.Rquest(CNetWork::GET, PassportURL::WebNav, {}, response, client.getDefalutHeaders(), true);
     qDebug() << QString::fromStdString(response);
     ASSERT_THAT(response, Not(IsEmpty()));
-
 }

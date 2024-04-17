@@ -5,12 +5,17 @@
 #include "ClientUi/MainWindow/MainWindow.h"
 #include "ClientUi/PlatformInitializer/AppInitializer.h"
 #include "Plugin/PluginManager.h"
+#include "NetWork/CurlCpp/CurlGlobal.h"
 
 int main(int argc, char* argv[])
 {
+    network::CurlGlobal curlGlobal;
     DumpColletor::registerDumpHandle();
 
     Restarter restarter(argc, argv);
+
+    AppInitializer sVanilla;
+    sVanilla.initApplicationBefore();
 
     SApplication application(argc, argv);
     SingleAppHelper singleAppHelper;
@@ -19,7 +24,6 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    AppInitializer sVanilla;
     sVanilla.init();
 
     application.pluginManager().loadPlugins();

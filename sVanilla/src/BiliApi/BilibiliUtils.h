@@ -3,7 +3,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-namespace BiliApi
+namespace biliapi
 {
 
 inline std::vector mixinKeyEncTab = {46, 47, 18, 2,  53, 8,  23, 32, 15, 50, 10, 31, 58, 3,  45, 35, 27, 43, 5,  49, 33, 9,
@@ -44,4 +44,4 @@ bool readData(Result& result, const std::string& key)
     result = Result(cookie);
     return true;
 }
-}  // namespace BiliApi
+}  // namespace biliapi

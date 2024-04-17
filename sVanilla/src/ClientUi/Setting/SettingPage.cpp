@@ -13,10 +13,10 @@ SettingPage::SettingPage(QWidget* parent)
     ui->horizonNavigation->setItemList(horizonNavigationBtn);
     ui->horizonNavigation->setUseIcon(false);
     ui->horizonNavigation->setColumnWidth(100);
-    connect(ui->horizonNavigation, &VanillaStyle::ToggleButton::currentItemChanged, ui->settingStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->settingStackedPage, &QStackedWidget::setCurrentIndex);
     connect(ui->defaultSetting, &DefaultSetting::UpdateTheme, this, &SettingPage::UpdateTheme);
-
 }
+
 void SettingPage::connectAria2Server()
 {
     auto taskFunc = [this]() {

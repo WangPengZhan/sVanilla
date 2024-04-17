@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace BiliApi
+namespace biliapi
 {
 constexpr const char* apiBase = "https://api.bilibili.com/";
 constexpr const char* passBase = "https://passport.bilibili.com/";
@@ -19,9 +19,9 @@ inline std::string View = std::string(apiBase) + "x/web-interface/view";
 inline std::string Playurl = std::string(apiBase) + "x/player/wbi/playurl";
 }  // namespace VideoURL
 
-namespace  Headers
+namespace Headers
 {
 inline std::string DefaultReferer = "Referer: https://www.bilibili.com";
 inline std::string PassportReferer = "Referer: https://passport.bilibili.com/";
-}
-}  // namespace BiliApi
+}  // namespace Headers
+}  // namespace biliapi
