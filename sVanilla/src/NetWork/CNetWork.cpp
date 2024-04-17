@@ -327,4 +327,57 @@ std::shared_ptr<AbstractOption> NetWork::getOption(CURLoption opt) const
     }
 }
 
+std::string NetWork::paramsString(const ParamType& params)
+{
+    std::string res;
+    for (auto it = params.begin(); it != params.end(); ++it)
+    {
+        if (it != params.begin())
+        {
+            res += "&";
+            res += it->first;
+            res += "=";
+            res += it->second;
+        }
+        else
+        {
+            res += it->first;
+            res += "=";
+            res += it->second;
+        }
+    }
+    return res;
+}
+
+void NetWork::setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd)
+{
+    if (headersAdd)
+    {
+        CurlHeader headersCopy(headers);
+        auto common = std::vector<std::string>(m_commonHeaders);
+        headersCopy.add(common.begin(), common.end());
+        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
+    }
+    else
+    {
+        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
+    }
+}
+
+void NetWork::setToCurl(CurlEasy& easy, const CurlOptions& options, bool optionsAdd)
+{
+    for (const auto& option : options)
+    {
+        option.second->setToCurl(easy.handle());
+    }
+
+    if (optionsAdd)
+    {
+        for (const auto& option : m_commonOptions)
+        {
+            option.second->setToCurl(easy.handle());
+        }
+    }
+}
+
 }  // namespace network

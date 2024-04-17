@@ -111,12 +111,14 @@ public:
     template <typename Response>
     bool get(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options,
+    bool get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options = {},
              bool optionsAdd = false);
     template <typename Response>
     bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
     template <typename Response>
-    bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false,
+    bool get(const std::string& url, Response& response, const ParamType& params, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers = {}, bool headersAdd = false,
              const CurlOptions& options = {}, bool optionsAdd = false);
 
     // post
@@ -127,12 +129,14 @@ public:
     template <typename Response>
     bool post(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options,
+    bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options = {},
               bool optionsAdd = false);
     template <typename Response>
     bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false,
+    bool post(const std::string& url, Response& response, const ParamType& params, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers = {}, bool headersAdd = false,
               const CurlOptions& options = {}, bool optionsAdd = false);
 
     // head
@@ -141,131 +145,18 @@ public:
     template <typename Response>
     bool head(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false);
 
-protected:
+    // util
+    static std::string paramsString(const ParamType& params);
+
 private:
+    void setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd = false);
+    void setToCurl(CurlEasy& easy, const CurlOptions& options, bool optionsAdd = false);
+
 protected:
     CurlHeader m_commonHeaders;
     CurlOptions m_commonOptions;
-
-private:
 };
 
-template <typename Response>
-inline bool NetWork::get(const std::string& url, Response& response)
-{
-    CurlEasy easy;
-    CurlResponseWrapper writer(response);
-
-    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, m_commonHeaders.get());
-    for (const auto& option : m_commonOptions)
-    {
-        option.second->setToCurl(&easy);
-    }
-    writer.setToCurl(easy);
-
-    easy.perform();
-    writer.readAfter(easy);
-
-    return true;
-}
-
-template <typename Response>
-inline bool NetWork::get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd)
-{
-    CurlEasy easy;
-    CurlResponseWrapper writer(response);
-
-    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    if (headersAdd)
-    {
-        CurlHeader headersCopy(headers);
-        auto common = std::vector<std::string>(m_commonHeaders);
-        headersCopy.add(common.begin(), common.end());
-        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
-    }
-    else
-    {
-        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
-    }
-    for (const auto& option : m_commonOptions)
-    {
-        option.second->setToCurl(easy);
-    }
-    writer.setToCurl(easy);
-
-    easy.perform();
-    writer.readAfter(easy);
-
-    return true;
-}
-
-template <typename Response>
-inline bool NetWork::get(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd)
-{
-    CurlEasy easy;
-    CurlResponseWrapper writer(response);
-
-    curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, m_commonHeaders.get());
-
-    for (const auto& option : options)
-    {
-        option.second->setToCurl(easy);
-    }
-    if (optionsAdd)
-    {
-        for (const auto& option : m_commonOptions)
-        {
-            option.second->setToCurl(easy);
-        }
-    }
-
-    writer.setToCurl(easy);
-
-    easy.perform();
-    writer.readAfter(easy);
-
-    return true;
-}
-
-template <typename Response>
-inline bool NetWork::get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd,
-                         const CurlOptions& options, bool optionsAdd)
-{
-    CurlEasy easy;
-    CurlResponseWrapper writer(response);
-
-    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    if (headersAdd)
-    {
-        CurlHeader headersCopy(headers);
-        auto common = std::vector<std::string>(m_commonHeaders);
-        headersCopy.add(common.begin(), common.end());
-        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
-    }
-    else
-    {
-        curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
-    }
-
-    for (const auto& option : options)
-    {
-        option.second->setToCurl(easy);
-    }
-    if (optionsAdd)
-    {
-        for (const auto& option : m_commonOptions)
-        {
-            option.second->setToCurl(easy);
-        }
-    }
-
-    writer.setToCurl(easy);
-
-    easy.perform();
-    writer.readAfter(easy);
-
-    return true;
-}
-
 }  // namespace network
+
+#include "CNetWork.inl"

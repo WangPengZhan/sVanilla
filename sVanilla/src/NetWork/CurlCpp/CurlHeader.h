@@ -45,10 +45,10 @@ void CurlHeader::add(Iterator begin, Iterator end)
     auto header = m_headers.get();
     for (; begin < end; ++begin)
     {
-        header = curl_slist_append(header, *begin.c_str());
+        header = curl_slist_append(header, (*begin).c_str());
     }
     m_headers.release();
     m_headers.reset(header);
 }
 
-} // namespace network
+}  // namespace network

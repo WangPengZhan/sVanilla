@@ -40,6 +40,8 @@ public:
     void InitBiliDefaultHeaders();
     inline std::list<std::string> getPassportHeaders();
     inline std::list<std::string> getDefalutHeaders();
+    
+private:
     volatile bool m_logined;
 };
 
