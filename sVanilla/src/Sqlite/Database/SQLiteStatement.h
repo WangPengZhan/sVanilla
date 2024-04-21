@@ -7,7 +7,7 @@
 struct sqlite3;
 struct sqlite3_stmt;
 
-namespace SQLite
+namespace sqlite
 {
 
 class SQLiteDatabase;
@@ -30,7 +30,7 @@ public:
     ~SQLiteStatement() = default;
 
     void clearBindings();
-  
+
     bool executeStep();
     bool reset();
     bool isDone() const;
@@ -50,7 +50,7 @@ public:
     void bindNoCopy(int index, const char* value);
     void bindNoCopy(int index, const void* value, int size);
     void bindNoCopy(int index, const std::vector<uint8_t>& blob);
-    void bind(int index); // bind NULL value
+    void bind(int index);  // bind NULL value
 
     void bind(const std::string& columnName, int32_t value);
     void bind(const std::string& columnName, uint32_t value);
@@ -92,4 +92,4 @@ private:
     int m_colunmCount;
 };
 
-}  // namespace SQLite
+}  // namespace sqlite

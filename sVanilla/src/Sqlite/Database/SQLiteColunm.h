@@ -6,7 +6,7 @@
 
 #include <sqlite3.h>
 
-namespace SQLite
+namespace sqlite
 {
 using BlobColumnValue = std::vector<uint8_t>;
 using SqliteColumnValue = std::variant<std::monostate, int32_t, uint32_t, int64_t, double, std::string, BlobColumnValue>;
@@ -72,4 +72,4 @@ private:
     std::string m_colunmName;
 };
 
-}  // namespace SQLite
+}  // namespace sqlite

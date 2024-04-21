@@ -4,7 +4,7 @@
 #include "SQLiteDatabase.h"
 #include "Sqlite/SQLiteLog.h"
 
-namespace SQLite
+namespace sqlite
 {
 constexpr char ListTablesSql[] = "SELECT name"
                                  "  FROM"
@@ -42,7 +42,6 @@ SQLiteDatabase::SQLiteDatabase(const std::string& path)
         return;
     }
 
-    
     SQLITE_LOG_INFO("sqlite3 path: {}", path);
     sqlite3* db = nullptr;
     if (sqlite3_open(path.c_str(), &db) != SQLITE_OK)
@@ -180,7 +179,6 @@ std::string SQLiteDatabase::lastError() const
     return m_lastError;
 }
 
-
 void SQLiteDatabase::updateLastError()
 {
     if (m_db == nullptr)
@@ -197,4 +195,4 @@ sqlite3* SQLiteDatabase::handle() const
     return m_db.get();
 }
 
-}  // namespace SQLite
+}  // namespace sqlite

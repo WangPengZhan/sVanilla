@@ -1,6 +1,8 @@
 #include <utility>
 
 #include "BiliDownloader.h"
+
+#include <utility>
 #include "Sqlite/SQLiteManager.h"
 #include "FFmpeg/FFmpegHelper.h"
 #include "Util/UrlProcess.h"
@@ -140,9 +142,9 @@ void BiliDownloader::finish()
     // send finish signal
 
     // write to sqlite
-    auto finishedItem = SQLite::SQLiteManager::getInstance().finishedItemTable();
+    // auto finishedItem = sqlite::SQLiteManager::getInstance().finishedItemTable();
     download::FinishedItem item;
-    finishedItem.insertItem({item});
+    //  finishedItem.insertItem({item});
 }
 
 void BiliDownloader::setVideoUris(const std::list<std::string>& videoUris)

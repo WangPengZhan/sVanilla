@@ -15,7 +15,6 @@
 
 #include "ClientUi/Setting/SettingPage.h"
 #include "ClientUi/VideoList/VideoWidget.h"
-#include "Sqlite/SQLiteManager.h"
 #include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"

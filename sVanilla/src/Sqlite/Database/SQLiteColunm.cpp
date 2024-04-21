@@ -5,35 +5,39 @@
 #include "Sqlite/SQLiteLog.h"
 #include "SQLiteColunm.h"
 
-namespace SQLite
+namespace sqlite
 {
 
 void bind(SQLiteStatement& stmt, int index, const SqliteColumnValue& value)
 {
-    std::visit([&stmt, index](auto&& obj) {
-        if constexpr (std::is_same_v<std::remove_reference_t<decltype(obj)>, const std::monostate>)
-        {
-            stmt.bind(index);
-        }
-        else
-        {
-            stmt.bind(index, obj);
-        }
-    }, value);
+    std::visit(
+        [&stmt, index](auto&& obj) {
+            if constexpr (std::is_same_v<std::remove_reference_t<decltype(obj)>, const std::monostate>)
+            {
+                stmt.bind(index);
+            }
+            else
+            {
+                stmt.bind(index, obj);
+            }
+        },
+        value);
 }
 
 std::stringstream& conditionString(std::stringstream& ss, const SqliteColumnValue& value)
 {
-    std::visit([&ss](auto&& obj) {
-        if constexpr (std::is_same_v<std::remove_reference_t<decltype(obj)>, const std::monostate> ||
-                      std::is_same_v<std::remove_reference_t<decltype(obj)>, const BlobColumnValue>)
-        {
-        }
-        else
-        {
-            ss << obj;
-        }
-    }, value);
+    std::visit(
+        [&ss](auto&& obj) {
+            if constexpr (std::is_same_v<std::remove_reference_t<decltype(obj)>, const std::monostate> ||
+                          std::is_same_v<std::remove_reference_t<decltype(obj)>, const BlobColumnValue>)
+            {
+            }
+            else
+            {
+                ss << obj;
+            }
+        },
+        value);
 
     return ss;
 }
@@ -42,7 +46,7 @@ SqliteColumn::SqliteColumn(SqliteColumnValue value, int index, std::string colun
     : m_value(std::move(value))
     , m_index(index)
     , m_colunmName(std::move(colunmName))
-	
+
 {
 }
 
@@ -60,13 +64,15 @@ int32_t SqliteColumn::getInt() const noexcept
 {
     int32_t res = 0;
 
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_constructible_v<decltype(elem), int32_t>)
-        {
-            res = elem;
-        }
-    }, m_value);
-    
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_constructible_v<decltype(elem), int32_t>)
+            {
+                res = elem;
+            }
+        },
+        m_value);
+
     return res;
 }
 
@@ -74,12 +80,14 @@ uint32_t SqliteColumn::getUInt() const noexcept
 {
     uint32_t res = 0;
 
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
-        {
-            res = elem;
-        }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
+            {
+                res = elem;
+            }
+        },
+        m_value);
 
     return res;
 }
@@ -88,12 +96,14 @@ int64_t SqliteColumn::getInt64() const noexcept
 {
     int64_t res = 0;
 
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
-        {
-            res = elem;
-        }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
+            {
+                res = elem;
+            }
+        },
+        m_value);
 
     return res;
 }
@@ -101,12 +111,14 @@ double SqliteColumn::getDouble() const noexcept
 {
     double res = 0;
 
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
-        {
-            res = elem;
-        }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
+            {
+                res = elem;
+            }
+        },
+        m_value);
 
     return res;
 }
@@ -114,60 +126,66 @@ double SqliteColumn::getDouble() const noexcept
 std::string SqliteColumn::getText(const std::string& defalutValue) const
 {
     std::string res = defalutValue;
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_same_v<decltype(elem), std::string>)
-        {
-            res = elem;
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
-        {
-            res = std::string(elem.data(), elem.size());
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
-        {
-            res.clear();
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
-	    {
-            res = std::to_string(elem);
-	    }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_same_v<decltype(elem), std::string>)
+            {
+                res = elem;
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
+            {
+                res = std::string(elem.data(), elem.size());
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
+            {
+                res.clear();
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
+            {
+                res = std::to_string(elem);
+            }
+        },
+        m_value);
     return res;
 }
 
 std::vector<uint8_t> SqliteColumn::getBlob() const
 {
     std::vector<uint8_t> res;
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t> >)
-        {
-            res = elem;
-        }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
+            {
+                res = elem;
+            }
+        },
+        m_value);
     return res;
 }
 
 std::string SqliteColumn::getString() const
 {
     std::string res;
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_same_v<decltype(elem), std::string>)
-        {
-            res = elem;
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
-        {
-            res = std::string(elem.data(), elem.size());
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
-        {
-            res.clear();
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
-        {
-            res = std::to_string(elem);
-        }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_same_v<decltype(elem), std::string>)
+            {
+                res = elem;
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
+            {
+                res = std::string(elem.data(), elem.size());
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
+            {
+                res.clear();
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
+            {
+                res = std::to_string(elem);
+            }
+        },
+        m_value);
     return res;
 }
 
@@ -227,24 +245,26 @@ bool SqliteColumn::isNull() const
 int SqliteColumn::getBytes() const
 {
     std::size_t res = 0;
-    std::visit([&res](auto&& elem) {
-        if constexpr (std::is_same_v<decltype(elem), std::string>)
-        {
-            res = elem;
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
-        {
-            res = std::string(elem.data(), elem.size());
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
-        {
-            res.clear();
-        }
-        else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
-        {
-            res = std::to_string(elem);
-        }
-    }, m_value);
+    std::visit(
+        [&res](auto&& elem) {
+            if constexpr (std::is_same_v<decltype(elem), std::string>)
+            {
+                res = elem;
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::vector<uint8_t>>)
+            {
+                res = std::string(elem.data(), elem.size());
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
+            {
+                res.clear();
+            }
+            else if constexpr (std::is_same_v<decltype(elem), std::monostate>)
+            {
+                res = std::to_string(elem);
+            }
+        },
+        m_value);
     return res;
 }
 
@@ -305,9 +325,9 @@ SqliteColumn::operator const char*() const
     return value.c_str();
 }
 
-SQLite::SqliteColumn::operator std::vector<uint8_t>() const
+sqlite::SqliteColumn::operator std::vector<uint8_t>() const
 {
     return getBlob();
 }
 
-}  // namespace SQLite
+}  // namespace sqlite

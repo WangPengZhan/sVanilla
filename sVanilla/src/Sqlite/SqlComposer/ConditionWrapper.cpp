@@ -4,36 +4,36 @@
 #include "ConditionWrapper.h"
 #include "Sqlite/SQLiteLog.h"
 
-namespace SQLite
+namespace sqlite
 {
 
-std::string getQueryConditionName(QueryCondition condition)
+std::string getQueryConditionName(Condition condition)
 {
     switch (condition)
     {
-    case QueryCondition::EQUALS:
+    case Condition::EQUALS:
         return "==";
-    case QueryCondition::NOT_EQUALS:
+    case Condition::NOT_EQUALS:
         return "<>";
-    case QueryCondition::LE:
+    case Condition::LE:
         return "<=";
-    case QueryCondition::GE:
+    case Condition::GE:
         return ">=";
-    case QueryCondition::LT:
+    case Condition::LT:
         return "<";
-    case QueryCondition::GT:
+    case Condition::GT:
         return ">";
-    case QueryCondition::VALUES_IN:
+    case Condition::VALUES_IN:
         return "IN";
-    case QueryCondition::VALUES_NOT_IN:
+    case Condition::VALUES_NOT_IN:
         return "NOT IN";
-    case QueryCondition::LIKE:
+    case Condition::LIKE:
         return "LIKE";
-    case QueryCondition::NOT_LIKE:
+    case Condition::NOT_LIKE:
         return "NOT LIKE";
-    case QueryCondition::IS_NOT_NULL:
+    case Condition::IS_NOT_NULL:
         return "IS NOT";
-    case QueryCondition::IS_NULL:
+    case Condition::IS_NULL:
         return "IS";
     default:
         break;
@@ -73,9 +73,7 @@ bool PrepareInfo::valueSetEqual(const std::vector<SqliteColumnValue>& lv, const 
 
 bool PrepareInfo::operator==(const PrepareInfo& other) const
 {
-    return m_columnName == other.m_columnName
-        && m_condition == other.m_condition
-        && m_value == m_value;
+    return m_columnName == other.m_columnName && m_condition == other.m_condition && m_value == m_value;
 }
 
 bool PrepareInfo::like(const PrepareInfo& other) const
@@ -87,12 +85,12 @@ bool PrepareInfo::like(const PrepareInfo& other) const
 
     switch (m_condition)
     {
-    case QueryCondition::LE:
-    case QueryCondition::LT:
-        return other.m_condition == QueryCondition::LE || other.m_condition == QueryCondition::LT;
-    case QueryCondition::GE:
-    case QueryCondition::GT:
-        return other.m_condition == QueryCondition::GE || other.m_condition == QueryCondition::GT;
+    case Condition::LE:
+    case Condition::LT:
+        return other.m_condition == Condition::LE || other.m_condition == Condition::LT;
+    case Condition::GE:
+    case Condition::GT:
+        return other.m_condition == Condition::GE || other.m_condition == Condition::GT;
     default:
         return m_condition == other.m_condition;
     }
@@ -100,7 +98,7 @@ bool PrepareInfo::like(const PrepareInfo& other) const
 
 std::stringstream& PrepareInfo::prepareConditionString(std::stringstream& ss) const
 {
-    if (m_condition == QueryCondition::VALUES_IN || m_condition == QueryCondition::VALUES_NOT_IN)
+    if (m_condition == Condition::VALUES_IN || m_condition == Condition::VALUES_NOT_IN)
     {
         size_t setSize = std::get<2>(m_value).size();
         if (setSize == 0)
@@ -130,18 +128,18 @@ std::stringstream& PrepareInfo::prepareConditionString(std::stringstream& ss) co
 
 int PrepareInfo::bind(SQLiteStatement& stmt, int startIndex) const
 {
-    if (m_condition == QueryCondition::VALUES_IN || m_condition == QueryCondition::VALUES_NOT_IN)
+    if (m_condition == Condition::VALUES_IN || m_condition == Condition::VALUES_NOT_IN)
     {
         auto& valueSets = std::get<std::vector<SqliteColumnValue>>(m_value);
         std::for_each(valueSets.begin(), valueSets.end(), [&](const SqliteColumnValue& value) {
-            SQLite::bind(stmt, startIndex++, value);
+            sqlite::bind(stmt, startIndex++, value);
         });
     }
     else
     {
         if (m_value.index() == 1)
         {
-            SQLite::bind(stmt, startIndex++, std::get<SqliteColumnValue>(m_value));
+            sqlite::bind(stmt, startIndex++, std::get<SqliteColumnValue>(m_value));
         }
     }
 
@@ -150,7 +148,7 @@ int PrepareInfo::bind(SQLiteStatement& stmt, int startIndex) const
 
 std::stringstream& PrepareInfo::conditionString(std::stringstream& ss) const
 {
-    if (m_condition == QueryCondition::VALUES_IN || m_condition == QueryCondition::VALUES_NOT_IN)
+    if (m_condition == Condition::VALUES_IN || m_condition == Condition::VALUES_NOT_IN)
     {
         auto& valueSet = std::get<std::vector<SqliteColumnValue>>(m_value);
         size_t setSize = valueSet.size();
@@ -165,23 +163,23 @@ std::stringstream& PrepareInfo::conditionString(std::stringstream& ss) const
         ss << "(";
         for (size_t i = 0; i < setSize - 1; i++)
         {
-            SQLite::conditionString(ss, valueSet.at(i));
+            sqlite::conditionString(ss, valueSet.at(i));
             ss << ",";
         }
-        SQLite::conditionString(ss, valueSet.at(setSize - 1));
+        sqlite::conditionString(ss, valueSet.at(setSize - 1));
         ss << ")";
     }
     else
     {
         ss << " " << m_columnName << " ";
         ss << " " << getQueryConditionName(m_condition) << " ";
-        SQLite::conditionString(ss, std::get<SqliteColumnValue>(m_value));
+        sqlite::conditionString(ss, std::get<SqliteColumnValue>(m_value));
     }
 
     return ss;
 }
 
-QueryWrapper& QueryWrapper::and_()
+ConditionWrapper& ConditionWrapper::and_()
 {
     if (m_logicRelation == ConditionLogicRelation::AND)
     {
@@ -194,7 +192,7 @@ QueryWrapper& QueryWrapper::and_()
     return *this;
 }
 
-QueryWrapper& QueryWrapper::or_()
+ConditionWrapper& ConditionWrapper::or_()
 {
     if (m_logicRelation == ConditionLogicRelation::OR)
     {
@@ -206,17 +204,17 @@ QueryWrapper& QueryWrapper::or_()
     addCondition(oldCondition);
     return *this;
 }
-QueryWrapper& QueryWrapper::operator|(const QueryWrapper& other)
+ConditionWrapper& ConditionWrapper::operator|(const ConditionWrapper& other)
 {
     return or_().addCondition(other);
 }
 
-QueryWrapper& QueryWrapper::operator&(const QueryWrapper& other)
+ConditionWrapper& ConditionWrapper::operator&(const ConditionWrapper& other)
 {
     return and_().addCondition(other);
 }
 
-QueryWrapper& QueryWrapper::addCondition(const QueryWrapper& other)
+ConditionWrapper& ConditionWrapper::addCondition(const ConditionWrapper& other)
 {
     if (this == &other)
     {
@@ -259,22 +257,22 @@ QueryWrapper& QueryWrapper::addCondition(const QueryWrapper& other)
     }
 }
 
-QueryWrapper& QueryWrapper::addCondition(const ColumnInfo& column, QueryCondition condition, ValueType value)
+ConditionWrapper& ConditionWrapper::addCondition(const ColumnInfo& column, Condition condition, ValueType value)
 {
-    if (condition == QueryCondition::LIKE || condition == QueryCondition::NOT_LIKE)
+    if (condition == Condition::LIKE || condition == Condition::NOT_LIKE)
     {
         auto& strValue = std::get<std::string>(std::get<SqliteColumnValue>(value));
         strValue += "%";
     }
 
-    PrepareInfo prepareInfo = { column.m_columnName, condition, value };
+    PrepareInfo prepareInfo = {column.m_columnName, condition, value};
     mergeOptimization(prepareInfo);
     m_conditionInfos.emplace_back(prepareInfo);
 
     return *this;
 }
 
-QueryWrapper& QueryWrapper::popCondition(const std::string& colName)
+ConditionWrapper& ConditionWrapper::popCondition(const std::string& colName)
 {
     bool ret = false;
     for (auto it = m_conditionInfos.begin(); it != m_conditionInfos.end(); ++it)
@@ -290,19 +288,19 @@ QueryWrapper& QueryWrapper::popCondition(const std::string& colName)
         }
         else
         {
-            auto& queryWrapper = std::get<QueryWrapper>(*it);
+            auto& queryWrapper = std::get<ConditionWrapper>(*it);
             queryWrapper.popCondition(colName);
         }
     }
     return *this;
 }
 
-QueryWrapper& QueryWrapper::popCondition(const ColumnInfo& colInfo)
+ConditionWrapper& ConditionWrapper::popCondition(const ColumnInfo& colInfo)
 {
     return popCondition(colInfo.m_columnName);
 }
 
-bool QueryWrapper::contain(const std::string& colName) const
+bool ConditionWrapper::contain(const std::string& colName) const
 {
     bool ret = false;
     for (const auto& conditionInfo : m_conditionInfos)
@@ -317,7 +315,7 @@ bool QueryWrapper::contain(const std::string& colName) const
         }
         else
         {
-            auto& queryWrapper = std::get<QueryWrapper>(conditionInfo);
+            auto& queryWrapper = std::get<ConditionWrapper>(conditionInfo);
             if (queryWrapper.contain(colName))
             {
                 return true;
@@ -327,28 +325,28 @@ bool QueryWrapper::contain(const std::string& colName) const
     return false;
 }
 
-bool QueryWrapper::contain(const ColumnInfo& col) const
+bool ConditionWrapper::contain(const ColumnInfo& col) const
 {
     return contain(col.m_columnName);
 }
 
-bool QueryWrapper::empty() const
+bool ConditionWrapper::empty() const
 {
     return m_conditionInfos.empty();
 }
 
-size_t QueryWrapper::size() const
+size_t ConditionWrapper::size() const
 {
     return m_conditionInfos.size();
 }
 
-void QueryWrapper::reset()
+void ConditionWrapper::reset()
 {
     m_logicRelation = ConditionLogicRelation::AND;
     m_conditionInfos.clear();
 }
 
-std::string QueryWrapper::prepareConditionString() const
+std::string ConditionWrapper::prepareConditionString() const
 {
     std::stringstream ss;
     prepareConditionString(ss);
@@ -360,7 +358,7 @@ std::string QueryWrapper::prepareConditionString() const
     return str;
 }
 
-std::string QueryWrapper::conditionString() const
+std::string ConditionWrapper::conditionString() const
 {
     std::stringstream ss;
     conditionString(ss);
@@ -372,18 +370,20 @@ std::string QueryWrapper::conditionString() const
     return str;
 }
 
-int QueryWrapper::bind(SQLiteStatement& stmt, int startIndex) const
+int ConditionWrapper::bind(SQLiteStatement& stmt, int startIndex) const
 {
     for (const auto& condition : m_conditionInfos)
     {
-        std::visit([&](auto&& value) {
-            value.bind(stmt, startIndex);
-        }, condition);
+        std::visit(
+            [&](auto&& value) {
+                value.bind(stmt, startIndex);
+            },
+            condition);
     }
     return startIndex;
 }
 
-std::stringstream& QueryWrapper::prepareConditionString(std::stringstream& ss) const
+std::stringstream& ConditionWrapper::prepareConditionString(std::stringstream& ss) const
 {
     if (m_conditionInfos.empty())
     {
@@ -392,23 +392,29 @@ std::stringstream& QueryWrapper::prepareConditionString(std::stringstream& ss) c
 
     if (m_conditionInfos.size() == 1)
     {
-        std::visit([&ss](auto&& value) {
-            value.prepareConditionString(ss);
-        }, m_conditionInfos.at(0));
+        std::visit(
+            [&ss](auto&& value) {
+                value.prepareConditionString(ss);
+            },
+            m_conditionInfos.at(0));
     }
     else
     {
         ss << "(";
-        std::visit([&ss](auto&& value) {
-            value.prepareConditionString(ss);
-        }, m_conditionInfos.at(0));
+        std::visit(
+            [&ss](auto&& value) {
+                value.prepareConditionString(ss);
+            },
+            m_conditionInfos.at(0));
         size_t size = m_conditionInfos.size();
         for (size_t i = 1; i < size; ++i)
         {
             ss << " " << getConditionRelationName(m_logicRelation) << " ";
-            std::visit([&ss](auto&& value) {
-                value.prepareConditionString(ss);
-            }, m_conditionInfos.at(i));
+            std::visit(
+                [&ss](auto&& value) {
+                    value.prepareConditionString(ss);
+                },
+                m_conditionInfos.at(i));
         }
         ss << ")";
     }
@@ -416,7 +422,7 @@ std::stringstream& QueryWrapper::prepareConditionString(std::stringstream& ss) c
     return ss;
 }
 
-std::stringstream& QueryWrapper::conditionString(std::stringstream& ss) const
+std::stringstream& ConditionWrapper::conditionString(std::stringstream& ss) const
 {
     if (m_conditionInfos.empty())
     {
@@ -425,23 +431,29 @@ std::stringstream& QueryWrapper::conditionString(std::stringstream& ss) const
 
     if (m_conditionInfos.size() == 1)
     {
-        std::visit([&ss](auto&& value) {
+        std::visit(
+            [&ss](auto&& value) {
                 value.conditionString(ss);
-        }, m_conditionInfos.at(0));
+            },
+            m_conditionInfos.at(0));
     }
     else
     {
         ss << "(";
-        std::visit([&ss](auto&& value) {
-            value.conditionString(ss);
-        }, m_conditionInfos.at(0));
+        std::visit(
+            [&ss](auto&& value) {
+                value.conditionString(ss);
+            },
+            m_conditionInfos.at(0));
         size_t size = m_conditionInfos.size();
         for (size_t i = 1; i < size; ++i)
         {
             ss << " " << getConditionRelationName(m_logicRelation) << " ";
-            std::visit([&ss](auto&& value) {
-                value.prepareConditionString(ss);
-            }, m_conditionInfos.at(i));
+            std::visit(
+                [&ss](auto&& value) {
+                    value.prepareConditionString(ss);
+                },
+                m_conditionInfos.at(i));
         }
         ss << ")";
     }
@@ -449,7 +461,7 @@ std::stringstream& QueryWrapper::conditionString(std::stringstream& ss) const
     return ss;
 }
 
-void SQLite::QueryWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
+void sqlite::ConditionWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
 {
     for (auto it = m_conditionInfos.begin(); it != m_conditionInfos.end(); ++it)
     {
@@ -464,8 +476,8 @@ void SQLite::QueryWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
         {
             switch (newPrepareInfo.m_condition)
             {
-            case QueryCondition::EQUALS:
-            case QueryCondition::NOT_EQUALS:
+            case Condition::EQUALS:
+            case Condition::NOT_EQUALS:
             {
                 if (newPrepareInfo.m_value == prepareInfo.m_value)
                 {
@@ -473,8 +485,8 @@ void SQLite::QueryWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
                 }
                 break;
             }
-            case QueryCondition::LE:
-            case QueryCondition::LT:
+            case Condition::LE:
+            case Condition::LT:
             {
                 if (newPrepareInfo.m_value > prepareInfo.m_value && m_logicRelation == ConditionLogicRelation::AND)
                 {
@@ -498,15 +510,15 @@ void SQLite::QueryWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
                 }
                 break;
             }
-            case QueryCondition::GE:
-            case QueryCondition::GT:
+            case Condition::GE:
+            case Condition::GT:
             {
                 if (newPrepareInfo.m_value < prepareInfo.m_value && m_logicRelation == ConditionLogicRelation::AND)
                 {
                     newPrepareInfo = std::move(prepareInfo);
                     canMerge = true;
                 }
-                else if (newPrepareInfo.m_value  > prepareInfo.m_value && m_logicRelation == ConditionLogicRelation::OR)
+                else if (newPrepareInfo.m_value > prepareInfo.m_value && m_logicRelation == ConditionLogicRelation::OR)
                 {
                     newPrepareInfo = std::move(prepareInfo);
                     canMerge = true;
@@ -523,11 +535,11 @@ void SQLite::QueryWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
                 }
                 break;
             }
-            case QueryCondition::VALUES_IN:
-            case QueryCondition::VALUES_NOT_IN:
-            case QueryCondition::LIKE:
-            case QueryCondition::NOT_LIKE:
-            case QueryCondition::IS_NOT_NULL:
+            case Condition::VALUES_IN:
+            case Condition::VALUES_NOT_IN:
+            case Condition::LIKE:
+            case Condition::NOT_LIKE:
+            case Condition::IS_NOT_NULL:
             default:
                 break;
             }
@@ -541,4 +553,4 @@ void SQLite::QueryWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
     }
 }
 
-}  // namespace SQLite
+}  // namespace sqlite

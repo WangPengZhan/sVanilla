@@ -10,9 +10,9 @@ namespace download
 
 struct FinishedItem
 {
-    std::string uniqueId;
-    std::string filePath;
-    std::string bvid;
+    std::string uniqueId; // UniqueId Text
+    std::string filePath; // 
+    std::string bvid; //
     std::string title;
     int duration;
 };

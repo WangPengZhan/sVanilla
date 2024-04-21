@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseInfo.h"
 
-namespace SQLite
+namespace sqlite
 {
 
 enum class JoinType
@@ -18,4 +18,4 @@ struct JoinWrapper
     ColumnInfo m_rightCol;
 };
 
-}  // namespace SQLite
+}  // namespace sqlite

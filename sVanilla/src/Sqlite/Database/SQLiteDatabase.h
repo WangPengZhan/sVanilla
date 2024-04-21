@@ -6,7 +6,7 @@
 struct sqlite3;
 struct sqlite3_stmt;
 
-namespace SQLite
+namespace sqlite
 {
 
 class SQLiteDatabase
@@ -64,4 +64,6 @@ protected:
     std::string m_lastError;
 };
 
-}  // namespace SQLite
+using SqliteDBPtr = std::unique_ptr<SQLiteDatabase>;
+
+}  // namespace sqlite

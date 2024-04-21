@@ -4,7 +4,7 @@
 #include "SQLiteStatement.h"
 #include "SQLiteDatabase.h"
 
-namespace SQLite
+namespace sqlite
 {
 
 void SQLiteStatement::Deleter::operator()(sqlite3_stmt* stmt)
@@ -259,4 +259,4 @@ int SQLiteStatement::tryExecuteStep() noexcept
     return ret;
 }
 
-}  // namespace SQLite
+}  // namespace sqlite

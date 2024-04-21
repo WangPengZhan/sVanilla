@@ -7,10 +7,10 @@
 #include "Sqlite/Database/SQLiteColunm.h"
 #include "Sqlite/Database/SQLiteStatement.h"
 
-namespace SQLite
+namespace sqlite
 {
 class SQLiteStatement;
-enum class QueryCondition
+enum class Condition
 {
     EQUALS,
     NOT_EQUALS,
@@ -32,14 +32,14 @@ enum class ConditionLogicRelation
     OR
 };
 
-static std::string getQueryConditionName(QueryCondition condition);
+static std::string getQueryConditionName(Condition condition);
 static std::string getConditionRelationName(ConditionLogicRelation relation);
 
 using ValueType = std::variant<std::monostate, SqliteColumnValue, std::vector<SqliteColumnValue>>;
 struct PrepareInfo
 {
     std::string m_columnName;
-    QueryCondition m_condition;
+    Condition m_condition;
     ValueType m_value;
 
     static bool valueSetEqual(const std::vector<SqliteColumnValue>& lv, const std::vector<SqliteColumnValue>& rv);
@@ -52,22 +52,22 @@ struct PrepareInfo
     std::stringstream& conditionString(std::stringstream& ss) const;
 };
 
-class QueryWrapper;
-using ConditionInfo = std::variant<PrepareInfo, QueryWrapper>;
-class QueryWrapper
+class ConditionWrapper;
+using ConditionInfo = std::variant<PrepareInfo, ConditionWrapper>;
+class ConditionWrapper
 {
 public:
-    QueryWrapper() = default;
-    ~QueryWrapper() = default;
+    ConditionWrapper() = default;
+    ~ConditionWrapper() = default;
 
-    QueryWrapper& and_();
-    QueryWrapper& or_();
-    QueryWrapper& operator|(const QueryWrapper& other);
-    QueryWrapper& operator&(const QueryWrapper& other);
-    QueryWrapper& addCondition(const ColumnInfo& column, QueryCondition condition, ValueType value = std::monostate());
-    QueryWrapper& addCondition(const QueryWrapper& other);
-    QueryWrapper& popCondition(const std::string& colName);
-    QueryWrapper& popCondition(const ColumnInfo& colInfo);
+    ConditionWrapper& and_();
+    ConditionWrapper& or_();
+    ConditionWrapper& operator|(const ConditionWrapper& other);
+    ConditionWrapper& operator&(const ConditionWrapper& other);
+    ConditionWrapper& addCondition(const ColumnInfo& column, Condition condition, ValueType value = std::monostate());
+    ConditionWrapper& addCondition(const ConditionWrapper& other);
+    ConditionWrapper& popCondition(const std::string& colName);
+    ConditionWrapper& popCondition(const ColumnInfo& colInfo);
 
     bool contain(const std::string& colName) const;
     bool contain(const ColumnInfo& col) const;
@@ -90,4 +90,4 @@ private:
     std::vector<ConditionInfo> m_conditionInfos;
 };
 
-}  // namespace SQLite
+}  // namespace sqlite
