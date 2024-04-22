@@ -21,27 +21,13 @@
 namespace sqlite
 {
 
-struct ColumnInfo
+std::string fieldTypeSql(FieldType fieldType);
+
+class ColumnInfo
 {
 public:
-    ColumnInfo(std::string columnName, bool autoIncremnet = false, bool unique = false)
-        : m_columnName(std::move(columnName))
-        , m_autoIncrement(autoIncremnet)
-        , m_unique(unique)
-    {
-    }
-
-    ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, bool autoIncremnet = false, bool unique = false)
-        : m_columnName(std::move(columnName))
-        , m_autoIncrement(autoIncremnet)
-        , m_unique(unique)
-        , m_pColumnInfos(pColumnInfos)
-    {
-        if (pColumnInfos)
-        {
-            pColumnInfos->push_back(this);
-        }
-    }
+    ColumnInfo(std::string columnName, bool autoIncremnet = false, bool unique = false);
+    ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, bool autoIncremnet = false, bool unique = false);
 
     template <typename ValueType>
     ColumnInfo(std::string columnName, const ValueType& value, std::vector<ColumnInfo*>* pColumnInfos, bool autoIncremnet = false, bool unique = false)
@@ -86,7 +72,10 @@ public:
         });
     }
 
-public:
+    std::string colunmSql() const;
+    const std::string& colunmName() const;
+
+private:
     std::string m_columnName;
     FieldType m_fieldType = FieldType::Integer;
     bool m_autoIncrement = false;
@@ -97,31 +86,21 @@ public:
 class BaseTableStructInfo
 {
 public:
-    size_t colunmCount()
-    {
-        return m_columnInfos.size();
-    }
+    size_t colunmCount() const;
+    ColumnInfo& columnInfo(int index) const;
 
-    ColumnInfo& columnInfo(int index)
-    {
-        return *m_columnInfos.at(index);
-    }
+    void addColumn(ColumnInfo* col);
+    void addSubTable(BaseTableStructInfo& subTable);
 
-    void addColumn(ColumnInfo* col)
-    {
-        m_columnInfos.push_back(col);
-    }
-
-    void addSubTable(BaseTableStructInfo& subTable)
-    {
-        for (const auto& col : subTable.m_columnInfos)
-        {
-            m_columnInfos.push_back(col);
-        }
-    }
+    std::string createSql() const;
+    std::string prepareSql() const;
+    std::string insertPrepareSql() const;
+    std::string colunmsSql() const;
 
 protected:
     std::vector<ColumnInfo*> m_columnInfos;
+    std::string m_createSql;
+    std::string m_colunmsSql;
 };
 
 template <typename Table>
@@ -169,6 +148,27 @@ public:
 protected:
     TableStructInfo() = default;
     ~TableStructInfo() = default;
+};
+
+enum class IndexAttribute
+{
+    EMPTY,
+    ASC,
+    DESC,
+    NO_CASE  // case-insensitive
+};
+
+class IndexColInfo
+{
+public:
+    IndexColInfo(std::string colName, std::vector<IndexAttribute> attr = {});
+
+    std::string indexSql() const;
+    const std::string& colunmName() const;
+
+private:
+    std::string m_colName;
+    std::vector<IndexAttribute> m_attributes;
 };
 
 }  // namespace sqlite
@@ -223,7 +223,11 @@ TABLESTRUCTINFO_BEGIN(sqlite::FinishedItemNosames)
     TABLESTRUCTINFO_COMLUNM(duration, duration1)
 TABLESTRUCTINFO_END(sqlite::FinishedItemNosames)
 
-auto& self2 =  sqlite::TableStructInfo<sqlite::FinishedItem>::self();
-auto& self = sqlite::TableStructInfo<sqlite::FinishedItems>::self();
-auto& self1 = sqlite::TableStructInfo<sqlite::FinishedItemNosames>::self();
 // clang-format on
+
+// namespace test
+// {
+// const auto& self2 = sqlite::TableStructInfo<sqlite::FinishedItem>::self();
+// const auto& self = sqlite::TableStructInfo<sqlite::FinishedItems>::self();
+// const auto& self1 = sqlite::TableStructInfo<sqlite::FinishedItemNosames>::self();
+// }  // namespace test

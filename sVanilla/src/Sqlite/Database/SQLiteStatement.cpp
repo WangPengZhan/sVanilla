@@ -227,7 +227,7 @@ sqlite3* SQLiteStatement::dbHandle() const
 
 sqlite3_stmt* SQLiteStatement::handle() const
 {
-    return handle();
+    return m_stmt.get();
 }
 
 void SQLiteStatement::prepareStatement()

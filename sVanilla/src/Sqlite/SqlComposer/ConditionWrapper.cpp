@@ -265,7 +265,7 @@ ConditionWrapper& ConditionWrapper::addCondition(const ColumnInfo& column, Condi
         strValue += "%";
     }
 
-    PrepareInfo prepareInfo = {column.m_columnName, condition, value};
+    PrepareInfo prepareInfo = {column.colunmName(), condition, value};
     mergeOptimization(prepareInfo);
     m_conditionInfos.emplace_back(prepareInfo);
 
@@ -297,7 +297,7 @@ ConditionWrapper& ConditionWrapper::popCondition(const std::string& colName)
 
 ConditionWrapper& ConditionWrapper::popCondition(const ColumnInfo& colInfo)
 {
-    return popCondition(colInfo.m_columnName);
+    return popCondition(colInfo.colunmName());
 }
 
 bool ConditionWrapper::contain(const std::string& colName) const
@@ -327,7 +327,7 @@ bool ConditionWrapper::contain(const std::string& colName) const
 
 bool ConditionWrapper::contain(const ColumnInfo& col) const
 {
-    return contain(col.m_columnName);
+    return contain(col.colunmName());
 }
 
 bool ConditionWrapper::empty() const

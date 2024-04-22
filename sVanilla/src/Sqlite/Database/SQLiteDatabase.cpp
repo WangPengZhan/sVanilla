@@ -2,6 +2,7 @@
 #include <sqlite3.h>
 
 #include "SQLiteDatabase.h"
+#include "SQLiteStatement.h"
 #include "Sqlite/SQLiteLog.h"
 
 namespace sqlite
@@ -116,6 +117,19 @@ std::set<std::string> SQLiteDatabase::views()
     }
 
     return list;
+}
+
+bool SQLiteDatabase::tableExists(const std::string& tableName)
+{
+    SQLiteStatement stmt(*this, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?");
+    stmt.bind(1, tableName);
+    stmt.executeStep();
+    return (true);
+}
+
+int64_t SQLiteDatabase::lastInsertRowid() const
+{
+    return sqlite3_last_insert_rowid(handle());
 }
 
 int SQLiteDatabase::errorCode() const
