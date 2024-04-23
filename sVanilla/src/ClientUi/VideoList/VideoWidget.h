@@ -45,6 +45,7 @@ public:
 
 private:
     void signalsAndSlots();
+    void setUi();
     Q_SIGNAL void coverReady() const;
 
 private:

@@ -20,25 +20,7 @@ VideoWidget::VideoWidget(QWidget* parent)
 {
     ui->setupUi(this);
     signalsAndSlots();
-    ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
-    const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
-    ui->SwitchBtn->setColumnWidth(45);
-    ui->SwitchBtn->setItemList(horizonNavigation);
-    connect(ui->SwitchBtn, &Vanilla::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
-    connect(ui->VideoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
-        ui->VideoGrid->widget(1)->hide();
-        ui->VideoList->widget(1)->hide();
-    });
-    ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
-    ui->VideoListWidget->getSignalPointer(ui->VideoList);
-#if 0
-    for (int i = 0; i < 10; i++)
-    {
-        Adapter::BaseVideoView view = {std::to_string(i)};
-        const auto videoView = std::make_shared<Adapter::BaseVideoView>(view);
-        updateVideoItem(videoView);
-    }
-#endif
+    setUi();
 }
 
 VideoWidget::~VideoWidget()
@@ -49,6 +31,37 @@ VideoWidget::~VideoWidget()
 void VideoWidget::signalsAndSlots()
 {
     connect(ui->VideoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+
+    connect(ui->SwitchBtn, &Vanilla::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->VideoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
+        ui->VideoGridWidget->hideDetailPanel();
+    });
+}
+
+void VideoWidget::setUi()
+{
+    ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
+
+    ui->VideoSearchBtn->setIcon(QIcon(QStringLiteral(":/icon/home/search.svg")));
+    const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
+    ui->SwitchBtn->setColumnWidth(45);
+    ui->SwitchBtn->setItemList(horizonNavigation);
+
+    ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
+    ui->VideoListWidget->getSignalPointer(ui->VideoList);
+
+#if 0
+    for (int i = 0; i < 10; i++)
+    {
+        Adapter::BaseVideoView view = {std::to_string(i)};
+        view.Title = "title" + std::to_string(i);
+        view.Duration = "duration" + std::to_string(i);
+        view.Publisher = "publisher" + std::to_string(i);
+        // const auto videoView = std::make_shared<Adapter::BaseVideoView>(view);
+        addVideoItem(view.Identifier);
+        updateVideoItem(view);
+    }
+#endif
 }
 
 void VideoWidget::loadBiliViewView(const std::string& uri)
@@ -88,7 +101,7 @@ void VideoWidget::prepareVideoItem(const std::shared_ptr<biliapi::VideoViewOrigi
     // after get video view:
     // 1. add 'download cover image' task
     // 2. add video item
-    const QString tempPath = QDir::tempPath();  // It is now in the temporary area
+    const QString tempPath = QApplication::applicationDirPath();  // It is now in the temporary area
     const auto view = ConvertVideoView(videoView->data);
     totalCoverSize = view.size();
     for (const auto& video : view)

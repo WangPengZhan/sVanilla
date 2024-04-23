@@ -54,6 +54,8 @@ public:
     void addVideoItem(const std::string& identifier);
     void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
+    void showDetailPanel();
+    void hideDetailPanel() const;
     void getSignalPointer(QSplitter* splitter);
 
     Q_SIGNAL void downloandBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
@@ -63,12 +65,11 @@ protected:
 
 private:
     void connectItemSingal(const VideoGridItemWidget* itemWidget);
-    void showDetailPanel();
-    void hideDetailPanel() const;
     [[nodiscard]] bool detailPanelVisible() const;
     [[nodiscard]] VideoDetailWidget* detailWidget() const;
 
     void adjustItemSize();
+    void setItemSize(const QSize& size);
 
 private:
     std::map<std::string, QListWidgetItem*> m_items;
@@ -77,5 +78,5 @@ private:
 
     const int itemBaseWidth = 240;
     const int itemBaseHeight = 200;
-    const float aspectRatio = static_cast<float>(itemBaseWidth) / itemBaseHeight;
+    const float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
 };

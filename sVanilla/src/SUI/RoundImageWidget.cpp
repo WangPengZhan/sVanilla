@@ -18,6 +18,10 @@ void RoundImageWidget::setPixmap(const QPixmap& pixmap)
 
 void RoundImageWidget::resizePixmap()
 {
+    if (m_pixmap.isNull())
+    {
+        return;
+    }
     const QSize originalSize = m_pixmap.size();
 
     const double imgRatio = static_cast<double>(originalSize.width()) / static_cast<double>(originalSize.height());

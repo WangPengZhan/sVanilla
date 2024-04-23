@@ -324,7 +324,7 @@ void MainWindow::loadSystemButton()
 }
 #endif
 
-void MainWindow::clearVideo(bool flag)
+void MainWindow::clearVideo(const bool flag)
 {
     if (!flag)
     {

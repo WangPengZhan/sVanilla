@@ -33,7 +33,6 @@ VideoGridItemWidget::VideoGridItemWidget(std::string identifier, QWidget* parent
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
-    ui->VideoGridDetailsBtn->installEventFilter(this);
 }
 
 VideoGridItemWidget::~VideoGridItemWidget()
@@ -69,6 +68,7 @@ void VideoGridItemWidget::updateVideoCard()
     elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->Publisher));
     setCover();
 }
+
 QSize VideoGridItemWidget::sizeHint() const
 {
     return {240, 200};
@@ -77,13 +77,7 @@ QSize VideoGridItemWidget::sizeHint() const
 VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    this->setFlow(LeftToRight);
-    this->setWrapping(true);
-    this->setResizeMode(Adjust);
     setProperty("noBackground", true);
-    setVerticalScrollMode(ScrollPerPixel);
-    constexpr auto scrollStep = 10;
-    verticalScrollBar()->setSingleStep(scrollStep);
 }
 
 void VideoGridWidget::addVideoItem(const std::string& identifier)
@@ -142,13 +136,7 @@ void VideoGridWidget::showDetailPanel()
     {
         detailWidget()->show();
     }
-
-    const auto* const gridItem = itemWidget(item(0));
-    const auto gridItemWidth = gridItem->width();
-    const auto totalWith = m_splitter->width() - detailWidget()->minimumWidth();
-    const auto gridWidth = gridItemWidth * (totalWith / gridItemWidth);
-    const auto detailWidth = totalWith % gridItemWidth;
-    m_splitter->setSizes(QList({gridWidth, detailWidth}));
+    m_splitter->setSizes(QList({4, 1}));
     update();
 }
 
@@ -159,7 +147,7 @@ void VideoGridWidget::hideDetailPanel() const
 
 bool VideoGridWidget::detailPanelVisible() const
 {
-    return m_splitter->sizes()[1] != 0;
+    return m_splitter->sizes().first() != 0;
 }
 
 VideoDetailWidget* VideoGridWidget::detailWidget() const
@@ -169,12 +157,23 @@ VideoDetailWidget* VideoGridWidget::detailWidget() const
 
 void VideoGridWidget::adjustItemSize()
 {
-    const int n = this->width() / itemBaseWidth;
-    const int width = n > 0 ? (this->width() - 20) / n : itemBaseWidth;
-    const int height = static_cast<int>(static_cast<float>(width) / aspectRatio);
+    const int n = width() / itemBaseWidth;
+    if (n == 1)
+    {
+        setItemSize(QSize(itemBaseWidth, itemBaseHeight));
+    }
+    else
+    {
+        const int itemWidth = (width() - 30) / n;
+        const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
+        setItemSize(QSize(itemWidth, itemHeight));
+    }
+}
+void VideoGridWidget::setItemSize(const QSize& size)
+{
     for (const auto& [fst, snd] : m_items)
     {
-        snd->setSizeHint(QSize(width, height));
+        snd->setSizeHint(size);
     }
 }
 

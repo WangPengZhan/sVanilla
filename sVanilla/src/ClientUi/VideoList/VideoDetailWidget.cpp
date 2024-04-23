@@ -32,7 +32,7 @@ void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::BaseVideoView>& 
 
 void VideoDetailWidget::setUi()
 {
-    this->setMaximumWidth(150);
+    hide();
     ui->DetailPanelCloseBtn->setIcon(QIcon(":icon/video/close.svg"));
 }
 

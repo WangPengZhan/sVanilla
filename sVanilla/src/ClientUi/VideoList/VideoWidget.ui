@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>964</width>
-    <height>783</height>
+    <width>500</width>
+    <height>545</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -25,6 +25,12 @@
    </property>
    <item>
     <widget class="QWidget" name="SwitchBtnWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
        <number>0</number>
@@ -39,15 +45,35 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="::SearchLineEdit" name="VideoSearchLineEdit" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>400</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Vanilla::IconButton" name="VideoSearchBtn">
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+        <property name="sizeType">
+         <enum>QSizePolicy::MinimumExpanding</enum>
         </property>
        </spacer>
       </item>
@@ -66,68 +92,89 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QSplitter" name="VideoGrid">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="::VideoGridWidget" name="VideoGridWidget">
-       <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
-       </property>
-      </widget>
-      <widget class="::VideoDetailWidget" name="VideoGridDetailWidget" native="true"/>
-     </widget>
-     <widget class="QWidget" name="VideoListPage">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_1">
-       <item>
-        <widget class="QSplitter" name="VideoList">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <widget class="::VideoListWidget" name="VideoListWidget">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="resizeMode">
-           <enum>QListView::Fixed</enum>
-          </property>
-         </widget>
-         <widget class="::VideoDetailWidget" name="VideoListDetailWidget" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="ActionBtns" native="true"/>
-       </item>
-      </layout>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="::VideoGridWidget" name="VideoGridWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="verticalScrollMode">
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
+       </property>
+       <property name="horizontalScrollMode">
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
+       </property>
+       <property name="flow">
+        <enum>QListView::LeftToRight</enum>
+       </property>
+       <property name="isWrapping" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
+      </widget>
+      <widget class="::VideoDetailWidget" name="VideoGridDetailWidget" native="true"/>
+     </widget>
+     <widget class="QSplitter" name="VideoList">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="::VideoListWidget" name="VideoListWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="verticalScrollMode">
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
+       </property>
+      </widget>
+      <widget class="::VideoDetailWidget" name="VideoListDetailWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </widget>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="ActionBtns" native="true"/>
    </item>
   </layout>
  </widget>
@@ -154,6 +201,17 @@
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::SearchLineEdit</class>
+   <extends>QWidget</extends>
+   <header>SUI/SearchLineEdit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Vanilla::IconButton</class>
+   <extends>QPushButton</extends>
+   <header>VanillaStyle/Widgets/IconButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
