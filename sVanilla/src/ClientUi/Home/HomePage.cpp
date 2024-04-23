@@ -64,7 +64,6 @@ void HomePage::signalsAndSlots()
     connect(ui->HomeLineEdit, &SearchLineEdit::Complete, this, [this] {
         qDebug() << ui->HomeLineEdit->text();
         parseUri({ui->HomeLineEdit->text().toStdString()});
-        ui->HomeLineEdit->clear();
     });
 }
 

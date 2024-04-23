@@ -22,7 +22,7 @@ class VideoGridItemWidget : public QWidget
 public:
     explicit VideoGridItemWidget(std::string identifier, QWidget* parent = nullptr);
     ~VideoGridItemWidget();
-    void setCover(const std::string& id);
+    void setCover();
     void updateVideoCard();
 
     [[nodiscard]] QSize sizeHint() const override;
@@ -30,7 +30,6 @@ public:
 private:
     void setUi();
     void signalsAndSlots();
-
 
 public:
     std::string Identifier;
@@ -48,6 +47,7 @@ signals:
 class VideoGridWidget : public QListWidget
 {
     Q_OBJECT
+
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
 
@@ -58,6 +58,9 @@ public:
 
     Q_SIGNAL void downloandBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
+protected:
+    void resizeEvent(QResizeEvent* event) override;
+
 private:
     void connectItemSingal(const VideoGridItemWidget* itemWidget);
     void showDetailPanel();
@@ -65,8 +68,14 @@ private:
     [[nodiscard]] bool detailPanelVisible() const;
     [[nodiscard]] VideoDetailWidget* detailWidget() const;
 
+    void adjustItemSize();
+
 private:
     std::map<std::string, QListWidgetItem*> m_items;
     QSplitter* m_splitter = nullptr;
     std::string currentIdentifier;
+
+    const int itemBaseWidth = 240;
+    const int itemBaseHeight = 200;
+    const float aspectRatio = static_cast<float>(itemBaseWidth) / itemBaseHeight;
 };

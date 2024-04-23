@@ -3,6 +3,7 @@
 #include <QPainterPath>
 #include <QPixmap>
 #include <QPushButton>
+#include <QScrollBar>
 
 #include "VideoGridWidget.h"
 #include "VideoDetailWidget.h"
@@ -52,30 +53,13 @@ void VideoGridItemWidget::signalsAndSlots()
     connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, this, &VideoGridItemWidget::downloadBtnClick);
 }
 
-QSize VideoGridItemWidget::sizeHint() const
+void VideoGridItemWidget::setCover()
 {
-    return {320, 300};
-}
-
-void VideoGridItemWidget::setCover(const std::string& id)
-{
-    const QString tempPath = QDir::tempPath();
+    const QString tempPath = QApplication::applicationDirPath();
     const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg");
-    if (QFile::exists(fullPath))
-    {
-        const QPixmap pixmap(fullPath);
-        const auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
-        ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
-        ui->Cover->setPixmap(scaledPixmap);
-        update();
-    }
-    else
-    {
-        QPixmap pixmap(":/CoverTest.jpeg");
-        auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
-        ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
-        ui->Cover->setPixmap(scaledPixmap);
-    }
+    const QPixmap pixmap(QFile::exists(fullPath) ? fullPath : ":/CoverTest.jpeg");
+    ui->Cover->setPixmap(pixmap);
+    update();
 }
 
 void VideoGridItemWidget::updateVideoCard()
@@ -83,7 +67,11 @@ void VideoGridItemWidget::updateVideoCard()
     elideText(ui->VideoGridTitle, QString::fromStdString(m_videoView->Title));
     ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
     elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->Publisher));
-    setCover(Identifier);
+    setCover();
+}
+QSize VideoGridItemWidget::sizeHint() const
+{
+    return {240, 200};
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -93,12 +81,15 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
     this->setWrapping(true);
     this->setResizeMode(Adjust);
     setProperty("noBackground", true);
+    setVerticalScrollMode(ScrollPerPixel);
+    constexpr auto scrollStep = 10;
+    verticalScrollBar()->setSingleStep(scrollStep);
 }
 
 void VideoGridWidget::addVideoItem(const std::string& identifier)
 {
-    const auto videoItem = new VideoGridItemWidget(identifier, this);
-    const auto item = new QListWidgetItem(this);
+    auto* const videoItem = new VideoGridItemWidget(identifier, this);
+    auto* const item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
     m_items.insert(std::make_pair(identifier, item));
@@ -108,10 +99,16 @@ void VideoGridWidget::addVideoItem(const std::string& identifier)
 void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
     const auto identifier = videoView->Identifier;
-    const auto item = itemWidget(m_items[identifier]);
-    const auto widget = qobject_cast<VideoGridItemWidget*>(item);
+    auto* const item = itemWidget(m_items[identifier]);
+    auto* const widget = qobject_cast<VideoGridItemWidget*>(item);
     widget->m_videoView = videoView;
     widget->updateVideoCard();
+}
+
+void VideoGridWidget::resizeEvent(QResizeEvent* event)
+{
+    adjustItemSize();
+    QListWidget::resizeEvent(event);
 }
 
 void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget)
@@ -146,7 +143,7 @@ void VideoGridWidget::showDetailPanel()
         detailWidget()->show();
     }
 
-    const auto gridItem = itemWidget(item(0));
+    const auto* const gridItem = itemWidget(item(0));
     const auto gridItemWidth = gridItem->width();
     const auto totalWith = m_splitter->width() - detailWidget()->minimumWidth();
     const auto gridWidth = gridItemWidth * (totalWith / gridItemWidth);
@@ -170,10 +167,22 @@ VideoDetailWidget* VideoGridWidget::detailWidget() const
     return qobject_cast<VideoDetailWidget*>(m_splitter->widget(1));
 }
 
+void VideoGridWidget::adjustItemSize()
+{
+    const int n = this->width() / itemBaseWidth;
+    const int width = n > 0 ? (this->width() - 20) / n : itemBaseWidth;
+    const int height = static_cast<int>(static_cast<float>(width) / aspectRatio);
+    for (const auto& [fst, snd] : m_items)
+    {
+        snd->setSizeHint(QSize(width, height));
+    }
+}
+
 void VideoGridWidget::clearVideo()
 {
     clear();
 }
+
 void VideoGridWidget::getSignalPointer(QSplitter* splitter)
 {
     m_splitter = splitter;
