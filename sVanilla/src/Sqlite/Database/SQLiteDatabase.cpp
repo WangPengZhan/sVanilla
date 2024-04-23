@@ -124,7 +124,7 @@ bool SQLiteDatabase::tableExists(const std::string& tableName)
     SQLiteStatement stmt(*this, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?");
     stmt.bind(1, tableName);
     stmt.executeStep();
-    return (true);
+    return (1 == stmt.column(0).getInt());
 }
 
 int64_t SQLiteDatabase::lastInsertRowid() const

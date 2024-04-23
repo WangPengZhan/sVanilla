@@ -9,7 +9,7 @@
 namespace sqlite
 {
 using BlobColumnValue = std::vector<uint8_t>;
-using SqliteColumnValue = std::variant<std::monostate, int32_t, uint32_t, int64_t, double, std::string, BlobColumnValue>;
+using SqliteColumnValue = std::variant<std::monostate, int64_t, double, std::string, BlobColumnValue>;
 
 class SQLiteStatement;
 void bind(SQLiteStatement& stmt, int index, const SqliteColumnValue& value);
@@ -27,9 +27,9 @@ enum class FieldType
 class SqliteColumn
 {
 public:
-    SqliteColumn(SqliteColumnValue value, int index, std::string colunmName);
-    SqliteColumn(SqliteColumnValue value);
-    ~SqliteColumn();
+    SqliteColumn(SqliteColumnValue value, int index, std::string colunmName, std::string colunmOriginName = {});
+    SqliteColumn(SqliteColumnValue value = std::monostate{});
+    ~SqliteColumn() = default;
 
     const std::string& getName() const;
     const std::string& getOriginName() const;
@@ -70,6 +70,7 @@ private:
     SqliteColumnValue m_value;
     int m_index;
     std::string m_colunmName;
+    std::string m_originColunmName;
 };
 
 }  // namespace sqlite

@@ -195,6 +195,60 @@ int SQLiteStatement::columnCount() const
     return m_colunmCount;
 }
 
+SqliteColumn SQLiteStatement::column(int col) const
+{
+    if (m_colunmsMap.find(col) == m_colunmsMap.end())
+    {
+        m_colunmsMap[col] = getColunmFromStmt(col);
+    }
+
+    return m_colunmsMap.at(col);
+}
+
+SqliteColumn SQLiteStatement::column(const std::string& colName) const
+{
+    return column(columnIndex(colName));
+}
+
+bool SQLiteStatement::isColunmNull(int col) const
+{
+    return (SQLITE_NULL == sqlite3_column_type(handle(), col));
+}
+
+bool SQLiteStatement::isColunmNull(const std::string& colName) const
+{
+    return isColunmNull(columnIndex(colName));
+}
+
+std::string SQLiteStatement::colunmName(int col) const
+{
+    return sqlite3_column_name(handle(), col);
+}
+
+std::string SQLiteStatement::originColunmName(int col) const
+{
+    return sqlite3_column_origin_name(handle(), col);
+}
+
+int SQLiteStatement::columnIndex(const std::string& colName) const
+{
+    if (m_colunmIndexMap.empty())
+    {
+        for (int i = 0; i < m_colunmCount; ++i)
+        {
+            std::string colName = sqlite3_column_name(handle(), i);
+            m_colunmIndexMap[colName] = i;
+        }
+    }
+
+    if (m_colunmIndexMap.find(colName) == m_colunmIndexMap.end())
+    {
+        return -1;
+    }
+
+    return m_colunmIndexMap.at(colName);
+}
+
 int SQLiteStatement::getBindParameterCount() const
 {
     return sqlite3_bind_parameter_count(handle());
@@ -257,6 +311,50 @@ int SQLiteStatement::tryExecuteStep() noexcept
     }
 
     return ret;
+}
+
+SqliteColumn SQLiteStatement::getColunmFromStmt(int col) const
+{
+    std::string colName = sqlite3_column_name(handle(), col);
+    std::string colOriginName = sqlite3_column_origin_name(handle(), col);
+    SqliteColumnValue value;
+
+    int type = sqlite3_column_type(handle(), col);
+    switch (type)
+    {
+    case SQLITE_INTEGER:
+        value = sqlite3_column_int64(handle(), col);
+        break;
+    case SQLITE_FLOAT:
+        value = sqlite3_column_double(handle(), col);
+        break;
+    case SQLITE_TEXT:
+    {
+        auto data = (const char*)(sqlite3_column_text(handle(), col));
+        value = std::string(data);
+        break;
+    }
+    case SQLITE_BLOB:
+    {
+        auto len = sqlite3_column_bytes(handle(), col);
+        auto data = static_cast<const uint8_t*>(sqlite3_column_blob(handle(), col));
+        std::vector<uint8_t> blob;
+        blob.resize(len);
+        memccpy(blob.data(), data, 0, len);
+        value = blob;
+        break;
+    }
+    case SQLITE_NULL:
+        break;
+    default:
+    {
+        int len = sqlite3_column_bytes(handle(), col);
+        auto data = static_cast<const char*>(sqlite3_column_blob(handle(), col));
+        value = std::string(data, len);
+        break;
+    }
+    }
+    return SqliteColumn(value, col, colName, colOriginName);
 }
 
 }  // namespace sqlite

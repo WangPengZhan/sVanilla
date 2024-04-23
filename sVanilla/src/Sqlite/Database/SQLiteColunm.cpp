@@ -42,10 +42,11 @@ std::stringstream& conditionString(std::stringstream& ss, const SqliteColumnValu
     return ss;
 }
 
-SqliteColumn::SqliteColumn(SqliteColumnValue value, int index, std::string colunmName)
+SqliteColumn::SqliteColumn(SqliteColumnValue value, int index, std::string colunmName, std::string originOriginName)
     : m_value(std::move(value))
     , m_index(index)
     , m_colunmName(std::move(colunmName))
+    , m_originColunmName(std::move(originOriginName))
 
 {
 }
@@ -58,6 +59,11 @@ SqliteColumn::SqliteColumn(SqliteColumnValue value)
 const std::string& SqliteColumn::getName() const
 {
     return m_colunmName;
+}
+
+const std::string& SqliteColumn::getOriginName() const
+{
+    return m_originColunmName;
 }
 
 int32_t SqliteColumn::getInt() const noexcept
