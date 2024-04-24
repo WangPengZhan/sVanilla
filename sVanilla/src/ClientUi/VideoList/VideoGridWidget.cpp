@@ -4,6 +4,8 @@
 #include <QPixmap>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QMenu>
+#include <QContextMenuEvent>
 
 #include "VideoGridWidget.h"
 #include "VideoDetailWidget.h"
@@ -71,7 +73,18 @@ void VideoGridItemWidget::updateVideoCard()
 
 QSize VideoGridItemWidget::sizeHint() const
 {
-    return {240, 200};
+    return {itemBaseWidth, itemBaseHeight};
+}
+void VideoGridItemWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    auto* menu = new QMenu(this);
+    auto* downloadAction = new QAction("Download", this);
+    menu->addAction(downloadAction);
+    auto* detailAction = new QAction("Check Detail", this);
+    menu->addAction(detailAction);
+    auto* similarAction = new QAction("Find Similar", this);
+    menu->addAction(similarAction);
+    menu->popup(event->globalPos());
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -158,16 +171,9 @@ VideoDetailWidget* VideoGridWidget::detailWidget() const
 void VideoGridWidget::adjustItemSize()
 {
     const int n = width() / itemBaseWidth;
-    if (n == 1)
-    {
-        setItemSize(QSize(itemBaseWidth, itemBaseHeight));
-    }
-    else
-    {
-        const int itemWidth = (width() - 30) / n;
-        const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
-        setItemSize(QSize(itemWidth, itemHeight));
-    }
+    const int itemWidth = (width() - 25) / n;
+    const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
+    setItemSize(QSize(itemWidth, itemHeight));
 }
 void VideoGridWidget::setItemSize(const QSize& size)
 {
@@ -180,6 +186,9 @@ void VideoGridWidget::setItemSize(const QSize& size)
 void VideoGridWidget::clearVideo()
 {
     clear();
+    m_items.clear();
+    currentIdentifier.clear();
+    update();
 }
 
 void VideoGridWidget::getSignalPointer(QSplitter* splitter)

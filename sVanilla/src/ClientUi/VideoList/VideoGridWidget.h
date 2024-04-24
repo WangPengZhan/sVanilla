@@ -7,6 +7,10 @@
 
 #include "Adapter/BaseVideoView.h"
 
+constexpr int itemBaseWidth = 240;
+constexpr int itemBaseHeight = 200;
+constexpr float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
+
 class VideoDetailWidget;
 
 namespace Ui
@@ -26,6 +30,9 @@ public:
     void updateVideoCard();
 
     [[nodiscard]] QSize sizeHint() const override;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
     void setUi();
@@ -75,8 +82,4 @@ private:
     std::map<std::string, QListWidgetItem*> m_items;
     QSplitter* m_splitter = nullptr;
     std::string currentIdentifier;
-
-    const int itemBaseWidth = 240;
-    const int itemBaseHeight = 200;
-    const float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
 };

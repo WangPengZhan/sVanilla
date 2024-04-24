@@ -18,6 +18,7 @@ public:
 
 signals:
     void HasAdded(bool hasAdded);
+    void clearPreviousView();
     void loadBiliViewView(const std::string& uri);
 
 private:
@@ -27,5 +28,4 @@ private:
 
 private:
     Ui::HomePage* ui;
-    bool hasAdded = false;
 };

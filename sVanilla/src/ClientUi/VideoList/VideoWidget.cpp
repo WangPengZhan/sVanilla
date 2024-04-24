@@ -50,7 +50,7 @@ void VideoWidget::setUi()
     ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
     ui->VideoListWidget->getSignalPointer(ui->VideoList);
 
-#if 0
+#if 1
     for (int i = 0; i < 10; i++)
     {
         Adapter::BaseVideoView view = {std::to_string(i)};

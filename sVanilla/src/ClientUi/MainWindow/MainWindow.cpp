@@ -74,7 +74,7 @@ void MainWindow::signalsAndSlots()
         }
     });
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
-    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::clearVideo);
+    connect(ui->homePage, &HomePage::clearPreviousView, this, &MainWindow::clearVideo);
 
     connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::loadBiliViewView);
     connect(ui->homePage, &HomePage::loadBiliViewView, [this]() {
@@ -324,10 +324,7 @@ void MainWindow::loadSystemButton()
 }
 #endif
 
-void MainWindow::clearVideo(const bool flag)
+void MainWindow::clearVideo()
 {
-    if (!flag)
-    {
-        ui->VideoPage->clearVideo();
-    }
+    ui->VideoPage->clearVideo();
 }

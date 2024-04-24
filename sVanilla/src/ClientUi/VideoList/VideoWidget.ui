@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>577</width>
     <height>545</height>
    </rect>
   </property>
@@ -75,6 +75,12 @@
         <property name="sizeType">
          <enum>QSizePolicy::MinimumExpanding</enum>
         </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
        </spacer>
       </item>
       <item>
@@ -132,6 +138,9 @@
        <property name="resizeMode">
         <enum>QListView::Adjust</enum>
        </property>
+       <property name="itemAlignment">
+        <set>Qt::AlignHCenter</set>
+       </property>
       </widget>
       <widget class="::VideoDetailWidget" name="VideoGridDetailWidget" native="true"/>
      </widget>
@@ -180,6 +189,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>Vanilla::IconButton</class>
+   <extends>QPushButton</extends>
+   <header>VanillaStyle/Widgets/IconButton.h</header>
+  </customwidget>
+  <customwidget>
    <class>::VideoGridWidget</class>
    <extends>QListWidget</extends>
    <header>ClientUi/VideoList/VideoGridWidget.h</header>
@@ -207,11 +221,6 @@
    <extends>QWidget</extends>
    <header>SUI/SearchLineEdit.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
