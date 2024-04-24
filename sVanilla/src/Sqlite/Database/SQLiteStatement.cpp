@@ -42,6 +42,11 @@ bool SQLiteStatement::reset()
     return ret == SQLITE_OK;
 }
 
+bool SQLiteStatement::hasRow() const
+{
+    return m_hasRow;
+}
+
 bool SQLiteStatement::isDone() const
 {
     return m_done;

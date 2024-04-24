@@ -330,6 +330,11 @@ bool ConditionWrapper::contain(const ColumnInfo& col) const
     return contain(col.colunmName());
 }
 
+std::unordered_set<std::string> ConditionWrapper::colunmNames() const
+{
+    return std::unordered_set<std::string>();
+}
+
 bool ConditionWrapper::empty() const
 {
     return m_conditionInfos.empty();

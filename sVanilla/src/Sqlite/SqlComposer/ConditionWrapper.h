@@ -2,6 +2,7 @@
 #include <variant>
 #include <vector>
 #include <string>
+#include <unordered_set>
 
 #include "BaseInfo.h"
 #include "Sqlite/Database/SQLiteColunm.h"
@@ -71,6 +72,8 @@ public:
 
     bool contain(const std::string& colName) const;
     bool contain(const ColumnInfo& col) const;
+    std::unordered_set<std::string> colunmNames() const;
+
     bool empty() const;
     size_t size() const;
     void reset();

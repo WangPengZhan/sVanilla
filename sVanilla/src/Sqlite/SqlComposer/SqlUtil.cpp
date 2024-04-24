@@ -5,9 +5,9 @@
 
 namespace sqlite
 {
-bool SqliteUtil::createIndexIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
+bool SqliteUtil::createTableIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
 {
-    if (!db)
+    if (!db || tableName.empty())
     {
         return false;
     }
@@ -33,7 +33,7 @@ bool SqliteUtil::createIndexIfNotExists(const SqliteDBPtr& db, const std::string
 
 bool SqliteUtil::renameTable(const SqliteDBPtr& db, const std::string& oldName, const std::string& newName)
 {
-    if (!db)
+    if (!db || oldName.empty() || newName.empty())
     {
         return false;
     }
@@ -49,7 +49,7 @@ bool SqliteUtil::renameTable(const SqliteDBPtr& db, const std::string& oldName, 
 
 bool SqliteUtil::deleteTable(const SqliteDBPtr& db, const std::string& tableName)
 {
-    if (!db)
+    if (!db || tableName.empty())
     {
         return false;
     }
@@ -60,7 +60,7 @@ bool SqliteUtil::deleteTable(const SqliteDBPtr& db, const std::string& tableName
 
 bool SqliteUtil::dropTableIfExists(const SqliteDBPtr& db, const std::string& tableName)
 {
-    if (!db)
+    if (!db || tableName.empty())
     {
         return false;
     }
@@ -90,7 +90,7 @@ std::string SqliteUtil::indexName(const std::string& tag, const std::vector<std:
 bool SqliteUtil::createIndexIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const std::string& indexName,
                                         const std::vector<std::string>& colNames)
 {
-    if (!db)
+    if (!db || tableName.empty() || indexName.empty() || colNames.empty())
     {
         return false;
     }
@@ -117,7 +117,7 @@ bool SqliteUtil::createIndexIfNotExists(const SqliteDBPtr& db, const std::string
 bool SqliteUtil::createViewIfNotExist(const SqliteDBPtr& db, const std::string& viewName, const std::string& tableName, const ConditionWrapper& condition,
                                       const std::string& indexed)
 {
-    if (!db)
+    if (!db || viewName.empty() || tableName.empty())
     {
         return false;
     }
@@ -138,7 +138,7 @@ bool SqliteUtil::createViewIfNotExist(const SqliteDBPtr& db, const std::string& 
 
 bool SqliteUtil::dropViewIfExists(const SqliteDBPtr& db, const std::string& viewName)
 {
-    if (!db)
+    if (!db || viewName.empty())
     {
         return false;
     }
@@ -147,23 +147,63 @@ bool SqliteUtil::dropViewIfExists(const SqliteDBPtr& db, const std::string& view
     return db->execute(sql);
 }
 
-std::string SqliteUtil::getQuerySql(const std::string& tableName, const ConditionWrapper& condition)
+bool SqliteUtil::deleteEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition)
 {
-    std::stringstream ss;
-    ss << "SELECT * FROM " << tableName;
-    ss << " " << condition.conditionString();
+    if (!db || tableName.empty())
+    {
+        return false;
+    }
 
-    return ss.str();
+    std::string sql = "DELETE FROM " + tableName + " " + condition.conditionString();
+    return db->execute(sql);
 }
 
-std::string SqliteUtil::getQuerySql(const std::string& tableName, int index, int num, const ConditionWrapper& condition)
+int64_t SqliteUtil::countEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition)
 {
-    std::stringstream ss;
-    ss << "SELECT * FROM " << tableName;
-    ss << " " << condition.conditionString();
-    ss << " LIMIT " << index << " , " << num;
+    if (!db || tableName.empty())
+    {
+        return -1;
+    }
+    std::string sql = "SELECT COUNT(1) FROM " + tableName + " ";
+    sql += condition.prepareConditionString();
+    SQLiteStatement stmt(*db, sql);
+    condition.bind(stmt);
+    if (stmt.executeStep())
+    {
+        return stmt.column(0);
+    }
 
-    return ss.str();
+    return -1;
+}
+
+std::vector<std::string> SqliteUtil::queryDistinctCol(const SqliteDBPtr& db, const std::string& tableName, const ColumnInfo& metaInfo,
+                                                      const ConditionWrapper& condition)
+{
+    if (!db || tableName.empty() || metaInfo.colunmName().empty())
+    {
+        return {};
+    }
+
+    auto colNames = condition.colunmNames();
+    colNames.insert(metaInfo.colunmName());
+
+    std::stringstream ss;
+    ss << "SELECT DISTINCT " << metaInfo.colunmName();
+    ss << " FROM ( SELECT " << stringJoin(colNames.begin(), colNames.end(), ", ");
+    ss << " FROM " << tableName << ")";
+    ss << condition.prepareConditionString();
+
+    std::string sql = ss.str();
+    std::vector<std::string> res;
+
+    SQLiteStatement stmt(*db, sql);
+    condition.bind(stmt);
+    while (stmt.executeStep())
+    {
+        res.emplace_back(stmt.column(0).getString());
+    }
+
+    return res;
 }
 
 }  // namespace sqlite

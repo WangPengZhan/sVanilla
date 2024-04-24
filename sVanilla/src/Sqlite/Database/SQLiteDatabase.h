@@ -64,6 +64,6 @@ protected:
     std::string m_lastError;
 };
 
-using SqliteDBPtr = std::unique_ptr<SQLiteDatabase>;
+using SqliteDBPtr = std::shared_ptr<SQLiteDatabase>;
 
 }  // namespace sqlite
