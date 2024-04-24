@@ -42,7 +42,7 @@ void VideoWidget::setUi()
 {
     ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
 
-    ui->VideoSearchBtn->setIcon(QIcon(QStringLiteral(":/icon/home/search.svg")));
+    // ui->VideoSearchBtn->setIcon(QIcon(QStringLiteral(":/icon/home/search.svg")));
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
     ui->SwitchBtn->setColumnWidth(45);
     ui->SwitchBtn->setItemList(horizonNavigation);
