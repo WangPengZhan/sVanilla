@@ -22,10 +22,23 @@
   <property name="clearButtonEnabled">
    <bool>false</bool>
   </property>
-  <widget class="QPushButton" name="ClearBtn">
+  <widget class="Vanilla::IconButton" name="ClearBtn">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>230</x>
+     <y>10</y>
+     <width>100</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="Vanilla::IconButton" name="SearchBtn">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
      <y>10</y>
      <width>100</width>
      <height>32</height>
@@ -37,6 +50,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Vanilla::IconButton</class>
+   <extends>QPushButton</extends>
+   <header>VanillaStyle/Widgets/IconButton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

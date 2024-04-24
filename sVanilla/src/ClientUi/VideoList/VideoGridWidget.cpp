@@ -3,6 +3,9 @@
 #include <QPainterPath>
 #include <QPixmap>
 #include <QPushButton>
+#include <QScrollBar>
+#include <QMenu>
+#include <QContextMenuEvent>
 
 #include "VideoGridWidget.h"
 #include "VideoDetailWidget.h"
@@ -32,7 +35,6 @@ VideoGridItemWidget::VideoGridItemWidget(std::string identifier, QWidget* parent
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
-    ui->VideoGridDetailsBtn->installEventFilter(this);
 }
 
 VideoGridItemWidget::~VideoGridItemWidget()
@@ -44,6 +46,8 @@ void VideoGridItemWidget::setUi()
 {
     ui->VideoGridDetailsBtn->setIcon(QIcon(":/icon/video/detail.svg"));
     ui->VideoGridDownloadBtn->setIcon(QIcon(":/icon/video/download.svg"));
+    const QPixmap pixmap(":/CoverSpace.svg");
+    ui->Cover->setPixmap(pixmap);
 }
 
 void VideoGridItemWidget::signalsAndSlots()
@@ -52,29 +56,14 @@ void VideoGridItemWidget::signalsAndSlots()
     connect(ui->VideoGridDownloadBtn, &QPushButton::clicked, this, &VideoGridItemWidget::downloadBtnClick);
 }
 
-QSize VideoGridItemWidget::sizeHint() const
+void VideoGridItemWidget::setCover()
 {
-    return {320, 300};
-}
-
-void VideoGridItemWidget::setCover(const std::string& id)
-{
-    const QString tempPath = QDir::tempPath();
-    const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg");
-    if (QFile::exists(fullPath))
+    const QString tempPath = QApplication::applicationDirPath();
+    if (const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg"); QFile::exists(fullPath))
     {
         const QPixmap pixmap(fullPath);
-        const auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
-        ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
-        ui->Cover->setPixmap(scaledPixmap);
+        ui->Cover->setPixmap(pixmap);
         update();
-    }
-    else
-    {
-        QPixmap pixmap(":/CoverTest.jpeg");
-        auto scaledPixmap = pixmap.scaledToWidth(width(), Qt::SmoothTransformation);
-        ui->Cover->setFixedSize(scaledPixmap.width(), scaledPixmap.height());
-        ui->Cover->setPixmap(scaledPixmap);
     }
 }
 
@@ -83,35 +72,59 @@ void VideoGridItemWidget::updateVideoCard()
     elideText(ui->VideoGridTitle, QString::fromStdString(m_videoView->Title));
     ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
     elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->Publisher));
-    setCover(Identifier);
+}
+
+void VideoGridItemWidget::updateCover()
+{
+    setCover();
+    ui->Spinner->hide();
+    ui->Spinner->deleteLater();
+}
+
+QSize VideoGridItemWidget::sizeHint() const
+{
+    return {itemBaseWidth, itemBaseHeight};
+}
+
+void VideoGridItemWidget::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+}
+
+void VideoGridItemWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    auto* menu = new QMenu(this);
+    auto* downloadAction = new QAction("Download", this);
+    menu->addAction(downloadAction);
+    auto* detailAction = new QAction("Check Detail", this);
+    menu->addAction(detailAction);
+    auto* similarAction = new QAction("Find Similar", this);
+    menu->addAction(similarAction);
+    menu->popup(event->globalPos());
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    this->setFlow(LeftToRight);
-    this->setWrapping(true);
-    this->setResizeMode(Adjust);
     setProperty("noBackground", true);
 }
 
-void VideoGridWidget::addVideoItem(const std::string& identifier)
+void VideoGridWidget::addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
-    const auto videoItem = new VideoGridItemWidget(identifier, this);
-    const auto item = new QListWidgetItem(this);
+    auto* const videoItem = new VideoGridItemWidget(videoView->Identifier, this);
+    auto* const item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
-    this->setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(identifier, item));
+    setItemWidget(item, videoItem);
+    m_items.insert(std::make_pair(videoView->Identifier, item));
+    videoItem->m_videoView = videoView;
+    videoItem->updateVideoCard();
     connectItemSingal(videoItem);
 }
 
-void VideoGridWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
+void VideoGridWidget::resizeEvent(QResizeEvent* event)
 {
-    const auto identifier = videoView->Identifier;
-    const auto item = itemWidget(m_items[identifier]);
-    const auto widget = qobject_cast<VideoGridItemWidget*>(item);
-    widget->m_videoView = videoView;
-    widget->updateVideoCard();
+    adjustItemSize();
+    QListWidget::resizeEvent(event);
 }
 
 void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget)
@@ -145,13 +158,7 @@ void VideoGridWidget::showDetailPanel()
     {
         detailWidget()->show();
     }
-
-    const auto gridItem = itemWidget(item(0));
-    const auto gridItemWidth = gridItem->width();
-    const auto totalWith = m_splitter->width() - detailWidget()->minimumWidth();
-    const auto gridWidth = gridItemWidth * (totalWith / gridItemWidth);
-    const auto detailWidth = totalWith % gridItemWidth;
-    m_splitter->setSizes(QList({gridWidth, detailWidth}));
+    m_splitter->setSizes(QList({4, 1}));
     update();
 }
 
@@ -162,7 +169,7 @@ void VideoGridWidget::hideDetailPanel() const
 
 bool VideoGridWidget::detailPanelVisible() const
 {
-    return m_splitter->sizes()[1] != 0;
+    return m_splitter->sizes().first() != 0;
 }
 
 VideoDetailWidget* VideoGridWidget::detailWidget() const
@@ -170,11 +177,41 @@ VideoDetailWidget* VideoGridWidget::detailWidget() const
     return qobject_cast<VideoDetailWidget*>(m_splitter->widget(1));
 }
 
+void VideoGridWidget::adjustItemSize()
+{
+    const int n = width() / itemBaseWidth;
+    const int itemWidth = (width() - 25) / n;
+    const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
+    setItemSize(QSize(itemWidth, itemHeight));
+}
+
+void VideoGridWidget::setItemSize(const QSize& size)
+{
+    for (const auto& [fst, snd] : m_items)
+    {
+        snd->setSizeHint(size);
+    }
+}
+
 void VideoGridWidget::clearVideo()
 {
     clear();
+    m_items.clear();
+    currentIdentifier.clear();
+    update();
 }
+
 void VideoGridWidget::getSignalPointer(QSplitter* splitter)
 {
     m_splitter = splitter;
+}
+
+void VideoGridWidget::coverReady(const std::string& id) const
+{
+    if (const auto it = m_items.find(id); it != m_items.end())
+    {
+        auto* const item = itemWidget(it->second);
+        auto* const widget = qobject_cast<VideoGridItemWidget*>(item);
+        widget->updateCover();
+    }
 }

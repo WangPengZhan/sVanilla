@@ -20,19 +20,18 @@ VideoDetailWidget::~VideoDetailWidget()
 {
     delete ui;
 }
+
 void VideoDetailWidget::updateUi(const std::shared_ptr<Adapter::BaseVideoView>& data)
 {
     ui->DetailTitle->setText(QString::fromStdString(data->Title));
     ui->DetailPusblisher->setText(QString::fromStdString(data->Publisher));
     ui->DetailDuration->setText(QString::fromStdString(data->Duration));
     ui->DetailDescription->setText(QString::fromStdString(data->Description));
-
-    // ui->DetailAuthor->setText(QString::fromStdString(data->Author));
 }
 
 void VideoDetailWidget::setUi()
 {
-    this->setMaximumWidth(150);
+    hide();
     ui->DetailPanelCloseBtn->setIcon(QIcon(":icon/video/close.svg"));
 }
 

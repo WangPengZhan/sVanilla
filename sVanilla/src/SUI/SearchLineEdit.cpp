@@ -1,5 +1,8 @@
+#include <QPushButton>
+
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
+
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
@@ -35,19 +38,21 @@ void SearchLineEdit::resizeEvent(QResizeEvent* event)
 {
     ui->ClearBtn->resize(height(), height());
     ui->ClearBtn->move(width() - 50, 0);
-//    ui->SearchBtn->resize(height(), height());
-//    ui->SearchBtn->move(width() - 25, 0);
+    ui->SearchBtn->resize(height(), height());
+    ui->SearchBtn->move(width() - 25, 0);
     return QLineEdit::resizeEvent(event);
 }
 
 void SearchLineEdit::setUi()
 {
     ui->ClearBtn->setVisible(false);
+    ui->ClearBtn->setIcon(QIcon(QStringLiteral(":/icon/home/clear.svg")));
+    ui->SearchBtn->setIcon(QIcon(QStringLiteral(":/icon/home/search.svg")));
 }
 
 void SearchLineEdit::signalsAndSlots()
 {
-//    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
+    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
         ui->ClearBtn->setVisible(!text.isEmpty());
     });

@@ -43,8 +43,7 @@ class VideoListWidget : public QListWidget
     Q_OBJECT
 public:
     explicit VideoListWidget(QWidget* parent = nullptr);
-    void addVideoItem(const std::string& identifier);
-    void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    void addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
     void getSignalPointer(QSplitter* splitter);
 

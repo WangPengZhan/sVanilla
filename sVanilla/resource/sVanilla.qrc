@@ -38,5 +38,6 @@
         <file>style/dark.qss</file>
         <file>style/light.qss</file>
         <file>CoverTest.jpeg</file>
+        <file>CoverSpace.svg</file>
     </qresource>
 </RCC>

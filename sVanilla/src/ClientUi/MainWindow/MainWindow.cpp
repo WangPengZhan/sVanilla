@@ -3,6 +3,8 @@
 #include <QFile>
 #include <QTimer>
 #include <QStackedWidget>
+#include <QShortcut>
+#include <QKeySequence>
 
 #include <VanillaStyle/Style.h>
 #include <VanillaStyle/Style/VanillaStyle.h>
@@ -31,7 +33,7 @@ MainWindow::MainWindow(QWidget* parent)
     signalsAndSlots();
     resize(800, 600);
     Toast::create(this);
-    // setLightTheme();
+    setLightTheme();
 #if 0
     const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
     const std::list<std::string> audios = {};
@@ -72,10 +74,37 @@ void MainWindow::signalsAndSlots()
         }
     });
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
-    connect(ui->homePage, &HomePage::HasAdded, this, &MainWindow::clearVideo);
+    connect(ui->homePage, &HomePage::clearPreviousView, this, &MainWindow::clearVideo);
 
     connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::loadBiliViewView);
+    connect(ui->homePage, &HomePage::loadBiliViewView, [this]() {
+        ui->stackedWidget->setCurrentIndex(1);
+    });
     connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
+
+    auto* shortcutTabFirst = new QShortcut(this);
+    shortcutTabFirst->setKey(QKeySequence(Qt::CTRL + Qt::Key_1));
+    connect(shortcutTabFirst, &QShortcut::activated, [this]() {
+        ui->stackedWidget->setCurrentIndex(0);
+    });
+
+    auto* shortcutTabSecond = new QShortcut(this);
+    shortcutTabSecond->setKey(QKeySequence(Qt::CTRL + Qt::Key_2));
+    connect(shortcutTabSecond, &QShortcut::activated, [this]() {
+        ui->stackedWidget->setCurrentIndex(1);
+    });
+
+    auto* shortcutTabThird = new QShortcut(this);
+    shortcutTabThird->setKey(QKeySequence(Qt::CTRL + Qt::Key_3));
+    connect(shortcutTabThird, &QShortcut::activated, [this]() {
+        ui->stackedWidget->setCurrentIndex(2);
+    });
+
+    auto* shortcutTabFourth = new QShortcut(this);
+    shortcutTabFourth->setKey(QKeySequence(Qt::CTRL + Qt::Key_4));
+    connect(shortcutTabFourth, &QShortcut::activated, [this]() {
+        ui->stackedWidget->setCurrentIndex(3);
+    });
 }
 
 void MainWindow::setLightTheme()
@@ -295,10 +324,7 @@ void MainWindow::loadSystemButton()
 }
 #endif
 
-void MainWindow::clearVideo(bool flag)
+void MainWindow::clearVideo()
 {
-    if (!flag)
-    {
-        ui->VideoPage->clearVideo();
-    }
+    ui->VideoPage->clearVideo();
 }

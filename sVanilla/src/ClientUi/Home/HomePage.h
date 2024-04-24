@@ -15,18 +15,17 @@ class HomePage : public QWidget
 public:
     explicit HomePage(QWidget* parent = nullptr);
     ~HomePage() override;
-    void setMsgLabel(const std::string& msg);
-    void updateMsg(const std::string& msg);
 
 signals:
     void HasAdded(bool hasAdded);
+    void clearPreviousView();
     void loadBiliViewView(const std::string& uri);
 
 private:
     void signalsAndSlots();
+    void setUi();
     void parseUri(const std::string& uri);
 
 private:
     Ui::HomePage* ui;
-    bool hasAdded = false;
 };
