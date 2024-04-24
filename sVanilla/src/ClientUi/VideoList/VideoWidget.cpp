@@ -50,7 +50,7 @@ void VideoWidget::setUi()
     ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
     ui->VideoListWidget->getSignalPointer(ui->VideoList);
 
-#if 1
+#if 0
     for (int i = 0; i < 10; i++)
     {
         Adapter::BaseVideoView view = {std::to_string(i)};
@@ -70,7 +70,7 @@ void VideoWidget::loadBiliViewView(const std::string& uri)
     prepareBiliVideoView(uri);
 
     // 2. loading spinner(Temporarily use toast)
-    Toast::Show("start loading video view...");
+    // Toast::Show("start loading video view...");
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
@@ -107,18 +107,21 @@ void VideoWidget::prepareVideoItem(const std::shared_ptr<biliapi::VideoViewOrigi
     for (const auto& video : view)
     {
         downloadCover({video.Cover, video.Identifier, tempPath.toStdString()});
-        addVideoItem(video.Identifier);
+        addVideoItem(video);
     }
     // after cover ready:
     // 1. stop spinner
     // 2. update video item
-    connect(this, &VideoWidget::coverReady, this, [this, view]() {
-        Toast::Show("stop loading spinner");  // Temporarily use toast
-        for (const auto& video : view)
-        {
-            updateVideoItem(video);
-        }
-    });
+    connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
+    // connect(this, &VideoWidget::coverReady, this, [this, view](const std::string& id) {
+    //     // Toast::Show("stop loading spinner");  // Temporarily use toast
+    //     hideSpinner(id);
+    //     // for (const auto& video : view)
+    //     // {
+    //     //     hideSpinner(id);
+    //     //     updateVideoItem(video);
+    //     // }
+    // });
 }
 
 void VideoWidget::downloadCover(const CoverInfo& coverInfo)
@@ -127,7 +130,7 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
         return downloadCoverImage(coverInfo);
     };
     auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
-    connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
+    connect(task.get(), &SignalReturnTask::result, this, [this, coverInfo](const std::any& res) {
         try
         {
             const auto& result = std::any_cast<bool>(res);
@@ -135,12 +138,13 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
             {
                 return;
             }
-            currentCoverSize++;
-            if (currentCoverSize == totalCoverSize)
-            {
-                emit coverReady();
-                currentCoverSize = 0;
-            }
+            emit coverReady(coverInfo.fileName);
+            // currentCoverSize++;
+            // if (currentCoverSize == totalCoverSize)
+            // {
+            //     emit allReady();
+            //     currentCoverSize = 0;
+            // }
         }
         catch (const std::bad_any_cast& e)
         {
@@ -149,17 +153,11 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
     ThreadPool::instance().enqueue(task);
 }
 
-void VideoWidget::addVideoItem(const std::string& identifier) const
-{
-    ui->VideoGridWidget->addVideoItem(identifier);
-    ui->VideoListWidget->addVideoItem(identifier);
-}
-
-void VideoWidget::updateVideoItem(const Adapter::BaseVideoView& videoView) const
+void VideoWidget::addVideoItem(const Adapter::BaseVideoView& videoView) const
 {
     const auto view = std::make_shared<Adapter::BaseVideoView>(videoView);
-    ui->VideoGridWidget->updateVideoItem(view);
-    ui->VideoListWidget->updateVideoItem(view);
+    ui->VideoGridWidget->addVideoItem(view);
+    ui->VideoListWidget->addVideoItem(view);
 }
 
 void VideoWidget::prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
@@ -215,4 +213,9 @@ void VideoWidget::clearVideo() const
 {
     ui->VideoGridWidget->clearVideo();
     ui->VideoListWidget->clearVideo();
+}
+
+void VideoWidget::updateCover(const std::string& id) const
+{
+    ui->VideoGridWidget->coverReady(id);
 }

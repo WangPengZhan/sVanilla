@@ -7,6 +7,7 @@
 
 #include "Adapter/BaseVideoView.h"
 
+class Spiner;
 constexpr int itemBaseWidth = 240;
 constexpr int itemBaseHeight = 200;
 constexpr float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
@@ -28,10 +29,12 @@ public:
     ~VideoGridItemWidget();
     void setCover();
     void updateVideoCard();
+    void updateCover();
 
     [[nodiscard]] QSize sizeHint() const override;
 
 protected:
+    void resizeEvent(QResizeEvent* event) override;
     void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
@@ -58,12 +61,12 @@ class VideoGridWidget : public QListWidget
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
 
-    void addVideoItem(const std::string& identifier);
-    void updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    void addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void clearVideo();
     void showDetailPanel();
     void hideDetailPanel() const;
     void getSignalPointer(QSplitter* splitter);
+    void coverReady(const std::string& id) const;
 
     Q_SIGNAL void downloandBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
 
@@ -79,7 +82,7 @@ private:
     void setItemSize(const QSize& size);
 
 private:
-    std::map<std::string, QListWidgetItem*> m_items;
+    std::unordered_map<std::string, QListWidgetItem*> m_items;
     QSplitter* m_splitter = nullptr;
     std::string currentIdentifier;
 };

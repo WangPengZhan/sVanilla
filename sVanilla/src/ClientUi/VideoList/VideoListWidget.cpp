@@ -45,23 +45,16 @@ VideoListWidget::VideoListWidget(QWidget* parent)
     setSelectionMode(ExtendedSelection);
 }
 
-void VideoListWidget::addVideoItem(const std::string& identifier)
+void VideoListWidget::addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
 {
-    const auto videoItem = new VideoListItemWidget(identifier, this);
-    const auto item = new QListWidgetItem(this);
+    auto* const videoItem = new VideoListItemWidget(videoView->Identifier, this);
+    auto* const item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(identifier, item));
+    m_items.insert(std::make_pair(videoView->Identifier, item));
+    videoItem->m_videoView = videoView;
+    videoItem->updateVideoItem();
     connectItemSingal(videoItem);
-}
-
-void VideoListWidget::updateVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
-{
-    const auto identifier = videoView->Identifier;
-    const auto item = itemWidget(m_items[identifier]);
-    const auto widget = qobject_cast<VideoListItemWidget*>(item);
-    widget->m_videoView = videoView;
-    widget->updateVideoItem();
 }
 
 void VideoListWidget::mousePressEvent(QMouseEvent* event)

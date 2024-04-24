@@ -1,6 +1,8 @@
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
 
+#include <QPushButton>
+
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
     , ui(new Ui::SearchLineEdit())
@@ -49,7 +51,7 @@ void SearchLineEdit::setUi()
 
 void SearchLineEdit::signalsAndSlots()
 {
-//    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
+    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
         ui->ClearBtn->setVisible(!text.isEmpty());
     });

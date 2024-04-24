@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>329</width>
+    <width>347</width>
     <height>265</height>
    </rect>
   </property>
@@ -34,6 +34,16 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <widget class="Vanilla::Spinner" name="Spinner" native="true">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>50</y>
+        <width>120</width>
+        <height>80</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>
@@ -173,6 +183,12 @@
    <class>::RoundImageWidget</class>
    <extends>QWidget</extends>
    <header>SUI/RoundImageWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Vanilla::Spinner</class>
+   <extends>QWidget</extends>
+   <header>VanillaStyle/Widgets/Spinner.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
