@@ -83,25 +83,25 @@ void MainWindow::signalsAndSlots()
     connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
 
     auto* shortcutTabFirst = new QShortcut(this);
-    shortcutTabFirst->setKey(Qt::ControlModifier | Qt::Key_1);
+    shortcutTabFirst->setKey(QKeySequence(Qt::CTRL + Qt::Key_1));
     connect(shortcutTabFirst, &QShortcut::activated, [this]() {
         ui->stackedWidget->setCurrentIndex(0);
     });
 
     auto* shortcutTabSecond = new QShortcut(this);
-    shortcutTabSecond->setKey(Qt::ControlModifier | Qt::Key_2);
+    shortcutTabSecond->setKey(QKeySequence(Qt::CTRL + Qt::Key_2));
     connect(shortcutTabSecond, &QShortcut::activated, [this]() {
         ui->stackedWidget->setCurrentIndex(1);
     });
 
     auto* shortcutTabThird = new QShortcut(this);
-    shortcutTabThird->setKey(Qt::ControlModifier | Qt::Key_3);
+    shortcutTabThird->setKey(QKeySequence(Qt::CTRL + Qt::Key_3));
     connect(shortcutTabThird, &QShortcut::activated, [this]() {
         ui->stackedWidget->setCurrentIndex(2);
     });
 
     auto* shortcutTabFourth = new QShortcut(this);
-    shortcutTabFourth->setKey(Qt::ControlModifier | Qt::Key_4);
+    shortcutTabFourth->setKey(QKeySequence(Qt::CTRL + Qt::Key_4));
     connect(shortcutTabFourth, &QShortcut::activated, [this]() {
         ui->stackedWidget->setCurrentIndex(3);
     });
