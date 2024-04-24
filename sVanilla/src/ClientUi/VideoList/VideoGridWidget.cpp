@@ -184,6 +184,7 @@ void VideoGridWidget::adjustItemSize()
     const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
     setItemSize(QSize(itemWidth, itemHeight));
 }
+
 void VideoGridWidget::setItemSize(const QSize& size)
 {
     for (const auto& [fst, snd] : m_items)

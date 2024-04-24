@@ -9,7 +9,6 @@
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
 #include "Util/CoverUtil.h"
-#include "SUI/Tips/Toast.h"
 #include "VideoGridWidget.h"
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
@@ -41,8 +40,6 @@ void VideoWidget::signalsAndSlots()
 void VideoWidget::setUi()
 {
     ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
-
-    // ui->VideoSearchBtn->setIcon(QIcon(QStringLiteral(":/icon/home/search.svg")));
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
     ui->SwitchBtn->setColumnWidth(45);
     ui->SwitchBtn->setItemList(horizonNavigation);
@@ -68,9 +65,6 @@ void VideoWidget::loadBiliViewView(const std::string& uri)
 {
     // 1. get video view
     prepareBiliVideoView(uri);
-
-    // 2. loading spinner(Temporarily use toast)
-    // Toast::Show("start loading video view...");
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
@@ -111,17 +105,8 @@ void VideoWidget::prepareVideoItem(const std::shared_ptr<biliapi::VideoViewOrigi
     }
     // after cover ready:
     // 1. stop spinner
-    // 2. update video item
+    // 2. update cover
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
-    // connect(this, &VideoWidget::coverReady, this, [this, view](const std::string& id) {
-    //     // Toast::Show("stop loading spinner");  // Temporarily use toast
-    //     hideSpinner(id);
-    //     // for (const auto& video : view)
-    //     // {
-    //     //     hideSpinner(id);
-    //     //     updateVideoItem(video);
-    //     // }
-    // });
 }
 
 void VideoWidget::downloadCover(const CoverInfo& coverInfo)
@@ -139,12 +124,6 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
                 return;
             }
             emit coverReady(coverInfo.fileName);
-            // currentCoverSize++;
-            // if (currentCoverSize == totalCoverSize)
-            // {
-            //     emit allReady();
-            //     currentCoverSize = 0;
-            // }
         }
         catch (const std::bad_any_cast& e)
         {

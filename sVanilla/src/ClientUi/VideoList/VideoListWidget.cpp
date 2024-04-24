@@ -13,7 +13,6 @@ VideoListItemWidget::VideoListItemWidget(std::string identifier, QWidget* parent
 {
     ui->setupUi(this);
     setUi();
-
     signalsAndSlots();
 }
 
@@ -112,8 +111,6 @@ void VideoListWidget::showDetailPanel()
         detailWidget()->show();
     }
     m_splitter->setSizes(QList({4, 1}));
-    // m_splitter->setMinimumWidth(width());
-
     m_splitter->update();
 }
 

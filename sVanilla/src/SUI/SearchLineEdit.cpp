@@ -1,7 +1,8 @@
+#include <QPushButton>
+
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
 
-#include <QPushButton>
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
