@@ -59,7 +59,8 @@ void VideoGridItemWidget::signalsAndSlots()
 void VideoGridItemWidget::setCover()
 {
     const QString tempPath = QApplication::applicationDirPath();
-    if (const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg"); QFile::exists(fullPath))
+    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg";
+    if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
         const QPixmap pixmap(fullPath);
         ui->Cover->setPixmap(pixmap);
@@ -180,7 +181,8 @@ VideoDetailWidget* VideoGridWidget::detailWidget() const
 void VideoGridWidget::adjustItemSize()
 {
     const int n = width() / itemBaseWidth;
-    const int itemWidth = (width() - 25) / n;
+    constexpr int itemPadding = 25;
+    const int itemWidth = (width() - itemPadding) / n;
     const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
     setItemSize(QSize(itemWidth, itemHeight));
 }

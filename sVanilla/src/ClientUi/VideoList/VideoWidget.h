@@ -29,11 +29,10 @@ public:
     explicit VideoWidget(QWidget* parent = nullptr);
     ~VideoWidget();
 
-    void loadBiliViewView(const std::string& uri);
     void prepareBiliVideoView(const std::string& uri);
-    void prepareVideoItem(const std::shared_ptr<biliapi::VideoViewOrigin>& videoView);
+    void prepareVideoItem(const biliapi::VideoViewOrigin& videoView);
     void downloadCover(const CoverInfo& coverInfo);
-    void addVideoItem(const Adapter::BaseVideoView& videoView) const;
+    void addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
 
     void prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
     void getBiliUrl();
