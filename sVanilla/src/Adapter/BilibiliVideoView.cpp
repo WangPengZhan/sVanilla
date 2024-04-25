@@ -20,17 +20,16 @@ std::string formatDuration(const int duration)
     return formattedDuration.str();
 }
 
-Adapter::VideoView ConvertVideoView(const biliapi::VideoView& data)
+Adapter::Views ConvertVideoView(const biliapi::VideoView& data)
 {
-    Adapter::VideoView videoListView;
+    Adapter::Views videoListView;
+
     if (checkSeason(data))
     {
         const auto episodes = data.ugc_season.sections.front().episodes;
         for (const auto& e : episodes)
         {
-            Adapter::BaseVideoView v = ConvertEpisodes(e);
-            v.Publisher = data.owner.name;
-            videoListView.push_back(v);
+            videoListView.push_back(ConvertEpisodes(e));
         }
         return videoListView;
     }
@@ -39,11 +38,7 @@ Adapter::VideoView ConvertVideoView(const biliapi::VideoView& data)
         const auto pages = data.pages;
         for (const auto& p : pages)
         {
-            Adapter::BaseVideoView v = ConvertPages(p);
-            v.Identifier = data.bvid;
-            v.Description = data.desc;
-            v.Publisher = data.owner.name;
-            videoListView.push_back(v);
+            videoListView.push_back(ConvertPages(p));
         }
         return videoListView;
     }
@@ -65,39 +60,38 @@ bool checkPages(const biliapi::VideoView& data)
     return data.pages.size() > 1;
 }
 
-Adapter::BaseVideoView ConvertEpisodes(const biliapi::UgcEpisode& data)
+std::shared_ptr<Adapter::BaseVideoView> ConvertEpisodes(const biliapi::UgcEpisode& data)
 {
-    return Adapter::BaseVideoView{
-        .Identifier = data.bvid,
-        .AlternateId = std::to_string(data.aid),
-        .VideoId = std::to_string(data.cid),
-        .Title = data.title,
-        .Cover = data.arc.pic,
-        .Duration = formatDuration(data.page.duration),
-        .Description = data.arc.desc,
-    };
+    auto item = std::make_shared<Adapter::BaseVideoView>();
+    item->Identifier = data.bvid;
+    item->AlternateId = std::to_string(data.aid);
+    item->VideoId = std::to_string(data.cid);
+    item->Title = data.title;
+    item->Cover = data.arc.pic;
+    item->Duration = formatDuration(data.page.duration);
+    item->Description = data.arc.desc;
+    return item;
 }
-
-Adapter::BaseVideoView ConvertPages(const biliapi::VideoPage& data)
+std::shared_ptr<Adapter::BaseVideoView> ConvertPages(const biliapi::VideoPage& data)
 {
-    return Adapter::BaseVideoView{
-        //        .Identifier = data.bvid,
-        .AlternateId = std::to_string(data.cid),   .VideoId = std::to_string(data.cid), .Title = data.part, .Cover = data.first_frame,
-        .Duration = formatDuration(data.duration),
-        //        .Description = data.desc,
-    };
+    auto item = std::make_shared<Adapter::BaseVideoView>();
+    item->AlternateId = std::to_string(data.cid);
+    item->VideoId = std::to_string(data.cid);
+    item->Title = data.part;
+    item->Cover = data.first_frame;
+    item->Duration = formatDuration(data.duration);
+    return item;
 }
-
-Adapter::BaseVideoView ConvertSingleVideo(const biliapi::VideoView& data)
+std::shared_ptr<Adapter::BaseVideoView> ConvertSingleVideo(const biliapi::VideoView& data)
 {
-    return Adapter::BaseVideoView{
-        .Identifier = data.bvid,
-        .AlternateId = std::to_string(data.aid),
-        .VideoId = std::to_string(data.cid),
-        .Title = data.title,
-        .Publisher = data.owner.name,
-        .Cover = data.pic,
-        .Duration = formatDuration(data.duration),
-        .Description = data.desc,
-    };
+    auto item = std::make_shared<Adapter::BaseVideoView>();
+    item->Identifier = data.bvid;
+    item->AlternateId = std::to_string(data.aid);
+    item->VideoId = std::to_string(data.cid);
+    item->Title = data.title;
+    item->Publisher = data.owner.name;
+    item->Cover = data.pic;
+    item->Duration = formatDuration(data.duration);
+    item->Description = data.desc;
+    return item;
 }

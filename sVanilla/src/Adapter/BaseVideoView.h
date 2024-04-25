@@ -17,4 +17,6 @@ struct BaseVideoView {
 };
 
 using VideoView = std::vector<BaseVideoView>;
+
+using Views = std::vector<std::shared_ptr<BaseVideoView>>;
 }  // namespace Adapter

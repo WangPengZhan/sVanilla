@@ -76,7 +76,7 @@ void MainWindow::signalsAndSlots()
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
     connect(ui->homePage, &HomePage::clearPreviousView, this, &MainWindow::clearVideo);
 
-    connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::loadBiliViewView);
+    connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::prepareBiliVideoView);
     connect(ui->homePage, &HomePage::loadBiliViewView, [this]() {
         ui->stackedWidget->setCurrentIndex(1);
     });
