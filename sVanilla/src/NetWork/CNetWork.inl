@@ -12,7 +12,7 @@ inline bool NetWork::request(const std::string& url, Response& response, HttpMet
     std::string method = to_string(medthod);
     curl_easy_setopt(easy.handle(), CURLOPT_CUSTOMREQUEST, method.c_str());
     curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    setToCurl(easy, CurlHeader(), true);
+    auto holdHeader = setToCurl(easy, CurlHeader(), true);
     setToCurl(easy, CurlOptions(), true);
     writer.setToCurl(easy);
 
@@ -32,7 +32,7 @@ inline bool NetWork::request(const std::string& url, Response& response, HttpMet
     std::string method = to_string(medthod);
     curl_easy_setopt(easy.handle(), CURLOPT_CUSTOMREQUEST, method.c_str());
     curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    setToCurl(easy, headers, headersAdd);
+    auto holdHeader = setToCurl(easy, headers, headersAdd);
     setToCurl(easy, CurlOptions(), true);
     writer.setToCurl(easy);
 
@@ -52,7 +52,7 @@ inline bool NetWork::request(const std::string& url, Response& response, HttpMet
     std::string method = to_string(medthod);
     curl_easy_setopt(easy.handle(), CURLOPT_CUSTOMREQUEST, method.c_str());
     curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    setToCurl(easy, CurlHeader(), true);
+    auto holdHeader = setToCurl(easy, CurlHeader(), true);
     setToCurl(easy, options, optionsAdd);
     writer.setToCurl(easy);
 
@@ -73,7 +73,7 @@ inline bool NetWork::request(const std::string& url, Response& response, HttpMet
     std::string method = to_string(medthod);
     curl_easy_setopt(easy.handle(), CURLOPT_CUSTOMREQUEST, method.c_str());
     curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
-    setToCurl(easy, headers, headersAdd);
+    auto holdHeader = setToCurl(easy, headers, headersAdd);
     setToCurl(easy, options, optionsAdd);
     writer.setToCurl(easy);
 
@@ -113,7 +113,7 @@ inline bool NetWork::get(const std::string& url, Response& response, const Param
 {
     std::string split = (url.find('?') == std::string::npos) ? "?" : "&";
     std::string paramUrl = url + split + paramsString(params);
-    return request(url, response, HttpMethod::GET);
+    return request(paramUrl, response, HttpMethod::GET);
 }
 
 template <typename Response>
@@ -171,7 +171,7 @@ inline bool NetWork::post(const std::string& url, Response& response, const std:
     CurlOptions options;
     auto postFields = std::make_shared<PostFields>(params);
     options.insert({postFields->getOption(), postFields});
-    return post(url, response);
+    return post(url, response, options, true);
 }
 
 template <typename Response>

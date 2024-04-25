@@ -88,7 +88,7 @@ std::string NetWork::paramsString(const ParamType& params)
     return res;
 }
 
-void NetWork::setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd)
+CurlHeader NetWork::setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd)
 {
     if (headersAdd)
     {
@@ -96,10 +96,12 @@ void NetWork::setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersA
         auto common = std::vector<std::string>(m_commonHeaders);
         headersCopy.add(common.begin(), common.end());
         curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
+        return headersCopy;
     }
     else
     {
         curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
+        return headers;
     }
 }
 

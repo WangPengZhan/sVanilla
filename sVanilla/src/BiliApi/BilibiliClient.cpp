@@ -20,6 +20,8 @@ namespace biliapi
 BilibiliClient::BilibiliClient()
     : m_logined(false)
 {
+    initDefaultHeaders();
+    initDefaultOptions();
 }
 
 BilibiliClient& BilibiliClient::globalClient()
@@ -59,7 +61,7 @@ PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std:
 LoginUrlOrigin BilibiliClient::getLoginUrl()
 {
     std::string response;
-    get(PassportURL::QRCode, response);
+    get(PassportURL::QRCode, response, passPortHeaders());
     return LoginUrlOrigin(getDataFromRespones(response));
 }
 
@@ -69,7 +71,7 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcode_key
     param["qrcode_key"] = qrcode_key;
 
     std::string response;
-    get(PassportURL::LoginStatus, response, param);
+    get(PassportURL::LoginStatus, response, param, passPortHeaders());
     return LoginStatusScanning(getDataFromRespones(response));
 }
 
@@ -178,6 +180,17 @@ nlohmann::json BilibiliClient::getDataFromRespones(const std::string& respones)
     }
 
     return json;
+}
+
+network::CurlHeader BilibiliClient::passPortHeaders()
+{
+    network::CurlHeader header;
+
+    std::string userAgent = std::string("user-agent: ") + network::chrome;
+    header.add(userAgent);
+    header.add(Headers::PassportReferer);
+
+    return header;
 }
 
 void BilibiliClient::initDefaultHeaders()

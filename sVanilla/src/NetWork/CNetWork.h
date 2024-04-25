@@ -118,7 +118,7 @@ public:
     static std::string paramsString(const ParamType& params);
 
 private:
-    void setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd = false);
+    CurlHeader setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd = false);
     void setToCurl(CurlEasy& easy, const CurlOptions& options, bool optionsAdd = false);
 
 protected:

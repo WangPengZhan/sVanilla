@@ -129,7 +129,7 @@ void VideoWidget::prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoVi
 void VideoWidget::getBiliUrl()
 {
     auto taskFunc = [this]() {
-        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(m_currentView->VideoId), 64, m_currentView->Identifier);
+        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(m_currentView->VideoId), 32, m_currentView->Identifier);
     };
     auto callback = [this](const biliapi::PlayUrlOrigin& result) {
         if (result.code != 0)
