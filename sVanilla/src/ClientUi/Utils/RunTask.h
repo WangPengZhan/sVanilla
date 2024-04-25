@@ -25,7 +25,7 @@ void runTask(TaskFunc taskFunc, Callback callback, QObject* object = nullptr)
         try
         {
             const auto& result = std::any_cast<ResultType>(res);
-            callback(res);
+            callback(result);
         }
         catch (const std::bad_any_cast& e)
         {
