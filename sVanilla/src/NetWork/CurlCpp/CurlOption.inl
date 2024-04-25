@@ -7,7 +7,7 @@ namespace network
 template <typename COValueType>
 inline CurlValueOption<COValueType>::~CurlValueOption()
 {
-    if constexpr (std::is_pointer_v<COValueType>)
+    if constexpr (std::is_pointer_v<COValueType> && !std::is_const_v<std::remove_pointer_t<COValueType>>)
     {
         delete m_value;
         m_value = nullptr;
@@ -66,7 +66,7 @@ template <typename COValueType>
 inline CurlValueOption<COValueType>::CurlValueOption(const CurlValueOption<COValueType>& other)
     : AbstractOption(other.getOption())
 {
-    if constexpr (std::is_pointer_v<COValueType>)
+    if constexpr (std::is_pointer_v<COValueType> && !std::is_const_v<std::remove_pointer_t<COValueType>>)
     {
         using value_type = std::remove_pointer_t<COValueType>;
         m_value = new value_type(*other.m_value);

@@ -67,8 +67,8 @@ public:
     template <typename Response>
     bool request(const std::string& url, Response& response, HttpMethod medthod, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool request(const std::string& url, Response& response, HttpMethod medthod, const CurlHeader& headers, bool headersAdd = false,
-                 const CurlOptions& options = {}, bool optionsAdd = false);
+    bool request(const std::string& url, Response& response, HttpMethod medthod, const CurlHeader& headers, bool headersAdd, const CurlOptions& options,
+                 bool optionsAdd = false);
 
     // get
     template <typename Response>
@@ -78,15 +78,16 @@ public:
     template <typename Response>
     bool get(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options = {},
-             bool optionsAdd = false);
+    bool get(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool get(const std::string& url, Response& response, const ParamType& params);
     template <typename Response>
     bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd = false);
     template <typename Response>
     bool get(const std::string& url, Response& response, const ParamType& params, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers = {}, bool headersAdd = false,
-             const CurlOptions& options = {}, bool optionsAdd = false);
+    bool get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd, const CurlOptions& options,
+             bool optionsAdd = false);
 
     // post
     template <typename Response>
@@ -96,15 +97,16 @@ public:
     template <typename Response>
     bool post(const std::string& url, Response& response, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd = false, const CurlOptions& options = {},
-              bool optionsAdd = false);
+    bool post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd, const CurlOptions& options, bool optionsAdd = false);
+    template <typename Response>
+    bool post(const std::string& url, Response& response, const std::string& params);
     template <typename Response>
     bool post(const std::string& url, Response& response, const std::string& params, const CurlHeader& headers, bool headersAdd = false);
     template <typename Response>
     bool post(const std::string& url, Response& response, const std::string& params, const CurlOptions& options, bool optionsAdd = false);
     template <typename Response>
-    bool post(const std::string& url, Response& response, const std::string& params, const CurlHeader& headers = {}, bool headersAdd = false,
-              const CurlOptions& options = {}, bool optionsAdd = false);
+    bool post(const std::string& url, Response& response, const std::string& params, const CurlHeader& headers, bool headersAdd, const CurlOptions& options,
+              bool optionsAdd = false);
 
     // head
     template <typename Response>
@@ -116,7 +118,7 @@ public:
     static std::string paramsString(const ParamType& params);
 
 private:
-    void setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd = false);
+    CurlHeader setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd = false);
     void setToCurl(CurlEasy& easy, const CurlOptions& options, bool optionsAdd = false);
 
 protected:

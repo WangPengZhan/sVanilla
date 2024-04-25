@@ -37,6 +37,8 @@ public:
     static void parseCookie(const std::string& url);
     static nlohmann::json getDataFromRespones(const std::string& respones);
 
+    static network::CurlHeader passPortHeaders();
+
 protected:
     void initDefaultHeaders();
     void initDefaultOptions();
