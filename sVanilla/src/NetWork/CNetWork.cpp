@@ -119,29 +119,4 @@ void NetWork::setToCurl(CurlEasy& easy, const CurlOptions& options, bool options
     }
 }
 
-void NetWork::addCommonOption(std::shared_ptr<AbstractOption> option)
-{
-    m_commonOptions.insert({option->getOption(), option});
-}
-
-void NetWork::addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>& options)
-{
-    for (const auto& option : options)
-    {
-        addCommonOption(option);
-    }
-}
-
-std::shared_ptr<AbstractOption> NetWork::getOption(CURLoption opt) const
-{
-    if (m_commonOptions.find(opt) != m_commonOptions.end())
-    {
-        return m_commonOptions.at(opt);
-    }
-    else
-    {
-        return std::shared_ptr<AbstractOption>();
-    }
-}
-
 }  // namespace network

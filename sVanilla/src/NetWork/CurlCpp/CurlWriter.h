@@ -30,6 +30,21 @@ private:
     Context& m_context;
 };
 
+template <typename Context>
+class CurlWriter<Context*>
+{
+public:
+    CurlWriter(Context* ctx);
+
+    void setToCurl(CURL* handle);
+    void setToCurl(CurlEasy& easy);
+
+    bool isValid() const;
+
+private:
+    Context* m_context;
+};
+
 template <typename Response>
 class CurlResponseWrapper
 {

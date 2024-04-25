@@ -17,9 +17,5 @@ bool downloadCoverImage(const CoverInfo& coverInfo)
     netWork.get(coverInfo.url, file);
     fclose(file);
 
-    if (QFile::exists(fullPath))
-    {
-        return true;
-    }
-    return false;
+    return QFile::exists(fullPath);
 }

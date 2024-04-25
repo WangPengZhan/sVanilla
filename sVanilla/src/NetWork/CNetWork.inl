@@ -109,16 +109,26 @@ inline bool NetWork::get(const std::string& url, Response& response, const CurlH
 }
 
 template <typename Response>
+inline bool NetWork::get(const std::string& url, Response& response, const ParamType& params)
+{
+    std::string split = (url.find('?') == std::string::npos) ? "?" : "&";
+    std::string paramUrl = url + split + paramsString(params);
+    return request(url, response, HttpMethod::GET);
+}
+
+template <typename Response>
 inline bool NetWork::get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd)
 {
-    std::string paramUrl = url + paramsString(params);
+    std::string split = (url.find('?') == std::string::npos) ? "?" : "&";
+    std::string paramUrl = url + split + paramsString(params);
     return get(paramUrl, response, headers, headersAdd);
 }
 
 template <typename Response>
 inline bool NetWork::get(const std::string& url, Response& response, const ParamType& params, const CurlOptions& options, bool optionsAdd)
 {
-    std::string paramUrl = url + paramsString(params);
+    std::string split = (url.find('?') == std::string::npos) ? "?" : "&";
+    std::string paramUrl = url + split + paramsString(params);
     return get(paramUrl, response, options, optionsAdd);
 }
 
@@ -126,7 +136,8 @@ template <typename Response>
 inline bool NetWork::get(const std::string& url, Response& response, const ParamType& params, const CurlHeader& headers, bool headersAdd,
                          const CurlOptions& options, bool optionsAdd)
 {
-    std::string paramUrl = url + paramsString(params);
+    std::string split = (url.find('?') == std::string::npos) ? "?" : "&";
+    std::string paramUrl = url + split + paramsString(params);
     return get(paramUrl, response, headers, headersAdd, options, optionsAdd);
 }
 
@@ -152,6 +163,15 @@ template <typename Response>
 inline bool NetWork::post(const std::string& url, Response& response, const CurlHeader& headers, bool headersAdd, const CurlOptions& options, bool optionsAdd)
 {
     return request(url, response, HttpMethod::POST, headers, headersAdd, options, optionsAdd);
+}
+
+template <typename Response>
+inline bool NetWork::post(const std::string& url, Response& response, const std::string& params)
+{
+    CurlOptions options;
+    auto postFields = std::make_shared<PostFields>(params);
+    options.insert({postFields->getOption(), postFields});
+    return post(url, response);
 }
 
 template <typename Response>
