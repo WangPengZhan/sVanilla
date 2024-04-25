@@ -2,6 +2,7 @@
 #include <QPushButton>
 #include <QStandardPaths>
 #include <QLabel>
+#include <type_traits>
 
 #include "Download/AbstractDownloader.h"
 #include "Adapter/BilibiliVideoView.h"
@@ -12,7 +13,7 @@
 #include "VideoGridWidget.h"
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
-#include "ThreadPool/SpecificReturnTask.h"
+#include "ClientUi/Utils/RunTask.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -77,7 +78,7 @@ void VideoWidget::prepareBiliVideoView(const std::string& uri)
         }
         prepareVideoItem(result);
     };
-    SpecificReturnTask::runner().run(taskFunc, callback);
+    runTask(taskFunc, callback, this);
 }
 
 void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
@@ -110,7 +111,7 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
         }
         emit coverReady(coverInfo.fileName);
     };
-    SpecificReturnTask::runner().run(taskFunc, callback);
+    runTask(taskFunc, callback, this);
 }
 
 void VideoWidget::addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
@@ -137,7 +138,7 @@ void VideoWidget::getBiliUrl()
         }
         praseBiliDownloadUrl(result);
     };
-    SpecificReturnTask::runner().run(taskFunc, callback);
+    runTask(taskFunc, callback, this);
 }
 
 void VideoWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl)
