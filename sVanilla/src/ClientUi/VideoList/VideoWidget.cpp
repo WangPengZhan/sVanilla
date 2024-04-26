@@ -76,6 +76,7 @@ void VideoWidget::prepareBiliVideoView(const std::string& uri)
         {
             return;
         }
+        clearVideo();
         prepareVideoItem(result);
     };
     runTask(taskFunc, callback, this);

@@ -52,6 +52,7 @@ protected:
 
 private:
     void signalsAndSlots();
+    void setUpShortcuts();
     void setLightTheme();
     void setDarkTheme();
     void setAutoTheme();
