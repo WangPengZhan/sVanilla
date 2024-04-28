@@ -116,7 +116,7 @@ void MainWindow::setUpShortcuts()
 
 void MainWindow::setLightTheme()
 {
-    Vanilla::Style::setStyleFromName("LightVanillaStyle");
+    Vanilla::Style::setStyle(Vanilla::Light);
 #ifdef _WIN32
     setBlurEffect(DWMBlur);
 #elif __APPLE__
@@ -126,7 +126,7 @@ void MainWindow::setLightTheme()
 
 void MainWindow::setDarkTheme()
 {
-    Vanilla::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
+    Vanilla::Style::setStyle(Vanilla::Dark);
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
 #elif __APPLE__
