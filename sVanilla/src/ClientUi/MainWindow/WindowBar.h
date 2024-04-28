@@ -28,6 +28,7 @@ private:
 
 signals:
     void barBtnClick(int index);
+    void tabChanged(int index);
     void minimizeRequested();
     void maximizeRequested(bool max = false);
     void closeRequested();

@@ -58,7 +58,6 @@ void HomePage::setUi()
 void HomePage::parseUri(const std::string& uri)
 {
     // if bili
-    emit clearPreviousView();
     emit loadBiliViewView(uri);
 }
 

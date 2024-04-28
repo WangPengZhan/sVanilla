@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
     installWindowAgent();
     ui->setupUi(this);
     signalsAndSlots();
+    setUpShortcuts();
     resize(800, 600);
     Toast::create(this);
     setLightTheme();
@@ -74,42 +75,48 @@ void MainWindow::signalsAndSlots()
         }
     });
     connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
-    connect(ui->homePage, &HomePage::clearPreviousView, this, &MainWindow::clearVideo);
 
-    connect(ui->homePage, &HomePage::loadBiliViewView, ui->VideoPage, &VideoWidget::prepareBiliVideoView);
-    connect(ui->homePage, &HomePage::loadBiliViewView, [this]() {
+    connect(ui->homePage, &HomePage::loadBiliViewView, [this](const std::string& uri) {
+        ui->VideoPage->prepareBiliVideoView(uri);
         ui->stackedWidget->setCurrentIndex(1);
+        emit windowBar->tabChanged(1);
     });
+
     connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
+}
 
+void MainWindow::setUpShortcuts()
+{
     auto* shortcutTabFirst = new QShortcut(this);
-    shortcutTabFirst->setKey(QKeySequence(Qt::CTRL + Qt::Key_1));
-    connect(shortcutTabFirst, &QShortcut::activated, [this]() {
-        ui->stackedWidget->setCurrentIndex(0);
-    });
-
     auto* shortcutTabSecond = new QShortcut(this);
-    shortcutTabSecond->setKey(QKeySequence(Qt::CTRL + Qt::Key_2));
-    connect(shortcutTabSecond, &QShortcut::activated, [this]() {
-        ui->stackedWidget->setCurrentIndex(1);
-    });
-
     auto* shortcutTabThird = new QShortcut(this);
-    shortcutTabThird->setKey(QKeySequence(Qt::CTRL + Qt::Key_3));
-    connect(shortcutTabThird, &QShortcut::activated, [this]() {
-        ui->stackedWidget->setCurrentIndex(2);
-    });
-
     auto* shortcutTabFourth = new QShortcut(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    shortcutTabFirst->setKey(QKeySequence(Qt::CTRL | Qt::Key_1));
+    shortcutTabSecond->setKey(QKeySequence(Qt::CTRL | Qt::Key_2));
+    shortcutTabThird->setKey(QKeySequence(Qt::CTRL | Qt::Key_3));
+    shortcutTabFourth->setKey(QKeySequence(Qt::CTRL | Qt::Key_4));
+#else
+    shortcutTabFirst->setKey(QKeySequence(Qt::CTRL + Qt::Key_1));
+    shortcutTabSecond->setKey(QKeySequence(Qt::CTRL + Qt::Key_2));
+    shortcutTabThird->setKey(QKeySequence(Qt::CTRL + Qt::Key_3));
     shortcutTabFourth->setKey(QKeySequence(Qt::CTRL + Qt::Key_4));
-    connect(shortcutTabFourth, &QShortcut::activated, [this]() {
-        ui->stackedWidget->setCurrentIndex(3);
-    });
+#endif
+
+    const std::array tabShortcuts{shortcutTabFirst, shortcutTabSecond, shortcutTabThird, shortcutTabFourth};
+    for (int i = 0; i < tabShortcuts.size(); i++)
+    {
+        connect(tabShortcuts[i], &QShortcut::activated, [this, i]() {
+            ui->stackedWidget->setCurrentIndex(i);
+            emit windowBar->tabChanged(i);
+        });
+    }
 }
 
 void MainWindow::setLightTheme()
 {
-    Vanilla::Style::setStyleFromName("LightVanillaStyle");
+    Vanilla::Style::setStyle(Vanilla::Light);
 #ifdef _WIN32
     setBlurEffect(DWMBlur);
 #elif __APPLE__
@@ -119,7 +126,7 @@ void MainWindow::setLightTheme()
 
 void MainWindow::setDarkTheme()
 {
-    Vanilla::Style::setStyleFromName(QStringLiteral("DarkVanillaStyle"));
+    Vanilla::Style::setStyle(Vanilla::Dark);
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
 #elif __APPLE__
