@@ -82,15 +82,35 @@ QString UrlProcess::EnableHttps(const QString& url)
     return {};
 }
 
-QString FileHelp::RemoveSpicalChar(const QString& path)
+std::string u8ToString(const std::u8string& u8Str)
+{
+    return std::string(reinterpret_cast<const char*>(u8Str.data()), u8Str.size());
+}
+
+QString FileHelp::removeSpecialChar(const QString& path)
 {
     QString temp = path;
-    for (const auto& splicalChar : QString(splicalChars))
+    for (const auto& splicalChar : QString(specialChars))
     {
         temp.remove(splicalChar);
     }
 
     return temp;
+}
+
+std::string FileHelp::removeSpecialChar(const std::string& path)
+{
+    std::string result = path;
+    for (const auto& specialChar : specialChars)
+    {
+        result.erase(std::remove_if(result.begin(), result.end(),
+                                    [specialChar](char c) {
+                                        return specialChar == c;
+                                    }),
+                     result.end());
+    }
+
+    return result;
 }
 
 }  // namespace util

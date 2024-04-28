@@ -43,12 +43,15 @@ public:
     static QString EnableHttps(const QString& url);
 };
 
-static constexpr char splicalChars[] = "?����/\\<>*|:";
+static constexpr char specialChars[] = "?/\"\\<>*|:";
+
+std::string u8ToString(const std::u8string& u8Str);
 
 class FileHelp
 {
 public:
-    static QString RemoveSpicalChar(const QString& path);
+    static QString removeSpecialChar(const QString& path);
+    static std::string removeSpecialChar(const std::string& path);
 };
 
 }  // namespace util

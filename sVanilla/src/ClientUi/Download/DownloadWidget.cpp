@@ -33,7 +33,18 @@ void DownloadWidget::addDownloadTask(const download::ResourseInfo& info)
 {
     auto biliDownlaoder = std::make_shared<download::BiliDownloader>(info);
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
-    uiDownloader->setFileName(biliDownlaoder->filename());
+
+    std::string fullPath;
+    if (!biliDownlaoder->path().empty() && (biliDownlaoder->path().back() != '/' || biliDownlaoder->path().back() != '\\'))
+    {
+        fullPath = biliDownlaoder->path() + "/" + biliDownlaoder->filename();
+    }
+    else
+    {
+        fullPath = biliDownlaoder->path() + biliDownlaoder->filename();
+    }
+    uiDownloader->setFileName(fullPath);
+
     ui->DownloadListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }

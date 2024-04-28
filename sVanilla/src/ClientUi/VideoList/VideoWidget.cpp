@@ -14,6 +14,7 @@
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
 #include "ClientUi/Utils/RunTask.h"
+#include "Util/UrlProcess.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -154,8 +155,7 @@ void VideoWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl)
     download::ResourseInfo info;
     info.videoUris = video_urls;
     info.audioUris = audio_urls;
-    info.option.out = m_currentView->Title;
-    // Temporarily use the download directory
+    info.option.out = util::FileHelp::removeSpecialChar(m_currentView->Title) + ".mp4";
     info.option.dir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString();
     const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
     info.option.header = h;

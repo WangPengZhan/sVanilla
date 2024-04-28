@@ -13,6 +13,7 @@
 #include "BiliApiConstants.h"
 #include "BilibiliUtils.h"
 #include "NetWork/NetworkLog.h"
+#include "Util/UrlProcess.h"
 
 namespace biliapi
 {
@@ -88,7 +89,8 @@ bool BilibiliClient::isLogined() const
 void BilibiliClient::resetWbi()
 {
     std::string response;
-    get(PassportURL::WebNav, response);
+    get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
+
     std::string img_url;
     std::string sub_url;
     try
@@ -101,10 +103,11 @@ void BilibiliClient::resetWbi()
     {
         NETWORK_LOG_ERROR("Error parsing NAV response: ", e.what());
     }
+
     if (!img_url.empty() && !sub_url.empty())
     {
-        img_url = std::filesystem::path(img_url).stem().string();
-        sub_url = std::filesystem::path(sub_url).stem().string();
+        img_url = util::u8ToString(std::filesystem::u8path(img_url).stem().u8string());
+        sub_url = util::u8ToString(std::filesystem::u8path(sub_url).stem().u8string());
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
         j.emplace("Expires", (std::time(nullptr) + 60 * 60 * 24) / 86400);  // 有效期一天
