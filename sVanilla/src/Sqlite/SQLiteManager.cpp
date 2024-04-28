@@ -30,14 +30,13 @@ SQLiteManager::SQLiteManager()
 
 SQLiteManager::~SQLiteManager()
 {
-
 }
 
 void SQLiteManager::initSqlite()
 {
     std::call_once(m_createFlag, []() {
         sqlite3_config(SQLITE_CONFIG_MULTITHREAD);
-        if (!std::filesystem::is_directory(dbDir))
+        if (!std::filesystem::is_directory(std::filesystem::u8path(dbDir)))
         {
             std::filesystem::create_directory(dbDir);
         }

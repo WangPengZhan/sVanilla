@@ -1,8 +1,9 @@
-#include "BiliDownloader.h"
-
 #include <utility>
+
+#include "BiliDownloader.h"
 #include "Sqlite/SQLiteManager.h"
 #include "FFmpeg/FFmpegHelper.h"
+#include "Util/UrlProcess.h"
 
 namespace download
 {
@@ -22,8 +23,9 @@ BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::
     , m_videoDownloader(videoUris, m_path)
     , m_audioDownloader(audioUris, m_path)
 {
-    std::string baseName = std::filesystem::path(m_filename).stem().string();
-    m_videoDownloader.setFilename(baseName + "_video.mp4");
+    m_haveTwoPart = !videoUris.empty() && audioUris.empty();
+    std::string baseName = util::u8ToString(std::filesystem::u8path(m_resourseInfo.option.out).stem().u8string());
+    m_haveTwoPart ? m_videoDownloader.setFilename(baseName + "_video.mp4") : m_videoDownloader.setFilename(filename);
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
@@ -39,8 +41,9 @@ BiliDownloader::BiliDownloader(ResourseInfo info)
     , m_audioDownloader(m_resourseInfo.audioUris, m_resourseInfo.option)
     , m_finished(false)
 {
-    std::string baseName = std::filesystem::path(m_resourseInfo.option.out).stem().string();
-    m_videoDownloader.setFilename(baseName + "_video.mp4");
+    m_haveTwoPart = !m_resourseInfo.videoUris.empty() && !m_resourseInfo.audioUris.empty();
+    std::string baseName = util::u8ToString(std::filesystem::u8path(m_resourseInfo.option.out).stem().u8string());
+    m_haveTwoPart ? m_videoDownloader.setFilename(baseName + "_video.mp4") : m_videoDownloader.setFilename(m_filename);
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
@@ -168,7 +171,7 @@ const std::string& BiliDownloader::path() const
 void BiliDownloader::setFilename(std::string filename)
 {
     m_filename = std::move(filename);
-    std::string baseName = std::filesystem::path(m_filename).stem().string();
+    std::string baseName = util::u8ToString(std::filesystem::u8path(m_filename).stem().u8string());
     m_videoDownloader.setFilename(baseName + "_video.mp4");
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
 }

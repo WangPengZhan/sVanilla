@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
     application.pluginManager().loadPlugins();
 
     MainWindow maimWindow;
+    singleAppHelper.setMainWidget(&maimWindow);
     maimWindow.show();
 
     return restarter.restartOrExit(SApplication::exec());

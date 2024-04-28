@@ -133,7 +133,7 @@ void DownloadingItemWidget::signalsAndSlots()
     });
     connect(ui->btnFolder, &QPushButton::clicked, this, [this]() {
         QString filePath = QString::fromStdString(m_downloader->filename());
-        if (std::filesystem::path(m_downloader->filename()).is_relative())
+        if (std::filesystem::u8path(m_downloader->filename()).is_relative())
         {
             filePath = QApplication::applicationDirPath() + "/" + filePath;
         }

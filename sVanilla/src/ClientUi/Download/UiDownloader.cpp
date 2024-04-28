@@ -1,10 +1,12 @@
+#include <QUuid>
 #include "UiDownloader.h"
 
 UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, QObject* parent)
-    : QObject(parent) 
+    : QObject(parent)
     , m_realDownloader(std::move(downloader))
 {
     setStatus(Ready);
+    m_guid = QUuid::createUuid().toString().toStdString();
 }
 
 UiDownloader::~UiDownloader()
