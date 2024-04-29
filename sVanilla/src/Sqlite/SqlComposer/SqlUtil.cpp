@@ -5,14 +5,14 @@
 
 namespace sqlite
 {
-bool SqliteUtil::createTableIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
+bool SqliteUtil::createTableIfNotExists(SQLiteDatabase& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
 {
-    if (!db || tableName.empty())
+    if (tableName.empty())
     {
         return false;
     }
 
-    if (db->tableExists(tableName))
+    if (db.tableExists(tableName))
     {
         return false;
     }
@@ -28,16 +28,38 @@ bool SqliteUtil::createTableIfNotExists(const SqliteDBPtr& db, const std::string
     ss << "(" << tableSql << ")";
 
     std::string sql = ss.str();
-    return db->execute(sql);
+    return db.execute(sql);
 }
 
-bool SqliteUtil::renameTable(const SqliteDBPtr& db, const std::string& oldName, const std::string& newName)
+bool SqliteUtil::createTableIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
+{
+    if (!db)
+    {
+        return false;
+    }
+
+    return createTableIfNotExists(*db.get(), tableName, tableStruct);
+}
+
+bool SqliteUtil::createTableIfNotExists(const SqliteWithMutexPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
+{
+    if (!db)
+    {
+        return false;
+    }
+
+    std::lock_guard lk(db->mutex);
+    return createTableIfNotExists(*db.get(), tableName, tableStruct);
+}
+
+bool SqliteUtil::renameTable(const SqliteWithMutexPtr& db, const std::string& oldName, const std::string& newName)
 {
     if (!db || oldName.empty() || newName.empty())
     {
         return false;
     }
 
+    std::lock_guard lk(db->mutex);
     if (db->tableExists(newName))
     {
         return false;
@@ -47,7 +69,7 @@ bool SqliteUtil::renameTable(const SqliteDBPtr& db, const std::string& oldName, 
     return db->execute(sql);
 }
 
-bool SqliteUtil::deleteTable(const SqliteDBPtr& db, const std::string& tableName)
+bool SqliteUtil::deleteTable(const SqliteWithMutexPtr& db, const std::string& tableName)
 {
     if (!db || tableName.empty())
     {
@@ -55,10 +77,11 @@ bool SqliteUtil::deleteTable(const SqliteDBPtr& db, const std::string& tableName
     }
 
     std::string sql = "DELETE FROM " + tableName;
+    std::lock_guard lk(db->mutex);
     return db->execute(sql);
 }
 
-bool SqliteUtil::dropTableIfExists(const SqliteDBPtr& db, const std::string& tableName)
+bool SqliteUtil::dropTableIfExists(const SqliteWithMutexPtr& db, const std::string& tableName)
 {
     if (!db || tableName.empty())
     {
@@ -66,6 +89,7 @@ bool SqliteUtil::dropTableIfExists(const SqliteDBPtr& db, const std::string& tab
     }
 
     std::string sql = "DROP TABLE IF EXISTS " + tableName;
+    std::lock_guard lk(db->mutex);
     return db->execute(sql);
 }
 
@@ -87,7 +111,7 @@ std::string SqliteUtil::indexName(const std::string& tag, const std::vector<std:
     return ss.str();
 }
 
-bool SqliteUtil::createIndexIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const std::string& indexName,
+bool SqliteUtil::createIndexIfNotExists(const SqliteWithMutexPtr& db, const std::string& tableName, const std::string& indexName,
                                         const std::vector<std::string>& colNames)
 {
     if (!db || tableName.empty() || indexName.empty() || colNames.empty())
@@ -111,11 +135,12 @@ bool SqliteUtil::createIndexIfNotExists(const SqliteDBPtr& db, const std::string
     ss << ")";
 
     std::string sql = ss.str();
+    std::lock_guard lk(db->mutex);
     return db->execute(sql);
 }
 
-bool SqliteUtil::createViewIfNotExist(const SqliteDBPtr& db, const std::string& viewName, const std::string& tableName, const ConditionWrapper& condition,
-                                      const std::string& indexed)
+bool SqliteUtil::createViewIfNotExist(const SqliteWithMutexPtr& db, const std::string& viewName, const std::string& tableName,
+                                      const ConditionWrapper& condition, const std::string& indexed)
 {
     if (!db || viewName.empty() || tableName.empty())
     {
@@ -133,10 +158,11 @@ bool SqliteUtil::createViewIfNotExist(const SqliteDBPtr& db, const std::string& 
     ss << " " << condition.conditionString();
 
     std::string sql = ss.str();
+    std::lock_guard lk(db->mutex);
     return db->execute(sql);
 }
 
-bool SqliteUtil::dropViewIfExists(const SqliteDBPtr& db, const std::string& viewName)
+bool SqliteUtil::dropViewIfExists(const SqliteWithMutexPtr& db, const std::string& viewName)
 {
     if (!db || viewName.empty())
     {
@@ -144,10 +170,11 @@ bool SqliteUtil::dropViewIfExists(const SqliteDBPtr& db, const std::string& view
     }
 
     std::string sql = "DROP VIEW IF EXISTS " + viewName;
+    std::lock_guard lk(db->mutex);
     return db->execute(sql);
 }
 
-bool SqliteUtil::deleteEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition)
+bool SqliteUtil::deleteEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition)
 {
     if (!db || tableName.empty())
     {
@@ -155,10 +182,11 @@ bool SqliteUtil::deleteEntities(const SqliteDBPtr& db, const std::string& tableN
     }
 
     std::string sql = "DELETE FROM " + tableName + " " + condition.conditionString();
+    std::lock_guard lk(db->mutex);
     return db->execute(sql);
 }
 
-int64_t SqliteUtil::countEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition)
+int64_t SqliteUtil::countEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition)
 {
     if (!db || tableName.empty())
     {
@@ -166,6 +194,8 @@ int64_t SqliteUtil::countEntities(const SqliteDBPtr& db, const std::string& tabl
     }
     std::string sql = "SELECT COUNT(1) FROM " + tableName + " ";
     sql += condition.prepareConditionString();
+
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, sql);
     condition.bind(stmt);
     if (stmt.executeStep())
@@ -176,7 +206,7 @@ int64_t SqliteUtil::countEntities(const SqliteDBPtr& db, const std::string& tabl
     return -1;
 }
 
-std::vector<std::string> SqliteUtil::queryDistinctCol(const SqliteDBPtr& db, const std::string& tableName, const ColumnInfo& metaInfo,
+std::vector<std::string> SqliteUtil::queryDistinctCol(const SqliteWithMutexPtr& db, const std::string& tableName, const ColumnInfo& metaInfo,
                                                       const ConditionWrapper& condition)
 {
     if (!db || tableName.empty() || metaInfo.colunmName().empty())
@@ -196,6 +226,7 @@ std::vector<std::string> SqliteUtil::queryDistinctCol(const SqliteDBPtr& db, con
     std::string sql = ss.str();
     std::vector<std::string> res;
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, sql);
     condition.bind(stmt);
     while (stmt.executeStep())

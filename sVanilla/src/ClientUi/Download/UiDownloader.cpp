@@ -1,5 +1,8 @@
 #include <QUuid>
+
 #include "UiDownloader.h"
+#include "ClientUi/Storage/StorageManager.h"
+#include "ClientUi/Storage/FinishedItemStorage.h"
 
 UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, QObject* parent)
     : QObject(parent)
@@ -70,5 +73,10 @@ void UiDownloader::downloadStatus()
 void UiDownloader::finish()
 {
     m_realDownloader->finish();
+
+    FinishedItem item;
+    auto& storageManager = sqlite::StorageManager::intance();
+    storageManager.finishedItemStorage()->insertEntities<FinishedItem>({item});
+
     emit finished(QString());
 }

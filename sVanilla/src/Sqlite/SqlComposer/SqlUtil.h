@@ -32,47 +32,51 @@ std::string stringJoin(InputIter begin, InputIter end, const std::string& joined
 
 class SqliteUtil
 {
+public:
+    static bool createTableIfNotExists(SQLiteDatabase& db, const std::string& tableName, const BaseTableStructInfo& tableStruct);
     static bool createTableIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct);
-    static bool renameTable(const SqliteDBPtr& db, const std::string& oldName, const std::string& newName);
-    static bool deleteTable(const SqliteDBPtr& db, const std::string& tableName);
-    static bool dropTableIfExists(const SqliteDBPtr& db, const std::string& tableName);
+    static bool createTableIfNotExists(const SqliteWithMutexPtr& db, const std::string& tableName, const BaseTableStructInfo& tableStruct);
+    static bool renameTable(const SqliteWithMutexPtr& db, const std::string& oldName, const std::string& newName);
+    static bool deleteTable(const SqliteWithMutexPtr& db, const std::string& tableName);
+    static bool dropTableIfExists(const SqliteWithMutexPtr& db, const std::string& tableName);
 
     static std::string indexName(const std::string& tag, const std::vector<std::string>& colNames);
-    static bool createIndexIfNotExists(const SqliteDBPtr& db, const std::string& tableName, const std::string& indexName,
+    static bool createIndexIfNotExists(const SqliteWithMutexPtr& db, const std::string& tableName, const std::string& indexName,
                                        const std::vector<std::string>& colNames);
 
-    static bool createViewIfNotExist(const SqliteDBPtr& db, const std::string& viewName, const std::string& tableName, const ConditionWrapper& condition = {},
-                                     const std::string& indexed = {});
-    static bool dropViewIfExists(const SqliteDBPtr& db, const std::string& tableName);
+    static bool createViewIfNotExist(const SqliteWithMutexPtr& db, const std::string& viewName, const std::string& tableName,
+                                     const ConditionWrapper& condition = {}, const std::string& indexed = {});
+    static bool dropViewIfExists(const SqliteWithMutexPtr& db, const std::string& tableName);
 
     template <typename Entity>
-    static std::vector<Entity> queryEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
+    static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
     template <typename Entity>
-    static std::vector<Entity> queryEntities(const SqliteDBPtr& db, const std::string& tableName, int index, int nums);
+    static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, int index, int nums);
     template <typename Entity>
-    static std::vector<Entity> queryEntities(const SqliteDBPtr& db, const std::string& tableName, int index, int nums, const ConditionWrapper& condition);
+    static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, int index, int nums,
+                                             const ConditionWrapper& condition);
     template <typename Entity>
-    static std::vector<Entity> queryEntities(const SqliteDBPtr& db, const std::string& querySql);
+    static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& querySql);
 
     template <typename Entity>
-    static int64_t insertEntities(const SqliteDBPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
+    static int64_t insertEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
     template <typename Entity>
-    static int64_t insertEntitiesWithOutTrans(const SqliteDBPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
+    static int64_t insertEntitiesWithOutTrans(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
 
-    static bool deleteEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
+    static bool deleteEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
 
-    static int64_t countEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
+    static int64_t countEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
 
-    static std::vector<std::string> queryDistinctCol(const SqliteDBPtr& db, const std::string& tableName, const ColumnInfo& metaInfo,
+    static std::vector<std::string> queryDistinctCol(const SqliteWithMutexPtr& db, const std::string& tableName, const ColumnInfo& metaInfo,
                                                      const ConditionWrapper& condition = {});
 
 private:
     template <typename T>
-    void insertEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities);
+    static void insertEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities);
 };
 
 template <typename Entity>
-inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, const std::string& tableName, const ConditionWrapper& condition)
+inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition)
 {
     if (!db || tableName.empty())
     {
@@ -98,7 +102,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, cons
 }
 
 template <typename Entity>
-inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, const std::string& tableName, int index, int nums)
+inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, int index, int nums)
 {
     if (!db || tableName.empty())
     {
@@ -123,7 +127,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, cons
 }
 
 template <typename Entity>
-inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, const std::string& tableName, int index, int nums,
+inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, int index, int nums,
                                                      const ConditionWrapper& condition)
 {
     if (!db || tableName.empty())
@@ -151,7 +155,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, cons
 }
 
 template <typename Entity>
-inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, const std::string& querySql)
+inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& db, const std::string& querySql)
 {
     if (!db || querySql.empty())
     {
@@ -171,7 +175,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteDBPtr& db, cons
 }
 
 template <typename Entity>
-inline int64_t SqliteUtil::insertEntities(const SqliteDBPtr& db, const std::string& tableName, const std::vector<Entity>& entities)
+inline int64_t SqliteUtil::insertEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities)
 {
     if (entities.empty() || !db || tableName.empty())
     {
@@ -197,7 +201,7 @@ inline int64_t SqliteUtil::insertEntities(const SqliteDBPtr& db, const std::stri
 }
 
 template <typename Entity>
-inline int64_t SqliteUtil::insertEntitiesWithOutTrans(const SqliteDBPtr& db, const std::string& tableName, const std::vector<Entity>& entities)
+inline int64_t SqliteUtil::insertEntitiesWithOutTrans(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities)
 {
     if (entities.empty() || !db || tableName.empty())
     {

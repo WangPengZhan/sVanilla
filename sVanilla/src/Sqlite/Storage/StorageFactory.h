@@ -11,17 +11,17 @@ namespace sqlite
 class StorageFactory
 {
 public:
-    template <typename T>
-    static std::shared_ptr<T> createStorage(SqliteDBPtr db, const std::string& tableName)
+    template <typename Storage, typename... StorageArgs>
+    static std::shared_ptr<Storage> createStorage(SqliteWithMutexPtr read, std::string tableName, StorageArgs&&... args)
     {
-        if (!db)
+        if (!read)
         {
-            return std::shared_ptr<T>();
+            return {};
         }
 
-        auto tableStruct = TableStructInfo<typename T::Entity>::self();
-        SqliteUtil::createTableIfNotExists(db, tableName, tableStruct);
-        return std::make_shared<T>(db, tableName);
+        auto tableStruct = TableStructInfo<typename Storage::Entity>::self();
+        SqliteUtil::createTableIfNotExists(read, tableName, tableStruct);
+        return std::make_shared<Storage>(read, tableName, std::forward<StorageArgs>(args)...);
     }
 };
 

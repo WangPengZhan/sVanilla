@@ -2,6 +2,7 @@
 #include <string>
 #include <set>
 #include <memory>
+#include <mutex>
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -65,5 +66,15 @@ protected:
 };
 
 using SqliteDBPtr = std::shared_ptr<SQLiteDatabase>;
+class SqliteDbWithMutex : public SQLiteDatabase
+{
+public:
+    using SQLiteDatabase::SQLiteDatabase;
+
+public:
+    std::recursive_mutex mutex;
+};
+
+using SqliteWithMutexPtr = std::shared_ptr<SqliteDbWithMutex>;
 
 }  // namespace sqlite

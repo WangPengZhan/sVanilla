@@ -67,7 +67,7 @@ public:
     template <typename... ValueType>
     void setFieldType(const std::variant<ValueType...>& value)
     {
-        std::visit(value, [](auto&& elem) {
+        std::visit(value, [this](auto&& elem) {
             setFieldType(elem);
         });
     }
@@ -178,10 +178,10 @@ private:
 namespace sqlite \
 { \
 template<> \
-class TableStructInfo<type> : public BaseTableStructInfo \
+class TableStructInfo<::type> : public BaseTableStructInfo \
 { \
 public:\
-    using StructType = type;\
+    using StructType = ::type;\
     static const TableStructInfo<StructType>& self()\
     {\
         static const TableStructInfo<StructType> intance;\
@@ -194,11 +194,11 @@ protected:\
     ~TableStructInfo() = default;\
 public:
 
-#define TABLESTRUCTINFO_COMLUNM_2(type, colunmName) \
-    ColumnInfo type = ColumnInfo(STR(colunmName), decltype(std::declval<StructType>().type)(), &m_columnInfos);
-
+#define TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, unique) \
+    ColumnInfo type = ColumnInfo(STR(colunmName), decltype(std::declval<StructType>().type)(), &m_columnInfos, autoIncremnet, unique);
+#define TABLESTRUCTINFO_COMLUNM_3(type, colunmName, autoIncremnet) TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, false)
+#define TABLESTRUCTINFO_COMLUNM_2(type, colunmName) TABLESTRUCTINFO_COMLUNM_3(type, colunmName, false)
 #define TABLESTRUCTINFO_COMLUNM_1(type) TABLESTRUCTINFO_COMLUNM_2(type, type)
-
 #define TABLESTRUCTINFO_COMLUNM(...) EXPAND(CAT(TABLESTRUCTINFO_COMLUNM_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
 
 #define TABLESTRUCTINFO_END(type) \

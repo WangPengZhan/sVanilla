@@ -4,6 +4,7 @@
 
 #include <list>
 #include <memory>
+#include <string>
 
 #include "Download/AbstractDownloader.h"
 
@@ -38,5 +39,3 @@ private:
     std::shared_ptr<download::AbstractDownloader> m_realDownloader;
     std::string m_filename;
 };
-
-

@@ -255,6 +255,8 @@ ConditionWrapper& ConditionWrapper::addCondition(const ConditionWrapper& other)
     {
         m_conditionInfos.emplace_back(other);
     }
+
+    return *this;
 }
 
 ConditionWrapper& ConditionWrapper::addCondition(const ColumnInfo& column, Condition condition, ValueType value)

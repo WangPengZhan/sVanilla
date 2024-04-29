@@ -1,8 +1,10 @@
 #pragma once
-#include <mutex>
+#include <vector>
 #include <string>
 
 #include "Sqlite/Database/SQLiteDatabase.h"
+#include "Sqlite/SqlComposer/ConditionWrapper.h"
+#include "Sqlite/SqlComposer/SqlUtil.h"
 
 namespace sqlite
 {
@@ -10,21 +12,43 @@ namespace sqlite
 class BaseStorage
 {
 public:
-    BaseStorage(SqliteDBPtr readDBPtr, SqliteDBPtr writeDBPtr);
-    BaseStorage(SqliteDBPtr readDBPtr, SqliteDBPtr writeDBPtr, std::string tableName);
+    BaseStorage() = default;
+    BaseStorage(SqliteWithMutexPtr readDBPtr);
+    BaseStorage(SqliteWithMutexPtr readDBPtr, std::string tableName);
+    BaseStorage(SqliteWithMutexPtr readDBPtr, std::string tableName, SqliteWithMutexPtr writeDBPtr);
     virtual ~BaseStorage() = default;
 
     const std::string& tableName() const;
+    void setTableName(const std::string& tableName);
+
+    template <typename Entity>
+    std::vector<Entity> queryEntities(int index, int nums, const ConditionWrapper& condition);
+
+    template <typename Entity>
+    int64_t insertEntities(const std::vector<Entity>& entities);
+
+    bool deleteEntities(const ConditionWrapper& condition = {});
+
+    int64_t countEntities(const ConditionWrapper& condition = {});
+    std::vector<std::string> queryDistinctCol(const ColumnInfo& metaInfo, const ConditionWrapper& condition = {});
 
 protected:
-protected:
-    SqliteDBPtr m_writeDBPtr;
-    SqliteDBPtr m_readDBPtr;
+    SqliteWithMutexPtr m_readDBPtr;
+    SqliteWithMutexPtr m_writeDBPtr;
 
     std::string m_tableName;
-
-    std::mutex m_readMutex;
-    std::mutex m_writeMutex;
 };
+
+template <typename Entity>
+inline std::vector<Entity> BaseStorage::queryEntities(int index, int nums, const ConditionWrapper& condition)
+{
+    return SqliteUtil::queryEntities<Entity>(m_readDBPtr, tableName(), index, nums, condition);
+}
+
+template <typename Entity>
+inline int64_t BaseStorage::insertEntities(const std::vector<Entity>& entities)
+{
+    return SqliteUtil::insertEntities(m_writeDBPtr, tableName(), entities);
+}
 
 }  // namespace sqlite

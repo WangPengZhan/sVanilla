@@ -1,10 +1,7 @@
 #pragma once
-#include "DownloadingListWidget.h"
-#include "Aria2Net/Protocol/Protocol.h"
+#include <QObject>
+
 #include "Download/DownloadStatusThread.h"
-
-#include <unordered_set>
-
 class DownloadManager final : public QObject
 {
     Q_OBJECT

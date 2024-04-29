@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstring>
+
 #include <sqlite3.h>
 
 #include "SQLiteStatement.h"
@@ -18,6 +20,8 @@ void SQLiteStatement::Deleter::operator()(sqlite3_stmt* stmt)
 SQLiteStatement::SQLiteStatement(SQLiteDatabase& db, const std::string& query)
     : m_db(db)
     , m_sql(query)
+    , m_hasRow(false)
+    , m_done(false)
 {
     prepareStatement();
     m_colunmCount = sqlite3_column_count(handle());
@@ -321,14 +325,20 @@ int SQLiteStatement::tryExecuteStep() noexcept
 SqliteColumn SQLiteStatement::getColunmFromStmt(int col) const
 {
     std::string colName = sqlite3_column_name(handle(), col);
-    std::string colOriginName = sqlite3_column_origin_name(handle(), col);
+    std::string colOriginName;
+    const char* pOriginName = sqlite3_column_origin_name(handle(), col);
+    if (pOriginName)
+    {
+        colOriginName = pOriginName;
+    }
+
     SqliteColumnValue value;
 
     int type = sqlite3_column_type(handle(), col);
     switch (type)
     {
     case SQLITE_INTEGER:
-        value = sqlite3_column_int64(handle(), col);
+        value = static_cast<int64_t>(sqlite3_column_int64(handle(), col));
         break;
     case SQLITE_FLOAT:
         value = sqlite3_column_double(handle(), col);

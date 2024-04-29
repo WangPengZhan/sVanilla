@@ -2,7 +2,7 @@
 
 namespace sqlite
 {
-std::string sqlite::fieldTypeSql(FieldType fieldType)
+std::string fieldTypeSql(FieldType fieldType)
 {
     std::string res;
     switch (fieldType)

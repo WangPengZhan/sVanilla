@@ -9,8 +9,8 @@ namespace sqlite
 
 std::once_flag SqliteDBManager::m_createFlag;
 std::mutex SqliteDBManager::m_mutex;
-std::unordered_map<std::string, std::mutex> SqliteDBManager::m_mutexs;
-std::unordered_map<std::string, std::list<SqliteDBPtr>> SqliteDBManager::m_dbs;
+std::unordered_map<std::string, SqliteWithMutexPtr> SqliteDBManager::m_defaultWriteDbWtihMutexs;
+std::unordered_map<std::string, SqliteDBPtr> SqliteDBManager::m_defaultWriteDbs;
 
 SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew)
 {
@@ -20,17 +20,19 @@ SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew
     if (createNew)
     {
         db = std::make_shared<SQLiteDatabase>(path);
+        std::lock_guard lk(m_mutex);
+        if (m_defaultWriteDbs.find(fullPath) == m_defaultWriteDbs.end())
+        {
+            m_defaultWriteDbs.insert({fullPath, db});
+            dbInit(db);
+        }
     }
-
-    std::lock_guard lk(m_mutex);
-    if (m_dbs.find(fullPath) == m_dbs.end())
+    else
     {
-        m_mutexs[fullPath];
-        dbInit(db);
+        db = writeDBPtr(path);
     }
 
-    m_dbs[fullPath].push_back(db);
-    return m_dbs[fullPath].front();
+    return db;
 }
 
 SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
@@ -38,16 +40,54 @@ SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
     std::string fullPath = std::filesystem::absolute(path).string();
     {
         std::lock_guard lk(m_mutex);
-        if (m_dbs.find(fullPath) != m_dbs.end())
+        if (m_defaultWriteDbs.find(fullPath) == m_defaultWriteDbs.end())
         {
-            if (!m_dbs.at(fullPath).empty())
-            {
-                return m_dbs.at(fullPath).front();
-            }
+            auto db = std::make_shared<SQLiteDatabase>(path);
+            m_defaultWriteDbs.insert({fullPath, db});
+            dbInit(db);
+        }
+
+        return m_defaultWriteDbs.at(fullPath);
+    }
+}
+
+SqliteWithMutexPtr SqliteDBManager::createDBWithMutexPtr(const std::string& path, bool createNew)
+{
+    init();
+    std::string fullPath = std::filesystem::absolute(path).string();
+    SqliteWithMutexPtr db;
+    if (createNew)
+    {
+        db = std::make_shared<SqliteDbWithMutex>(path);
+        std::lock_guard lk(m_mutex);
+        if (m_defaultWriteDbWtihMutexs.find(fullPath) == m_defaultWriteDbWtihMutexs.end())
+        {
+            m_defaultWriteDbWtihMutexs.insert({fullPath, std::make_shared<SqliteDbWithMutex>(path)});
+            dbInit(db);
         }
     }
+    else
+    {
+        db = writeDBWithMutexPtr(path);
+    }
 
-    return createDBPtr(fullPath);
+    return db;
+}
+
+SqliteWithMutexPtr SqliteDBManager::writeDBWithMutexPtr(const std::string& path)
+{
+    std::string fullPath = std::filesystem::absolute(path).string();
+    {
+        std::lock_guard lk(m_mutex);
+        if (m_defaultWriteDbWtihMutexs.find(fullPath) == m_defaultWriteDbWtihMutexs.end())
+        {
+            auto db = std::make_shared<SqliteDbWithMutex>(path);
+            m_defaultWriteDbWtihMutexs.insert({fullPath, db});
+            dbInit(db);
+        }
+
+        return m_defaultWriteDbWtihMutexs.at(fullPath);
+    }
 }
 
 void SqliteDBManager::init()
@@ -58,12 +98,26 @@ void SqliteDBManager::init()
     });
 }
 
+void SqliteDBManager::dbInit(SQLiteDatabase& db)
+{
+    db.execute("PRAGMA journal_mode=WAL;");
+    db.execute("PRAGMA synchronous=OFF;");
+}
+
 void SqliteDBManager::dbInit(SqliteDBPtr& db)
 {
     if (db)
     {
-        db->execute("PRAGMA journal_mode=WAL;");
-        db->execute("PRAGMA synchronous=OFF;");
+        dbInit(*(db.get()));
+    }
+}
+
+void SqliteDBManager::dbInit(SqliteWithMutexPtr& db)
+{
+    if (db)
+    {
+        std::lock_guard lk(db->mutex);
+        dbInit(*(db.get()));
     }
 }
 
