@@ -16,7 +16,7 @@
 #include "Sqlite/SQLiteUtility.h"
 #include "Sqlite/AbstractTable.h"
 
-namespace SQLite
+namespace sqlite
 {
 
 struct TestStruct
@@ -109,21 +109,21 @@ TestTable::HeadType TestTable::m_testHeader = {
     {"FieldBlob",    Blob   },
 };
 
-}  // namespace SQLite
+}  // namespace sqlite
 
 TEST(SQLiteDatabaseTest, Open)
 {
     spdlog::rotating_logger_mt<spdlog::async_factory>("SQLite", "log/SQLite.log", 1024 * 1024 * 10, 100);
 
-    SQLite::SQLiteDatabase db("test.db");
+    sqlite::SQLiteDatabase db("test.db");
     EXPECT_TRUE(db.isOpen());
 
-    SQLite::TestTable test(db, "test");
+    sqlite::TestTable test(db, "test");
     test.initTable();
-    std::vector<SQLite::TestStruct> testDatas;
+    std::vector<sqlite::TestStruct> testDatas;
     for (int i = 0; i < 100; ++i)
     {
-        SQLite::TestStruct testData;
+        sqlite::TestStruct testData;
         testData.nTestInt = i;
         testData.strTest = std::to_string(i);
         testData.dTest = i / 4.0;
@@ -138,7 +138,7 @@ TEST(SQLiteDatabaseTest, Open)
 
     test.insert(testDatas);
 
-    std::vector<SQLite::TestStruct> testReadDatas;
+    std::vector<sqlite::TestStruct> testReadDatas;
 
     test.read(testReadDatas);
 

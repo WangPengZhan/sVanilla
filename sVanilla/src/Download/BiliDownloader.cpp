@@ -1,7 +1,6 @@
 #include <utility>
 
 #include "BiliDownloader.h"
-#include "Sqlite/SQLiteManager.h"
 #include "FFmpeg/FFmpegHelper.h"
 #include "Util/UrlProcess.h"
 
@@ -24,9 +23,7 @@ BiliDownloader::BiliDownloader(std::list<std::string> videoUris, std::list<std::
     , m_audioDownloader(audioUris, m_path)
 {
     m_haveTwoPart = !videoUris.empty() && audioUris.empty();
-    std::string baseName = util::u8ToString(std::filesystem::u8path(m_resourseInfo.option.out).stem().u8string());
-    m_haveTwoPart ? m_videoDownloader.setFilename(baseName + "_video.mp4") : m_videoDownloader.setFilename(filename);
-    m_audioDownloader.setFilename(baseName + "_audio.mp3");
+    setAriaFileName();
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
     m_haveTwoPart = !videoUris.empty() && !audioUris.empty();
@@ -42,12 +39,9 @@ BiliDownloader::BiliDownloader(ResourseInfo info)
     , m_finished(false)
 {
     m_haveTwoPart = !m_resourseInfo.videoUris.empty() && !m_resourseInfo.audioUris.empty();
-    std::string baseName = util::u8ToString(std::filesystem::u8path(m_resourseInfo.option.out).stem().u8string());
-    m_haveTwoPart ? m_videoDownloader.setFilename(baseName + "_video.mp4") : m_videoDownloader.setFilename(m_filename);
-    m_audioDownloader.setFilename(baseName + "_audio.mp3");
+    setAriaFileName();
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
-    m_haveTwoPart = !m_resourseInfo.videoUris.empty() && !m_resourseInfo.audioUris.empty();
 }
 
 void BiliDownloader::start()
@@ -136,13 +130,6 @@ void BiliDownloader::downloadStatus()
 void BiliDownloader::finish()
 {
     m_finished = true;
-
-    // send finish signal
-
-    // write to sqlite
-    auto finishedItem = SQLite::SQLiteManager::getInstance().finishedItemTable();
-    download::FinishedItem item;
-    finishedItem.insertItem({item});
 }
 
 void BiliDownloader::setVideoUris(const std::list<std::string>& videoUris)
@@ -171,9 +158,7 @@ const std::string& BiliDownloader::path() const
 void BiliDownloader::setFilename(std::string filename)
 {
     m_filename = std::move(filename);
-    std::string baseName = util::u8ToString(std::filesystem::u8path(m_filename).stem().u8string());
-    m_videoDownloader.setFilename(baseName + "_video.mp4");
-    m_audioDownloader.setFilename(baseName + "_audio.mp3");
+    setAriaFileName();
 }
 
 const std::string& BiliDownloader::filename() const
@@ -189,6 +174,13 @@ bool BiliDownloader::isFinished() const
 std::string BiliDownloader::nowDownload() const
 {
     return std::string();
+}
+
+void BiliDownloader::setAriaFileName()
+{
+    std::string baseName = util::u8ToString(std::filesystem::u8path(m_filename).stem().u8string());
+    m_haveTwoPart ? m_videoDownloader.setFilename(baseName + "_video.mp4") : m_videoDownloader.setFilename(m_filename);
+    m_audioDownloader.setFilename(baseName + "_audio.mp3");
 }
 
 }  // namespace download

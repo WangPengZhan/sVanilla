@@ -11,6 +11,7 @@ class DownloadingItemWidget;
 }
 
 class UiDownloader;
+class DownloadingListWidget;
 class DownloadingItemWidget : public QWidget
 {
     Q_OBJECT
@@ -19,8 +20,8 @@ public:
     explicit DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent = nullptr);
     ~DownloadingItemWidget();
 
-    void setListWidget(QListWidget* listWidget);
-    QListWidget* listWidget() const;
+    void setListWidget(DownloadingListWidget* listWidget);
+    DownloadingListWidget* listWidget() const;
     std::shared_ptr<UiDownloader> downloaoder();
 
     void setStart();
@@ -31,7 +32,7 @@ private:
 
 private:
     Ui::DownloadingItemWidget* ui;
-    QListWidget* m_listWidget;
+    DownloadingListWidget* m_listWidget;
     std::shared_ptr<UiDownloader> m_downloader;
 };
 

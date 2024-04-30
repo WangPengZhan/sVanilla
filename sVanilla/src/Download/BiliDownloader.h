@@ -7,16 +7,6 @@
 
 namespace download
 {
-
-struct FinishedItem
-{
-    std::string uniqueId;
-    std::string filePath;
-    std::string bvid;
-    std::string title;
-    int duration;
-};
-
 class BiliDownloader : public AbstractDownloader
 {
 public:
@@ -42,6 +32,9 @@ public:
     bool isFinished() const;
 
     std::string nowDownload() const;
+
+private:
+    void setAriaFileName();
 
 private:
     ResourseInfo m_resourseInfo;

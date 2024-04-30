@@ -63,12 +63,12 @@ DownloadingItemWidget::~DownloadingItemWidget()
     delete ui;
 }
 
-void DownloadingItemWidget::setListWidget(QListWidget* listWidget)
+void DownloadingItemWidget::setListWidget(DownloadingListWidget* listWidget)
 {
     m_listWidget = listWidget;
 }
 
-QListWidget* DownloadingItemWidget::listWidget() const
+DownloadingListWidget* DownloadingItemWidget::listWidget() const
 {
     return m_listWidget;
 }
@@ -105,15 +105,11 @@ void DownloadingItemWidget::signalsAndSlots()
             return;
         }
 
-        int count = m_listWidget->count();
-        for (int i = 0; i < count; ++i)
+        if (auto item = m_listWidget->itemFromWidget(this))
         {
-            if (m_listWidget->itemWidget(m_listWidget->item(i)) == this)
-            {
-                auto item = m_listWidget->takeItem(i);
-                delete item;
-                return;
-            }
+            delete item;
+            deleteLater();
+            return;
         }
     });
     connect(ui->btnPause, &QPushButton::clicked, this, [this](bool isResume) {
@@ -170,16 +166,12 @@ void DownloadingItemWidget::signalsAndSlots()
         ui->progressBar->setValue(100);
         ui->labelStatus->setText("finished");
 
-        // int count = m_listWidget->count();
-        // for (int i = 0; i < count; ++i)
-        // {
-        //     if (m_listWidget->itemWidget(m_listWidget->item(i)) == this)
-        //     {
-        //         auto item = m_listWidget->takeItem(i);
-        //         delete item;
-        //         return;
-        //     }
-        // }
+        if (auto item = m_listWidget->itemFromWidget(this))
+        {
+            delete item;
+            deleteLater();
+            return;
+        }
     });
 }
 
