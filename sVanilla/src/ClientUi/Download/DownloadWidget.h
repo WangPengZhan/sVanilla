@@ -2,6 +2,7 @@
 #include <QWidget>
 
 #include "Aria2Net/Protocol/Protocol.h"
+#include "Download/AbstractDownloader.h"
 #include "DownloadManager.h"
 
 namespace download
@@ -14,6 +15,16 @@ namespace Ui
 class DownloadWidget;
 }
 QT_END_NAMESPACE
+namespace biliapi
+{
+struct PlayUrlOrigin;
+}
+namespace download
+{
+class BiliDownloader;
+}
+struct VideoInfoFull;
+class UiDownloader;
 
 class DownloadWidget : public QWidget
 {
@@ -24,11 +35,21 @@ public:
     ~DownloadWidget();
 
     void addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName);
-    void addDownloadTask(const download::ResourseInfo& info);
+    void addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
+
+    void addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo);
+
+    void getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo);
+    void praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl, const std::shared_ptr<VideoInfoFull>& videoInfo);
+
+signals:
+    void sigDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
 
 private:
     void setUi();
     void signalsAndSlots();
+
+    void addTaskITem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader);
 
 private:
     Ui::DownloadWidget* ui;

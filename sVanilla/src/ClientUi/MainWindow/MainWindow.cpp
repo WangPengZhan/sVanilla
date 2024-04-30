@@ -81,7 +81,7 @@ void MainWindow::signalsAndSlots()
         emit windowBar->tabChanged(1);
     });
 
-    connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
+    connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::getBiliUrl);
 }
 
 void MainWindow::setUpShortcuts()

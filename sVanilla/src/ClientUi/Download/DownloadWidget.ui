@@ -20,7 +20,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="widgetDownloading">
       <layout class="QGridLayout" name="gridLayout">
@@ -62,7 +62,7 @@
      <widget class="QWidget" name="widgetDownloaded">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="::DownloadingListWidget" name="listWidgetDownloaded"/>
+        <widget class="DownloadedListWidget" name="listWidgetDownloaded"/>
        </item>
        <item row="1" column="0">
         <widget class="QWidget" name="DownloadedBtnGroup" native="true">
@@ -109,6 +109,11 @@
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DownloadedListWidget</class>
+   <extends>QListWidget</extends>
+   <header>ClientUi/Download/DownloadedListWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

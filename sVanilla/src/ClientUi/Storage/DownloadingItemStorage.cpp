@@ -1,6 +1,6 @@
-#include "FinishedItemStorage.h"
+#include "ClientUi/Storage/DownloadingItemStorage.h"
 
-void FinishedItem::bind(sqlite::SQLiteStatement& stmt) const
+void DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
 {
     int index = 1;
     stmt.bind(index++, uniqueId);
@@ -11,11 +11,13 @@ void FinishedItem::bind(sqlite::SQLiteStatement& stmt) const
     stmt.bind(index++, title);
     stmt.bind(index++, auther);
     stmt.bind(index++, url);
+    stmt.bind(index++, progress);
     stmt.bind(index++, duration);
+    stmt.bind(index++, status);
     stmt.bind(index++, type);
 }
 
-void FinishedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
+void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 {
     int index = startIndex;
     uniqueId = stmt.column(index++).getString();
@@ -26,6 +28,8 @@ void FinishedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
     title = stmt.column(index++).getString();
     auther = stmt.column(index++).getString();
     url = stmt.column(index++).getString();
+    progress = stmt.column(index++);
     duration = stmt.column(index++);
+    status = stmt.column(index++);
     type = stmt.column(index++);
 }

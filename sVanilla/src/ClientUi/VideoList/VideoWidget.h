@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include <QStackedWidget>
 
@@ -7,19 +8,22 @@
 namespace download
 {
 struct ResourseInfo;
-}
+}  //  namespace download
 namespace biliapi
 {
 class PlayUrlOrigin;
 class VideoViewOrigin;
-}  // namespace biliapi
+}  //  namespace biliapi
 struct CoverInfo;
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
 class VideoPage;
-}
+}  //  namespace Ui
 QT_END_NAMESPACE
+struct DownloadConfig;
+
+struct VideoInfoFull;
 
 class VideoWidget : public QWidget
 {
@@ -32,12 +36,10 @@ public:
     void prepareBiliVideoView(const std::string& uri);
     void prepareVideoItem(const biliapi::VideoViewOrigin& videoView);
     void downloadCover(const CoverInfo& coverInfo);
-    void addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const;
+    void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView) const;
 
-    void prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
-    void getBiliUrl();
-    void praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl);
-    Q_SIGNAL void createBiliDownloadTask(const download::ResourseInfo& info) const;
+    void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView);
+    Q_SIGNAL void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
 
     void clearVideo() const;
     void updateCover(const std::string& id) const;
@@ -54,5 +56,5 @@ private:
     unsigned long totalCoverSize = 0;
     unsigned long currentCoverSize = 0;
 
-    std::shared_ptr<Adapter::BaseVideoView> m_currentView;
+    std::shared_ptr<VideoInfoFull> m_currentView;
 };

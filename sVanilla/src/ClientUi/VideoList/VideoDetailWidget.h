@@ -10,6 +10,7 @@ namespace Ui
 {
 class VideoDetailWidget;
 }
+struct VideoInfoFull;
 
 class VideoDetailWidget : public QWidget
 {
@@ -17,7 +18,7 @@ class VideoDetailWidget : public QWidget
 public:
     explicit VideoDetailWidget(QWidget* parent = nullptr);
     ~VideoDetailWidget();
-    void updateUi(const std::shared_ptr<Adapter::BaseVideoView>& videoViewdata);
+    void updateUi(const std::shared_ptr<VideoInfoFull>& videoViewdata);
 
 private:
     void setUi();

@@ -23,7 +23,7 @@ void SingleConfig::setAriaConfig(const Aria2Config& config)
     m_appSettings->endGroup();
 }
 
-Aria2Config SingleConfig::getAriaConfig() const
+Aria2Config SingleConfig::ariaConfig() const
 {
     Aria2Config config;
     m_appSettings->beginGroup("App");
@@ -31,6 +31,26 @@ Aria2Config SingleConfig::getAriaConfig() const
     config.token = m_appSettings->value("Token").toString();
     config.port = m_appSettings->value("Port").toInt();
     config.isRemote = m_appSettings->value("Remote").toBool();
+    m_appSettings->endGroup();
+    return config;
+}
+
+void SingleConfig::setDownloadConfig(const DownloadConfig& config)
+{
+    m_appSettings->beginGroup("Download");
+    m_appSettings->setValue("DownloadDir", config.downloadDir);
+    m_appSettings->setValue("VideoQuality", static_cast<int>(config.videoQuality));
+    m_appSettings->setValue("NameRule", config.nameRule);
+    m_appSettings->endGroup();
+}
+
+DownloadConfig SingleConfig::downloadConfig() const
+{
+    DownloadConfig config;
+    m_appSettings->beginGroup("Download");
+    config.downloadDir = m_appSettings->value("DownloadDir").toString();
+    config.videoQuality = static_cast<VideQuality>(m_appSettings->value("VideoQuality").toInt());
+    config.nameRule = m_appSettings->value("NameRule").toString();
     m_appSettings->endGroup();
     return config;
 }

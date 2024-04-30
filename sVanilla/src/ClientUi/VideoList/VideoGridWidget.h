@@ -13,6 +13,7 @@ constexpr int itemBaseHeight = 200;
 constexpr float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
 
 class VideoDetailWidget;
+struct VideoInfoFull;
 
 namespace Ui
 {
@@ -42,8 +43,8 @@ private:
     void signalsAndSlots();
 
 public:
-    std::string Identifier;
-    std::shared_ptr<Adapter::BaseVideoView> m_videoView;
+    std::string m_identifier;
+    std::shared_ptr<VideoInfoFull> m_videoView;
 
 private:
     Ui::VideoGridItemWidget* ui;
@@ -61,14 +62,14 @@ class VideoGridWidget : public QListWidget
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
 
-    void addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView);
     void clearVideo();
     void showDetailPanel();
     void hideDetailPanel() const;
     void getSignalPointer(QSplitter* splitter);
     void coverReady(const std::string& id) const;
 
-    Q_SIGNAL void downloandBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    Q_SIGNAL void downloandBtnClick(const std::shared_ptr<VideoInfoFull>& videoView);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;

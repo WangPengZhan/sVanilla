@@ -7,11 +7,11 @@
 #include "Adapter/BaseVideoView.h"
 
 class VideoDetailWidget;
-
 namespace Ui
 {
 class VideoListItemWidget;
 }
+struct VideoInfoFull;
 
 class VideoListItemWidget : public QWidget
 {
@@ -27,8 +27,8 @@ private:
     void signalsAndSlots();
 
 public:
-    std::string Identifier;
-    std::shared_ptr<Adapter::BaseVideoView> m_videoView;
+    std::string m_identifier;
+    std::shared_ptr<VideoInfoFull> m_videoView;
 
 private:
     Ui::VideoListItemWidget* ui;
@@ -43,7 +43,7 @@ class VideoListWidget : public QListWidget
     Q_OBJECT
 public:
     explicit VideoListWidget(QWidget* parent = nullptr);
-    void addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
+    void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView);
     void clearVideo();
     void getSignalPointer(QSplitter* splitter);
 
