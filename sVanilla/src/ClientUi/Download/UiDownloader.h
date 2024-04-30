@@ -36,6 +36,8 @@ public:
     void downloadStatus() override;
     void finish() override;
 
+    void setGuid(std::string guid);
+
 signals:
     void finished(QString msg);
     void statusChanged();

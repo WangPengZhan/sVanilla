@@ -31,9 +31,7 @@ void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std
 {
     // param path: come from config file or custom setting in the future
     auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output", fileName);
-    auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder, std::shared_ptr<VideoInfoFull>());
-    uiDownloader->setStatus(UiDownloader::Ready);
-
+    auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder);
     addTaskITem(biliDownlaoder, uiDownloader);
 }
 

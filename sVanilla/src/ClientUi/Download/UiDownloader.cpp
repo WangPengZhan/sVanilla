@@ -89,6 +89,13 @@ void UiDownloader::downloadStatus()
 void UiDownloader::finish()
 {
     m_realDownloader->finish();
+    auto info = m_realDownloader->info();
+
+    auto& storageManager = sqlite::StorageManager::intance();
+    auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
+    sqlite::ConditionWrapper condition;
+    condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, guid());
+    storageManager.downloadingStorage()->deleteEntities(condition);
 
     deleteDbDownloadingItem();
     ctreateDbFinishedItem();
