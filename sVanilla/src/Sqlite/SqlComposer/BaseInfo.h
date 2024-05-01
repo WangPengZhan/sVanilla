@@ -27,7 +27,8 @@ class ColumnInfo
 {
 public:
     ColumnInfo(std::string columnName, bool autoIncremnet = false, bool unique = false);
-    ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, bool autoIncremnet = false, bool unique = false);
+    ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos, bool autoIncremnet = false,
+               bool unique = false);
 
     template <typename ValueType>
     ColumnInfo(std::string columnName, const ValueType& value, std::vector<ColumnInfo*>* pColumnInfos, bool autoIncremnet = false, bool unique = false)
@@ -40,6 +41,27 @@ public:
         if (pColumnInfos)
         {
             pColumnInfos->push_back(this);
+        }
+    }
+
+    template <typename ValueType>
+    ColumnInfo(std::string columnName, const ValueType& value, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
+               bool autoIncremnet, bool unique, bool primaryKey)
+        : m_columnName(std::move(columnName))
+        , m_autoIncrement(autoIncremnet)
+        , m_unique(unique)
+        , m_pColumnInfos(pColumnInfos)
+        , m_pPrimaryKeyColumnInfos(pPrimaryKeyColumnInfos)
+    {
+        setFieldType(value);
+        if (pColumnInfos)
+        {
+            pColumnInfos->push_back(this);
+        }
+
+        if (pPrimaryKeyColumnInfos && (autoIncremnet || primaryKey))
+        {
+            pPrimaryKeyColumnInfos->push_back(this);
         }
     }
 
@@ -81,6 +103,7 @@ private:
     bool m_autoIncrement = false;
     bool m_unique = false;
     std::vector<ColumnInfo*>* m_pColumnInfos = nullptr;
+    std::vector<ColumnInfo*>* m_pPrimaryKeyColumnInfos = nullptr;
 };
 
 class BaseTableStructInfo
@@ -96,11 +119,19 @@ public:
     std::string prepareSql() const;
     std::string insertPrepareSql() const;
     std::string colunmsSql() const;
+    std::string updatePrepareSql() const;
+    std::string primaryKeyPrepareSql() const;
 
 protected:
     std::vector<ColumnInfo*> m_columnInfos;
-    std::string m_createSql;
-    std::string m_colunmsSql;
+    std::vector<ColumnInfo*> m_primaryColunmInfos;
+
+    mutable std::string m_createSql;
+    mutable std::string m_prepareSql;
+    mutable std::string m_insertPrepareSql;
+    mutable std::string m_colunmsSql;
+    mutable std::string m_updatePrepareSql;
+    mutable std::string m_primaryKeyPrepareSql;
 };
 
 template <typename Table>
@@ -194,8 +225,9 @@ protected:\
     ~TableStructInfo() = default;\
 public:
 
-#define TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, unique) \
-    ColumnInfo type = ColumnInfo(STR(colunmName), decltype(std::declval<StructType>().type)(), &m_columnInfos, autoIncremnet, unique);
+#define TABLESTRUCTINFO_COMLUNM_5(type, colunmName, autoIncremnet, unique, primaryKey) \
+    ColumnInfo type = ColumnInfo(STR(colunmName), decltype(std::declval<StructType>().type)(), &m_columnInfos, &m_primaryColunmInfos, autoIncremnet, unique, primaryKey);
+#define TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, unique) TABLESTRUCTINFO_COMLUNM_5(type, colunmName, autoIncremnet, unique, false)
 #define TABLESTRUCTINFO_COMLUNM_3(type, colunmName, autoIncremnet) TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, false)
 #define TABLESTRUCTINFO_COMLUNM_2(type, colunmName) TABLESTRUCTINFO_COMLUNM_3(type, colunmName, false)
 #define TABLESTRUCTINFO_COMLUNM_1(type) TABLESTRUCTINFO_COMLUNM_2(type, type)

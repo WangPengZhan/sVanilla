@@ -33,3 +33,22 @@ void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
     status = stmt.column(index++);
     type = stmt.column(index++);
 }
+
+void DownloadingItemStorage::updateStatus(int status, const sqlite::ConditionWrapper& condition)
+{
+    auto statusName = sqlite::TableStructInfo<Entity>::self().status.colunmName();
+    std::stringstream ss;
+    ss << "UPDATE " << tableName();
+    ss << " SET " << statusName << " = "
+       << "?";
+    ss << condition.prepareConditionString();
+
+    std::string sql = ss.str();
+    sqlite::SQLiteStatement stmt(*(m_writeDBPtr.get()), sql);
+    int start = 1;
+    stmt.bind(start++, status);
+    condition.bind(stmt, start);
+
+    sql = stmt.expandedSQL();
+    stmt.executeStep();
+}

@@ -258,6 +258,11 @@ int SQLiteStatement::columnIndex(const std::string& colName) const
     return m_colunmIndexMap.at(colName);
 }
 
+int SQLiteStatement::getChanges() const
+{
+    return sqlite3_changes(dbHandle());
+}
+
 int SQLiteStatement::getBindParameterCount() const
 {
     return sqlite3_bind_parameter_count(handle());

@@ -383,7 +383,7 @@ int ConditionWrapper::bind(SQLiteStatement& stmt, int startIndex) const
     {
         std::visit(
             [&](auto&& value) {
-                value.bind(stmt, startIndex);
+                startIndex = value.bind(stmt, startIndex);
             },
             condition);
     }

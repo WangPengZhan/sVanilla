@@ -46,5 +46,7 @@ public:
     using Entity = DownloadingItem;
     using BaseStorage::BaseStorage;
 
+    void updateStatus(int status, const sqlite::ConditionWrapper& condition);
+
 private:
 };

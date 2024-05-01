@@ -33,6 +33,7 @@ public:
 
     const std::string& getName() const;
     const std::string& getOriginName() const;
+    const SqliteColumnValue& value() const;
 
     int32_t getInt() const noexcept;
     uint32_t getUInt() const noexcept;

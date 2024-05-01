@@ -30,6 +30,8 @@ std::string stringJoin(InputIter begin, InputIter end, const std::string& joined
     return result;
 }
 
+std::string prepareSql(const std::vector<SqliteColumn>& newValues);
+
 class SqliteUtil
 {
 public:
@@ -63,6 +65,13 @@ public:
     template <typename Entity>
     static int64_t insertEntitiesWithOutTrans(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
 
+    static int64_t updateEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<SqliteColumn>& newValues,
+                                  const ConditionWrapper& conditio);
+    template <typename Entity>
+    static int64_t updateEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
+    template <typename Entity>
+    static int64_t updateEntitiesWithOutTrans(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
+
     static bool deleteEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
 
     static int64_t countEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
@@ -73,6 +82,8 @@ public:
 private:
     template <typename T>
     static void insertEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities);
+    template <typename T>
+    static void updateEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities);
 };
 
 template <typename Entity>
@@ -92,6 +103,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& d
 
     SQLiteStatement stmt(*db, querySql);
     condition.bind(stmt);
+    querySql = stmt.expandedSQL();
     while (stmt.executeStep())
     {
         Entity entity;
@@ -217,12 +229,67 @@ inline int64_t SqliteUtil::insertEntitiesWithOutTrans(const SqliteWithMutexPtr& 
     return entities.size();
 }
 
+template <typename Entity>
+inline int64_t SqliteUtil::updateEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities)
+{
+    if (entities.empty() || !db || tableName.empty())
+    {
+        return 0;
+    }
+
+    std::string sql = "UPDATE " + tableName + " SET ";
+    sql += TableStructInfo<Entity>::self().updatePrepareSql();
+
+    SQLiteStatement stmt(*db, sql);
+    db->transaction();
+    try
+    {
+        updateEntitiesCore<Entity>(stmt, entities);
+    }
+    catch (const std::exception& e)
+    {
+        db->rollback();
+        return 0;
+    }
+    db->commit();
+    return entities.size();
+}
+
+template <typename Entity>
+inline int64_t SqliteUtil::updateEntitiesWithOutTrans(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities)
+{
+    if (entities.empty() || !db || tableName.empty())
+    {
+        return 0;
+    }
+
+    std::string sql = "UPDATE " + tableName + " SET ";
+    sql += TableStructInfo<Entity>::self().updatePrepareSql();
+
+    SQLiteStatement stmt(*db, sql);
+    insertEntitiesCore<Entity>(stmt, entities);
+
+    return entities.size();
+}
+
 template <typename T>
 inline void SqliteUtil::insertEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities)
 {
     for (const auto& entity : entities)
     {
         entity.bind(stmt);
+        stmt.executeStep();
+        stmt.reset();
+    }
+}
+
+template <typename T>
+inline void SqliteUtil::updateEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities)
+{
+    for (const auto& entity : entities)
+    {
+        entity.bind(stmt);
+        ConditionWrapper condtion;
         stmt.executeStep();
         stmt.reset();
     }

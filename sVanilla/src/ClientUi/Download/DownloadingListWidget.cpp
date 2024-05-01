@@ -182,6 +182,7 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
     signalsAndSlots();
     setBackgroundRole(QPalette::NoRole);
 }
+
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
     auto pWidget = new DownloadingItemWidget(downloader, this);

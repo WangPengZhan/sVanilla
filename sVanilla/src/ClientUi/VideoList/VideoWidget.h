@@ -55,6 +55,4 @@ private:
 
     unsigned long totalCoverSize = 0;
     unsigned long currentCoverSize = 0;
-
-    std::shared_ptr<VideoInfoFull> m_currentView;
 };
