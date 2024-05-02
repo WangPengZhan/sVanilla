@@ -15,6 +15,8 @@
 #include "ui_VideoWidget.h"
 #include "ClientUi/Utils/RunTask.h"
 #include "Util/UrlProcess.h"
+#include "ClientUi/Config//SingleConfig.h"
+#include "ClientUi/VideoList/VideoData.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -94,7 +96,10 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     for (const auto& video : view)
     {
         downloadCover({video->Cover, video->Identifier, tempPath.toStdString()});
-        addVideoItem(video);
+        auto videoInfoFull = std::make_shared<VideoInfoFull>();
+        videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
+        videoInfoFull->videoView = video;
+        addVideoItem(videoInfoFull);
     }
     // after cover ready:
     // 1. stop spinner
@@ -116,50 +121,15 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
     runTask(taskFunc, callback, this);
 }
 
-void VideoWidget::addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView) const
+void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView) const
 {
     ui->VideoGridWidget->addVideoItem(videoView);
     ui->VideoListWidget->addVideoItem(videoView);
 }
 
-void VideoWidget::prepareDownloadTask(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
+void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView)
 {
-    m_currentView = videoView;
-    getBiliUrl();
-}
-
-void VideoWidget::getBiliUrl()
-{
-    auto taskFunc = [this]() {
-        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(m_currentView->VideoId), 32, m_currentView->Identifier);
-    };
-    auto callback = [this](const biliapi::PlayUrlOrigin& result) {
-        if (result.code != 0)
-        {
-            return;
-        }
-        praseBiliDownloadUrl(result);
-    };
-    runTask(taskFunc, callback, this);
-}
-
-void VideoWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl)
-{
-    std::list<std::string> video_urls;
-    std::list<std::string> audio_urls;
-    const auto videos = playUrl.data.durl;
-    for (const auto& video : videos)
-    {
-        video_urls.push_back(video.url);
-    }
-    download::ResourseInfo info;
-    info.videoUris = video_urls;
-    info.audioUris = audio_urls;
-    info.option.out = util::FileHelp::removeSpecialChar(m_currentView->Title) + ".mp4";
-    info.option.dir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString();
-    const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
-    info.option.header = h;
-    emit createBiliDownloadTask(info);
+    emit createBiliDownloadTask(videoView);
 }
 
 void VideoWidget::clearVideo() const

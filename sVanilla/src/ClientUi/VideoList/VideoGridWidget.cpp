@@ -12,6 +12,7 @@
 #include "ui_VideoGridWidget.h"
 #include "BiliApi/BilibiliClient.h"
 #include "SUI/RoundImageWidget.h"
+#include "ClientUi/VideoList/VideoData.h"
 
 void elideText(QLabel* label, const QString& text)
 {
@@ -30,7 +31,7 @@ void elideText(QLabel* label, const QString& text)
 VideoGridItemWidget::VideoGridItemWidget(std::string identifier, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoGridItemWidget)
-    , Identifier(std::move(identifier))
+    , m_identifier(std::move(identifier))
 {
     ui->setupUi(this);
     setUi();
@@ -59,7 +60,7 @@ void VideoGridItemWidget::signalsAndSlots()
 void VideoGridItemWidget::setCover()
 {
     const QString tempPath = QApplication::applicationDirPath();
-    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(Identifier) + ".jpg";
+    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_identifier) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
         const QPixmap pixmap(fullPath);
@@ -70,9 +71,9 @@ void VideoGridItemWidget::setCover()
 
 void VideoGridItemWidget::updateVideoCard()
 {
-    elideText(ui->VideoGridTitle, QString::fromStdString(m_videoView->Title));
-    ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->Duration));
-    elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->Publisher));
+    elideText(ui->VideoGridTitle, QString::fromStdString(m_videoView->videoView->Title));
+    ui->VideoGridDuration->setText(QString::fromStdString(m_videoView->videoView->Duration));
+    elideText(ui->VideoGridAuthor, QString::fromStdString(m_videoView->videoView->Publisher));
 }
 
 void VideoGridItemWidget::updateCover()
@@ -110,13 +111,13 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
     setProperty("noBackground", true);
 }
 
-void VideoGridWidget::addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
+void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
 {
-    auto* const videoItem = new VideoGridItemWidget(videoView->Identifier, this);
+    auto* const videoItem = new VideoGridItemWidget(videoView->videoView->Identifier, this);
     auto* const item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(videoView->Identifier, item));
+    m_items.insert(std::make_pair(videoView->videoView->Identifier, item));
     videoItem->m_videoView = videoView;
     videoItem->updateVideoCard();
     connectItemSingal(videoItem);
@@ -131,7 +132,7 @@ void VideoGridWidget::resizeEvent(QResizeEvent* event)
 void VideoGridWidget::connectItemSingal(const VideoGridItemWidget* itemWidget)
 {
     connect(itemWidget, &VideoGridItemWidget::detailBtnClick, this, [this, itemWidget]() {
-        const auto itemIdentifier = itemWidget->Identifier;
+        const auto itemIdentifier = itemWidget->m_identifier;
         if (detailPanelVisible() && currentIdentifier == itemIdentifier)
         {
             hideDetailPanel();

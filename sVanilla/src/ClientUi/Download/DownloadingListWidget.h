@@ -1,6 +1,6 @@
 #pragma once
+#include <memory>
 
-#include <QTimer>
 #include <QListWidget>
 
 #include "Aria2Net/Protocol/Protocol.h"
@@ -8,10 +8,12 @@
 namespace Ui
 {
 class DownloadingItemWidget;
-}
+}  // namespace Ui
 
+struct VideoInfoFull;
 class UiDownloader;
 class DownloadingListWidget;
+
 class DownloadingItemWidget : public QWidget
 {
     Q_OBJECT
@@ -22,7 +24,7 @@ public:
 
     void setListWidget(DownloadingListWidget* listWidget);
     DownloadingListWidget* listWidget() const;
-    std::shared_ptr<UiDownloader> downloaoder();
+    std::shared_ptr<UiDownloader> downloaoder() const;
 
     void setStart();
     void setStop();
@@ -52,6 +54,9 @@ public:
     void removeDownloadItem(const std::string& guid);
     QListWidgetItem* itemFromWidget(QWidget* target);
     DownloadingItemWidget* downloadItemWidget(int row) const;
+
+signals:
+    void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
 
 private:
     void signalsAndSlots() const;

@@ -45,12 +45,11 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
     : QWidget(parent)
     , ui(new Ui::DownloadingItemWidget)
     , m_listWidget(nullptr)
-    , m_downloader(downloader)
+    , m_downloader(std::move(downloader))
 {
     ui->setupUi(this);
     signalsAndSlots();
-    ui->labelTitle->setText(QString::fromStdString(downloader->filename()));
-
+    ui->labelTitle->setText(QString::fromStdString(m_downloader->filename()));
     ui->btnPause->setIcon(QIcon(":icon/download/start.svg"));
     ui->btnDelete->setIcon(QIcon(":icon/download/delete.svg"));
     ui->btnFolder->setIcon(QIcon(":icon/download/folder.svg"));
@@ -73,7 +72,7 @@ DownloadingListWidget* DownloadingItemWidget::listWidget() const
     return m_listWidget;
 }
 
-std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder()
+std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder() const
 {
     return m_downloader;
 }
@@ -168,6 +167,7 @@ void DownloadingItemWidget::signalsAndSlots()
 
         if (auto item = m_listWidget->itemFromWidget(this))
         {
+            emit m_listWidget->finished(m_downloader->videoINfoFull());
             delete item;
             deleteLater();
             return;
@@ -182,6 +182,7 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
     signalsAndSlots();
     setBackgroundRole(QPalette::NoRole);
 }
+
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
     auto pWidget = new DownloadingItemWidget(downloader, this);

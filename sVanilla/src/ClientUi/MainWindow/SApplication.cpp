@@ -26,7 +26,7 @@ Plugin::PluginManager& SApplication::pluginManager()
 
 void SApplication::startServer()
 {
-    const auto aria2Config = SingleConfig::instance().getAriaConfig();
+    const auto aria2Config = SingleConfig::instance().ariaConfig();
     if (!aria2Config.isRemote)
     {
         m_ariaServer.setErrorFunc([] {});

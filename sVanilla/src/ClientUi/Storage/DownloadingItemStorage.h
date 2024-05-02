@@ -3,7 +3,7 @@
 #include "Sqlite/Storage/BaseStorage.h"
 #include "Sqlite/Storage/StorageFactory.h"
 
-struct FinishedItem
+struct DownloadingItem
 {
     std::string uniqueId;
     int pluginType;
@@ -13,7 +13,9 @@ struct FinishedItem
     std::string title;
     std::string auther;
     std::string url;
+    double progress;
     int duration;
+    int status;
     int type;
 
     // move to sqlite
@@ -22,7 +24,7 @@ struct FinishedItem
 };
 
 // clang-format off
-TABLESTRUCTINFO_BEGIN(FinishedItem)
+TABLESTRUCTINFO_BEGIN(DownloadingItem)
     TABLESTRUCTINFO_COMLUNM(uniqueId, uniqueId, false, true)
     TABLESTRUCTINFO_COMLUNM(pluginType)
     TABLESTRUCTINFO_COMLUNM(filePath)
@@ -31,16 +33,20 @@ TABLESTRUCTINFO_BEGIN(FinishedItem)
     TABLESTRUCTINFO_COMLUNM(title)
     TABLESTRUCTINFO_COMLUNM(auther)
     TABLESTRUCTINFO_COMLUNM(url)
+    TABLESTRUCTINFO_COMLUNM(progress)
     TABLESTRUCTINFO_COMLUNM(duration)
+    TABLESTRUCTINFO_COMLUNM(status)
     TABLESTRUCTINFO_COMLUNM(type)
-TABLESTRUCTINFO_END(FinishedItem)
+TABLESTRUCTINFO_END(DownloadingItem)
 // clang-format on
 
-class FinishItemStorage : public sqlite::BaseStorage
+class DownloadingItemStorage : public sqlite::BaseStorage
 {
 public:
-    using Entity = FinishedItem;
+    using Entity = DownloadingItem;
     using BaseStorage::BaseStorage;
+
+    void updateStatus(int status, const sqlite::ConditionWrapper& condition);
 
 private:
 };

@@ -66,6 +66,11 @@ const std::string& SqliteColumn::getOriginName() const
     return m_originColunmName;
 }
 
+const SqliteColumnValue& SqliteColumn::value() const
+{
+    return m_value;
+}
+
 int32_t SqliteColumn::getInt() const noexcept
 {
     int32_t res = 0;

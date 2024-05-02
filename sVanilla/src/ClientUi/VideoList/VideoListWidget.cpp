@@ -4,11 +4,12 @@
 #include "VideoListWidget.h"
 #include "VideoDetailWidget.h"
 #include "ui_VideoListWidget.h"
+#include "ClientUi/VideoList/VideoData.h"
 
 
 VideoListItemWidget::VideoListItemWidget(std::string identifier, QWidget* parent)
     : QWidget(parent)
-    , Identifier(std::move(identifier))
+    , m_identifier(std::move(identifier))
     , ui(new Ui::VideoListItemWidget())
 {
     ui->setupUi(this);
@@ -23,9 +24,9 @@ VideoListItemWidget::~VideoListItemWidget()
 
 void VideoListItemWidget::updateVideoItem()
 {
-    ui->Title->setText(QString::fromStdString(m_videoView->Title));
-    ui->Duration->setText(QString::fromStdString(m_videoView->Duration));
-    ui->Author->setText(QString::fromStdString(m_videoView->Publisher));
+    ui->Title->setText(QString::fromStdString(m_videoView->videoView->Title));
+    ui->Duration->setText(QString::fromStdString(m_videoView->videoView->Duration));
+    ui->Author->setText(QString::fromStdString(m_videoView->videoView->Publisher));
 }
 
 void VideoListItemWidget::setUi()
@@ -44,13 +45,13 @@ VideoListWidget::VideoListWidget(QWidget* parent)
     setSelectionMode(ExtendedSelection);
 }
 
-void VideoListWidget::addVideoItem(const std::shared_ptr<Adapter::BaseVideoView>& videoView)
+void VideoListWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
 {
-    auto* const videoItem = new VideoListItemWidget(videoView->Identifier, this);
+    auto* const videoItem = new VideoListItemWidget(videoView->videoView->Identifier, this);
     auto* const item = new QListWidgetItem(this);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(videoView->Identifier, item));
+    m_items.insert(std::make_pair(videoView->videoView->Identifier, item));
     videoItem->m_videoView = videoView;
     videoItem->updateVideoItem();
     connectItemSingal(videoItem);
@@ -87,7 +88,7 @@ void VideoListWidget::getSignalPointer(QSplitter* splitter)
 void VideoListWidget::connectItemSingal(const VideoListItemWidget* itemWidget)
 {
     connect(itemWidget, &VideoListItemWidget::detailBtnClick, this, [this, itemWidget]() {
-        const auto itemIdentifier = itemWidget->Identifier;
+        const auto itemIdentifier = itemWidget->m_identifier;
         if (detailPanelVisible() && currentIdentifier == itemIdentifier)
         {
             hideDetailPanel();

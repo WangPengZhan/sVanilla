@@ -5,6 +5,27 @@
 
 namespace sqlite
 {
+std::string prepareSql(const std::vector<SqliteColumn>& newValues)
+{
+    std::string result;
+    for (auto it = newValues.begin(); it != newValues.end(); ++it)
+    {
+        if (it != newValues.begin())
+        {
+            result += ",";
+            result += it->getName();
+            result += " = ?";
+        }
+        else
+        {
+            result += it->getName();
+            result += " = ?";
+        }
+    }
+
+    return result;
+}
+
 bool SqliteUtil::createTableIfNotExists(SQLiteDatabase& db, const std::string& tableName, const BaseTableStructInfo& tableStruct)
 {
     if (tableName.empty())
@@ -172,6 +193,31 @@ bool SqliteUtil::dropViewIfExists(const SqliteWithMutexPtr& db, const std::strin
     std::string sql = "DROP VIEW IF EXISTS " + viewName;
     std::lock_guard lk(db->mutex);
     return db->execute(sql);
+}
+
+int64_t SqliteUtil::updateEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<SqliteColumn>& newValues,
+                                   const ConditionWrapper& condition)
+{
+    if (!db || tableName.empty())
+    {
+        return false;
+    }
+
+    std::string sql = "UPDATE " + tableName + " SET ";
+    sql += prepareSql(newValues);
+    sql += " ";
+    sql += condition.prepareConditionString();
+
+    SQLiteStatement stmt(*(db.get()), sql);
+    int index = 1;
+    for (const auto& value : newValues)
+    {
+        bind(stmt, index++, value.value());
+    }
+    condition.bind(stmt, index);
+    sql = stmt.expandedSQL();
+    stmt.executeStep();
+    return stmt.getChanges();
 }
 
 bool SqliteUtil::deleteEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition)
