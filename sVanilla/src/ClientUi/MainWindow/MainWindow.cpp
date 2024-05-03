@@ -27,23 +27,11 @@ MainWindow::MainWindow(QWidget* parent)
     , styleAgent(new QWK::StyleAgent(this))
     , windowBar(new WindowBar(this))
 {
-    installWindowAgent();
     ui->setupUi(this);
+    installWindowAgent();
+    setUi();
     signalsAndSlots();
     setUpShortcuts();
-    resize(800, 600);
-    Toast::create(this);
-    setLightTheme();
-#if 0
-    const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
-    const std::list<std::string> audios = {};
-    download::ResourseInfo info;
-    info.videoUris = videos;
-    info.audioUris = audios;
-    info.option.dir = "output";
-    info.option.out = "test";
-    ui->downloadPage->addDownloadTask(info);
-#endif
 }
 
 MainWindow::~MainWindow() = default;
@@ -60,6 +48,23 @@ void MainWindow::closeEvent(QCloseEvent* event)
     QFile::remove(logPath);
 #endif
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::setUi()
+{
+    resize(800, 600);
+    Toast::create(this);
+    setLightTheme();
+#if 0
+    const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
+    const std::list<std::string> audios = {};
+    download::ResourseInfo info;
+    info.videoUris = videos;
+    info.audioUris = audios;
+    info.option.dir = "output";
+    info.option.out = "test";
+    ui->downloadPage->addDownloadTask(info);
+#endif
 }
 
 void MainWindow::signalsAndSlots()
@@ -115,7 +120,7 @@ void MainWindow::setUpShortcuts()
 
 void MainWindow::setLightTheme()
 {
-    Vanilla::Style::setStyle(Vanilla::Light);
+    Vanilla::Style::setDefaultTheme(Vanilla::Light);
 #ifdef _WIN32
     setBlurEffect(DWMBlur);
 #elif __APPLE__
@@ -125,7 +130,8 @@ void MainWindow::setLightTheme()
 
 void MainWindow::setDarkTheme()
 {
-    Vanilla::Style::setStyle(Vanilla::Dark);
+    Vanilla::Style::setDefaultTheme(Vanilla::Dark);
+
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
 #elif __APPLE__

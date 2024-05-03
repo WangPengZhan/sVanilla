@@ -51,6 +51,7 @@ protected:
     void closeEvent(QCloseEvent* event) override;
 
 private:
+    void setUi();
     void signalsAndSlots();
     void setUpShortcuts();
     void setLightTheme();

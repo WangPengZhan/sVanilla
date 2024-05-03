@@ -49,7 +49,7 @@ void HomePage::setUi()
     ui->HomePageSubmit->setIcon(QIcon(":icon/home/enter.svg"));
     ui->HomePageSubmit->setLabel(QStringLiteral("Submit"));
     ui->HomePageSubmit->setIconFirst(false);
-    ui->IconBtn->setIcon(QIcon(":icon/home/icon.svg"));
+    ui->IconBtn->setIcon(QIcon(":icon/home/whiteBg.svg"));
     ui->IconBtn->setIconSize({40, 40});
     ui->LearnBtn->setIcon(QIcon(":icon/home/openurl.svg"));
     ui->HomeLineEdit->setFixedHeight(30);
