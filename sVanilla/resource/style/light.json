@@ -1,0 +1,113 @@
+{
+  "name": "Crescent",
+  "author": "Alanus",
+  "mode": "light",
+  "color": {
+    "backgroundColor": "#CCffffff",
+    "primaryTextColor": "#322C2B",
+    "textColor": "#0x1890",
+    "pressedTextColor": "#344955",
+    "hoverTextColor": "#50727B",
+    "highlightTextColor": "#322C2B",
+    "indicatorColor": "#884A39",
+    "buttonForeground": "#C08B5C",
+    "buttonBackground": "#DAC0A3",
+    "buttonHoveredForeground": "#C08C64",
+    "buttonHoveredBackground": "#F8F0E5",
+    "buttonPressedForeground": "#C08B5C",
+    "buttonPressedBackground": "#F5EEE6",
+    "buttonBorderColor": "#00000000",
+    "checkBoxBackground": "#00000000",
+    "checkBoxForeground": "#A4907C",
+    "checkBoxCheckedForeground": "#F5EEE6",
+    "checkBoxCheckedBackground": "#00000000",
+    "checkBoxHoveredBackground": "#00000000",
+    "checkBoxBorderColor": "#C38154",
+    "checkBoxHoveredBorderColor": "#FF9B50",
+    "progressBarBackground": "#B4D4FF",
+    "progressBarForeground": "#86B6F6",
+    "progressBarText": "#008DDA",
+    "toggleButtonBackground": "#EEEEEE",
+    "toggleButtonForeground": "#FDAF7B",
+    "toggleButtonIndicatorColor": "#DAC0A3",
+    "itemViewEvenRowColor": "#c8c8c8",
+    "itemViewOddRowColor": "#dcdcdc",
+    "itemViewSelectedColor": "#B3A492",
+    "lineEditFocusOutline": "#87C4FF",
+    "lineEditOutline": "#FFC26F",
+    "iconLabelText": "#50727B",
+    "comboBoxDropDownBackground": "#CCF5EFE6"
+  },
+  "size": {
+    "fontSize": 12,
+    "fontH1": 32,
+    "fontH2": 24,
+    "fontH3": 19,
+    "fontH4": 16,
+    "fontH5": 13,
+    "fontH6": 11,
+    "borderWidth": 2,
+    "iconSize": 16,
+    "normalRadius": 4,
+    "buttonRadius": 4,
+    "menuItemRadius": 4,
+    "itemViewRadius": 8
+  },
+  "icons": {
+    "upArrow": ":/VanillaStyle/icons/UpArrow.svg",
+    "downArrow": ":/VanillaStyle/icons/DownArrow.svg",
+    "progressIndicator": ":/VanillaStyle/icons/Plane.svg"
+  },
+  "progressBarMode": "mode2",
+  "debug": true,
+  "patch": [
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "CleanButtonPatch",
+      "configPatch": {
+        "color": {
+          "buttonForeground": "#C08B5C",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#F8F0E5",
+          "buttonPressedForeground": "#C08B5C",
+          "buttonPressedBackground": "#F5EEE6",
+          "buttonBorderColor": "#00000000"
+        }
+      }
+    },
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "ButtonWithBorderPatch",
+      "configPatch": {
+        "color": {
+          "buttonForeground": "#C08B5C",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#F8F0E5",
+          "buttonPressedForeground": "#C08B5C",
+          "buttonPressedBackground": "#F5EEE6",
+          "buttonBorderColor": "#FFBB70"
+        }
+      }
+    },
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "AppIconButtonPatch",
+      "configPatch": {
+        "color": {
+          "buttonForeground": "#00000000",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#00000000",
+          "buttonPressedForeground": "#00000000",
+          "buttonPressedBackground": "#00000000",
+          "buttonBorderColor": "#00000000"
+        }
+      }
+    }
+  ]
+}

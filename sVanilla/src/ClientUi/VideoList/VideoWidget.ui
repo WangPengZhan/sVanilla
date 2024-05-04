@@ -17,12 +17,6 @@
    <property name="topMargin">
     <number>10</number>
    </property>
-   <property name="rightMargin">
-    <number>10</number>
-   </property>
-   <property name="bottomMargin">
-    <number>10</number>
-   </property>
    <item>
     <widget class="QWidget" name="SwitchBtnWidget" native="true">
      <property name="sizePolicy">
@@ -36,7 +30,7 @@
        <number>10</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>10</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
@@ -60,13 +54,6 @@
           <width>400</width>
           <height>0</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Vanilla::IconButton" name="VideoSearchBtn">
-        <property name="text">
-         <string>PushButton</string>
         </property>
        </widget>
       </item>
@@ -173,9 +160,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
+   <class>Vanilla::ToggleButton</class>
+   <extends>QWidget</extends>
+   <header>VanillaStyle/Widgets/ToggleButton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>::VideoGridWidget</class>
@@ -192,12 +180,6 @@
    <class>::VideoDetailWidget</class>
    <extends>QWidget</extends>
    <header>ClientUi/VideoList/VideoDetailWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Vanilla::ToggleButton</class>
-   <extends>QWidget</extends>
-   <header>VanillaStyle/Widgets/ToggleButton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

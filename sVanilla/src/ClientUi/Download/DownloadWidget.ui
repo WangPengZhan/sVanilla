@@ -6,32 +6,85 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>621</height>
+    <width>515</width>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DownloadWidget</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true"/>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>10</number>
+   </property>
+   <property name="topMargin">
+    <number>10</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="NavigationWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>538</width>
+          <height>17</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>1</number>
      </property>
      <widget class="QWidget" name="widgetDownloading">
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="::DownloadingListWidget" name="DownloadListWidget"/>
+      <layout class="QVBoxLayout" name="gridLayout">
+       <item>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="::DownloadingListWidget" name="DownloadListWidget"/>
+         <widget class="QWidget" name="DownloadInfoamationWidget" native="true"/>
+        </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QWidget" name="DownloadInfoamationWidget" native="true"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QWidget" name="DownloadPageBtns" native="true">
+       <item>
+        <widget class="QWidget" name="DownloadPageBtnGroup" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QPushButton" name="btnStopAll">
@@ -99,15 +152,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>::DownloadingListWidget</class>
-   <extends>QListWidget</extends>
-   <header>ClientUi/Download/DownloadingListWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>Vanilla::ToggleButton</class>
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/ToggleButton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::DownloadingListWidget</class>
+   <extends>QListWidget</extends>
+   <header>ClientUi/Download/DownloadingListWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

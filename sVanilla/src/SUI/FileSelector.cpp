@@ -20,7 +20,9 @@ public:
     State validate(QString& input, int& /*pos*/) const override
     {
         if (input.isEmpty())
+        {
             return Acceptable;
+        }
         switch (m_selector->mode())
         {
         case FileSelector::Directory:
@@ -70,9 +72,10 @@ void FileSelector::chooseFile()
     {
         setText(fileName);
         QString name = fileName;
-        int pos = 0;
-        if (m_validator->validate(name, pos) == QValidator::Acceptable)
+        if (int pos = 0; m_validator->validate(name, pos) == QValidator::Acceptable)
+        {
             emit editingFinished();
+        }
     }
 }
 

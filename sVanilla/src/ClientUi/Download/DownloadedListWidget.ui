@@ -65,9 +65,16 @@
        </spacer>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="btnDelete">
+       <widget class="QPushButton" name="btnDelete">
         <property name="text">
          <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/delete.svg</normaloff>:/icon/download/delete.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
         </property>
        </widget>
       </item>
@@ -124,17 +131,24 @@
        </spacer>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="btnRestart">
+       <widget class="QPushButton" name="btnRestart">
         <property name="text">
          <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/restart.svg</normaloff>:/icon/download/restart.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
         </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="btnFolder">
+       <widget class="QPushButton" name="btnFolder">
         <property name="minimumSize">
          <size>
           <width>32</width>
@@ -150,10 +164,17 @@
         <property name="text">
          <string/>
         </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/folder.svg</normaloff>:/icon/download/folder.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="btnDetail">
+       <widget class="QPushButton" name="btnDetail">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -163,6 +184,13 @@
         <property name="text">
          <string/>
         </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/details.svg</normaloff>:/icon/download/details.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -171,13 +199,8 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
-  </customwidget>
- </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

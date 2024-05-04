@@ -93,10 +93,6 @@ void DownloadingItemWidget::setStop()
 void DownloadingItemWidget::setUi()
 {
     ui->labelTitle->setText(QString::fromStdString(m_downloader->filename()));
-    ui->btnPause->setIcon(QIcon(":icon/download/start.svg"));
-    ui->btnDelete->setIcon(QIcon(":icon/download/delete.svg"));
-    ui->btnFolder->setIcon(QIcon(":icon/download/folder.svg"));
-    ui->btnDetail->setIcon(QIcon(":icon/download/details.svg"));
 }
 
 void DownloadingItemWidget::signalsAndSlots()

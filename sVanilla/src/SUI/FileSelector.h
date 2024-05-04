@@ -1,7 +1,3 @@
-//
-// Created by Alanus Meminius on 2024/1/8.
-//
-
 #pragma once
 
 #include <QLineEdit>
@@ -36,7 +32,7 @@ signals:
 
 private:
     Mode m_mode = Directory;
-    class QAction* m_action = nullptr;
-    class QValidator* m_validator;
+    QAction* m_action = nullptr;
+    QValidator* m_validator;
     Ui::FileSelector* ui;
 };

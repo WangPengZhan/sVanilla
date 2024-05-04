@@ -142,7 +142,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="VideoGridDetailsBtn">
+       <widget class="QPushButton" name="VideoGridDetailsBtn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -151,11 +151,18 @@
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/video/detail.svg</normaloff>:/icon/video/detail.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="VideoGridDownloadBtn">
+       <widget class="QPushButton" name="VideoGridDownloadBtn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -164,6 +171,13 @@
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/video/download.svg</normaloff>:/icon/video/download.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
         </property>
        </widget>
       </item>
@@ -174,11 +188,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
-  </customwidget>
   <customwidget>
    <class>::RoundImageWidget</class>
    <extends>QWidget</extends>
@@ -192,6 +201,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

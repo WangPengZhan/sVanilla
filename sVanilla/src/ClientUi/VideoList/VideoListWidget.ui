@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
-    <height>52</height>
+    <width>670</width>
+    <height>102</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,7 +83,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="Vanilla::IconButton" name="VideoListDetailsBtn">
+    <widget class="QPushButton" name="VideoListDetailsBtn">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -92,11 +92,18 @@
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../resource/sVanilla.qrc">
+       <normaloff>:/icon/video/detail.svg</normaloff>:/icon/video/detail.svg</iconset>
+     </property>
+     <property name="_vanillaStyle_Patch" stdset="0">
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="Vanilla::IconButton" name="VideoListDownloadBtn">
+    <widget class="QPushButton" name="VideoListDownloadBtn">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -105,19 +112,21 @@
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../resource/sVanilla.qrc">
+       <normaloff>:/icon/video/download.svg</normaloff>:/icon/video/download.svg</iconset>
+     </property>
+     <property name="_vanillaStyle_Patch" stdset="0">
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
-  </customwidget>
- </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

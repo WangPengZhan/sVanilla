@@ -120,9 +120,9 @@ void MainWindow::setUpShortcuts()
 
 void MainWindow::setLightTheme()
 {
-    Vanilla::Style::setDefaultTheme(Vanilla::Light);
+    Vanilla::Style::setStyleFromAppDir("light");
 #ifdef _WIN32
-    setBlurEffect(DWMBlur);
+    setBlurEffect(AcrylicMaterial);
 #elif __APPLE__
     setBlurEffect(LightBlur);
 #endif
@@ -130,7 +130,7 @@ void MainWindow::setLightTheme()
 
 void MainWindow::setDarkTheme()
 {
-    Vanilla::Style::setDefaultTheme(Vanilla::Dark);
+    Vanilla::Style::setStyleFromAppDir("dark");
 
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);

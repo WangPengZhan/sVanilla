@@ -18,10 +18,6 @@ DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoI
     ui->setupUi(this);
     signalsAndSlots();
     ui->labelTitle->setText(QString::fromStdString(m_videoInfoFull->videoView->Title));
-    ui->btnRestart->setIcon(QIcon(":icon/download/start.svg"));
-    ui->btnDelete->setIcon(QIcon(":icon/download/delete.svg"));
-    ui->btnFolder->setIcon(QIcon(":icon/download/folder.svg"));
-    ui->btnDetail->setIcon(QIcon(":icon/download/details.svg"));
     setBackgroundRole(QPalette::NoRole);
 }
 

@@ -28,9 +28,23 @@
        </spacer>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="IconBtn">
+       <widget class="QPushButton" name="IconBtn">
         <property name="text">
-         <string>PushButton</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>AppIconButtonPatch</string>
+        </property>
+        <property name="CustomIconColor" stdset="0">
+         <color>
+          <red>153</red>
+          <green>188</green>
+          <blue>133</blue>
+         </color>
         </property>
        </widget>
       </item>
@@ -89,7 +103,18 @@
        </spacer>
       </item>
       <item>
-       <widget class="Vanilla::IconLabel" name="HomePageSubmit" native="true"/>
+       <widget class="QPushButton" name="HomePageSubmit">
+        <property name="text">
+         <string>Submit</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/enter.svg</normaloff>:/icon/home/enter.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -159,10 +184,17 @@
          </sizepolicy>
         </property>
         <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
+         <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
          <string>Learn about sVanilla </string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>ButtonWithBorderPatch</string>
         </property>
        </widget>
       </item>
@@ -177,6 +209,9 @@
         <property name="text">
          <string>Import Plugin</string>
         </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>ButtonWithBorderPatch</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -187,8 +222,18 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="text">
          <string>Login Download Website</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>ButtonWithBorderPatch</string>
         </property>
        </widget>
       </item>
@@ -225,7 +270,7 @@
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="Vanilla::IconButton" name="ClipBoardBtn">
+       <widget class="QPushButton" name="ClipBoardBtn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -241,12 +286,26 @@
         <property name="text">
          <string/>
         </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="Vanilla::IconButton" name="HistoryBtn">
+       <widget class="QPushButton" name="HistoryBtn">
         <property name="text">
          <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
         </property>
        </widget>
       </item>
@@ -281,18 +340,9 @@
    <extends>QLineEdit</extends>
    <header>SUI/SearchLineEdit.h</header>
   </customwidget>
-  <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Vanilla::IconLabel</class>
-   <extends>QWidget</extends>
-   <header>VanillaStyle/Widgets/IconLabel.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

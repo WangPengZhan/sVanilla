@@ -3,7 +3,6 @@
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
 
-
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
     , ui(new Ui::SearchLineEdit())
@@ -40,7 +39,7 @@ void SearchLineEdit::resizeEvent(QResizeEvent* event)
     ui->ClearBtn->move(width() - 50, 0);
     ui->SearchBtn->resize(height(), height());
     ui->SearchBtn->move(width() - 25, 0);
-    return QLineEdit::resizeEvent(event);
+    QLineEdit::resizeEvent(event);
 }
 
 void SearchLineEdit::setUi()
