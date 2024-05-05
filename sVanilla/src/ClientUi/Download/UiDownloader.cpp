@@ -131,47 +131,6 @@ void UiDownloader::deleteDbDownloadingItem()
     m_storageManager.downloadingStorage()->deleteEntities(condition);
 }
 
-deleteDbDownloadingItem();
-ctreateDbFinishedItem();
-
-emit finished(QString());
-}
-
-void UiDownloader::createDbDownloadingItem()
-{
-    DownloadingItem item;
-    item.uniqueId = guid();
-    item.pluginType = 0;
-    item.filePath = filename();
-    item.coverPath = m_videoInfoFull->videoView->Cover;
-    item.bvid = m_videoInfoFull->videoView->Identifier;
-    item.title = m_videoInfoFull->videoView->Title;
-    item.auther = m_videoInfoFull->videoView->Publisher;
-    item.url = "https://www.bilibili.com/video/" + item.bvid;
-    item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
-    item.progress = 0;
-    item.status = static_cast<int>(status());
-    item.type = 0;
-    m_storageManager.downloadingStorage()->insertEntities<DownloadingItem>({item});
-}
-
-void UiDownloader::updateDbStatus()
-{
-    auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
-    sqlite::ConditionWrapper condition;
-    condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, guid());
-
-    m_storageManager.downloadingStorage()->updateStatus(status(), condition);
-}
-
-void UiDownloader::deleteDbDownloadingItem()
-{
-    auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
-    sqlite::ConditionWrapper condition;
-    condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, guid());
-    m_storageManager.downloadingStorage()->deleteEntities(condition);
-}
-
 void UiDownloader::ctreateDbFinishedItem()
 {
     FinishedItem item;
