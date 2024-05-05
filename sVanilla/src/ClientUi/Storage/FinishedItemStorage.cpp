@@ -44,7 +44,7 @@ bool FinishItemStorage::isDownload(const std::string& guid)
     auto fileExist = sqlite::TableStructInfo<Entity>::self().fileExist;
     sqlite::ConditionWrapper condition;
     condition.addCondition(uniqueIdCol, sqlite::Condition::EQUALS, guid);
-    condition.addCondition(fileExist, sqlite::Condition::EQUALS, true);
+    condition.addCondition(fileExist, sqlite::Condition::EQUALS, static_cast<int64_t>(true));
 
     std::stringstream ss;
     ss << "SELECT count(*) FROM " << tableName();
@@ -80,7 +80,8 @@ void FinishItemStorage::updateFileExist(bool exist, const std::string& guid)
     sqlite::ConditionWrapper condition;
     condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, guid);
 
+    sqlite::SqliteColumnValue value = static_cast<int64_t>(exist);
     auto fileExistName = table.fileExist.colunmName();
-    sqlite::SqliteColumn colunmValue(exist, -1, fileExistName);
+    sqlite::SqliteColumn colunmValue(value, -1, fileExistName);
     sqlite::SqliteUtil::updateEntities(m_writeDBPtr, tableName(), {colunmValue}, condition);
 }

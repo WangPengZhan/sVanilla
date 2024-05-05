@@ -295,7 +295,7 @@ inline void SqliteUtil::updateEntitiesCore(SQLiteStatement& stmt, const std::vec
         {
             indexToType(uniqueCol, [&](auto&& elem) {
                 using ValueType = decltype(elem);
-                auto memberPtr = uniqueCol.memberPtr<Entity, ValueType>();
+                auto memberPtr = uniqueCol.template memberPtr<Entity, ValueType>();
                 auto value = entity.*(*memberPtr);
                 entity.stmt.bind(index++, elem);
             });

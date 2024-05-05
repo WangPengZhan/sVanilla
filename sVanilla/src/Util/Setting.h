@@ -2,6 +2,7 @@
 #include <QSettings>
 #include <QFileInfo>
 
+#include <mutex>
 #include <shared_mutex>
 
 class CustomSettings

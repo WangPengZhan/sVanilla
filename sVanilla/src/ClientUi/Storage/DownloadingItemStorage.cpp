@@ -56,8 +56,9 @@ void DownloadingItemStorage::updateStatus(int status, const sqlite::ConditionWra
     sql = stmt.expandedSQL();
     stmt.executeStep();
 #else
+    sqlite::SqliteColumnValue value = static_cast<int64_t>(status);
     auto statusName = sqlite::TableStructInfo<Entity>::self().status.colunmName();
-    sqlite::SqliteColumn colunmValue(status, -1, statusName);
+    sqlite::SqliteColumn colunmValue(value, -1, statusName);
     sqlite::SqliteUtil::updateEntities(m_writeDBPtr, tableName(), {colunmValue}, condition);
 #endif
 }
