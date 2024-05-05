@@ -5,7 +5,7 @@
 
 #include "IPlugin.h"
 
-namespace Plugin
+namespace plugin
 {
 class DynamicLibLoader
 {
@@ -33,4 +33,4 @@ private:
     std::atomic_bool m_loaded;
 };
 
-}  // namespace Plugin
+}  // namespace plugin

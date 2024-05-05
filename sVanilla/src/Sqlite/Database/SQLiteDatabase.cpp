@@ -35,6 +35,7 @@ void SQLiteDatabase::Deleter::operator()(sqlite3* dbHandle)
 
 SQLiteDatabase::SQLiteDatabase(const std::string& path)
     : m_db(nullptr)
+    , m_fileName(path)
 {
     if (sqlite3_initialize() != SQLITE_OK)
     {

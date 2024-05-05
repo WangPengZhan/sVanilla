@@ -458,7 +458,7 @@ std::stringstream& ConditionWrapper::conditionString(std::stringstream& ss) cons
             ss << " " << getConditionRelationName(m_logicRelation) << " ";
             std::visit(
                 [&ss](auto&& value) {
-                    value.prepareConditionString(ss);
+                    value.conditionString(ss);
                 },
                 m_conditionInfos.at(i));
         }

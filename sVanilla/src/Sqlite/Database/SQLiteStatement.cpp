@@ -313,6 +313,8 @@ int SQLiteStatement::tryExecuteStep() noexcept
         return SQLITE_MISUSE;
     }
 
+    m_colunmIndexMap.clear();
+    m_colunmsMap.clear();
     const int ret = sqlite3_step(handle());
     if (SQLITE_ROW == ret)
     {
@@ -329,7 +331,13 @@ int SQLiteStatement::tryExecuteStep() noexcept
 
 SqliteColumn SQLiteStatement::getColunmFromStmt(int col) const
 {
-    std::string colName = sqlite3_column_name(handle(), col);
+    std::string colName;
+    const char* pColName = sqlite3_column_name(handle(), col);
+    if (pColName)
+    {
+        colName = pColName;
+    }
+
     std::string colOriginName;
     const char* pOriginName = sqlite3_column_origin_name(handle(), col);
     if (pOriginName)

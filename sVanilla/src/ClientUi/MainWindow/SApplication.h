@@ -13,7 +13,7 @@ public:
     ~SApplication();
 
     aria2net::AriaServer& ariaServer();
-    Plugin::PluginManager& pluginManager();
+    plugin::PluginManager& pluginManager();
 
 private:
     void startServer();
@@ -21,7 +21,7 @@ private:
 
 private:
     aria2net::AriaServer m_ariaServer;
-    Plugin::PluginManager m_pluginManager;
+    plugin::PluginManager m_pluginManager;
     QFileSystemWatcher m_watcher;
 };
 

@@ -45,7 +45,7 @@ inline void CurlValueOption<COValueType>::updateOption(const AbstractOption& oth
 template <typename COValueType>
 inline void CurlValueOption<COValueType>::setToCurl(CURL* handle) const
 {
-    if constexpr (std::is_same_v<std::string, COValueType>)
+    if constexpr (std::is_same_v<std::string, std::remove_cvref_t<COValueType>>)
     {
         const CURLcode ret = curl_easy_setopt(handle, getOption(), m_value.c_str());
     }

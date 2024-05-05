@@ -25,6 +25,7 @@ class BiliDownloader;
 }
 struct VideoInfoFull;
 class UiDownloader;
+struct FinishedItem;
 
 class DownloadWidget : public QWidget
 {
@@ -41,6 +42,8 @@ public:
 
     void getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo);
     void praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl, const std::shared_ptr<VideoInfoFull>& videoInfo);
+
+    static std::shared_ptr<VideoInfoFull> finishItemToVideoInfoFull(const FinishedItem& item);
 
 signals:
     void sigDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);

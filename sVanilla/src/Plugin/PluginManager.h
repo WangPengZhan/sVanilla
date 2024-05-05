@@ -11,7 +11,7 @@
 #include "IPlugin.h"
 #include "DynamicLibLoader.h"
 
-namespace Plugin
+namespace plugin
 {
 
 struct PluginConfig
@@ -42,6 +42,10 @@ public:
     void loadConfig();
     void saveConfig() const;
 
+public:
+    static const std::string m_dynamicExtension;
+    static const std::string m_pluginDir;
+
 private:
     void initPluginPaths();
     void createPluginDir();
@@ -53,12 +57,10 @@ private:
     std::unordered_set<std::string> m_pluginsPaths;
     std::recursive_mutex m_pluginsMutex;
 
-    static const std::string m_pluginDir;
     static const std::string m_configPath;
-    static const std::string m_dynamicExtension;
 
     mutable std::atomic_bool m_configChanged;
     std::vector<PluginConfig> m_pluginConfig;
 };
 
-}  // namespace Plugin
+}  // namespace plugin

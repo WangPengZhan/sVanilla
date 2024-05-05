@@ -8,6 +8,11 @@
 #include "ui_DownloadedListWidget.h"
 #include "ClientUi/VideoList/VideoData.h"
 #include "Adapter/BaseVideoView.h"
+#include "ClientUi/Storage/FinishedItemStorage.h"
+#include "ClientUi/Storage/StorageManager.h"
+#include "Sqlite/SqlComposer/BaseInfo.h"
+#include "Sqlite/SqlComposer/ConditionWrapper.h"
+#include "ClientUi/Config/SingleConfig.h"
 
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
@@ -41,17 +46,25 @@ std::shared_ptr<VideoInfoFull> DownloadedItemWidget::videoInfoFull() const
     return m_videoInfoFull;
 }
 
-void DownloadedItemWidget::setStart()
+void DownloadedItemWidget::clearItem()
 {
+    ui->btnDelete->clicked();
 }
 
-void DownloadedItemWidget::setStop()
+void DownloadedItemWidget::reloadItem()
+{
+    ui->btnRestart->clicked();
+}
+
+void DownloadedItemWidget::updateStatus()
 {
 }
 
 void DownloadedItemWidget::signalsAndSlots()
 {
     connect(ui->btnDelete, &QPushButton::clicked, this, [this]() {
+        deleteDbFinishItem();
+
         if (auto item = m_listWidget->itemFromWidget(this))
         {
             delete item;
@@ -59,12 +72,38 @@ void DownloadedItemWidget::signalsAndSlots()
             return;
         }
     });
-    connect(ui->btnRestart, &QPushButton::clicked, this, [this](bool isResume) {
+    connect(ui->btnRestart, &QPushButton::clicked, this, [this]() {
+        auto& storageManager = sqlite::StorageManager::intance();
+        bool isDownloaded = storageManager.isDownloaded(m_videoInfoFull->getGuid());
+        if (isDownloaded)
+        {
+            // to do
+        }
 
+        deleteDbFinishItem();
+
+        emit m_listWidget->reloadItem(m_videoInfoFull);
+
+        if (auto item = m_listWidget->itemFromWidget(this))
+        {
+            delete item;
+            deleteLater();
+            return;
+        }
     });
     connect(ui->btnFolder, &QPushButton::clicked, this, [this]() {
-        QString filePath = QString::fromStdString("test.mp4");
-        if (std::filesystem::u8path("test.mp4").is_relative())
+        QString filePath = m_videoInfoFull->downloadConfig->downloadDir;
+        if (filePath.endsWith("/") && filePath.endsWith("\\"))
+        {
+            filePath += m_videoInfoFull->downloadConfig->nameRule;
+        }
+        else
+        {
+            filePath += "/";
+            filePath += m_videoInfoFull->downloadConfig->nameRule;
+        }
+
+        if (std::filesystem::u8path(filePath.toStdString()).is_relative())
         {
             filePath = QApplication::applicationDirPath() + "/" + filePath;
         }
@@ -86,10 +125,20 @@ void DownloadedItemWidget::signalsAndSlots()
     });
 }
 
+void DownloadedItemWidget::deleteDbFinishItem()
+{
+    auto& storageManager = sqlite::StorageManager::intance();
+    auto& table = sqlite::TableStructInfo<FinishItemStorage::Entity>::self();
+    sqlite::ConditionWrapper condition;
+    condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, m_videoInfoFull->getGuid());
+
+    storageManager.finishedItemStorage()->deleteEntities(condition);
+}
+
 DownloadedListWidget::DownloadedListWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    this->setObjectName(QStringLiteral("DownloadedListWidget"));
+    setObjectName(QStringLiteral("DownloadedListWidget"));
     signalsAndSlots();
     setBackgroundRole(QPalette::NoRole);
 }
@@ -104,34 +153,43 @@ void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull
     m_items.insert({videoInfFull->getGuid(), pItem});
 }
 
-void DownloadedListWidget::startAll()
+void DownloadedListWidget::clearAll()
 {
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
         if (downloadItemWidget(i))
         {
-            downloadItemWidget(i)->setStart();
+            downloadItemWidget(i)->clearItem();
         }
     }
 }
 
-void DownloadedListWidget::stopAll()
+void DownloadedListWidget::reloadAll()
 {
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
         if (downloadItemWidget(i))
         {
-            downloadItemWidget(i)->setStop();
+            downloadItemWidget(i)->reloadItem();
         }
     }
 }
 
-void DownloadedListWidget::deleteAll()
+void DownloadedListWidget::scan()
 {
-    m_items.clear();
-    clear();
+    auto& storageManager = sqlite::StorageManager::intance();
+    storageManager.finishedItemStorage()->updateFileExist();
+
+    int nCount = count();
+    for (int i = 0; i < nCount; ++i)
+    {
+        if (downloadItemWidget(i))
+        {
+            downloadItemWidget(i)->updateStatus();
+        }
+    }
 }
 
 void DownloadedListWidget::removeDownloadItem(const std::string& guid)

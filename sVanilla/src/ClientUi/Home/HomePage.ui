@@ -1,348 +1,346 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>HomePage</class>
- <widget class="QWidget" name="HomePage">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>642</width>
-    <height>625</height>
-   </rect>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QWidget" name="widget_3" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+  <class>HomePage</class>
+  <widget class="QWidget" name="HomePage">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>642</width>
+        <height>625</height>
+      </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <spacer name="horizontalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+        <widget class="QWidget" name="widget_3" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+              <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>40</width>
+                    <height>20</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <widget class="QPushButton" name="btnIcon">
+                <property name="text">
+                  <string/>
+                </property>
+                <property name="icon">
+                  <iconset resource="../../../resource/sVanilla.qrc">
+                    <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>AppIconButtonPatch</string>
+                </property>
+                <property name="CustomIconColor" stdset="0">
+                  <color>
+                    <red>153</red>
+                    <green>188</green>
+                    <blue>133</blue>
+                  </color>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>40</width>
+                    <height>20</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+          </layout>
+        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="IconBtn">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>AppIconButtonPatch</string>
-        </property>
-        <property name="CustomIconColor" stdset="0">
-         <color>
-          <red>153</red>
-          <green>188</green>
-          <blue>133</blue>
-         </color>
-        </property>
-       </widget>
+        <widget class="::SearchLineEdit" name="HomeLineEdit">
+          <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+            </sizepolicy>
+          </property>
+        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_6">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="::SearchLineEdit" name="HomeLineEdit">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="LineEditBelow" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="leftMargin">
-       <number>15</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+        <widget class="QWidget" name="LineEditBelow" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="leftMargin">
+              <number>15</number>
+            </property>
+            <property name="topMargin">
+              <number>0</number>
+            </property>
+            <property name="rightMargin">
+              <number>0</number>
+            </property>
+            <property name="bottomMargin">
+              <number>0</number>
+            </property>
+            <item>
+              <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>40</width>
+                    <height>20</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <widget class="QPushButton" name="HomePageSubmit">
+                <property name="text">
+                  <string>Submit</string>
+                </property>
+                <property name="icon">
+                  <iconset resource="../../../resource/sVanilla.qrc">
+                    <normaloff>:/icon/home/enter.svg</normaloff>:/icon/home/enter.svg</iconset>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>CleanButtonPatch</string>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="HomePageSubmit">
-        <property name="text">
-         <string>Submit</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/enter.svg</normaloff>:/icon/home/enter.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="Slogan">
-     <property name="text">
-      <string>Download What You Want</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>&quot;www.bilibili.com&quot;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>&quot;www.youtube.com&quot;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widget_2" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+        <widget class="QLabel" name="Slogan">
+          <property name="text">
+            <string>Download What You Want</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="LearnBtn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>Learn about sVanilla </string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>ButtonWithBorderPatch</string>
-        </property>
-       </widget>
+        <widget class="QLabel" name="label">
+          <property name="text">
+            <string>&quot;www.bilibili.com&quot;</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="LoadPluginBtn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Import Plugin</string>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>ButtonWithBorderPatch</string>
-        </property>
-       </widget>
+        <widget class="QLabel" name="label_2">
+          <property name="text">
+            <string>&quot;www.youtube.com&quot;</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="LoginWebsiteBtn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>Login Download Website</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>ButtonWithBorderPatch</string>
-        </property>
-       </widget>
+        <widget class="QLabel" name="label_3">
+          <property name="text">
+            <string>...</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+        <widget class="QWidget" name="widget_2" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+              <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>40</width>
+                    <height>20</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <widget class="QPushButton" name="LearnBtn">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="layoutDirection">
+                  <enum>Qt::RightToLeft</enum>
+                </property>
+                <property name="text">
+                  <string>Learn about sVanilla </string>
+                </property>
+                <property name="icon">
+                  <iconset resource="../../../resource/sVanilla.qrc">
+                    <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>ButtonWithBorderPatch</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QPushButton" name="LoadPluginBtn">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="text">
+                  <string>Import Plugin</string>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>ButtonWithBorderPatch</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QPushButton" name="LoginWebsiteBtn">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                  <string>Login Download Website</string>
+                </property>
+                <property name="icon">
+                  <iconset resource="../../../resource/sVanilla.qrc">
+                    <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>ButtonWithBorderPatch</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>40</width>
+                    <height>20</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+          </layout>
+        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="ClipBoardBtn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Add From Clipboard</string>
-        </property>
-        <property name="whatsThis">
-         <string>Add From Clipboard</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
+        <spacer name="verticalSpacer">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="HistoryBtn">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
+        <widget class="QWidget" name="widget" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+              <widget class="Vanilla::IconButton" name="ClipBoardBtn">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="toolTip">
+                  <string>Add From Clipboard</string>
+                </property>
+                <property name="whatsThis">
+                  <string>Add From Clipboard</string>
+                </property>
+                <property name="text">
+                  <string/>
+                </property>
+                <property name="icon">
+                  <iconset resource="../../../resource/sVanilla.qrc">
+                    <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>CleanButtonPatch</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="Vanilla::IconButton" name="HistoryBtn">
+                <property name="text">
+                  <string/>
+                </property>
+                <property name="icon">
+                  <iconset resource="../../../resource/sVanilla.qrc">
+                    <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+                </property>
+                <property name="_vanillaStyle_Patch" stdset="0">
+                  <string>CleanButtonPatch</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <spacer name="horizontalSpacer">
+                <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                  <size>
+                    <width>40</width>
+                    <height>20</height>
+                  </size>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <widget class="QLabel" name="ErrorMsgLabel">
+                <property name="text">
+                  <string/>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </widget>
       </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="ErrorMsgLabel">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <customwidgets>
-  <customwidget>
-   <class>::SearchLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>SUI/SearchLineEdit.h</header>
-  </customwidget>
- </customwidgets>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
- <connections/>
+    </layout>
+  </widget>
+  <customwidgets>
+    <customwidget>
+      <class>::SearchLineEdit</class>
+      <extends>QLineEdit</extends>
+      <header>SUI/SearchLineEdit.h</header>
+    </customwidget>
+  </customwidgets>
+  <resources/>
+  <connections/>
 </ui>

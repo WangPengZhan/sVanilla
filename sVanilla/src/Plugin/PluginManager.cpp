@@ -5,7 +5,7 @@
 
 #include "PluginManager.h"
 
-namespace Plugin
+namespace plugin
 {
 
 std::string const PluginManager::m_pluginDir = "plugin/";
@@ -186,4 +186,4 @@ std::vector<std::string> PluginManager::pluginDirHaving()
     return res;
 }
 
-}  // namespace  Plugin
+}  // namespace plugin

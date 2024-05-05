@@ -15,9 +15,10 @@ struct FinishedItem
     std::string url;
     int duration;
     int type;
+    bool fileExist;
 
     // move to sqlite
-    void bind(sqlite::SQLiteStatement& stmt) const;
+    int bind(sqlite::SQLiteStatement& stmt) const;
     void setValue(sqlite::SQLiteStatement& stmt, int startIndex = 0);
 };
 
@@ -33,6 +34,7 @@ TABLESTRUCTINFO_BEGIN(FinishedItem)
     TABLESTRUCTINFO_COMLUNM(url)
     TABLESTRUCTINFO_COMLUNM(duration)
     TABLESTRUCTINFO_COMLUNM(type)
+    TABLESTRUCTINFO_COMLUNM(fileExist)
 TABLESTRUCTINFO_END(FinishedItem)
 // clang-format on
 
@@ -42,5 +44,13 @@ public:
     using Entity = FinishedItem;
     using BaseStorage::BaseStorage;
 
+    bool isDownload(const std::string& guid);
+
+    std::vector<Entity> lastItems();
+
+    void updateFileExist();
+    void updateFileExist(bool exist, const std::string& guid);
+
 private:
+    static constexpr int maxQueryNum = 4000;
 };

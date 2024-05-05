@@ -3,11 +3,16 @@
 #include <QDebug>
 #include <QPushButton>
 #include <QStandardPaths>
+#include <QDesktopServices>
+#include <QFileDialog>
 
 #include "HomePage.h"
 #include "ui_HomePage.h"
+#include "Plugin/PluginManager.h"
 #include "Util/UrlProcess.h"
 #include "VanillaStyle/Style.h"
+
+constexpr char mainPage[] = "https://svanilla.app/";
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
@@ -25,8 +30,45 @@ HomePage::~HomePage()
 
 void HomePage::signalsAndSlots()
 {
-    // ClipBoardBtn clicked signal -> Event::AddUri (ui -> core)
-    connect(ui->ClipBoardBtn, &QPushButton::clicked, this, [this] {
+    connect(ui->btnIcon, &QPushButton::clicked, this, [this] {
+
+    });
+
+    connect(ui->lineEditHome, &SearchLineEdit::Complete, this, [this] {
+        qDebug() << ui->lineEditHome->text();
+        parseUri({ui->lineEditHome->text().toStdString()});
+    });
+
+    connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
+        QDesktopServices::openUrl(QUrl(mainPage));
+    });
+    connect(ui->btnLoadPlugin, &QPushButton::clicked, this, [this] {
+        const QString pluginDir = QDir(QString::fromStdString(plugin::PluginManager::m_pluginDir)).absolutePath();
+        const QString fileName =
+            QFileDialog::getOpenFileName(this, tr("Import Plugin"), {}, QString("*") + QString::fromStdString(plugin::PluginManager::m_dynamicExtension));
+        QString newPlugin = pluginDir + "/" + QFileInfo(fileName).fileName();
+        {
+            if (QFile::exists(newPlugin))
+            {
+                return;
+            }
+
+            plugin::DynamicLibLoader dynamicLibLoader(fileName.toStdString());
+            dynamicLibLoader.loadLibrary();
+            auto plugin = dynamicLibLoader.loadPluginSymbol();
+            if (!plugin)
+            {
+                return;
+            }
+        }
+
+        QFile::copy(fileName, newPlugin);
+    });
+    connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
+
+    });
+
+    connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
         if (const QString originalText = clipboard->text(); !util::UrlProcess::IsUrl(originalText))
         {
@@ -35,12 +77,6 @@ void HomePage::signalsAndSlots()
         {
             parseUri({originalText.toStdString()});
         }
-    });
-
-    // HomeLineEdit start signal -> Event::AddUri (ui -> core)
-    connect(ui->HomeLineEdit, &SearchLineEdit::Complete, this, [this] {
-        qDebug() << ui->HomeLineEdit->text();
-        parseUri({ui->HomeLineEdit->text().toStdString()});
     });
 }
 
@@ -58,4 +94,3 @@ void HomePage::parseUri(const std::string& uri)
     // if bili
     emit loadBiliViewView(uri);
 }
-

@@ -19,7 +19,7 @@ struct DownloadingItem
     int type;
 
     // move to sqlite
-    void bind(sqlite::SQLiteStatement& stmt) const;
+    int bind(sqlite::SQLiteStatement& stmt) const;
     void setValue(sqlite::SQLiteStatement& stmt, int startIndex = 0);
 };
 
@@ -47,6 +47,7 @@ public:
     using BaseStorage::BaseStorage;
 
     void updateStatus(int status, const sqlite::ConditionWrapper& condition);
+    bool isDownload(const std::string& guid) const;
 
 private:
 };
