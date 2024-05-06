@@ -1,0 +1,70 @@
+{
+  "name": "Crescent",
+  "author": "Alanus",
+  "mode": "dark",
+  "color": {
+    "backgroundColor": "#CC322C2B",
+
+    "primaryTextColor": "#EBEBF0",
+    "textColor": "#FAF0E6",
+    "pressedTextColor": "#344955",
+    "hoverTextColor": "#50727B",
+    "highlightTextColor": "#322C2B",
+
+    "indicatorColor": "#948979",
+
+    "buttonForeground": "#C08B5C",
+    "buttonBackground": "#31363F",
+    "buttonHoveredForeground": "#31363F",
+    "buttonHoveredBackground": "#31363F",
+    "buttonPressedForeground": "#222831",
+    "buttonPressedBackground": "#222831",
+    "buttonBorderColor": "#222831",
+
+    "checkBoxBackground": "#00FFFFFF",
+    "checkBoxForeground": "#A4907C",
+    "checkBoxCheckedForeground": "#F5EEE6",
+    "checkBoxCheckedBackground": "#008D7B68",
+    "checkBoxHoveredBackground": "#008D7B68",
+    "checkBoxBorderColor": "#8D7B68",
+    "checkBoxHoveredBorderColor": "#8D7B68",
+
+    "progressBarBackground": "#ad8b73",
+    "progressBarForeground": "#7D5A50",
+    "progressBarText": "#7D5A50",
+
+    "toggleButtonBackground": "#636366",
+    "toggleButtonForeground": "#FDAF7B",
+    "toggleButtonIndicatorColor": "#AEAEB2",
+
+    "itemViewEvenRowColor": "#31363F",
+    "itemViewOddRowColor": "#222831",
+    "itemViewSelectedColor": "#B9B4C7",
+
+    "lineEditFocusOutline": "#B5C0D0",
+    "lineEditOutline": "#AF8260",
+    "iconLabelText": "#50727B",
+    "comboBoxDropDownBackground": "#3C5B6F"
+  },
+  "size": {
+    "fontSize": 12,
+    "fontH1": 34,
+    "fontH2": 26,
+    "fontH3": 22,
+    "fontH4": 18,
+    "fontH5": 14,
+    "borderWidth": 2,
+    "iconSize": 16,
+    "normalRadius": 4,
+    "buttonRadius": 4,
+    "menuItemRadius": 4,
+    "itemViewRadius": 8
+  },
+  "icons": {
+    "upArrow": ":/VanillaStyle/icons/UpArrow.svg",
+    "downArrow": ":/VanillaStyle/icons/DownArrow.svg",
+    "progressIndicator": ":/VanillaStyle/icons/Plane.svg"
+  },
+  "progressBarMode": "mode1",
+  "debug": true
+}

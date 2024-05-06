@@ -12,6 +12,7 @@
         <file>icon/bar/video.svg</file>
         <file>icon/bar/home.svg</file>
         <file>icon/home/icon.svg</file>
+        <file>icon/home/whiteBg.svg</file>
         <file>icon/home/search.svg</file>
         <file>icon/home/clear.svg</file>
         <file>icon/home/clipboard.svg</file>
@@ -28,6 +29,7 @@
         <file>icon/download/pause.svg</file>
         <file>icon/download/folder.svg</file>
         <file>icon/download/details.svg</file>
+        <file>icon/download/restart.svg</file>
         <file>icon/setting/arrow-down.svg</file>
         <file>icon/setting/arrow-down-disable.svg</file>
         <file>icon/setting/arrow-up.svg</file>
@@ -35,8 +37,6 @@
         <file>icon/setting/checked.svg</file>
         <file>icon/setting/unchecked.svg</file>
         <file>icon/account.svg</file>
-        <file>style/dark.qss</file>
-        <file>style/light.qss</file>
         <file>CoverTest.jpeg</file>
         <file>CoverSpace.svg</file>
     </qresource>

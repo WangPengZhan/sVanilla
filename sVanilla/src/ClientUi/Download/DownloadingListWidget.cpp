@@ -48,13 +48,8 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
     , m_downloader(std::move(downloader))
 {
     ui->setupUi(this);
+    setUi();
     signalsAndSlots();
-    ui->labelTitle->setText(QString::fromStdString(m_downloader->filename()));
-    ui->btnPause->setIcon(QIcon(":icon/download/start.svg"));
-    ui->btnDelete->setIcon(QIcon(":icon/download/delete.svg"));
-    ui->btnFolder->setIcon(QIcon(":icon/download/folder.svg"));
-    ui->btnDetail->setIcon(QIcon(":icon/download/details.svg"));
-    setBackgroundRole(QPalette::NoRole);
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -93,6 +88,11 @@ void DownloadingItemWidget::setStop()
         m_downloader->setStatus(download::AbstractDownloader::Stopped);
         ui->btnPause->setChecked(true);
     }
+}
+
+void DownloadingItemWidget::setUi()
+{
+    ui->labelTitle->setText(QString::fromStdString(m_downloader->filename()));
 }
 
 void DownloadingItemWidget::signalsAndSlots()

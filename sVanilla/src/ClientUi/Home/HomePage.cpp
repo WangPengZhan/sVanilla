@@ -1,11 +1,13 @@
 #include <QClipboard>
 #include <QTimer>
 #include <QDebug>
+#include <QPushButton>
 #include <QStandardPaths>
 
-#include "Util/UrlProcess.h"
 #include "HomePage.h"
 #include "ui_HomePage.h"
+#include "Util/UrlProcess.h"
+#include "VanillaStyle/Style.h"
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
@@ -44,15 +46,11 @@ void HomePage::signalsAndSlots()
 
 void HomePage::setUi()
 {
-    ui->HistoryBtn->setIcon(QIcon(":icon/home/history.svg"));
-    ui->ClipBoardBtn->setIcon(QIcon(":icon/home/clipboard.svg"));
-    ui->HomePageSubmit->setIcon(QIcon(":icon/home/enter.svg"));
-    ui->HomePageSubmit->setLabel(QStringLiteral("Submit"));
-    ui->HomePageSubmit->setIconFirst(false);
-    ui->IconBtn->setIcon(QIcon(":icon/home/icon.svg"));
-    ui->IconBtn->setIconSize({40, 40});
-    ui->LearnBtn->setIcon(QIcon(":icon/home/openurl.svg"));
-    ui->HomeLineEdit->setFixedHeight(30);
+    constexpr int iconSize = 40;
+    ui->IconBtn->setIconSize({iconSize, iconSize});
+
+    constexpr int homeLineEditHeight = 30;
+    ui->HomeLineEdit->setFixedHeight(homeLineEditHeight);
 }
 
 void HomePage::parseUri(const std::string& uri)

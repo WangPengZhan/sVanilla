@@ -45,8 +45,6 @@ VideoGridItemWidget::~VideoGridItemWidget()
 
 void VideoGridItemWidget::setUi()
 {
-    ui->VideoGridDetailsBtn->setIcon(QIcon(":/icon/video/detail.svg"));
-    ui->VideoGridDownloadBtn->setIcon(QIcon(":/icon/video/download.svg"));
     const QPixmap pixmap(":/CoverSpace.svg");
     ui->Cover->setPixmap(pixmap);
 }

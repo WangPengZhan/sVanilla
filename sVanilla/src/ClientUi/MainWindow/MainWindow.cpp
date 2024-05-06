@@ -27,39 +27,20 @@ MainWindow::MainWindow(QWidget* parent)
     , styleAgent(new QWK::StyleAgent(this))
     , windowBar(new WindowBar(this))
 {
-    installWindowAgent();
     ui->setupUi(this);
+    installWindowAgent();
+    setUi();
     signalsAndSlots();
     setUpShortcuts();
-    resize(800, 600);
-    Toast::create(this);
-    setLightTheme();
-#if 0
-    const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
-    const std::list<std::string> audios = {};
-    download::ResourseInfo info;
-    info.videoUris = videos;
-    info.audioUris = audios;
-    info.option.dir = "output";
-    info.option.out = "test";
-    ui->downloadPage->addDownloadTask(info);
-#endif
 }
 
 MainWindow::~MainWindow() = default;
 
-void MainWindow::closeEvent(QCloseEvent* event)
+void MainWindow::setUi()
 {
-#if 0
-    QString path = QApplication::applicationDirPath();
-    auto outPath = path + "/output";
-    auto sessionPath = path + "/aria/aira.session";
-    auto logPath = path + "/aria/aira.log";
-    QDir(outPath).removeRecursively();
-    QFile::remove(sessionPath);
-    QFile::remove(logPath);
-#endif
-    QMainWindow::closeEvent(event);
+    resize(800, 600);
+    Toast::create(this);
+    setLightTheme();
 }
 
 void MainWindow::signalsAndSlots()
@@ -115,9 +96,9 @@ void MainWindow::setUpShortcuts()
 
 void MainWindow::setLightTheme()
 {
-    Vanilla::Style::setStyle(Vanilla::Light);
+    Vanilla::Style::setStyleFromAppDir("light");
 #ifdef _WIN32
-    setBlurEffect(DWMBlur);
+    setBlurEffect(AcrylicMaterial);
 #elif __APPLE__
     setBlurEffect(LightBlur);
 #endif
@@ -125,7 +106,8 @@ void MainWindow::setLightTheme()
 
 void MainWindow::setDarkTheme()
 {
-    Vanilla::Style::setStyle(Vanilla::Dark);
+    Vanilla::Style::setStyleFromAppDir("dark");
+
 #ifdef _WIN32
     setBlurEffect(AcrylicMaterial);
 #elif __APPLE__

@@ -48,9 +48,9 @@ public:
 
 protected:
     bool event(QEvent* event) override;
-    void closeEvent(QCloseEvent* event) override;
 
 private:
+    void setUi();
     void signalsAndSlots();
     void setUpShortcuts();
     void setLightTheme();

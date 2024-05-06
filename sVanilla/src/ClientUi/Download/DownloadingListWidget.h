@@ -30,6 +30,7 @@ public:
     void setStop();
 
 private:
+    void setUi();
     void signalsAndSlots();
 
 private:

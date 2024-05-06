@@ -93,7 +93,8 @@ void DownloadWidget::setUi()
     const QStringList horizonNavigationBtn = {tr("Downloading"), tr("Downloaded")};
     ui->horizonNavigation->setItemList(horizonNavigationBtn);
     ui->horizonNavigation->setUseIcon(false);
-    ui->horizonNavigation->setColumnWidth(100);
+    constexpr int horizonNavigationWidth = 120;
+    ui->horizonNavigation->setColumnWidth(horizonNavigationWidth);
     connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 }
 
