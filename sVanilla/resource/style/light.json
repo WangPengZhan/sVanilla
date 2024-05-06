@@ -8,8 +8,11 @@
     "textColor": "#0x1890",
     "pressedTextColor": "#344955",
     "hoverTextColor": "#50727B",
-    "highlightTextColor": "#322C2B",
+    "highlightTextColor": "#F8C794",
     "indicatorColor": "#884A39",
+    "labelBackground": "#00FFFFFF",
+    "labelForeground": "#00FFFFFF",
+    "labelBorderColor": "#00FFFFFF",
     "buttonForeground": "#C08B5C",
     "buttonBackground": "#DAC0A3",
     "buttonHoveredForeground": "#C08C64",
@@ -24,8 +27,8 @@
     "checkBoxHoveredBackground": "#00000000",
     "checkBoxBorderColor": "#C38154",
     "checkBoxHoveredBorderColor": "#FF9B50",
-    "progressBarBackground": "#B4D4FF",
-    "progressBarForeground": "#86B6F6",
+    "progressBarBackground": "#FFC94A",
+    "progressBarForeground": "#FB6D48",
     "progressBarText": "#008DDA",
     "toggleButtonBackground": "#EEEEEE",
     "toggleButtonForeground": "#FDAF7B",
@@ -106,6 +109,18 @@
           "buttonPressedForeground": "#00000000",
           "buttonPressedBackground": "#00000000",
           "buttonBorderColor": "#00000000"
+        }
+      }
+    },
+    {
+      "enable": true,
+      "widgetType": "QLabel",
+      "propertyValue": "QLabelPatch",
+      "configPatch": {
+        "color": {
+          "labelBackground": "#00FFFFFF",
+          "labelForeground": "#00FFFFFF",
+          "labelBorderColor": "#F8C794"
         }
       }
     }
