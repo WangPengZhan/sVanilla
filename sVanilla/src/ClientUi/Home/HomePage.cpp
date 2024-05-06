@@ -78,15 +78,18 @@ void HomePage::signalsAndSlots()
             parseUri({originalText.toStdString()});
         }
     });
+    connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
+
+    });
 }
 
 void HomePage::setUi()
 {
     constexpr int iconSize = 40;
-    ui->IconBtn->setIconSize({iconSize, iconSize});
+    ui->btnIcon->setIconSize({iconSize, iconSize});
 
     constexpr int homeLineEditHeight = 30;
-    ui->HomeLineEdit->setFixedHeight(homeLineEditHeight);
+    ui->lineEditHome->setFixedHeight(homeLineEditHeight);
 }
 
 void HomePage::parseUri(const std::string& uri)
