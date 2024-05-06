@@ -36,35 +36,11 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() = default;
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-#if 0
-    QString path = QApplication::applicationDirPath();
-    auto outPath = path + "/output";
-    auto sessionPath = path + "/aria/aira.session";
-    auto logPath = path + "/aria/aira.log";
-    QDir(outPath).removeRecursively();
-    QFile::remove(sessionPath);
-    QFile::remove(logPath);
-#endif
-    QMainWindow::closeEvent(event);
-}
-
 void MainWindow::setUi()
 {
     resize(800, 600);
     Toast::create(this);
     setLightTheme();
-#if 0
-    const std::list<std::string> videos = {"https://link.testfile.org/70MB"};
-    const std::list<std::string> audios = {};
-    download::ResourseInfo info;
-    info.videoUris = videos;
-    info.audioUris = audios;
-    info.option.dir = "output";
-    info.option.out = "test";
-    ui->downloadPage->addDownloadTask(info);
-#endif
 }
 
 void MainWindow::signalsAndSlots()

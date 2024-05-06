@@ -46,7 +46,6 @@ void HomePage::signalsAndSlots()
 
 void HomePage::setUi()
 {
-    // ui->IconBtn->setIcon(QIcon(":icon/home/whiteBg.svg"));
     constexpr int iconSize = 40;
     ui->IconBtn->setIconSize({iconSize, iconSize});
 
