@@ -1,5 +1,6 @@
 #pragma once
 #include <QFrame>
+#include <QPushButton>
 #include <QToolButton>
 
 QT_BEGIN_NAMESPACE
@@ -17,14 +18,16 @@ public:
     explicit WindowBar(QWidget* parent = nullptr);
     ~WindowBar();
 
-    [[nodiscard]] QWidget* getHitWidget() const;
+    [[nodiscard]] const QWidget* getHitWidget() const;
 
     void setMinButton(QAbstractButton* btn);
     void setMaxButton(QAbstractButton* btn);
     void setCloseButton(QAbstractButton* btn);
+    QPushButton* maxButton();
 
 private:
     void signalsAndSlots();
+    void setUi() const;
 
 signals:
     void barBtnClick(int index);

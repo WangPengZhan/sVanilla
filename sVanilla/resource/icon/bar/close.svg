@@ -1,15 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="10.88" height="10.88"
-  viewBox="0 0 10.88 10.88">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: none;
-        stroke: #222831;
-        stroke-miterlimit: 10;
-        stroke-width: 1.25px;
-      }
-    </style>
-  </defs>
-  <line class="cls-1" x1="0.44" y1="0.44" x2="10.44" y2="10.44" />
-  <line class="cls-1" x1="0.44" y1="10.44" x2="10.44" y2="0.44" />
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 48 48">
+    <path fill="black"
+          d="M8.56 6.44a1.5 1.5 0 1 0-2.12 2.12L21.878 24L6.439 39.44a1.5 1.5 0 1 0 2.122 2.12L24 26.121L39.439 41.56a1.5 1.5 0 1 0 2.12-2.121L26.122 24l15.44-15.439A1.5 1.5 0 1 0 39.44 6.44L24 21.879z"/>
 </svg>
