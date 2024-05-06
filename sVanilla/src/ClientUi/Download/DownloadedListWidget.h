@@ -22,11 +22,13 @@ public:
     DownloadedListWidget* listWidget() const;
     std::shared_ptr<VideoInfoFull> videoInfoFull() const;
 
-    void setStart();
-    void setStop();
+    void clearItem();
+    void reloadItem();
+    void updateStatus();
 
 private:
     void signalsAndSlots();
+    void deleteDbFinishItem();
 
 private:
     Ui::DownloadedItemWidget* ui;
@@ -41,15 +43,18 @@ class DownloadedListWidget : public QListWidget
 public:
     explicit DownloadedListWidget(QWidget* parent = nullptr);
 
-    void addDownloadedItem(const std::shared_ptr<VideoInfoFull>& downloader);
+    void addDownloadedItem(const std::shared_ptr<VideoInfoFull>& videoInfoFull);
 
-    void startAll();
-    void stopAll();
-    void deleteAll();
+    void clearAll();
+    void reloadAll();
+    void scan();
 
     void removeDownloadItem(const std::string& guid);
     QListWidgetItem* itemFromWidget(QWidget* target);
     DownloadedItemWidget* downloadItemWidget(int row) const;
+
+signals:
+    void reloadItem(std::shared_ptr<VideoInfoFull>& videoInfoFull);
 
 private:
     void signalsAndSlots() const;

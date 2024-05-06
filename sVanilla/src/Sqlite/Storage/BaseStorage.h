@@ -27,6 +27,9 @@ public:
     template <typename Entity>
     int64_t insertEntities(const std::vector<Entity>& entities);
 
+    template <typename Entity>
+    int64_t updateEntities(const std::vector<Entity>& entities);
+
     bool deleteEntities(const ConditionWrapper& condition = {});
 
     int64_t countEntities(const ConditionWrapper& condition = {});
@@ -49,6 +52,12 @@ template <typename Entity>
 inline int64_t BaseStorage::insertEntities(const std::vector<Entity>& entities)
 {
     return SqliteUtil::insertEntities(m_writeDBPtr, tableName(), entities);
+}
+
+template <typename Entity>
+inline int64_t BaseStorage::updateEntities(const std::vector<Entity>& entities)
+{
+    return SqliteUtil::updateEntities(m_writeDBPtr, tableName(), entities);
 }
 
 }  // namespace sqlite

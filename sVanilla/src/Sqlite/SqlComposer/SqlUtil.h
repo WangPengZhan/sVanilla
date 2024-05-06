@@ -66,7 +66,7 @@ public:
     static int64_t insertEntitiesWithOutTrans(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
 
     static int64_t updateEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<SqliteColumn>& newValues,
-                                  const ConditionWrapper& conditio);
+                                  const ConditionWrapper& condition);
     template <typename Entity>
     static int64_t updateEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const std::vector<Entity>& entities);
     template <typename Entity>
@@ -80,10 +80,10 @@ public:
                                                      const ConditionWrapper& condition = {});
 
 private:
-    template <typename T>
-    static void insertEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities);
-    template <typename T>
-    static void updateEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities);
+    template <typename Entity>
+    static void insertEntitiesCore(SQLiteStatement& stmt, const std::vector<Entity>& entities);
+    template <typename Entity>
+    static void updateEntitiesCore(SQLiteStatement& stmt, const std::vector<Entity>& entities);
 };
 
 template <typename Entity>
@@ -157,6 +157,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& d
 
     SQLiteStatement stmt(*db, querySql);
     condition.bind(stmt);
+    querySql = stmt.expandedSQL();
     while (stmt.executeStep())
     {
         Entity entity;
@@ -272,8 +273,8 @@ inline int64_t SqliteUtil::updateEntitiesWithOutTrans(const SqliteWithMutexPtr& 
     return entities.size();
 }
 
-template <typename T>
-inline void SqliteUtil::insertEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities)
+template <typename Entity>
+inline void SqliteUtil::insertEntitiesCore(SQLiteStatement& stmt, const std::vector<Entity>& entities)
 {
     for (const auto& entity : entities)
     {
@@ -283,12 +284,22 @@ inline void SqliteUtil::insertEntitiesCore(SQLiteStatement& stmt, const std::vec
     }
 }
 
-template <typename T>
-inline void SqliteUtil::updateEntitiesCore(SQLiteStatement& stmt, const std::vector<T>& entities)
+template <typename Entity>
+inline void SqliteUtil::updateEntitiesCore(SQLiteStatement& stmt, const std::vector<Entity>& entities)
 {
+    const auto& uniqueCols = TableStructInfo<Entity>::self().primaryColumnInfos();
     for (const auto& entity : entities)
     {
-        entity.bind(stmt);
+        int index = entity.bind(stmt);
+        for (const auto& uniqueCol : uniqueCols)
+        {
+            indexToType(uniqueCol, [&](auto&& elem) {
+                using ValueType = decltype(elem);
+                auto memberPtr = uniqueCol.template memberPtr<Entity, ValueType>();
+                auto value = entity.*(*memberPtr);
+                entity.stmt.bind(index++, elem);
+            });
+        }
         ConditionWrapper condtion;
         stmt.executeStep();
         stmt.reset();

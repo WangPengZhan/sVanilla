@@ -80,7 +80,7 @@
           <enum>Qt::Vertical</enum>
          </property>
          <widget class="::DownloadingListWidget" name="DownloadListWidget"/>
-         <widget class="QWidget" name="DownloadInfoamationWidget" native="true"/>
+         <widget class="QWidget" name="DownloadingInfoWidget" native="true"/>
         </widget>
        </item>
        <item>
@@ -114,10 +114,7 @@
      </widget>
      <widget class="QWidget" name="widgetDownloaded">
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="DownloadedListWidget" name="listWidgetDownloaded"/>
-       </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
         <widget class="QWidget" name="DownloadedBtnGroup" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -143,6 +140,12 @@
           </item>
          </layout>
         </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="DownloadedListWidget" name="listWidgetDownloaded"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="DownloadedInfoWidget" native="true"/>
        </item>
       </layout>
      </widget>

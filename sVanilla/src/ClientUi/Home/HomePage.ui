@@ -28,12 +28,12 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="IconBtn">
+       <widget class="QPushButton" name="btnIcon">
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
+         <iconset>
           <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -65,7 +65,7 @@
     </widget>
    </item>
    <item>
-    <widget class="::SearchLineEdit" name="HomeLineEdit">
+    <widget class="::SearchLineEdit" name="lineEditHome">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -108,7 +108,7 @@
          <string>Submit</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
+         <iconset>
           <normaloff>:/icon/home/enter.svg</normaloff>:/icon/home/enter.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -176,7 +176,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="LearnBtn">
+       <widget class="QPushButton" name="btnLearn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -184,13 +184,13 @@
          </sizepolicy>
         </property>
         <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
+         <enum>Qt::RightToLeft</enum>
         </property>
         <property name="text">
          <string>Learn about sVanilla </string>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
+         <iconset>
           <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -199,7 +199,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="LoadPluginBtn">
+       <widget class="QPushButton" name="btnLoadPlugin">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -215,7 +215,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="LoginWebsiteBtn">
+       <widget class="QPushButton" name="btnLoginWebsite">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -229,7 +229,7 @@
          <string>Login Download Website</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
+         <iconset>
           <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -270,7 +270,7 @@
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="ClipBoardBtn">
+       <widget class="QPushButton" name="btnClipBoard">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -287,7 +287,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
+         <iconset>
           <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -296,12 +296,12 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="HistoryBtn">
+       <widget class="QPushButton" name="btnHistory">
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
+         <iconset>
           <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -341,8 +341,6 @@
    <header>SUI/SearchLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

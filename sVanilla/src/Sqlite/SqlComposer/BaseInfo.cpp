@@ -28,6 +28,16 @@ std::string fieldTypeSql(FieldType fieldType)
     return res;
 }
 
+void test()
+{
+    FinishedItem testItem;
+    ColumnInfo columnInfo =
+        ColumnInfo(std::string(""), &FinishedItem::uniqueId, (std::vector<ColumnInfo*>*)nullptr, (std::vector<ColumnInfo*>*)nullptr, false, false, false);
+    auto memberPtr = columnInfo.memberPtr<FinishedItem, std::string>();
+    testItem.*(*memberPtr) = std::string("test");
+    auto value = testItem.*(*memberPtr);
+}
+
 ColumnInfo::ColumnInfo(std::string columnName, bool autoIncremnet, bool unique)
     : m_columnName(std::move(columnName))
     , m_autoIncrement(autoIncremnet)
@@ -51,6 +61,11 @@ ColumnInfo::ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumn
     {
         pPrimaryKeyColumnInfos->push_back(this);
     }
+}
+
+int ColumnInfo::valueTypeIndex() const
+{
+    return m_valueTypeIndex;
 }
 
 std::string ColumnInfo::colunmSql() const
@@ -95,6 +110,16 @@ void BaseTableStructInfo::addSubTable(BaseTableStructInfo& subTable)
     {
         m_columnInfos.push_back(col);
     }
+}
+
+const std::vector<ColumnInfo*>& BaseTableStructInfo::columnInfos() const
+{
+    return m_columnInfos;
+}
+
+const std::vector<ColumnInfo*>& BaseTableStructInfo::primaryColumnInfos() const
+{
+    return m_primaryColunmInfos;
 }
 
 std::string BaseTableStructInfo::createSql() const

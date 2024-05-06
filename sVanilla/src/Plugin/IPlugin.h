@@ -2,7 +2,7 @@
 #include <string>
 #include <atomic>
 
-namespace Plugin
+namespace plugin
 {
 
 #define C_EXPORT_PLUGIN 1
@@ -11,7 +11,7 @@ namespace Plugin
 
 using PluginNameFunc = const char* (*)();
 using PluginVersionFunc = const char* (*)();
-using PluginDeinitFunc = void(*)();
+using PluginDeinitFunc = void (*)();
 
 struct IPlugin
 {
@@ -38,4 +38,4 @@ public:
 };
 #endif
 
-}  // namespace Plugin
+}  // namespace plugin

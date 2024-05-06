@@ -49,7 +49,7 @@ struct PrepareInfo
     bool like(const PrepareInfo& other) const;
 
     std::stringstream& prepareConditionString(std::stringstream& ss) const;
-    int bind(SQLiteStatement& stmt, int startIndex = 0) const;
+    int bind(SQLiteStatement& stmt, int startIndex = 1) const;
     std::stringstream& conditionString(std::stringstream& ss) const;
 };
 
@@ -80,7 +80,7 @@ public:
 
     std::string prepareConditionString() const;
     std::string conditionString() const;
-    int bind(SQLiteStatement& stament, int startIndex = 0) const;
+    int bind(SQLiteStatement& stament, int startIndex = 1) const;
 
     std::stringstream& prepareConditionString(std::stringstream& ss) const;
     std::stringstream& conditionString(std::stringstream& ss) const;

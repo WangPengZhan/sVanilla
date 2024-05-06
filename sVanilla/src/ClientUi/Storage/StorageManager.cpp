@@ -24,6 +24,11 @@ std::shared_ptr<DownloadingItemStorage> StorageManager::downloadingStorage() con
     return m_downloadingItemStorage;
 }
 
+bool StorageManager::isDownloaded(const std::string& guid) const
+{
+    return m_downloadingItemStorage->isDownload(guid) || m_finishedItemStorage->isDownload(guid);
+}
+
 std::shared_ptr<FinishItemStorage> StorageManager::createFinishedItemStorage(const std::string& tableName)
 {
     auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);

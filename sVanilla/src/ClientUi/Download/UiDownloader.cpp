@@ -65,7 +65,7 @@ void UiDownloader::pause()
 {
     m_realDownloader->pause();
     setStatus(Waitting);
-    updateDbStatus();
+    deleteDbDownloadingItem();
 }
 
 void UiDownloader::resume()
@@ -144,5 +144,6 @@ void UiDownloader::ctreateDbFinishedItem()
     item.url = "https://www.bilibili.com/video/" + item.bvid;
     item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
     item.type = 0;
+    item.fileExist = true;
     m_storageManager.finishedItemStorage()->insertEntities<FinishedItem>({item});
 }

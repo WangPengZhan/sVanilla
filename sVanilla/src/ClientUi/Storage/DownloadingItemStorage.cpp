@@ -1,6 +1,7 @@
 #include "ClientUi/Storage/DownloadingItemStorage.h"
+#include "DownloadingItemStorage.h"
 
-void DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
+int DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
 {
     int index = 1;
     stmt.bind(index++, uniqueId);
@@ -15,6 +16,8 @@ void DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
     stmt.bind(index++, duration);
     stmt.bind(index++, status);
     stmt.bind(index++, type);
+
+    return index;
 }
 
 void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
@@ -36,6 +39,7 @@ void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 
 void DownloadingItemStorage::updateStatus(int status, const sqlite::ConditionWrapper& condition)
 {
+#if 0
     auto statusName = sqlite::TableStructInfo<Entity>::self().status.colunmName();
     std::stringstream ss;
     ss << "UPDATE " << tableName();
@@ -51,4 +55,27 @@ void DownloadingItemStorage::updateStatus(int status, const sqlite::ConditionWra
 
     sql = stmt.expandedSQL();
     stmt.executeStep();
+#else
+    sqlite::SqliteColumnValue value = static_cast<int64_t>(status);
+    auto statusName = sqlite::TableStructInfo<Entity>::self().status.colunmName();
+    sqlite::SqliteColumn colunmValue(value, -1, statusName);
+    sqlite::SqliteUtil::updateEntities(m_writeDBPtr, tableName(), {colunmValue}, condition);
+#endif
+}
+
+bool DownloadingItemStorage::isDownload(const std::string& guid) const
+{
+    auto uniqueIdCol = sqlite::TableStructInfo<Entity>::self().uniqueId;
+    sqlite::ConditionWrapper condition;
+    condition.addCondition(uniqueIdCol, sqlite::Condition::EQUALS, guid);
+
+    std::stringstream ss;
+    ss << "SELECT count(*) FROM " << tableName();
+    ss << " " << condition.prepareConditionString();
+
+    std::string sql = ss.str();
+    sqlite::SQLiteStatement stmt(*m_readDBPtr, sql);
+    condition.bind(stmt);
+    stmt.executeStep();
+    return (1 == stmt.column(0).getInt());
 }

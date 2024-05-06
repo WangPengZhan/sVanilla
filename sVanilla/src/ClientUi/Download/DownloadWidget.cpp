@@ -11,6 +11,10 @@
 #include "Util/UrlProcess.h"
 #include "ClientUi/Utils/RunTask.h"
 #include "Adapter/BaseVideoView.h"
+#include "ClientUi/Storage/StorageManager.h"
+#include "ClientUi/Config/SingleConfig.h"
+#include "ClientUi/Download/DownloadedListWidget.h"
+#include "ClientUi/Storage/FinishedItemStorage.h"
 
 DownloadWidget::DownloadWidget(QWidget* parent)
     : QWidget(parent)
@@ -53,7 +57,11 @@ void DownloadWidget::addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo)
 
 void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
 {
-    // for sqlite
+    bool isDownload = sqlite::StorageManager::intance().isDownloaded(videoInfo->getGuid());
+    if (isDownload)
+    {
+        return;
+    }
 
     auto taskFunc = [this, videoInfo]() {
         return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(videoInfo->videoView->VideoId), 32, videoInfo->videoView->Identifier);
@@ -82,10 +90,25 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     info.audioUris = audio_urls;
     info.option.out = util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) + ".mp4";
     info.option.dir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString();
+    videoInfo->downloadConfig->downloadDir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    videoInfo->downloadConfig->nameRule = QString::fromStdString(util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) + ".mp4");
     const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
     info.option.header = h;
 
     emit sigDownloadTask(videoInfo, info);
+}
+
+std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const FinishedItem& item)
+{
+    auto res = std::make_shared<VideoInfoFull>();
+    res->downloadConfig = std::make_shared<DownloadConfig>();
+    res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->videoView->Cover = item.coverPath;
+    res->videoView->Identifier = item.bvid;
+    res->videoView->Title = item.title;
+    res->videoView->Publisher = item.auther;
+    res->videoView->Duration = std::to_string(item.duration);
+    return res;
 }
 
 void DownloadWidget::setUi()
@@ -95,6 +118,7 @@ void DownloadWidget::setUi()
     ui->horizonNavigation->setUseIcon(false);
     constexpr int horizonNavigationWidth = 120;
     ui->horizonNavigation->setColumnWidth(horizonNavigationWidth);
+    ui->stackedWidget->setCurrentWidget(ui->widgetDownloading);
     connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 }
 
@@ -105,6 +129,11 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->btnStopAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::stopAll);
     connect(ui->btnDeleteAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::deleteAll);
     connect(ui->DownloadListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addFinishedItem);
+
+    connect(ui->btnClearAll, &QPushButton::clicked, ui->listWidgetDownloaded, &DownloadedListWidget::clearAll);
+    connect(ui->btnRedownload, &QPushButton::clicked, ui->listWidgetDownloaded, &DownloadedListWidget::reloadAll);
+    connect(ui->btnScaned, &QPushButton::clicked, ui->listWidgetDownloaded, &DownloadedListWidget::scan);
+    connect(ui->listWidgetDownloaded, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
 }
 
 void DownloadWidget::addTaskITem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)

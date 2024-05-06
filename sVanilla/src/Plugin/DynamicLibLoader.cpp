@@ -24,7 +24,7 @@ std::wstring stringToWideString(const std::string& str)
 }
 #endif
 }  // namespace
-namespace Plugin
+namespace plugin
 {
 
 DynamicLibLoader::DynamicLibLoader(std::string libPath)
@@ -69,12 +69,12 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
     res->pluginName = reinterpret_cast<PluginNameFunc>(loadSymbol(m_libHandle, "pluginName"));
     res->pluginVersion = reinterpret_cast<PluginVersionFunc>(loadSymbol(m_libHandle, "pluginVersion"));
     res->pluginDeinit = reinterpret_cast<PluginDeinitFunc>(loadSymbol(m_libHandle, "pluginDeinit"));
-    if (res->pluginName)
+    if (!res->pluginName || !res->pluginVersion || !res->pluginDeinit)
     {
         res.reset();
     }
 #else
-    auto pluginFunc = reinterpret_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "plugin"));
+    auto pluginFunc = reinterpret_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "pluginObject"));
     if (pluginFunc)
     {
         res.reset(pluginFunc());
@@ -167,4 +167,4 @@ void DynamicLibLoader::unloadLibrary(void* handle)
     }
 }
 
-}  // namespace Plugin
+}  // namespace plugin

@@ -13,6 +13,8 @@ public:
     std::shared_ptr<FinishItemStorage> finishedItemStorage() const;
     std::shared_ptr<DownloadingItemStorage> downloadingStorage() const;
 
+    bool isDownloaded(const std::string& guid) const;
+
     static std::shared_ptr<FinishItemStorage> createFinishedItemStorage(const std::string& tableName);
     static std::shared_ptr<DownloadingItemStorage> createDownloadingItemStorage(const std::string& tableName);
 
