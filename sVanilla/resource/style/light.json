@@ -114,13 +114,18 @@
     },
     {
       "enable": true,
-      "widgetType": "QLabel",
-      "propertyValue": "QLabelPatch",
+      "widgetType": "QPushButton",
+      "propertyValue": "SystemButtonPatch",
       "configPatch": {
         "color": {
-          "labelBackground": "#00FFFFFF",
-          "labelForeground": "#00FFFFFF",
-          "labelBorderColor": "#F8C794"
+          "indicatorColor": "#C7C8CC",
+          "buttonForeground": "#00000000",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#B4B4B8",
+          "buttonPressedForeground": "#00000000",
+          "buttonPressedBackground": "#00000000",
+          "buttonBorderColor": "#00000000"
         }
       }
     }

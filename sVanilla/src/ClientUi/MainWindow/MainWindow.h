@@ -44,11 +44,7 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-    void clearVideo();
-
 protected:
-    bool event(QEvent* event) override;
-
 private:
     void setUi();
     void signalsAndSlots();

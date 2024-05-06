@@ -5,6 +5,7 @@
 #include <QStackedWidget>
 #include <QShortcut>
 #include <QKeySequence>
+#include <QPushButton>
 
 #include <VanillaStyle/Style.h>
 #include <VanillaStyle/Style/VanillaStyle.h>
@@ -19,6 +20,8 @@
 #include "MainWindow.h"
 #include "MainWindowlog.h"
 #include "ui_MainWindow.h"
+
+static constexpr int systemButtonSize = 14;
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -123,17 +126,10 @@ void MainWindow::setAutoTheme()
 
 void MainWindow::setTheme(const int theme)
 {
-    if (theme != 2)
+    if (const bool isAutoTheme = (theme == 2); !isAutoTheme)
     {
         disconnect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme);
-        if (theme == 0)
-        {
-            setLightTheme();
-        }
-        else
-        {
-            setDarkTheme();
-        }
+        (theme == 0) ? setLightTheme() : setDarkTheme();
     }
     else
     {
@@ -150,7 +146,7 @@ void MainWindow::installWindowAgent()
 
     setMenuWidget(windowBar);
 
-#ifdef _WIN32
+#ifndef __APPLE__
     loadSystemButton();
 #endif
 }
@@ -198,30 +194,6 @@ void MainWindow::setBlurEffect(const BlurEffect effect)
     style()->polish(this);
 }
 
-bool MainWindow::event(QEvent* event)
-{
-    switch (event->type())
-    {
-    case QEvent::WindowActivate:
-    {
-        auto menu = menuWidget();
-        menu->setProperty("bar-active", true);
-        style()->polish(menu);
-        break;
-    }
-    case QEvent::WindowDeactivate:
-    {
-        auto menu = menuWidget();
-        menu->setProperty("bar-active", false);
-        style()->polish(menu);
-        break;
-    }
-    default:
-        break;
-    }
-    return QMainWindow::event(event);
-}
-
 #ifndef __APPLE__
 // clang-format off
 static inline void emulateLeaveEvent(QWidget* widget)
@@ -261,58 +233,29 @@ static inline void emulateLeaveEvent(QWidget* widget)
 // clang-format on
 void MainWindow::loadSystemButton()
 {
-    const auto minButton = new Vanilla::IconButton();
-    minButton->setIcon(QIcon(QStringLiteral(":/icon/bar/minimize.svg")));
-    minButton->setIconSize(QSize(12, 12));
-    minButton->setObjectName(QStringLiteral("min-button"));
-    minButton->setProperty("system-button", true);
-    minButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    windowBar->setMinButton(minButton);
-    windowAgent->setSystemButton(QWK::WindowAgentBase::Minimize, minButton);
+    auto const buttonConfigs = {std::make_tuple(QWK::WindowAgentBase::Minimize, ":/icon/bar/minimize.svg", &WindowBar::setMinButton),
+                                std::make_tuple(QWK::WindowAgentBase::Maximize, ":/icon/bar/maximize.svg", &WindowBar::setMaxButton),
+                                std::make_tuple(QWK::WindowAgentBase::Close, ":/icon/bar/close.svg", &WindowBar::setCloseButton)};
 
-    const auto maxButton = new Vanilla::IconButton();
-    maxButton->setIcon(QIcon(QStringLiteral(":/icon/bar/maximize.svg")));
-    maxButton->setIconSize(QSize(12, 12));
-    maxButton->setCheckable(true);
-    maxButton->setObjectName(QStringLiteral("max-button"));
-    maxButton->setProperty("system-button", true);
-    maxButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    windowBar->setMaxButton(maxButton);
-    windowAgent->setSystemButton(QWK::WindowAgentBase::Maximize, maxButton);
+    for (const auto& config : buttonConfigs)
+    {
+        auto* const button = new QPushButton();
+        button->setProperty("_vanillaStyle_Patch", QVariant("SystemButtonPatch"));
+        button->setIcon(QIcon(std::get<1>(config)));
+        button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    const auto closeButton = new Vanilla::IconButton();
-    closeButton->setIcon(QIcon(QStringLiteral(":/icon/bar/close.svg")));
-    closeButton->setIconSize(QSize(12, 12));
-    closeButton->setObjectName(QStringLiteral("close-button"));
-    closeButton->setProperty("system-button", true);
-    closeButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    windowBar->setCloseButton(closeButton);
-    windowAgent->setSystemButton(QWK::WindowAgentBase::Close, closeButton);
-
+        const auto setterFunc = std::get<2>(config);
+        (windowBar->*setterFunc)(button);
+        windowAgent->setSystemButton(std::get<0>(config), button);
+    }
     // 3. Adds simulated mouse events to the title bar buttons
     // Emulate Window system menu button behaviors
 
     connect(windowBar, &WindowBar::minimizeRequested, this, &QWidget::showMinimized);
-    connect(windowBar, &WindowBar::maximizeRequested, this, [this, maxButton](bool max) {
-        if (max)
-        {
-            showMaximized();
-        }
-        else
-        {
-            showNormal();
-        }
-
-        // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
-        // the button remains to be hovered until the mouse move. As a result, we need to
-        // manually send leave events to the button.
-        emulateLeaveEvent(maxButton);
+    connect(windowBar, &WindowBar::maximizeRequested, this, [this](const bool max) {
+        (max) ? showMaximized() : showNormal();
+        emulateLeaveEvent(windowBar->maxButton());
     });
     connect(windowBar, &WindowBar::closeRequested, this, &QWidget::close);
 }
 #endif
-
-void MainWindow::clearVideo()
-{
-    ui->VideoPage->clearVideo();
-}
