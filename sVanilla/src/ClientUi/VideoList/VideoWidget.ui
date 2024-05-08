@@ -18,7 +18,7 @@
     <number>10</number>
    </property>
    <item>
-    <widget class="QWidget" name="SwitchBtnWidget" native="true">
+    <widget class="QWidget" name="switchBtnWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -39,10 +39,10 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="Vanilla::ToggleButton" name="SwitchBtn" native="true"/>
+       <widget class="Vanilla::ToggleButton" name="btnSwitch" native="true"/>
       </item>
       <item>
-       <widget class="::SearchLineEdit" name="VideoSearchLineEdit" native="true">
+       <widget class="::SearchLineEdit" name="lineEditSearch" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -61,7 +61,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QStackedWidget" name="VideoStackedPage">
+    <widget class="QStackedWidget" name="videoStackedPage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -71,7 +71,7 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QSplitter" name="VideoGrid">
+     <widget class="QSplitter" name="videoGrid">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -81,7 +81,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="::VideoGridWidget" name="VideoGridWidget">
+      <widget class="::VideoGridWidget" name="videoGridWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -113,9 +113,9 @@
         <set>Qt::AlignHCenter</set>
        </property>
       </widget>
-      <widget class="::VideoDetailWidget" name="VideoGridDetailWidget" native="true"/>
+      <widget class="::VideoInfoWidget" name="videoGridInfoWidget" native="true"/>
      </widget>
-     <widget class="QSplitter" name="VideoList">
+     <widget class="QSplitter" name="videoList">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -125,7 +125,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="::VideoListWidget" name="VideoListWidget">
+      <widget class="::VideoListWidget" name="videoListWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -142,7 +142,7 @@
         <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
       </widget>
-      <widget class="::VideoDetailWidget" name="VideoListDetailWidget" native="true">
+      <widget class="::VideoInfoWidget" name="videoListInfoWidget" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -154,7 +154,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="ActionBtns" native="true"/>
+    <widget class="QWidget" name="btnGroupsAction" native="true"/>
    </item>
   </layout>
  </widget>
@@ -177,9 +177,9 @@
    <header>ClientUi/VideoList/VideoListWidget.h</header>
   </customwidget>
   <customwidget>
-   <class>::VideoDetailWidget</class>
+   <class>::VideoInfoWidget</class>
    <extends>QWidget</extends>
-   <header>ClientUi/VideoList/VideoDetailWidget.h</header>
+   <header>ClientUi/VideoList/VideoInfoWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

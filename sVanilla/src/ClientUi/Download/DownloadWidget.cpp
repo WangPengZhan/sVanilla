@@ -7,7 +7,6 @@
 #include "SUI/Tips/Toast.h"
 #include "ClientUi/VideoList/VideoData.h"
 #include "BiliApi/BilibiliClient.h"
-#include "ClientUi/VideoList/VideoData.h"
 #include "Util/UrlProcess.h"
 #include "ClientUi/Utils/RunTask.h"
 #include "Adapter/BaseVideoView.h"
@@ -52,7 +51,7 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, d
 
 void DownloadWidget::addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo)
 {
-    ui->listWidgetDownloaded->addDownloadedItem(videoInfo);
+    ui->downloadedListWidget->addDownloadedItem(videoInfo);
 }
 
 void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
@@ -119,36 +118,40 @@ void DownloadWidget::setUi()
     constexpr int horizonNavigationWidth = 120;
     ui->horizonNavigation->setColumnWidth(horizonNavigationWidth);
     ui->stackedWidget->setCurrentWidget(ui->widgetDownloading);
-    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    ui->downloadingListWidget->setInfoPanelSignal(ui->downloadingInfoWidget);
+    ui->downloadedListWidget->setInfoPanelSignal(ui->downloadedInfoWidget);
 }
 
 void DownloadWidget::signalsAndSlots()
 {
-    connect(this, &DownloadWidget::sigDownloadTask, this, &DownloadWidget::addDownloadTask);
-    connect(ui->btnStartAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::startAll);
-    connect(ui->btnStopAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::stopAll);
-    connect(ui->btnDeleteAll, &QPushButton::clicked, ui->DownloadListWidget, &DownloadingListWidget::deleteAll);
-    connect(ui->DownloadListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addFinishedItem);
+    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
-    connect(ui->btnClearAll, &QPushButton::clicked, ui->listWidgetDownloaded, &DownloadedListWidget::clearAll);
-    connect(ui->btnRedownload, &QPushButton::clicked, ui->listWidgetDownloaded, &DownloadedListWidget::reloadAll);
-    connect(ui->btnScaned, &QPushButton::clicked, ui->listWidgetDownloaded, &DownloadedListWidget::scan);
-    connect(ui->listWidgetDownloaded, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
+    connect(this, &DownloadWidget::sigDownloadTask, this, &DownloadWidget::addDownloadTask);
+    connect(ui->btnStartAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::startAll);
+    connect(ui->btnStopAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::stopAll);
+    connect(ui->btnDeleteAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::deleteAll);
+    connect(ui->downloadingListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addFinishedItem);
+
+    connect(ui->btnClearAll, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::clearAll);
+    connect(ui->btnRedownload, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::reloadAll);
+    connect(ui->btnScaned, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::scan);
+    connect(ui->downloadedListWidget, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
 }
 
 void DownloadWidget::addTaskITem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)
 {
-    std::string fullPath;
-    if (!biliDownloader->path().empty() && (biliDownloader->path().back() != '/' || biliDownloader->path().back() != '\\'))
+    if (biliDownloader->path().empty())
     {
-        fullPath = biliDownloader->path() + "/" + biliDownloader->filename();
+        return;
     }
-    else
+    std::string fullPath = biliDownloader->path();
+    if (fullPath.back() != '/' && fullPath.back() != '\\')
     {
-        fullPath = biliDownloader->path() + biliDownloader->filename();
+        fullPath += "/";
     }
+    fullPath += biliDownloader->filename();
     uiDownloader->setFileName(fullPath);
 
-    ui->DownloadListWidget->addDownloadItem(uiDownloader);
+    ui->downloadingListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }

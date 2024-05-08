@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>515</width>
+    <width>590</width>
     <height>604</height>
    </rect>
   </property>
@@ -56,12 +56,6 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>538</width>
-          <height>17</height>
-         </size>
-        </property>
        </spacer>
       </item>
      </layout>
@@ -70,21 +64,21 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="widgetDownloading">
-      <layout class="QVBoxLayout" name="gridLayout">
+      <layout class="QVBoxLayout" name="downloadingLayout">
        <item>
-        <widget class="QSplitter" name="splitter">
+        <widget class="QSplitter" name="downloadSplitter">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="::DownloadingListWidget" name="DownloadListWidget"/>
-         <widget class="QWidget" name="DownloadingInfoWidget" native="true"/>
+         <widget class="::DownloadingListWidget" name="downloadingListWidget"/>
+         <widget class="::DownloadingInfoWidget" name="downloadingInfoWidget" native="true"/>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="DownloadPageBtnGroup" native="true">
+        <widget class="QWidget" name="downloadPageBtnGroup" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QPushButton" name="btnStopAll">
@@ -113,8 +107,17 @@
       </layout>
      </widget>
      <widget class="QWidget" name="widgetDownloaded">
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="2" column="0">
+      <layout class="QVBoxLayout" name="downloadedLayout">
+       <item>
+        <widget class="QSplitter" name="downloadedSplitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="::DownloadedListWidget" name="downloadedListWidget"/>
+         <widget class="::DownloadedInfoWidget" name="downloadedInfoWidget" native="true"/>
+        </widget>
+       </item>
+       <item>
         <widget class="QWidget" name="DownloadedBtnGroup" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -141,12 +144,6 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="DownloadedListWidget" name="listWidgetDownloaded"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QWidget" name="DownloadedInfoWidget" native="true"/>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -167,9 +164,21 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DownloadedListWidget</class>
+   <class>::DownloadedListWidget</class>
    <extends>QListWidget</extends>
    <header>ClientUi/Download/DownloadedListWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>::DownloadingInfoWidget</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Download/DownloadingInfoWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::DownloadedInfoWidget</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Download/DownloadedInfoWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

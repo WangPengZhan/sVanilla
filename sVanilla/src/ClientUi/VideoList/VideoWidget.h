@@ -36,19 +36,19 @@ public:
     void prepareBiliVideoView(const std::string& uri);
     void prepareVideoItem(const biliapi::VideoViewOrigin& videoView);
     void downloadCover(const CoverInfo& coverInfo);
-    void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView) const;
+    void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const;
 
     void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView);
     Q_SIGNAL void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
 
     void clearVideo() const;
-    void updateCover(const std::string& id) const;
+    void updateCover(int id) const;
 
 private:
     void signalsAndSlots();
     void setUi();
     Q_SIGNAL void allReady() const;
-    Q_SIGNAL void coverReady(const std::string& id) const;
+    Q_SIGNAL void coverReady(int id) const;
 
 private:
     Ui::VideoPage* ui;

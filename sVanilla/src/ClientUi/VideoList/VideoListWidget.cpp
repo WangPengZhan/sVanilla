@@ -2,18 +2,16 @@
 #include <QMouseEvent>
 
 #include "VideoListWidget.h"
-#include "VideoDetailWidget.h"
+#include "VideoInfoWidget.h"
 #include "ui_VideoListWidget.h"
+#include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "ClientUi/VideoList/VideoData.h"
 
-
-VideoListItemWidget::VideoListItemWidget(std::string identifier, QWidget* parent)
+VideoListItemWidget::VideoListItemWidget(QWidget* parent)
     : QWidget(parent)
-    , m_identifier(std::move(identifier))
     , ui(new Ui::VideoListItemWidget())
 {
     ui->setupUi(this);
-    setUi();
     signalsAndSlots();
 }
 
@@ -22,39 +20,58 @@ VideoListItemWidget::~VideoListItemWidget()
     delete ui;
 }
 
-void VideoListItemWidget::updateVideoItem()
+void VideoListItemWidget::setListWidget(VideoListWidget* listWidget, QListWidgetItem* widgetItem)
 {
-    ui->Title->setText(QString::fromStdString(m_videoView->videoView->Title));
-    ui->Duration->setText(QString::fromStdString(m_videoView->videoView->Duration));
-    ui->Author->setText(QString::fromStdString(m_videoView->videoView->Publisher));
+    m_listWidget = listWidget;
+    m_listWidgetItem = widgetItem;
 }
 
-void VideoListItemWidget::setUi()
+void VideoListItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull)
 {
-    ui->VideoListDetailsBtn->setIcon(QIcon(":/icon/video/detail.svg"));
-    ui->VideoListDownloadBtn->setIcon(QIcon(":/icon/video/download.svg"));
+    m_infoFull = infoFull;
+    updateVideoItem();
+}
+
+void VideoListItemWidget::updateVideoItem()
+{
+    ui->labelTitle->setText(QString::fromStdString(m_infoFull->videoView->Title));
+    ui->labelDuration->setText(QString::fromStdString(m_infoFull->videoView->Duration));
+    ui->labelAuthor->setText(QString::fromStdString(m_infoFull->videoView->Publisher));
 }
 
 void VideoListItemWidget::signalsAndSlots()
 {
-    connect(ui->VideoListDetailsBtn, &QPushButton::clicked, this, &VideoListItemWidget::detailBtnClick);
+    connect(ui->btnInfo, &QPushButton::clicked, this, &VideoListItemWidget::showInfoPanel);
+    connect(ui->btnDownload, &QPushButton::clicked, this, &VideoListItemWidget::downloadItem);
 }
 
-VideoListWidget::VideoListWidget(QWidget* parent)
+void VideoListItemWidget::showInfoPanel() const
+{
+    if (m_listWidget != nullptr)
+    {
+        m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
+        m_listWidget->updateInfoPanel(m_infoFull);
+    }
+}
+
+void VideoListItemWidget::downloadItem() const
+{
+    emit m_listWidget->downloandBtnClick(m_infoFull);
+}
+
+VideoListWidget::VideoListWidget(QWidget* /*parent*/)
 {
     setSelectionMode(ExtendedSelection);
 }
 
-void VideoListWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
+void VideoListWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& infoFull)
 {
-    auto* const videoItem = new VideoListItemWidget(videoView->videoView->Identifier, this);
+    auto* const videoItem = new VideoListItemWidget(this);
     auto* const item = new QListWidgetItem(this);
+    videoItem->setListWidget(this, item);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
-    m_items.insert(std::make_pair(videoView->videoView->Identifier, item));
-    videoItem->m_videoView = videoView;
-    videoItem->updateVideoItem();
-    connectItemSingal(videoItem);
+    videoItem->setVideoInfo(infoFull);
 }
 
 void VideoListWidget::mousePressEvent(QMouseEvent* event)
@@ -62,7 +79,7 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton)
     {
         const QPoint point = event->pos();
-        if (const auto itemClicked = this->itemAt(point); itemClicked == nullptr)
+        if (auto* const itemClicked = this->itemAt(point); itemClicked == nullptr)
         {
             this->clearSelection();
         }
@@ -80,52 +97,18 @@ void VideoListWidget::clearVideo()
     clear();
 }
 
-void VideoListWidget::getSignalPointer(QSplitter* splitter)
+void VideoListWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter)
 {
+    m_infoWidget = infoWidget;
     m_splitter = splitter;
 }
 
-void VideoListWidget::connectItemSingal(const VideoListItemWidget* itemWidget)
+void VideoListWidget::showInfoPanel(int row)
 {
-    connect(itemWidget, &VideoListItemWidget::detailBtnClick, this, [this, itemWidget]() {
-        const auto itemIdentifier = itemWidget->m_identifier;
-        if (detailPanelVisible() && currentIdentifier == itemIdentifier)
-        {
-            hideDetailPanel();
-        }
-        else
-        {
-            showDetailPanel();
-        }
-        if (currentIdentifier != itemIdentifier)
-        {
-            currentIdentifier = itemIdentifier;
-            detailWidget()->updateUi(itemWidget->m_videoView);
-        }
-    });
+    setInfoPanelVisible(m_infoWidget, m_splitter, row, previousRow);
 }
 
-void VideoListWidget::showDetailPanel()
+void VideoListWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
-    if (!detailWidget()->isVisible())
-    {
-        detailWidget()->show();
-    }
-    m_splitter->setSizes(QList({4, 1}));
-    m_splitter->update();
-}
-
-void VideoListWidget::hideDetailPanel()
-{
-    m_splitter->setSizes({1, 0});
-}
-
-bool VideoListWidget::detailPanelVisible() const
-{
-    return m_splitter->sizes()[1] != 0;
-}
-
-VideoDetailWidget* VideoListWidget::detailWidget() const
-{
-    return qobject_cast<VideoDetailWidget*>(m_splitter->widget(1));
+    m_infoWidget->updateUi(infoFull);
 }

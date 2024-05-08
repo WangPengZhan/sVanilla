@@ -1,26 +1,22 @@
 {
   "name": "Crescent",
-  "author": "Alanus",
   "mode": "dark",
   "color": {
     "backgroundColor": "#CC322C2B",
-
     "primaryTextColor": "#EBEBF0",
-    "textColor": "#FAF0E6",
+    "textColor": "#F5EFE6",
     "pressedTextColor": "#344955",
     "hoverTextColor": "#50727B",
-    "highlightTextColor": "#322C2B",
-
-    "indicatorColor": "#948979",
-
+    "highlightTextColor": "#4F4557",
+    "iconColor": "#948979",
+    "indicatorColor": "#c68a74",
     "buttonForeground": "#C08B5C",
     "buttonBackground": "#31363F",
     "buttonHoveredForeground": "#31363F",
     "buttonHoveredBackground": "#31363F",
     "buttonPressedForeground": "#222831",
     "buttonPressedBackground": "#222831",
-    "buttonBorderColor": "#222831",
-
+    "buttonBorderColor": "#00000000",
     "checkBoxBackground": "#00FFFFFF",
     "checkBoxForeground": "#A4907C",
     "checkBoxCheckedForeground": "#F5EEE6",
@@ -28,22 +24,20 @@
     "checkBoxHoveredBackground": "#008D7B68",
     "checkBoxBorderColor": "#8D7B68",
     "checkBoxHoveredBorderColor": "#8D7B68",
-
     "progressBarBackground": "#ad8b73",
     "progressBarForeground": "#7D5A50",
     "progressBarText": "#7D5A50",
-
     "toggleButtonBackground": "#636366",
     "toggleButtonForeground": "#FDAF7B",
-    "toggleButtonIndicatorColor": "#AEAEB2",
-
-    "itemViewEvenRowColor": "#31363F",
+    "toggleButtonIndicatorColor": "#948979",
+    "toggleButtonIconColor": "#50727B",
+    "itemViewEvenRowColor": "#393646",
     "itemViewOddRowColor": "#222831",
     "itemViewSelectedColor": "#B9B4C7",
-
     "lineEditFocusOutline": "#B5C0D0",
     "lineEditOutline": "#AF8260",
     "iconLabelText": "#50727B",
+    "scrollBarSliderColor": "#50727B",
     "comboBoxDropDownBackground": "#3C5B6F"
   },
   "size": {
@@ -65,6 +59,75 @@
     "downArrow": ":/VanillaStyle/icons/DownArrow.svg",
     "progressIndicator": ":/VanillaStyle/icons/Plane.svg"
   },
-  "progressBarMode": "mode1",
-  "debug": true
+  "progressBarMode": "mode2",
+  "isEnableHotReload": true,
+  "patch": [
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "CleanButtonPatch",
+      "configPatch": {
+        "color": {
+          "textColor": "#EBEBF0",
+          "buttonForeground": "#C08B5C",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#F8F0E5",
+          "buttonPressedForeground": "#C08B5C",
+          "buttonPressedBackground": "#F5EEE6",
+          "buttonBorderColor": "#00000000"
+        }
+      }
+    },
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "ButtonWithBorderPatch",
+      "configPatch": {
+        "color": {
+          "textColor": "#EBEBF0",
+          "buttonForeground": "#FEFAF6",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#F8F0E5",
+          "buttonPressedForeground": "#C08B5C",
+          "buttonPressedBackground": "#F5EEE6",
+          "buttonBorderColor": "#FFBB70"
+        }
+      }
+    },
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "AppIconButtonPatch",
+      "configPatch": {
+        "color": {
+          "buttonForeground": "#00000000",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#00000000",
+          "buttonPressedForeground": "#00000000",
+          "buttonPressedBackground": "#00000000",
+          "buttonBorderColor": "#00000000"
+        }
+      }
+    },
+    {
+      "enable": true,
+      "widgetType": "QPushButton",
+      "propertyValue": "SystemButtonPatch",
+      "configPatch": {
+        "color": {
+          "indicatorColor": "#C7C8CC",
+          "buttonForeground": "#00000000",
+          "buttonBackground": "#00000000",
+          "buttonHoveredForeground": "#00000000",
+          "buttonHoveredBackground": "#B4B4B8",
+          "buttonPressedForeground": "#00000000",
+          "buttonPressedBackground": "#00000000",
+          "buttonBorderColor": "#00000000"
+        }
+      }
+    }
+  ]
 }

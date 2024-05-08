@@ -55,4 +55,8 @@ void SearchLineEdit::signalsAndSlots()
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
         ui->ClearBtn->setVisible(!text.isEmpty());
     });
+    connect(ui->ClearBtn, &QPushButton::clicked, this, [this] {
+        this->clear();
+        ui->ClearBtn->setVisible(false);
+    });
 }
