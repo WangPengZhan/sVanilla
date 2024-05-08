@@ -33,9 +33,10 @@ DownloadedItemWidget::~DownloadedItemWidget()
     delete ui;
 }
 
-void DownloadedItemWidget::setListWidget(DownloadedListWidget* listWidget)
+void DownloadedItemWidget::setListWidget(DownloadedListWidget* listWidget, QListWidgetItem* widgetItem)
 {
     m_listWidget = listWidget;
+    m_listWidgetItem = widgetItem;
 }
 
 DownloadedListWidget* DownloadedItemWidget::listWidget() const
@@ -149,10 +150,11 @@ void DownloadedItemWidget::deleteDbFinishItem()
 
 void DownloadedItemWidget::showInfoPanel() const
 {
-    if (m_listWidget != nullptr)
+    if (m_listWidget == nullptr)
     {
-        m_listWidget->showInfoPanel();
+        return;
     }
+    m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
 }
 
 DownloadedListWidget::DownloadedListWidget(QWidget* parent)
@@ -167,8 +169,8 @@ DownloadedListWidget::DownloadedListWidget(QWidget* parent)
 void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull>& videoInfFull)
 {
     auto* pWidget = new DownloadedItemWidget(videoInfFull, this);
-    pWidget->setListWidget(this);
     auto* pItem = new QListWidgetItem(this);
+    pWidget->setListWidget(this, pItem);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
 }
@@ -230,9 +232,9 @@ void DownloadedListWidget::setInfoPanelSignal(DownloadedInfoWidget* infoWidget)
     m_infoWidget = infoWidget;
 }
 
-void DownloadedListWidget::showInfoPanel()
+void DownloadedListWidget::showInfoPanel(int index)
 {
-    setInfoPanelVisible(m_infoWidget, m_splitter, currentRow(), previousRow);
+    setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
 }
 
 void DownloadedListWidget::hideInfoPanel() const

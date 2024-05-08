@@ -9,7 +9,6 @@
 
 VideoListItemWidget::VideoListItemWidget(QWidget* parent)
     : QWidget(parent)
-    , m_listWidget(nullptr)
     , ui(new Ui::VideoListItemWidget())
 {
     ui->setupUi(this);
@@ -21,9 +20,10 @@ VideoListItemWidget::~VideoListItemWidget()
     delete ui;
 }
 
-void VideoListItemWidget::setListWidget(VideoListWidget* listWidget)
+void VideoListItemWidget::setListWidget(VideoListWidget* listWidget, QListWidgetItem* widgetItem)
 {
     m_listWidget = listWidget;
+    m_listWidgetItem = widgetItem;
 }
 
 void VideoListItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull)
@@ -49,7 +49,7 @@ void VideoListItemWidget::showInfoPanel() const
 {
     if (m_listWidget != nullptr)
     {
-        m_listWidget->showInfoPanel();
+        m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
         m_listWidget->updateInfoPanel(m_infoFull);
     }
 }
@@ -67,8 +67,8 @@ VideoListWidget::VideoListWidget(QWidget* /*parent*/)
 void VideoListWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& infoFull)
 {
     auto* const videoItem = new VideoListItemWidget(this);
-    videoItem->setListWidget(this);
     auto* const item = new QListWidgetItem(this);
+    videoItem->setListWidget(this, item);
     item->setSizeHint(videoItem->sizeHint());
     this->setItemWidget(item, videoItem);
     videoItem->setVideoInfo(infoFull);
@@ -103,9 +103,9 @@ void VideoListWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSp
     m_splitter = splitter;
 }
 
-void VideoListWidget::showInfoPanel()
+void VideoListWidget::showInfoPanel(int row)
 {
-    setInfoPanelVisible(m_infoWidget, m_splitter, currentRow(), previousRow);
+    setInfoPanelVisible(m_infoWidget, m_splitter, row, previousRow);
 }
 
 void VideoListWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const

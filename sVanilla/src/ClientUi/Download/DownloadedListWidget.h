@@ -21,7 +21,7 @@ public:
     explicit DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent = nullptr);
     ~DownloadedItemWidget();
 
-    void setListWidget(DownloadedListWidget* listWidget);
+    void setListWidget(DownloadedListWidget* listWidget, QListWidgetItem* widgetItem);
     DownloadedListWidget* listWidget() const;
     std::shared_ptr<VideoInfoFull> videoInfoFull() const;
 
@@ -40,7 +40,9 @@ private:
 
 private:
     Ui::DownloadedItemWidget* ui;
-    DownloadedListWidget* m_listWidget;
+    DownloadedListWidget* m_listWidget = nullptr;
+    QListWidgetItem* m_listWidgetItem = nullptr;
+
     std::shared_ptr<VideoInfoFull> m_videoInfoFull;
 };
 
@@ -59,7 +61,7 @@ public:
 
     QListWidgetItem* itemFromWidget(QWidget* target) const;
     void setInfoPanelSignal(DownloadedInfoWidget* infoWidget);
-    void showInfoPanel();
+    void showInfoPanel(int index);
     void hideInfoPanel() const;
 
 signals:

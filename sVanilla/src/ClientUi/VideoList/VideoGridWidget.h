@@ -30,7 +30,7 @@ public:
     explicit VideoGridItemWidget(QWidget* parent = nullptr);
     ~VideoGridItemWidget();
 
-    void setGridWidget(VideoGridWidget* gridWidget);
+    void setGridWidget(VideoGridWidget* gridWidget, QListWidgetItem* widgetItem);
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
 
     void setCover();
@@ -53,6 +53,7 @@ private:
 private:
     std::shared_ptr<VideoInfoFull> m_infoFull;
     VideoGridWidget* m_gridWidget = nullptr;
+    QListWidgetItem* m_listWidgetItem = nullptr;
     Ui::VideoGridItemWidget* ui;
 
 };
@@ -67,9 +68,8 @@ public:
     void clearVideo();
 
     void setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter);
-    void showInfoPanel();
+    void showInfoPanel(int index);
     void updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const;
-
     void coverReady(int id) const;
 
     Q_SIGNAL void downloandBtnClick(const std::shared_ptr<VideoInfoFull>& infoFull);

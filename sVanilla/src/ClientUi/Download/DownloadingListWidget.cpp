@@ -29,9 +29,10 @@ DownloadingItemWidget::~DownloadingItemWidget()
     delete ui;
 }
 
-void DownloadingItemWidget::setListWidget(DownloadingListWidget* listWidget)
+void DownloadingItemWidget::setListWidget(DownloadingListWidget* listWidget, QListWidgetItem* widgetItem)
 {
     m_listWidget = listWidget;
+    m_listWidgetItem = widgetItem;
 }
 
 DownloadingListWidget* DownloadingItemWidget::listWidget() const
@@ -191,10 +192,11 @@ void DownloadingItemWidget::finishedItem()
 
 void DownloadingItemWidget::showInfoPanel() const
 {
-    if (m_listWidget != nullptr)
+    if (m_listWidget == nullptr)
     {
-        m_listWidget->showInfoPanel();
+        return;
     }
+    m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
@@ -209,8 +211,8 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
     auto* pWidget = new DownloadingItemWidget(downloader, this);
-    pWidget->setListWidget(this);
     auto* pItem = new QListWidgetItem(this);
+    pWidget->setListWidget(this, pItem);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
 }
@@ -285,9 +287,9 @@ void DownloadingListWidget::signalsAndSlots() const
 {
 }
 
-void DownloadingListWidget::showInfoPanel()
+void DownloadingListWidget::showInfoPanel(int index)
 {
-    setInfoPanelVisible(m_infoWidget, m_splitter, currentRow(), previousRow);
+    setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
 }
 
 void DownloadingListWidget::hideInfoPanel() const

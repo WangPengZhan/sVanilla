@@ -91,19 +91,6 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
         addVideoItem(videoInfoFull);
     }
 
-    // for (const auto& video : views)
-    // {
-    //     auto videoInfoFull = std::make_shared<VideoInfoFull>();
-    //     videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
-    //     videoInfoFull->videoView = video;
-    //     // download cover
-    //     downloadCover({
-    //         video->Cover,
-    //         videoInfoFull->getGuid(),
-    //         tempPath.toStdString(),
-    //     });
-    //     addVideoItem(videoInfoFull);
-    // }
     // after cover ready:
     // 1. stop spinner
     // 2. update cover

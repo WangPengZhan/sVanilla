@@ -43,9 +43,10 @@ VideoGridItemWidget::~VideoGridItemWidget()
     delete ui;
 }
 
-void VideoGridItemWidget::setGridWidget(VideoGridWidget* gridWidget)
+void VideoGridItemWidget::setGridWidget(VideoGridWidget* gridWidget, QListWidgetItem* widgetItem)
 {
     m_gridWidget = gridWidget;
+    m_listWidgetItem = widgetItem;
 }
 
 void VideoGridItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull)
@@ -68,11 +69,13 @@ void VideoGridItemWidget::signalsAndSlots()
 
 void VideoGridItemWidget::showInfoPanel() const
 {
-    if (m_gridWidget != nullptr)
+    if (m_gridWidget == nullptr)
     {
-        m_gridWidget->showInfoPanel();
-        m_gridWidget->updateInfoPanel(m_infoFull);
+        return;
     }
+
+    m_gridWidget->showInfoPanel(m_gridWidget->row(m_listWidgetItem));
+    m_gridWidget->updateInfoPanel(m_infoFull);
 }
 
 void VideoGridItemWidget::downloadItem() const
@@ -140,8 +143,8 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
 void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
 {
     auto* const videoItem = new VideoGridItemWidget(this);
-    videoItem->setGridWidget(this);
     auto* const item = new QListWidgetItem(this);
+    videoItem->setGridWidget(this, item);
     item->setSizeHint(videoItem->sizeHint());
     setItemWidget(item, videoItem);
     videoItem->setVideoInfo(videoView);
@@ -159,9 +162,9 @@ void VideoGridWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSp
     m_splitter = splitter;
 }
 
-void VideoGridWidget::showInfoPanel()
+void VideoGridWidget::showInfoPanel(int index)
 {
-    setInfoPanelVisible(m_infoWidget, m_splitter, currentRow(), previousRow);
+    setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
 }
 
 void VideoGridWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const

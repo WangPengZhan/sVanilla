@@ -25,7 +25,7 @@ public:
     explicit DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent = nullptr);
     ~DownloadingItemWidget();
 
-    void setListWidget(DownloadingListWidget* listWidget);
+    void setListWidget(DownloadingListWidget* listWidget, QListWidgetItem* widgetItem);
     DownloadingListWidget* listWidget() const;
     std::shared_ptr<UiDownloader> downloaoder() const;
 
@@ -48,7 +48,8 @@ private:
 
 private:
     Ui::DownloadingItemWidget* ui;
-    DownloadingListWidget* m_listWidget;
+    DownloadingListWidget* m_listWidget = nullptr;
+    QListWidgetItem* m_listWidgetItem = nullptr;
     std::shared_ptr<UiDownloader> m_downloader;
 };
 
@@ -68,7 +69,7 @@ public:
     void setInfoPanelSignal(DownloadingInfoWidget* infoWidget);
 
     QListWidgetItem* itemFromWidget(DownloadingItemWidget* target);
-    void showInfoPanel();
+    void showInfoPanel(int index);
     void hideInfoPanel() const;
     void updateInfoPanel(const DownloadingInfo& info) const;
 
