@@ -57,10 +57,9 @@ public:
     void reloadAll();
     void scan();
 
-    void removeDownloadItem(const std::string& guid);
     QListWidgetItem* itemFromWidget(QWidget* target) const;
     void setInfoPanelSignal(DownloadedInfoWidget* infoWidget);
-    void showInfoPanel() const;
+    void showInfoPanel();
     void hideInfoPanel() const;
 
 signals:
@@ -74,7 +73,7 @@ private:
     void signalsAndSlots() const;
 
 private:
-    std::unordered_map<std::string, QListWidgetItem*> m_items;
     QSplitter* m_splitter = nullptr;
     DownloadedInfoWidget* m_infoWidget = nullptr;
+    int previousRow = -1;
 };

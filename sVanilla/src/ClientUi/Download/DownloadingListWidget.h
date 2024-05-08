@@ -68,7 +68,7 @@ public:
     void setInfoPanelSignal(DownloadingInfoWidget* infoWidget);
 
     QListWidgetItem* itemFromWidget(DownloadingItemWidget* target);
-    void showInfoPanel() const;
+    void showInfoPanel();
     void hideInfoPanel() const;
     void updateInfoPanel(const DownloadingInfo& info) const;
 
@@ -85,4 +85,5 @@ private:
 private:
     QSplitter* m_splitter = nullptr;
     DownloadingInfoWidget* m_infoWidget = nullptr;
+    int previousRow = -1;
 };

@@ -7,12 +7,13 @@
 
 #include "Adapter/BaseVideoView.h"
 
+class VideoGridWidget;
 class Spiner;
 constexpr int itemBaseWidth = 240;
 constexpr int itemBaseHeight = 200;
 constexpr float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
 
-class VideoDetailWidget;
+class VideoInfoWidget;
 struct VideoInfoFull;
 
 namespace Ui
@@ -26,8 +27,12 @@ class VideoGridItemWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit VideoGridItemWidget(std::string identifier, QWidget* parent = nullptr);
+    explicit VideoGridItemWidget(QWidget* parent = nullptr);
     ~VideoGridItemWidget();
+
+    void setGridWidget(VideoGridWidget* gridWidget);
+    void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
+
     void setCover();
     void updateVideoCard();
     void updateCover();
@@ -42,48 +47,42 @@ private:
     void setUi();
     void signalsAndSlots();
 
-public:
-    std::string m_identifier;
-    std::shared_ptr<VideoInfoFull> m_videoView;
+    void showInfoPanel() const;
+    void downloadItem() const;
 
 private:
+    std::shared_ptr<VideoInfoFull> m_infoFull;
+    VideoGridWidget* m_gridWidget = nullptr;
     Ui::VideoGridItemWidget* ui;
 
-signals:
-    void detailBtnClick();
-    void downloadBtnClick();
-    void detailCheckBtnClick(bool isChecked);
 };
 
 class VideoGridWidget : public QListWidget
 {
     Q_OBJECT
-
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
 
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView);
     void clearVideo();
-    void showDetailPanel();
-    void hideDetailPanel() const;
-    void getSignalPointer(QSplitter* splitter);
-    void coverReady(const std::string& id) const;
 
-    Q_SIGNAL void downloandBtnClick(const std::shared_ptr<VideoInfoFull>& videoView);
+    void setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter);
+    void showInfoPanel();
+    void updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const;
+
+    void coverReady(int id) const;
+
+    Q_SIGNAL void downloandBtnClick(const std::shared_ptr<VideoInfoFull>& infoFull);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private:
-    void connectItemSingal(const VideoGridItemWidget* itemWidget);
-    [[nodiscard]] bool detailPanelVisible() const;
-    [[nodiscard]] VideoDetailWidget* detailWidget() const;
-
-    void adjustItemSize();
-    void setItemSize(const QSize& size);
+    void adjustItemSize() const;
+    void setItemSize(const QSize& size) const;
 
 private:
-    std::unordered_map<std::string, QListWidgetItem*> m_items;
     QSplitter* m_splitter = nullptr;
-    std::string currentIdentifier;
+    VideoInfoWidget* m_infoWidget = nullptr;
+    int previousRow = -1;
 };

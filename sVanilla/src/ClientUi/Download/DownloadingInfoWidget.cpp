@@ -19,12 +19,12 @@ DownloadingInfoWidget::~DownloadingInfoWidget()
 
 void DownloadingInfoWidget::updateInfoPanel(const DownloadingInfo& info)
 {
-    ui->filePath->setText(QString::fromStdString(info.filePath));
-    ui->speed->setText(formatSpeed(info.downloadingInfo.speed));
-    ui->totalSize->setText(formatSize(info.downloadingInfo.total));
+    ui->labelFilePath->setText(QString::fromStdString(info.filePath));
+    ui->labelSpeed->setText(formatSpeed(info.downloadingInfo.speed));
+    ui->labelTotalSize->setText(formatSize(info.downloadingInfo.total));
 }
 
 void DownloadingInfoWidget::signalsAndSlots()
 {
-    connect(ui->closeButton, &QPushButton::clicked, this, &DownloadingInfoWidget::hide);
+    connect(ui->btnClose, &QPushButton::clicked, this, &DownloadingInfoWidget::hide);
 }

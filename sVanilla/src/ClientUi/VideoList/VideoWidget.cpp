@@ -34,29 +34,27 @@ VideoWidget::~VideoWidget()
 
 void VideoWidget::signalsAndSlots()
 {
-    connect(ui->SwitchBtn, &Vanilla::ToggleButton::currentItemChanged, ui->VideoStackedPage, &QStackedWidget::setCurrentIndex);
-    connect(ui->VideoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
-        ui->VideoGridWidget->hideDetailPanel();
+    connect(ui->btnSwitch, &Vanilla::ToggleButton::currentItemChanged, ui->videoStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->videoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
+        // ui->videoGridWidget->hideDetailPanel();
     });
 
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
-    connect(ui->VideoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
-    connect(ui->VideoSearchLineEdit, &SearchLineEdit::Complete, this, [this]() {
-        prepareBiliVideoView(ui->VideoSearchLineEdit->text().toStdString());
+    connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+    connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
+        prepareBiliVideoView(ui->lineEditSearch->text().toStdString());
     });
 }
 
 void VideoWidget::setUi()
 {
-    ui->VideoStackedPage->setCurrentWidget(ui->VideoGrid);
+    ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
-    ui->SwitchBtn->setColumnWidth(45);
-    ui->SwitchBtn->setItemList(horizonNavigation);
-
-    ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
-    ui->VideoListWidget->getSignalPointer(ui->VideoList);
-
+    ui->btnSwitch->setColumnWidth(45);
+    ui->btnSwitch->setItemList(horizonNavigation);
+    ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
+    ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
@@ -82,16 +80,30 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     // 1. add 'download cover image' task
     // 2. add video item
     const QString tempPath = QApplication::applicationDirPath();  // It is now in the temporary area
-    const auto view = ConvertVideoView(videoView.data);
-    totalCoverSize = view.size();
-    for (const auto& video : view)
+    const auto views = ConvertVideoView(videoView.data);
+    for (int i = 0; i < views.size(); ++i)
     {
-        downloadCover({video->Cover, video->Identifier, tempPath.toStdString()});
         auto videoInfoFull = std::make_shared<VideoInfoFull>();
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
-        videoInfoFull->videoView = video;
+        videoInfoFull->videoView = views.at(i);
+        // download cover
+        downloadCover({views.at(i)->Cover, videoInfoFull->getGuid(), tempPath.toStdString(), i});
         addVideoItem(videoInfoFull);
     }
+
+    // for (const auto& video : views)
+    // {
+    //     auto videoInfoFull = std::make_shared<VideoInfoFull>();
+    //     videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
+    //     videoInfoFull->videoView = video;
+    //     // download cover
+    //     downloadCover({
+    //         video->Cover,
+    //         videoInfoFull->getGuid(),
+    //         tempPath.toStdString(),
+    //     });
+    //     addVideoItem(videoInfoFull);
+    // }
     // after cover ready:
     // 1. stop spinner
     // 2. update cover
@@ -107,15 +119,15 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
         {
             return;
         }
-        emit coverReady(coverInfo.fileName);
+        emit coverReady(coverInfo.index);
     };
     runTask(taskFunc, callback, this);
 }
 
-void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView) const
+void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const
 {
-    ui->VideoGridWidget->addVideoItem(videoView);
-    ui->VideoListWidget->addVideoItem(videoView);
+    ui->videoGridWidget->addVideoItem(videoInfo);
+    ui->videoListWidget->addVideoItem(videoInfo);
 }
 
 void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView)
@@ -125,11 +137,11 @@ void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& vide
 
 void VideoWidget::clearVideo() const
 {
-    ui->VideoGridWidget->clearVideo();
-    ui->VideoListWidget->clearVideo();
+    ui->videoGridWidget->clearVideo();
+    ui->videoListWidget->clearVideo();
 }
 
-void VideoWidget::updateCover(const std::string& id) const
+void VideoWidget::updateCover(const int id) const
 {
-    ui->VideoGridWidget->coverReady(id);
+    ui->videoGridWidget->coverReady(id);
 }

@@ -18,5 +18,5 @@ DownloadedInfoWidget::~DownloadedInfoWidget()
 
 void DownloadedInfoWidget::signalsAndSlots()
 {
-    connect(ui->closeButton, &QPushButton::clicked, this, &DownloadedInfoWidget::hide);
+    connect(ui->btnClose, &QPushButton::clicked, this, &DownloadedInfoWidget::hide);
 }

@@ -10,6 +10,7 @@
 #include "ui_DownloadingListWidget.h"
 #include "DownloadingInfoWidget.h"
 #include "ClientUi/Storage/DownloadingItemStorage.h"
+#include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "Util/SpeedUtil.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
@@ -284,29 +285,9 @@ void DownloadingListWidget::signalsAndSlots() const
 {
 }
 
-void DownloadingListWidget::showInfoPanel() const
+void DownloadingListWidget::showInfoPanel()
 {
-    if (m_splitter == nullptr)
-    {
-        return;
-    }
-    if (m_infoWidget->isHidden())
-    {
-        m_infoWidget->setVisible(true);
-        m_infoWidget->adjustSize();
-        QList<int> sizes;
-        sizes.append(m_splitter->height());
-        sizes.append(m_infoWidget->height());
-        m_splitter->setSizes(sizes);
-    }
-    else
-    {
-        m_infoWidget->hide();
-        QList<int> sizes;
-        sizes.append(1);
-        sizes.append(0);
-        m_splitter->setSizes(sizes);
-    }
+    setInfoPanelVisible(m_infoWidget, m_splitter, currentRow(), previousRow);
 }
 
 void DownloadingListWidget::hideInfoPanel() const

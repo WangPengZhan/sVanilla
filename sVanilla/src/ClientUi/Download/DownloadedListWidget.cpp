@@ -14,6 +14,7 @@
 #include "Sqlite/SqlComposer/BaseInfo.h"
 #include "Sqlite/SqlComposer/ConditionWrapper.h"
 #include "ClientUi/Config/SingleConfig.h"
+#include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
@@ -170,7 +171,6 @@ void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull
     auto* pItem = new QListWidgetItem(this);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
-    m_items.insert({videoInfFull->getGuid(), pItem});
 }
 
 void DownloadedListWidget::clearAll()
@@ -212,18 +212,6 @@ void DownloadedListWidget::scan()
     }
 }
 
-void DownloadedListWidget::removeDownloadItem(const std::string& guid)
-{
-    if (m_items.find(guid) != m_items.end())
-    {
-        if (m_items[guid] != nullptr)
-        {
-            delete m_items[guid];
-        }
-        m_items.erase(guid);
-    }
-}
-
 QListWidgetItem* DownloadedListWidget::itemFromWidget(QWidget* target) const
 {
     for (int i = 0; i < count(); ++i)
@@ -242,29 +230,9 @@ void DownloadedListWidget::setInfoPanelSignal(DownloadedInfoWidget* infoWidget)
     m_infoWidget = infoWidget;
 }
 
-void DownloadedListWidget::showInfoPanel() const
+void DownloadedListWidget::showInfoPanel()
 {
-    if (m_splitter == nullptr)
-    {
-        return;
-    }
-    if (m_infoWidget->isHidden())
-    {
-        m_infoWidget->setVisible(true);
-        m_infoWidget->adjustSize();
-        QList<int> sizes;
-        sizes.append(m_splitter->height());
-        sizes.append(m_infoWidget->height());
-        m_splitter->setSizes(sizes);
-    }
-    else
-    {
-        m_infoWidget->hide();
-        QList<int> sizes;
-        sizes.append(1);
-        sizes.append(0);
-        m_splitter->setSizes(sizes);
-    }
+    setInfoPanelVisible(m_infoWidget, m_splitter, currentRow(), previousRow);
 }
 
 void DownloadedListWidget::hideInfoPanel() const
