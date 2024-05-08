@@ -69,6 +69,7 @@ public:
 
     QListWidgetItem* itemFromWidget(DownloadingItemWidget* target);
     void showInfoPanel() const;
+    void hideInfoPanel() const;
     void updateInfoPanel(const DownloadingInfo& info) const;
 
 signals:

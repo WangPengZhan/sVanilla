@@ -61,6 +61,7 @@ public:
     QListWidgetItem* itemFromWidget(QWidget* target) const;
     void setInfoPanelSignal(DownloadedInfoWidget* infoWidget);
     void showInfoPanel() const;
+    void hideInfoPanel() const;
 
 signals:
     void reloadItem(std::shared_ptr<VideoInfoFull>& videoInfoFull);

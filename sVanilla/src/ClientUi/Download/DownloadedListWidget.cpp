@@ -267,6 +267,11 @@ void DownloadedListWidget::showInfoPanel() const
     }
 }
 
+void DownloadedListWidget::hideInfoPanel() const
+{
+    m_infoWidget->hide();
+}
+
 DownloadedItemWidget* DownloadedListWidget::indexOfItem(int row) const
 {
     return qobject_cast<DownloadedItemWidget*>(itemWidget(item(row)));

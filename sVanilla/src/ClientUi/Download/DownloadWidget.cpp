@@ -51,7 +51,6 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, d
 
 void DownloadWidget::addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo)
 {
-    ui->downloadingInfoWidget->hide();
     ui->downloadedListWidget->addDownloadedItem(videoInfo);
 }
 

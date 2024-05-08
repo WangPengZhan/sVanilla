@@ -91,6 +91,7 @@ void DownloadingItemWidget::deleteItem()
         delete item;
         deleteLater();
     }
+    m_listWidget->hideInfoPanel();
 }
 
 void DownloadingItemWidget::pauseItem(bool isResume)
@@ -306,6 +307,11 @@ void DownloadingListWidget::showInfoPanel() const
         sizes.append(0);
         m_splitter->setSizes(sizes);
     }
+}
+
+void DownloadingListWidget::hideInfoPanel() const
+{
+    m_infoWidget->hide();
 }
 
 void DownloadingListWidget::updateInfoPanel(const DownloadingInfo& info) const
