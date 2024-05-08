@@ -1,6 +1,7 @@
 #include <QProcess>
 #include <QDir>
 #include <QPushButton>
+#include <QMouseEvent>
 
 #include <utility>
 
@@ -62,67 +63,77 @@ void DownloadedItemWidget::updateStatus()
 
 void DownloadedItemWidget::signalsAndSlots()
 {
-    connect(ui->btnDelete, &QPushButton::clicked, this, [this]() {
-        deleteDbFinishItem();
+    connect(ui->btnDelete, &QPushButton::clicked, this, &DownloadedItemWidget::deleteItem);
+    connect(ui->btnRestart, &QPushButton::clicked, this, &DownloadedItemWidget::restartItem);
+    connect(ui->btnFolder, &QPushButton::clicked, this, &DownloadedItemWidget::openItemFolder);
+    connect(ui->btnDetail, &QPushButton::clicked, this, &DownloadedItemWidget::showInfoPanel);
+}
 
-        if (auto item = m_listWidget->itemFromWidget(this))
-        {
-            delete item;
-            deleteLater();
-            return;
-        }
-    });
-    connect(ui->btnRestart, &QPushButton::clicked, this, [this]() {
-        auto& storageManager = sqlite::StorageManager::intance();
-        bool isDownloaded = storageManager.isDownloaded(m_videoInfoFull->getGuid());
-        if (isDownloaded)
-        {
-            // to do
-        }
+void DownloadedItemWidget::deleteItem()
+{
+    deleteDbFinishItem();
 
-        deleteDbFinishItem();
+    if (const auto* item = m_listWidget->itemFromWidget(this))
+    {
+        delete item;
+        deleteLater();
+        return;
+    }
+}
 
-        emit m_listWidget->reloadItem(m_videoInfoFull);
+void DownloadedItemWidget::restartItem()
+{
+    auto& storageManager = sqlite::StorageManager::intance();
+    bool isDownloaded = storageManager.isDownloaded(m_videoInfoFull->getGuid());
+    if (isDownloaded)
+    {
+        // to do
+    }
 
-        if (auto item = m_listWidget->itemFromWidget(this))
-        {
-            delete item;
-            deleteLater();
-            return;
-        }
-    });
-    connect(ui->btnFolder, &QPushButton::clicked, this, [this]() {
-        QString filePath = m_videoInfoFull->downloadConfig->downloadDir;
-        if (filePath.endsWith("/") && filePath.endsWith("\\"))
-        {
-            filePath += m_videoInfoFull->downloadConfig->nameRule;
-        }
-        else
-        {
-            filePath += "/";
-            filePath += m_videoInfoFull->downloadConfig->nameRule;
-        }
+    deleteDbFinishItem();
 
-        if (std::filesystem::u8path(filePath.toStdString()).is_relative())
-        {
-            filePath = QApplication::applicationDirPath() + "/" + filePath;
-        }
+    emit m_listWidget->reloadItem(m_videoInfoFull);
 
-        QStringList arguments;
+    if (const auto* item = m_listWidget->itemFromWidget(this))
+    {
+        delete item;
+        deleteLater();
+        return;
+    }
+}
+
+void DownloadedItemWidget::openItemFolder()
+{
+    QString filePath = m_videoInfoFull->downloadConfig->downloadDir;
+    if (filePath.endsWith("/") && filePath.endsWith("\\"))
+    {
+        filePath += m_videoInfoFull->downloadConfig->nameRule;
+    }
+    else
+    {
+        filePath += "/";
+        filePath += m_videoInfoFull->downloadConfig->nameRule;
+    }
+
+    if (std::filesystem::u8path(filePath.toStdString()).is_relative())
+    {
+        filePath = QApplication::applicationDirPath() + "/" + filePath;
+    }
+
+    QStringList arguments;
 
 #ifdef _WIN32
-        QString explorerCommand = "explorer";
-        arguments << "/select," << QDir::toNativeSeparators(filePath);
+    QString explorerCommand = "explorer";
+    arguments << "/select," << QDir::toNativeSeparators(filePath);
 #elif __linux__
-        QString explorerCommand = "open";
-        arguments << "-R" << filePath;
+    QString explorerCommand = "open";
+    arguments << "-R" << filePath;
 #elif __APPLE__
-        QString explorerCommand = "open";
-        arguments << QStringLiteral("-R") << "\"" << filePath << "\"";
+    QString explorerCommand = "open";
+    arguments << QStringLiteral("-R") << filePath;
 #endif
 
-        QProcess::startDetached(explorerCommand, arguments);
-    });
+    QProcess::startDetached(explorerCommand, arguments);
 }
 
 void DownloadedItemWidget::deleteDbFinishItem()
@@ -135,19 +146,28 @@ void DownloadedItemWidget::deleteDbFinishItem()
     storageManager.finishedItemStorage()->deleteEntities(condition);
 }
 
+void DownloadedItemWidget::showInfoPanel() const
+{
+    if (m_listWidget != nullptr)
+    {
+        m_listWidget->showInfoPanel();
+    }
+}
+
 DownloadedListWidget::DownloadedListWidget(QWidget* parent)
     : QListWidget(parent)
 {
     setObjectName(QStringLiteral("DownloadedListWidget"));
     signalsAndSlots();
     setBackgroundRole(QPalette::NoRole);
+    m_splitter = qobject_cast<QSplitter*>(parent);
 }
 
 void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull>& videoInfFull)
 {
-    auto pWidget = new DownloadedItemWidget(videoInfFull, this);
+    auto* pWidget = new DownloadedItemWidget(videoInfFull, this);
     pWidget->setListWidget(this);
-    auto pItem = new QListWidgetItem(this);
+    auto* pItem = new QListWidgetItem(this);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
     m_items.insert({videoInfFull->getGuid(), pItem});
@@ -158,9 +178,9 @@ void DownloadedListWidget::clearAll()
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
-        if (downloadItemWidget(i))
+        if (indexOfItem(i) != nullptr)
         {
-            downloadItemWidget(i)->clearItem();
+            indexOfItem(i)->clearItem();
         }
     }
 }
@@ -170,9 +190,9 @@ void DownloadedListWidget::reloadAll()
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
-        if (downloadItemWidget(i))
+        if (indexOfItem(i) != nullptr)
         {
-            downloadItemWidget(i)->reloadItem();
+            indexOfItem(i)->reloadItem();
         }
     }
 }
@@ -185,9 +205,9 @@ void DownloadedListWidget::scan()
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
-        if (downloadItemWidget(i))
+        if (indexOfItem(i) != nullptr)
         {
-            downloadItemWidget(i)->updateStatus();
+            indexOfItem(i)->updateStatus();
         }
     }
 }
@@ -196,7 +216,7 @@ void DownloadedListWidget::removeDownloadItem(const std::string& guid)
 {
     if (m_items.find(guid) != m_items.end())
     {
-        if (m_items[guid])
+        if (m_items[guid] != nullptr)
         {
             delete m_items[guid];
         }
@@ -204,7 +224,7 @@ void DownloadedListWidget::removeDownloadItem(const std::string& guid)
     }
 }
 
-QListWidgetItem* DownloadedListWidget::itemFromWidget(QWidget* target)
+QListWidgetItem* DownloadedListWidget::itemFromWidget(QWidget* target) const
 {
     for (int i = 0; i < count(); ++i)
     {
@@ -217,9 +237,52 @@ QListWidgetItem* DownloadedListWidget::itemFromWidget(QWidget* target)
     return nullptr;
 }
 
-DownloadedItemWidget* DownloadedListWidget::downloadItemWidget(int row) const
+void DownloadedListWidget::setInfoPanelSignal(DownloadedInfoWidget* infoWidget)
+{
+    m_infoWidget = infoWidget;
+}
+
+void DownloadedListWidget::showInfoPanel() const
+{
+    if (m_splitter == nullptr)
+    {
+        return;
+    }
+    if (m_infoWidget->isHidden())
+    {
+        m_infoWidget->setVisible(true);
+        m_infoWidget->adjustSize();
+        QList<int> sizes;
+        sizes.append(m_splitter->height());
+        sizes.append(m_infoWidget->height());
+        m_splitter->setSizes(sizes);
+    }
+    else
+    {
+        m_infoWidget->hide();
+        QList<int> sizes;
+        sizes.append(1);
+        sizes.append(0);
+        m_splitter->setSizes(sizes);
+    }
+}
+
+DownloadedItemWidget* DownloadedListWidget::indexOfItem(int row) const
 {
     return qobject_cast<DownloadedItemWidget*>(itemWidget(item(row)));
+}
+
+void DownloadedListWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        const QPoint point = event->pos();
+        if (const auto* const itemClicked = this->itemAt(point); itemClicked == nullptr)
+        {
+            this->clearSelection();
+        }
+    }
+    QListWidget::mouseMoveEvent(event);
 }
 
 void DownloadedListWidget::signalsAndSlots() const

@@ -53,9 +53,6 @@
       </item>
       <item>
        <spacer name="Spacer">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>0</width>
@@ -119,9 +116,6 @@
       </item>
       <item>
        <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>0</width>
@@ -187,5 +181,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <resources/>
  <connections/>
 </ui>

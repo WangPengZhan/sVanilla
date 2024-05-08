@@ -77,8 +77,11 @@ void VideoGridItemWidget::updateVideoCard()
 void VideoGridItemWidget::updateCover()
 {
     setCover();
-    ui->Spinner->hide();
-    ui->Spinner->deleteLater();
+    if (ui->Spinner != nullptr)
+    {
+        ui->Spinner->hide();
+        ui->Spinner->deleteLater();
+    }
 }
 
 QSize VideoGridItemWidget::sizeHint() const

@@ -42,6 +42,9 @@ void VideoWidget::signalsAndSlots()
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
     connect(ui->VideoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+    connect(ui->VideoSearchLineEdit, &SearchLineEdit::Complete, this, [this]() {
+        prepareBiliVideoView(ui->VideoSearchLineEdit->text().toStdString());
+    });
 }
 
 void VideoWidget::setUi()
@@ -54,18 +57,6 @@ void VideoWidget::setUi()
     ui->VideoGridWidget->getSignalPointer(ui->VideoGrid);
     ui->VideoListWidget->getSignalPointer(ui->VideoList);
 
-#if 0
-    for (int i = 0; i < 10; i++)
-    {
-        Adapter::BaseVideoView view = {std::to_string(i)};
-        view.Title = "title" + std::to_string(i);
-        view.Duration = "duration" + std::to_string(i);
-        view.Publisher = "publisher" + std::to_string(i);
-        // const auto videoView = std::make_shared<Adapter::BaseVideoView>(view);
-        addVideoItem(view.Identifier);
-        updateVideoItem(view);
-    }
-#endif
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)

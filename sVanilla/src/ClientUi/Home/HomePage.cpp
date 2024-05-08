@@ -35,7 +35,10 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->lineEditHome, &SearchLineEdit::Complete, this, [this] {
-        qDebug() << ui->lineEditHome->text();
+        parseUri({ui->lineEditHome->text().toStdString()});
+    });
+
+    connect(ui->btnSubmit, &QPushButton::clicked, this, [this] {
         parseUri({ui->lineEditHome->text().toStdString()});
     });
 

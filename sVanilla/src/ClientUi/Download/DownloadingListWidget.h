@@ -2,9 +2,11 @@
 #include <memory>
 
 #include <QListWidget>
+#include <QSplitter>
 
 #include "Aria2Net/Protocol/Protocol.h"
 
+struct DownloadingInfo;
 namespace Ui
 {
 class DownloadingItemWidget;
@@ -13,6 +15,7 @@ class DownloadingItemWidget;
 struct VideoInfoFull;
 class UiDownloader;
 class DownloadingListWidget;
+class DownloadingInfoWidget;
 
 class DownloadingItemWidget : public QWidget
 {
@@ -29,9 +32,19 @@ public:
     void setStart();
     void setStop();
 
+    Q_SIGNAL void updateInfoPanel(const DownloadingInfo& info);
+
 private:
     void setUi();
     void signalsAndSlots();
+
+    void deleteItem();
+    void pauseItem(bool isResume);
+    void openItemFolder();
+    void updateDownloadingItem(const download::DownloadInfo& info);
+    void finishedItem();
+
+    void showInfoPanel() const;
 
 private:
     Ui::DownloadingItemWidget* ui;
@@ -52,16 +65,23 @@ public:
     void stopAll();
     void deleteAll();
 
-    void removeDownloadItem(const std::string& guid);
-    QListWidgetItem* itemFromWidget(QWidget* target);
-    DownloadingItemWidget* downloadItemWidget(int row) const;
+    void setInfoPanelSignal(DownloadingInfoWidget* infoWidget);
+
+    QListWidgetItem* itemFromWidget(DownloadingItemWidget* target);
+    void showInfoPanel() const;
+    void updateInfoPanel(const DownloadingInfo& info) const;
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
 
+protected:
+    void mouseMoveEvent(QMouseEvent* event) override;
+
 private:
+    [[nodiscard]] DownloadingItemWidget* indexOfItem(int row) const;
     void signalsAndSlots() const;
 
 private:
-    std::unordered_map<std::string, QListWidgetItem*> m_items;
+    QSplitter* m_splitter = nullptr;
+    DownloadingInfoWidget* m_infoWidget = nullptr;
 };

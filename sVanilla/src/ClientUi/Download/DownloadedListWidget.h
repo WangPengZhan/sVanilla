@@ -1,6 +1,9 @@
 #pragma once
-#include <QListWidget>
 
+#include <QListWidget>
+#include <QSplitter>
+
+#include "DownloadedInfoWidget.h"
 #include "Aria2Net/Protocol/Protocol.h"
 
 namespace Ui
@@ -28,7 +31,12 @@ public:
 
 private:
     void signalsAndSlots();
+    void deleteItem();
+    void restartItem();
+    void openItemFolder();
     void deleteDbFinishItem();
+
+    void showInfoPanel() const;
 
 private:
     Ui::DownloadedItemWidget* ui;
@@ -50,15 +58,22 @@ public:
     void scan();
 
     void removeDownloadItem(const std::string& guid);
-    QListWidgetItem* itemFromWidget(QWidget* target);
-    DownloadedItemWidget* downloadItemWidget(int row) const;
+    QListWidgetItem* itemFromWidget(QWidget* target) const;
+    void setInfoPanelSignal(DownloadedInfoWidget* infoWidget);
+    void showInfoPanel() const;
 
 signals:
     void reloadItem(std::shared_ptr<VideoInfoFull>& videoInfoFull);
 
+protected:
+    void mouseMoveEvent(QMouseEvent* event) override;
+
 private:
+    [[nodiscard]] DownloadedItemWidget* indexOfItem(int row) const;
     void signalsAndSlots() const;
 
 private:
     std::unordered_map<std::string, QListWidgetItem*> m_items;
+    QSplitter* m_splitter = nullptr;
+    DownloadedInfoWidget* m_infoWidget = nullptr;
 };
