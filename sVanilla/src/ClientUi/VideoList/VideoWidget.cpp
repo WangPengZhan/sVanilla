@@ -35,13 +35,27 @@ VideoWidget::~VideoWidget()
 void VideoWidget::signalsAndSlots()
 {
     connect(ui->btnSwitch, &Vanilla::ToggleButton::currentItemChanged, ui->videoStackedPage, &QStackedWidget::setCurrentIndex);
-    connect(ui->videoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
-        // ui->videoGridWidget->hideDetailPanel();
+    connect(ui->videoStackedPage, &QStackedWidget::currentChanged, this, [this](const int index) {
+        ui->videoGridInfoWidget->hide();
+        ui->videoListInfoWidget->hide();
+        if (index == 1)
+        {
+            ui->btnDownloadAll->show();
+            ui->btnDownloadSelected->show();
+        }
+        else
+        {
+            ui->btnDownloadAll->hide();
+            ui->btnDownloadSelected->hide();
+        }
     });
+    // connect(ui->btnDownloadAll, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTask);
 
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
     connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+    connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+
     connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
         prepareBiliVideoView(ui->lineEditSearch->text().toStdString());
     });
@@ -51,7 +65,8 @@ void VideoWidget::setUi()
 {
     ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
-    ui->btnSwitch->setColumnWidth(45);
+    constexpr int columnWidth = 45;
+    ui->btnSwitch->setColumnWidth(columnWidth);
     ui->btnSwitch->setItemList(horizonNavigation);
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);

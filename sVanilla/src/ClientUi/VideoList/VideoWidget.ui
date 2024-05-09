@@ -154,7 +154,24 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="btnGroupsAction" native="true"/>
+    <widget class="QWidget" name="btnGroupsAction" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="btnDownloadSelected">
+        <property name="text">
+         <string>Download Selected</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnDownloadAll">
+        <property name="text">
+         <string>Download All</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
