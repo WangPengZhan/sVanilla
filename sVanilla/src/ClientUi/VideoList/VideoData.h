@@ -13,7 +13,7 @@ struct VideoInfoFull
 {
     std::shared_ptr<DownloadConfig> downloadConfig;
     std::shared_ptr<Adapter::BaseVideoView> videoView;
-
+    std::string fileName;
     std::string getGuid() const;
 
 private:

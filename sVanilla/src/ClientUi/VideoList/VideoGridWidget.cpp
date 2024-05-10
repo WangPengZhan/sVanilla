@@ -113,6 +113,11 @@ void VideoGridItemWidget::updateCover()
     }
 }
 
+void VideoGridItemWidget::updateInfoFileName(const QString& fileName)
+{
+    m_infoFull->fileName = fileName.toStdString();
+}
+
 QSize VideoGridItemWidget::sizeHint() const
 {
     return {itemBaseWidth, itemBaseHeight};
@@ -167,6 +172,11 @@ void VideoGridWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSp
 {
     m_infoWidget = infoWidget;
     m_splitter = splitter;
+    connect(m_infoWidget, &VideoInfoWidget::fileNameEditingFinished, this, [this](const QString& fileName) {
+        auto* gridWidget = itemWidget(item(previousRow));
+        auto* videoItem = dynamic_cast<VideoGridItemWidget*>(gridWidget);
+        videoItem->updateInfoFileName(fileName);
+    });
 }
 
 void VideoGridWidget::showInfoPanel(int index)

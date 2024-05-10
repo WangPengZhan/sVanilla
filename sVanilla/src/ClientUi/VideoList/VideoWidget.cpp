@@ -132,9 +132,9 @@ void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) 
     ui->videoListWidget->addVideoItem(videoInfo);
 }
 
-void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView)
+void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull)
 {
-    emit createBiliDownloadTask(videoView);
+    emit createBiliDownloadTask(infoFull);
 }
 
 void VideoWidget::clearVideo() const

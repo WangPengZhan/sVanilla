@@ -37,6 +37,8 @@ public:
     void updateVideoCard();
     void updateCover();
 
+    void updateInfoFileName(const QString& fileName);
+
     [[nodiscard]] QSize sizeHint() const override;
 
 protected:
