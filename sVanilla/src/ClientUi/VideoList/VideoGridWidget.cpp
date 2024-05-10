@@ -100,6 +100,7 @@ void VideoGridItemWidget::updateVideoCard()
     elideText(ui->labelTitle, QString::fromStdString(m_infoFull->videoView->Title));
     ui->labelDuration->setText(QString::fromStdString(m_infoFull->videoView->Duration));
     elideText(ui->labelAuthor, QString::fromStdString(m_infoFull->videoView->Publisher));
+    elideText(ui->labelPublishDate, QString::fromStdString(m_infoFull->videoView->PublishDate));
 }
 
 void VideoGridItemWidget::updateCover()
@@ -120,6 +121,12 @@ QSize VideoGridItemWidget::sizeHint() const
 void VideoGridItemWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
+    if (m_infoFull != nullptr)
+    {
+        elideText(ui->labelTitle, QString::fromStdString(m_infoFull->videoView->Title));
+        elideText(ui->labelAuthor, QString::fromStdString(m_infoFull->videoView->Publisher));
+        elideText(ui->labelPublishDate, QString::fromStdString(m_infoFull->videoView->PublishDate));
+    }
 }
 
 void VideoGridItemWidget::contextMenuEvent(QContextMenuEvent* event)

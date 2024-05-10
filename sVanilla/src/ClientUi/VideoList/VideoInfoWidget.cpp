@@ -26,6 +26,7 @@ void VideoInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& infoFull)
     ui->labelTitle->setText(QString::fromStdString(infoFull->videoView->Title));
     ui->labelPublisher->setText(QString::fromStdString(infoFull->videoView->Publisher));
     ui->labelDuration->setText(QString::fromStdString(infoFull->videoView->Duration));
+    ui->labelPublishDate->setText(QString::fromStdString(infoFull->videoView->PublishDate));
     ui->labelDescription->setText(QString::fromStdString(infoFull->videoView->Description));
 }
 
