@@ -64,7 +64,7 @@ void UiDownloader::stop()
 void UiDownloader::pause()
 {
     m_realDownloader->pause();
-    setStatus(Waitting);
+    setStatus(Paused);
     deleteDbDownloadingItem();
 }
 

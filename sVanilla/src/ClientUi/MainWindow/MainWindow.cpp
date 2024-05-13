@@ -14,7 +14,7 @@
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
 
-#include "ClientUi/Setting/SettingPage.h"
+#include "ClientUi/Setting/SettingsPage.h"
 #include "ClientUi/VideoList/VideoWidget.h"
 #include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
@@ -57,7 +57,7 @@ void MainWindow::signalsAndSlots()
             ui->settingPage->connectAria2Server();
         }
     });
-    connect(ui->settingPage, &SettingPage::UpdateTheme, this, &MainWindow::setTheme);
+    connect(ui->settingPage, &SettingsPage::UpdateTheme, this, &MainWindow::setTheme);
 
     connect(ui->homePage, &HomePage::loadBiliViewView, [this](const std::string& uri) {
         ui->VideoPage->prepareBiliVideoView(uri);

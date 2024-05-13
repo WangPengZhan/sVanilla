@@ -120,6 +120,26 @@ void PluginManager::pluginDirFileAdded()
     }
 }
 
+std::set<PluginInfo> PluginManager::getPluginsInfo() const
+{
+    std::set<PluginInfo> results;
+    std::lock_guard lk(m_pluginsMutex);
+    for (const auto& plugin : m_plugins)
+    {
+        PluginInfo pluginInfo;
+        if (m_libHandles.find(plugin.first) != m_libHandles.end())
+        {
+            pluginInfo.libFile = std::filesystem::path(m_libHandles.at(plugin.first)->libraryPath()).filename().string();
+        }
+        pluginInfo.name = plugin.second->pluginName();
+        pluginInfo.version = plugin.second->pluginVersion();
+        pluginInfo.id = plugin.second->pluginID();
+        pluginInfo.description = plugin.second->pluginDescription();
+        results.insert(pluginInfo);
+    }
+    return results;
+}
+
 void PluginManager::loadConfig()
 {
     try

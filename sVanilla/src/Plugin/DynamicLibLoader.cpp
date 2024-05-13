@@ -69,7 +69,9 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
     res->pluginName = reinterpret_cast<PluginNameFunc>(loadSymbol(m_libHandle, "pluginName"));
     res->pluginVersion = reinterpret_cast<PluginVersionFunc>(loadSymbol(m_libHandle, "pluginVersion"));
     res->pluginDeinit = reinterpret_cast<PluginDeinitFunc>(loadSymbol(m_libHandle, "pluginDeinit"));
-    if (!res->pluginName || !res->pluginVersion || !res->pluginDeinit)
+    res->pluginID = reinterpret_cast<PluginIDFunc>(loadSymbol(m_libHandle, "pluginID"));
+    res->pluginDescription = reinterpret_cast<PluginDescriptionFunc>(loadSymbol(m_libHandle, "pluginDescription"));
+    if (!res->pluginName || !res->pluginVersion || !res->pluginDeinit || !res->pluginID || !res->pluginDescription)
     {
         res.reset();
     }

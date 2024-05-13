@@ -70,9 +70,6 @@ file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
 file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h")
 file(GLOB_RECURSE UI "sVanilla/src/*.ui")
 
-# set(ui ${CMAKE_SOURCE_DIR}/ui)
-# set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
-
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
@@ -132,7 +129,6 @@ target_link_libraries(${PROJECT_NAME}
         VanillaStyle
 )
 
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -144,6 +140,21 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
 # add_dependencies(${PROJECT_NAME} SARibbonBar)
 
+find_program(PYTHON_EXECUTABLE python)
+if(PYTHON_EXECUTABLE)
+    message(STATUS "PYTHON_EXECUTABLE: ${PYTHON_EXECUTABLE}")
+    set(INSTALL_DEPENDENCIES_COMMAND "${PYTHON_EXECUTABLE}" -m pip install -r ${CMAKE_CURRENT_SOURCE_DIR}/scripts/requirements.txt)
+    execute_process(COMMAND ${INSTALL_DEPENDENCIES_COMMAND}
+                RESULT_VARIABLE INSTALL_RESULT
+                OUTPUT_VARIABLE INSTALL_OUTPUT
+                ERROR_VARIABLE INSTALL_ERROR)
+    if(NOT INSTALL_RESULT EQUAL 0)
+        message(FATAL_ERROR "INSTALL_ERROR: ${INSTALL_ERROR}")
+    endif()
+else()
+    message(FATAL_ERROR "can't find python")
+endif()
+
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tools $<TARGET_FILE_DIR:${PROJECT_NAME}>
@@ -152,12 +163,16 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
+            ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
+            ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_licenses.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
 
 include(cmake/qtdeploy.cmake)
 deployqt(${PROJECT_NAME})
-
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)

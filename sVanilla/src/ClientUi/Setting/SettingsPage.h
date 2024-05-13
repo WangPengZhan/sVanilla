@@ -7,15 +7,15 @@
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
-class SettingPage;
+class SettingsPage;
 }
 QT_END_NAMESPACE
 
-class SettingPage final : public QWidget
+class SettingsPage final : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SettingPage(QWidget* parent = nullptr);
+    explicit SettingsPage(QWidget* parent = nullptr);
 
     void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
     void connectAria2Server();
@@ -26,5 +26,5 @@ public:
     bool isConnect = false;
 
 private:
-    Ui::SettingPage* ui;
+    Ui::SettingsPage* ui;
 };

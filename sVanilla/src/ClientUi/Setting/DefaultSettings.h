@@ -8,17 +8,17 @@
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
-class DefaultSetting;
+class DefaultSettings;
 }
 QT_END_NAMESPACE
 
-class DefaultSetting : public QWidget
+class DefaultSettings : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit DefaultSetting(QWidget* parent = nullptr);
-    ~DefaultSetting() override;
+    explicit DefaultSettings(QWidget* parent = nullptr);
+    ~DefaultSettings() override;
 
     void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version);
     void updateStatus(const std::string& status);
@@ -33,6 +33,6 @@ private:
     inline void setGreenStatus();
 
 private:
-    Ui::DefaultSetting* ui;
+    Ui::DefaultSettings* ui;
     QButtonGroup* m_themeGroup;
 };

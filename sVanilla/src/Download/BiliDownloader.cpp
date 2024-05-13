@@ -72,7 +72,7 @@ void BiliDownloader::pause()
     {
         m_audioDownloader.pause();
     }
-    m_status = Waitting;
+    m_status = Paused;
 }
 
 void BiliDownloader::resume()

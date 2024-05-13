@@ -2,12 +2,12 @@
 
 #include <QButtonGroup>
 
-#include "DefaultSetting.h"
-#include "ui_DefaultSetting.h"
+#include "DefaultSettings.h"
+#include "ui_DefaultSettings.h"
 
-DefaultSetting::DefaultSetting(QWidget* parent)
+DefaultSettings::DefaultSettings(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::DefaultSetting)
+    , ui(new Ui::DefaultSettings)
     , m_themeGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
@@ -17,11 +17,11 @@ DefaultSetting::DefaultSetting(QWidget* parent)
     signalsAndSlots();
 }
 
-DefaultSetting::~DefaultSetting()
+DefaultSettings::~DefaultSettings()
 {
     delete ui;
 }
-void DefaultSetting::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version)
+void DefaultSettings::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version)
 {
     if (version->id.empty() || (!version->error.message.empty()))
     {
@@ -45,33 +45,33 @@ void DefaultSetting::updateAria2Version(const std::shared_ptr<aria2net::AriaVers
         updateFeatures(ss.str());
     }
 }
-void DefaultSetting::signalsAndSlots()
+void DefaultSettings::signalsAndSlots()
 {
     connect(m_themeGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
         const int id = m_themeGroup->id(button);
         emit UpdateTheme(id);
     });
 }
-void DefaultSetting::updateStatus(const std::string& status)
+void DefaultSettings::updateStatus(const std::string& status)
 {
     ui->Aria2Status->setText(QString::fromStdString(status));
     // ui->Aria2Status->setPalette(QColor(255, 255, 255));
 }
-void DefaultSetting::updateVersion(const std::string& version)
+void DefaultSettings::updateVersion(const std::string& version)
 {
     ui->Aria2Version->setText(QString::fromStdString(version));
 }
-void DefaultSetting::updateFeatures(const std::string& features)
+void DefaultSettings::updateFeatures(const std::string& features)
 {
     ui->Aria2Features->setText(QString::fromStdString(features));
 }
-void DefaultSetting::setRedStatus()
+void DefaultSettings::setRedStatus()
 {
     auto palette = ui->Aria2Status->palette();
     palette.setColor(QPalette::WindowText, QColor(191, 49, 49));
     ui->Aria2Status->setPalette(palette);
 }
-void DefaultSetting::setGreenStatus()
+void DefaultSettings::setGreenStatus()
 {
     auto palette = ui->Aria2Status->palette();
     palette.setColor(QPalette::WindowText, QColor(115, 144, 114));

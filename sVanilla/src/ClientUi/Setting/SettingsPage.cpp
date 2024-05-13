@@ -1,23 +1,23 @@
 #include "Aria2Net/AriaClient/AriaClient.h"
 #include "ThreadPool/ThreadPool.h"
-#include "SettingPage.h"
-#include "ui_SettingPage.h"
+#include "SettingsPage.h"
+#include "ui_SettingsPage.h"
 
-SettingPage::SettingPage(QWidget* parent)
+SettingsPage::SettingsPage(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::SettingPage)
+    , ui(new Ui::SettingsPage)
 {
     ui->setupUi(this);
 
-    const QStringList horizonNavigationBtn({QStringLiteral("Defalut"), QStringLiteral("Account"), QStringLiteral("Advanced")});
+    const QStringList horizonNavigationBtn{tr("Defalut"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("Authors"), tr("License"), tr("About")};
     ui->horizonNavigation->setItemList(horizonNavigationBtn);
     ui->horizonNavigation->setUseIcon(false);
-    ui->horizonNavigation->setColumnWidth(100);
+    ui->horizonNavigation->setColumnWidth(80);
     connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->settingStackedPage, &QStackedWidget::setCurrentIndex);
-    connect(ui->defaultSetting, &DefaultSetting::UpdateTheme, this, &SettingPage::UpdateTheme);
+    connect(ui->defaultSettings, &DefaultSettings::UpdateTheme, this, &SettingsPage::UpdateTheme);
 }
 
-void SettingPage::connectAria2Server()
+void SettingsPage::connectAria2Server()
 {
     auto taskFunc = [this]() {
         return aria2net::AriaClient::globalClient().GetAriaVersionAsync();
@@ -35,13 +35,13 @@ void SettingPage::connectAria2Server()
         }
         catch (const std::bad_any_cast& e)
         {
-            ui->defaultSetting->updateStatus(e.what());
+            ui->defaultSettings->updateStatus(e.what());
         }
     });
     ThreadPool::instance().enqueue(task);
 }
 
-void SettingPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
+void SettingsPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const
 {
-    ui->defaultSetting->updateAria2Version(version);
+    ui->defaultSettings->updateAria2Version(version);
 }

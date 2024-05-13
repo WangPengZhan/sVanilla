@@ -45,7 +45,7 @@ void AriaDownloader::stop()
 void AriaDownloader::pause()
 {
     aria2net::AriaClient::globalClient().PauseAsync(m_gid);
-    m_status = Waitting;
+    m_status = Paused;
 }
 
 void AriaDownloader::resume()

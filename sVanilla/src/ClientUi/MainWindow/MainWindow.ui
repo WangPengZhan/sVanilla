@@ -45,12 +45,12 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
-      <widget class="::HomePage" name="homePage"/>
-      <widget class="::VideoWidget" name="VideoPage"/>
-      <widget class="::DownloadWidget" name="downloadPage"/>
-      <widget class="::SettingPage" name="settingPage"/>
+      <widget class="HomePage" name="homePage"/>
+      <widget class="VideoWidget" name="VideoPage"/>
+      <widget class="DownloadWidget" name="downloadPage"/>
+      <widget class="SettingsPage" name="settingPage"/>
      </widget>
     </item>
    </layout>
@@ -59,25 +59,25 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>::HomePage</class>
+   <class>HomePage</class>
    <extends>QWidget</extends>
    <header>ClientUi/Home//HomePage.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>::SettingPage</class>
+   <class>SettingsPage</class>
    <extends>QWidget</extends>
-   <header>ClientUi/Setting/SettingPage.h</header>
+   <header>ClientUi/Setting/SettingsPage.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>::VideoWidget</class>
+   <class>VideoWidget</class>
    <extends>QStackedWidget</extends>
    <header>ClientUi/VideoList/VideoWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>::DownloadWidget</class>
+   <class>DownloadWidget</class>
    <extends>QWidget</extends>
    <header>ClientUi/Download/DownloadWidget.h</header>
    <container>1</container>

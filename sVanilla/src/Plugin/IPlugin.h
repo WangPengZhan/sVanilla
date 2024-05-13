@@ -11,7 +11,9 @@ namespace plugin
 
 using PluginNameFunc = const char* (*)();
 using PluginVersionFunc = const char* (*)();
+using PluginIDFunc = int (*)();
 using PluginDeinitFunc = void (*)();
+using PluginDescriptionFunc = const char* (*)();
 
 struct IPlugin
 {
@@ -24,6 +26,8 @@ struct IPlugin
     }
     PluginNameFunc pluginName = nullptr;
     PluginVersionFunc pluginVersion = nullptr;
+    PluginIDFunc pluginID = nullptr;
+    PluginDescriptionFunc pluginDescription = nullptr;
     PluginDeinitFunc pluginDeinit = nullptr;
 };
 
@@ -35,6 +39,8 @@ public:
 
     virtual const std::string& pluginName() const = 0;
     virtual const std::string& pluginVersion() const = 0;
+    virtual int pluginID() const = 0;
+    virtual const std::string& pluginDescription() const = 0;
 };
 #endif
 
