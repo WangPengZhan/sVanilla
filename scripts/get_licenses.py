@@ -277,7 +277,6 @@ def get_license(owner:str, repo:str) -> str:
         url = f"https://api.github.com/repos/{owner}/{repo}/license"
         headers = {
             "Accept": "application/vnd.github.v3+json",
-            "Authorization": f"Bearer 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"
         }
 
         response = requests.get(url, headers=headers)
