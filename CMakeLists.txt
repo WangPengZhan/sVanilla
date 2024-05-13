@@ -91,15 +91,20 @@ if (ENABLE_TEST)
     add_subdirectory(test)
 endif()
 
+include(cmake/appicon.cmake)
+appicon(${PROJECT_NAME} sVanilla/resource/app.ico RESOURCE_FILES)
+message("RESOURCE_FILES: ${RESOURCE_FILES}")
+
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${QT_MOC}
     ${UI}
     ${UIS}
     ${QRC}
+    ${RESOURCE_FILES}
 )
 
-include(cmake/filemarco.cmake)
+# include(cmake/filemarco.cmake)
 # redefine_file_macro(${PROJECT_NAME})
 
 if(${QT_VERSION_MAJOR} EQUAL 5)
@@ -186,6 +191,8 @@ install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMA
 install(FILES "$<TARGET_FILE:QWindowKit::Widgets>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:QWindowKit::Core>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
 file(GLOB VCPAKG_DEP_DIRS LIST_DIRECTORIES true "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/packages/*")
 message( "VCPKG ${VCPAKG_DEP_DIRS}")
