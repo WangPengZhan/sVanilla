@@ -70,9 +70,6 @@ file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
 file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h")
 file(GLOB_RECURSE UI "sVanilla/src/*.ui")
 
-# set(ui ${CMAKE_SOURCE_DIR}/ui)
-# set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
-
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
@@ -94,15 +91,25 @@ if (ENABLE_TEST)
     add_subdirectory(test)
 endif()
 
+include(cmake/appicon.cmake)
+if (APPLE)
+    set(ICON_FILE_NAME "app.icns")
+else ()
+    set(ICON_FILE_NAME "app.ico")
+endif ()
+appicon(${PROJECT_NAME} sVanilla/resource/${ICON_FILE_NAME} RESOURCE_FILES)
+message("RESOURCE_FILES: ${RESOURCE_FILES}")
+
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${QT_MOC}
     ${UI}
     ${UIS}
     ${QRC}
+    ${RESOURCE_FILES}
 )
 
-include(cmake/filemarco.cmake)
+# include(cmake/filemarco.cmake)
 # redefine_file_macro(${PROJECT_NAME})
 
 if(${QT_VERSION_MAJOR} EQUAL 5)
@@ -132,7 +139,6 @@ target_link_libraries(${PROJECT_NAME}
         VanillaStyle
 )
 
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -144,33 +150,65 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
 # add_dependencies(${PROJECT_NAME} SARibbonBar)
 
+find_program(PYTHON_EXECUTABLE python3)
+if (NOT PYTHON_EXECUTABLE)
+    find_program(PYTHON_EXECUTABLE python)
+endif()
+if(PYTHON_EXECUTABLE)
+    message(STATUS "PYTHON_EXECUTABLE: ${PYTHON_EXECUTABLE}")
+    set(INSTALL_DEPENDENCIES_COMMAND "${PYTHON_EXECUTABLE}" -m pip install -r ${CMAKE_CURRENT_SOURCE_DIR}/scripts/requirements.txt)
+    execute_process(COMMAND ${INSTALL_DEPENDENCIES_COMMAND}
+                RESULT_VARIABLE INSTALL_RESULT
+                OUTPUT_VARIABLE INSTALL_OUTPUT
+                ERROR_VARIABLE INSTALL_ERROR)
+    if(NOT INSTALL_RESULT EQUAL 0)
+        message(FATAL_ERROR "INSTALL_ERROR: ${INSTALL_ERROR}")
+    endif()
+else()
+    message(FATAL_ERROR "can't find python")
+endif()
+
+if(WIN32)
+    set(TOOLS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/tools/win)
+elseif(APPLE)
+    set(TOOLS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/tools/mac)
+elseif(UNIX AND NOT APPLE)
+    set(TOOLS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
+endif()
+
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tools $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
+            ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
+            ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_licenses.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
 
 include(cmake/qtdeploy.cmake)
 deployqt(${PROJECT_NAME})
-
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
 install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tools/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY ${TOOLS_PATH} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/resource/style/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:QWindowKit::Widgets>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:QWindowKit::Core>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
 file(GLOB VCPAKG_DEP_DIRS LIST_DIRECTORIES true "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/packages/*")
 message( "VCPKG ${VCPAKG_DEP_DIRS}")

@@ -48,10 +48,15 @@ std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder() const
 void DownloadingItemWidget::setStart()
 {
     const auto status = m_downloader->status();
-    if (status != download::AbstractDownloader::Downloading && status != download::AbstractDownloader::Finished)
+    if (status == download::AbstractDownloader::Waitting)
     {
         m_downloader->setStatus(download::AbstractDownloader::Ready);
+    }
+    else if (status == download::AbstractDownloader::Paused)
+    {
+        m_downloader->setStatus(download::AbstractDownloader::Resumed);
         ui->btnPause->setChecked(false);
+        ui->btnPause->setIcon(QIcon(":/icon/download/start.svg")); 
     }
 }
 
@@ -59,8 +64,13 @@ void DownloadingItemWidget::setStop()
 {
     if (m_downloader->status() == download::AbstractDownloader::Downloading)
     {
-        m_downloader->setStatus(download::AbstractDownloader::Stopped);
+        m_downloader->setStatus(download::AbstractDownloader::Paused);
         ui->btnPause->setChecked(true);
+        ui->btnPause->setIcon(QIcon(":/icon/download/pause.svg")); 
+    }
+    else if (m_downloader->status() == download::AbstractDownloader::Ready)
+    {
+        m_downloader->setStatus(download::AbstractDownloader::Waitting);
     }
 }
 
@@ -98,25 +108,25 @@ void DownloadingItemWidget::deleteItem()
 
 void DownloadingItemWidget::pauseItem(bool isResume)
 {
-    auto m_status = m_downloader->status();
+    auto status = m_downloader->status();
     auto setStatus = [&](auto newStatus) {
-        if (m_status != newStatus)
+        if (status != newStatus)
         {
             m_downloader->setStatus(newStatus);
-            m_status = newStatus;
+            status = newStatus;
         }
     };
-    const bool isDownloading = m_status == download::AbstractDownloader::Downloading;
-    const bool isPaused = m_status == download::AbstractDownloader::Paused;
-    const bool isWaitting = m_status == download::AbstractDownloader::Waitting;
-    const bool isResumed = m_status == download::AbstractDownloader::Resumed;
+    const bool isDownloading = status == download::AbstractDownloader::Downloading;
+    const bool isPaused = (status == download::AbstractDownloader::Paused || status == download::AbstractDownloader::Pause);
+    const bool isWaitting = status == download::AbstractDownloader::Waitting;
+    const bool isResumed = status == download::AbstractDownloader::Resumed;
     if (!isResume && (isPaused || isWaitting))
     {
         setStatus(download::AbstractDownloader::Resumed);
     }
     else if (isResume && (isDownloading || isResumed))
     {
-        setStatus(download::AbstractDownloader::Paused);
+        setStatus(download::AbstractDownloader::Pause);
     }
     else
     {

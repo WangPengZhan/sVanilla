@@ -29,6 +29,7 @@ public:
         Waitting,
         Ready,
         Downloading,
+        Pause,
         Paused,
         Resumed,
         Stopped,

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <mutex>
+#include <set>
 
 #include <nlohmann/json.hpp>
 
@@ -23,6 +24,30 @@ struct PluginConfig
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PluginConfig, pluginName, version, libName, enabled)
 };
 
+struct PluginInfo
+{
+    std::string name;
+    std::string version;
+    int id;
+    std::string description;
+    std::string libFile;
+
+    bool operator>(const PluginInfo& other) const
+    {
+        return id > other.id;
+    }
+
+    bool operator==(const PluginInfo& other) const
+    {
+        return id == other.id;
+    }
+
+    bool operator<(const PluginInfo& other) const
+    {
+        return id < other.id;
+    }
+};
+
 class PluginManager
 {
 public:
@@ -38,6 +63,8 @@ public:
     void removePlugin(const std::string& pluginName);
 
     void pluginDirFileAdded();
+
+    std::set<PluginInfo> getPluginsInfo() const;
 
     void loadConfig();
     void saveConfig() const;
@@ -55,7 +82,7 @@ private:
     std::unordered_map<std::string, std::shared_ptr<DynamicLibLoader>> m_libHandles;
     std::unordered_map<std::string, std::shared_ptr<IPlugin>> m_plugins;
     std::unordered_set<std::string> m_pluginsPaths;
-    std::recursive_mutex m_pluginsMutex;
+    mutable std::recursive_mutex m_pluginsMutex;
 
     static const std::string m_configPath;
 
@@ -64,3 +91,17 @@ private:
 };
 
 }  // namespace plugin
+
+namespace std
+{
+
+template <>
+class hash<plugin::PluginInfo>
+{
+    size_t operator()(const plugin::PluginInfo& pluginInfo) const
+    {
+        return hash<int>()(pluginInfo.id);
+    }
+};
+
+}  // namespace std

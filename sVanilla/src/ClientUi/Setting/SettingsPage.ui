@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsPage</class>
+ <widget class="QWidget" name="SettingsPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SettingPage</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true"/>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="settingStackedPage">
+     <widget class="DefaultSettings" name="defaultSettings"/>
+     <widget class="AccountsInfo" name="accountsInfo"/>
+     <widget class="AdvanceSettings" name="advanceSettings"/>
+     <widget class="PluginsInfo" name="pluginsInfo"/>
+     <widget class="AuthorsInfo" name="authorsInfo"/>
+     <widget class="LicenseInfoWidget" name="licenseInfo"/>
+     <widget class="About" name="about"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Vanilla::ToggleButton</class>
+   <extends>QWidget</extends>
+   <header>VanillaStyle/Widgets/ToggleButton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>About</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/About.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>AccountsInfo</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/AccountsInfo.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>AdvanceSettings</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/AdvanceSettings.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>AuthorsInfo</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/AuthorsInfo.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DefaultSettings</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/DefaultSettings.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LicenseInfoWidget</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/LicenseInfoWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PluginsInfo</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Setting/PluginsInfo.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -24,8 +24,7 @@ FFmpegHelper::~FFmpegHelper()
 
 void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo)
 {
-    FFmpegHelper::mergeVideo(
-        mergeInfo, [] {}, [] {});
+    FFmpegHelper::mergeVideo(mergeInfo, [] {}, [] {});
 }
 
 void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
@@ -48,7 +47,7 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
 
     // 启动新的合并
     std::future<bool> result = std::async(std::launch::async, [mergeInfo, errorFunc = std::move(errorFunc), finishedFunc = std::move(finishedFunc)]() -> bool {
-        QString executablePath = QApplication::applicationDirPath();
+        QString executablePath = QApplication::applicationDirPath() + "/ffmpeg";
         QString ffmpegExecutable = QStandardPaths::findExecutable("ffmpeg", QStringList() << executablePath);
         QString ffmpegArg(ffmpegCommand);
         ffmpegArg = ffmpegArg.arg(mergeInfo.audio.c_str()).arg(mergeInfo.video.c_str()).arg(mergeInfo.targetVideo.c_str());
