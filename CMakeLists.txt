@@ -92,12 +92,7 @@ if (ENABLE_TEST)
 endif()
 
 include(cmake/appicon.cmake)
-if (APPLE)
-    set(ICON_FILE_NAME "app.icns")
-else ()
-    set(ICON_FILE_NAME "app.ico")
-endif ()
-appicon(${PROJECT_NAME} sVanilla/resource/${ICON_FILE_NAME} RESOURCE_FILES)
+appicon(${PROJECT_NAME} sVanilla/resource/app.ico RESOURCE_FILES)
 message("RESOURCE_FILES: ${RESOURCE_FILES}")
 
 add_executable(${PROJECT_NAME}
