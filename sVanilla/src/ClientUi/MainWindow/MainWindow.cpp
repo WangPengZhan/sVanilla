@@ -41,6 +41,7 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::setUi()
 {
+    ui->stackedWidget->setCurrentWidget(ui->homePage);
     resize(800, 600);
     Toast::create(this);
     setLightTheme();
