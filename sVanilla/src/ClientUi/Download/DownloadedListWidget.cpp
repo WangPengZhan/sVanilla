@@ -15,6 +15,7 @@
 #include "Sqlite/SqlComposer/ConditionWrapper.h"
 #include "ClientUi/Config/SingleConfig.h"
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
+#include "ClientUi/Utils/Utility.h"
 
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
@@ -122,20 +123,7 @@ void DownloadedItemWidget::openItemFolder()
         filePath = QApplication::applicationDirPath() + "/" + filePath;
     }
 
-    QStringList arguments;
-
-#ifdef _WIN32
-    QString explorerCommand = "explorer";
-    arguments << "/select," << QDir::toNativeSeparators(filePath);
-#elif __linux__
-    QString explorerCommand = "open";
-    arguments << "-R" << filePath;
-#elif __APPLE__
-    QString explorerCommand = "open";
-    arguments << QStringLiteral("-R") << filePath;
-#endif
-
-    QProcess::startDetached(explorerCommand, arguments);
+    util::showInFileExplorer(filePath);
 }
 
 void DownloadedItemWidget::deleteDbFinishItem()

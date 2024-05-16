@@ -38,7 +38,6 @@
         <file>icon/setting/checked.svg</file>
         <file>icon/setting/unchecked.svg</file>
         <file>icon/account.svg</file>
-        <file>CoverTest.jpeg</file>
         <file>CoverSpace.svg</file>
     </qresource>
 </RCC>

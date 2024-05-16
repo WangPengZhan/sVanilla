@@ -54,15 +54,4 @@ function(deployqt arg_target)
                     -unsupported-allow-new-glibc
         )
     endif()
-    
-    # 根据find_package后面的component拷贝需要的动态库(防止遗漏)
-    foreach (component IN LISTS qt_components)
-        get_qt_library_target(${component} qt_component_target)
-        add_custom_command(TARGET ${arg_target} 
-            POST_BUILD 
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "$<TARGET_FILE:${qt_component_target}>"
-                    "$<TARGET_FILE_DIR:${arg_target}>"
-        )
-    endforeach()
 endfunction()

@@ -11,6 +11,7 @@
 #include "DownloadingInfoWidget.h"
 #include "ClientUi/Storage/DownloadingItemStorage.h"
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
+#include "ClientUi/Utils/Utility.h"
 #include "Util/SpeedUtil.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
@@ -56,7 +57,7 @@ void DownloadingItemWidget::setStart()
     {
         m_downloader->setStatus(download::AbstractDownloader::Resumed);
         ui->btnPause->setChecked(false);
-        ui->btnPause->setIcon(QIcon(":/icon/download/start.svg")); 
+        ui->btnPause->setIcon(QIcon(":/icon/download/start.svg"));
     }
 }
 
@@ -66,7 +67,7 @@ void DownloadingItemWidget::setStop()
     {
         m_downloader->setStatus(download::AbstractDownloader::Paused);
         ui->btnPause->setChecked(true);
-        ui->btnPause->setIcon(QIcon(":/icon/download/pause.svg")); 
+        ui->btnPause->setIcon(QIcon(":/icon/download/pause.svg"));
     }
     else if (m_downloader->status() == download::AbstractDownloader::Ready)
     {
@@ -143,20 +144,7 @@ void DownloadingItemWidget::openItemFolder()
         filePath = QApplication::applicationDirPath() + "/" + filePath;
     }
 
-    QStringList arguments;
-
-#ifdef _WIN32
-    QString explorerCommand = "explorer";
-    arguments << "/select," << QDir::toNativeSeparators(filePath);
-#elif __linux__
-    QString explorerCommand = "open";
-    arguments << "-R" << filePath;
-#elif __APPLE__
-    QString explorerCommand = "open";
-    arguments << QStringLiteral("-R") << filePath;
-#endif
-
-    QProcess::startDetached(explorerCommand, arguments);
+    util::showInFileExplorer(filePath);
 }
 
 void DownloadingItemWidget::updateDownloadingItem(const download::DownloadInfo& info)
