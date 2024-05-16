@@ -53,7 +53,9 @@ find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 # 寻找OpenSSL库
 find_package(OpenSSL REQUIRED)
-
+find_package(spdlog CONFIG REQUIRED)
+find_package(QWindowKit REQUIRED)
+find_package(unofficial-minizip CONFIG)
 # 如果OpenSSL被找到，包含OpenSSL的头文件目录
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
@@ -61,8 +63,6 @@ endif()
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
-  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/minizip
-  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
 )
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
@@ -75,9 +75,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
 endif()
 
-add_subdirectory(ThirdParty/minizip EXCLUDE_FROM_ALL)
-add_subdirectory(ThirdParty/spdlog EXCLUDE_FROM_ALL)
-add_subdirectory(ThirdParty/qwindowkit EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/vanillastyle EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
 
@@ -133,8 +130,8 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
         QWindowKit::Widgets
-        minizip
-        spdlog
+        unofficial::minizip::minizip
+        spdlog::spdlog
         ${OPENSSL_LIBRARIES}
         VanillaStyle
 )
@@ -180,10 +177,6 @@ add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:minizip> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:QWindowKit::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
             ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -203,10 +196,6 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY ${TOOLS_PATH} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/resource/style/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-install(FILES "$<TARGET_FILE:minizip>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-install(FILES "$<TARGET_FILE:QWindowKit::Widgets>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-install(FILES "$<TARGET_FILE:QWindowKit::Core>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
-install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 

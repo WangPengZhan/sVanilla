@@ -37,12 +37,26 @@ function(deployqt arg_target)
             )
         endforeach()
     elseif(APPLE)
+        get_target_property(mac_app_dir ${arg_target} BINARY_DIR)
+        set(mac_app_path "${mac_app_dir}/${arg_target}.app")
         add_custom_command(TARGET ${arg_target} 
             POST_BUILD 
                 COMMAND
                     "${qt_deployqt_executable}"
-                    "$<TARGET_FILE:${arg_target}>"
+                    "${mac_app_path}"
                     -always-overwrite
+        )
+        find_program(CMAKE_INSTALL_NAME_TOOL NAMES install_name_tool)
+
+        set(FREETYPE_PATH "${mac_app_dir}/${arg_target}.app/Contents/Frameworks/libfreetype.6.dylib")
+
+        add_custom_command(TARGET ${arg_target}
+                POST_BUILD
+                COMMAND
+                ${CMAKE_INSTALL_NAME_TOOL} -change
+                @loader_path/../../../../opt/libpng/lib/libpng16.16.dylib
+                @loader_path/libpng16.16.dylib
+                ${FREETYPE_PATH}
         )
     elseif(UNIX)
         add_custom_command(TARGET ${arg_target} 
