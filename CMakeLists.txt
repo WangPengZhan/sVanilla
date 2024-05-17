@@ -53,9 +53,10 @@ find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 # 寻找OpenSSL库
 find_package(OpenSSL REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
+find_package(spdlog REQUIRED)
 find_package(QWindowKit REQUIRED)
-find_package(unofficial-minizip CONFIG)
+find_package(unofficial-minizip CONFIG REQUIRED)
+find_package(VanillaStyle REQUIRED)
 # 如果OpenSSL被找到，包含OpenSSL的头文件目录
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
@@ -75,7 +76,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
 endif()
 
-add_subdirectory(ThirdParty/vanillastyle EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
 
 set(CMAKE_AUTOUIC ON)
@@ -133,7 +133,7 @@ target_link_libraries(${PROJECT_NAME}
         unofficial::minizip::minizip
         spdlog::spdlog
         ${OPENSSL_LIBRARIES}
-        VanillaStyle
+        VanillaStyle::VanillaStyle
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

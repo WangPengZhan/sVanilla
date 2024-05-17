@@ -31,14 +31,17 @@
             "version>=": "1.14.0"
         },
         {
+            "name": "minizip",
+            "version>=": "1.3.1"
+        },
+        {
             "name": "spdlog"
         },
         {
             "name": "qwindowkit"
         },
         {
-            "name": "minizip",
-            "version>=": "1.3.1"
+            "name": "vanillastyle"
         }
     ],
     "overrides": [
@@ -49,6 +52,10 @@
         {
             "name": "qwindowkit",
             "version": "1.1.0"
+        },
+        {
+            "name": "qwindowkit",
+            "version": "0.0.1"
         }
     ]
 }
