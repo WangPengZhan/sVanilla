@@ -45,7 +45,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="HomePage" name="homePage"/>
       <widget class="VideoWidget" name="VideoPage"/>

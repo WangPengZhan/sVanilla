@@ -88,15 +88,6 @@ if (ENABLE_TEST)
     add_subdirectory(test)
 endif()
 
-include(cmake/appicon.cmake)
-if (APPLE)
-    set(ICON_FILE_NAME "app.icns")
-else ()
-    set(ICON_FILE_NAME "app.ico")
-endif ()
-appicon(${PROJECT_NAME} sVanilla/resource/${ICON_FILE_NAME} RESOURCE_FILES)
-message("RESOURCE_FILES: ${RESOURCE_FILES}")
-
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${QT_MOC}
@@ -105,6 +96,9 @@ add_executable(${PROJECT_NAME}
     ${QRC}
     ${RESOURCE_FILES}
 )
+
+include(cmake/appicon.cmake)
+appicon(${PROJECT_NAME} RESOURCE_FILES)
 
 # include(cmake/filemarco.cmake)
 # redefine_file_macro(${PROJECT_NAME})
