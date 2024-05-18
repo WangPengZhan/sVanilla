@@ -185,8 +185,11 @@ add_custom_command(TARGET ${PROJECT_NAME}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-include(cmake/qtdeploy.cmake)
-deployqt(${PROJECT_NAME})
+option(ENABLE_DEPLOY "Enable deploy" ON)
+if (ENABLE_DEPLOY)
+    include(cmake/qtdeploy.cmake)
+    deployqt(${PROJECT_NAME})
+endif ()
 
 # install
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
