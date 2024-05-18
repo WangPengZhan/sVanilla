@@ -6,7 +6,9 @@ vcpkg_from_github(
 )
 
 if (WIN32)
-    if (DEFINED ENV{Qt_DIR})
+    if (DEFINED ENV{QT_ROOT_DIR})
+        set(QT_PATH "$ENV{Qt_DIR}" ${CMAKE_PREFIX_PATH})
+    elseif (DEFINED ENV{Qt_DIR})
         set(QT_PATH "$ENV{Qt_DIR}" ${CMAKE_PREFIX_PATH})
     elseif (DEFINED ENV{Qt6_DIR})
         set(QT_PATH "$ENV{Qt6_DIR}" ${CMAKE_PREFIX_PATH})
