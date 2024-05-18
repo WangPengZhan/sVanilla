@@ -31,6 +31,8 @@ endif ()
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
+    OPTIONS
+    -DCMAKE_PREFIX_PATH=$ENV{Qt_DIR}
 )
 
 vcpkg_cmake_install()
