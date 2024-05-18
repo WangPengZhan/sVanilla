@@ -1,6 +1,0 @@
-The package qwindowkit provides CMake targets:
-
-    find_package(QWindowKit COMPONENTS Core Widgets Quick REQUIRED)
-    target_link_libraries(widgets_app PUBLIC QWindowKit::Widgets)
-    target_link_libraries(quick_app PUBLIC QWindowKit::Quick)
-

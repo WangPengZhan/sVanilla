@@ -1,0 +1,44 @@
+diff --git a/vanillastyle/CMakeLists.txt b/vanillastyle/CMakeLists.txt
+--- a/vanillastyle/CMakeLists.txt
++++ b/vanillastyle/CMakeLists.txt
+@@ -1,22 +1,7 @@
+ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Svg)
+ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg)
+
+-include(FetchContent)
+-
+-FetchContent_Declare(
+-        json
+-        GIT_REPOSITORY https://github.com/nlohmann/json
+-        GIT_TAG v3.11.3
+-)
+-FetchContent_MakeAvailable(json)
+-
+-FetchContent_Declare(
+-        fgblur
+-        GIT_REPOSITORY https://github.com/bfraboni/FastGaussianBlur.git
+-        GIT_TAG        main
+-)
+-FetchContent_MakeAvailable(fgblur)
+-#include_directories(${fgblur_SOURCE_DIR})
++find_package(nlohmann_json CONFIG REQUIRED)
+
+ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+@@ -62,8 +47,6 @@
+         PUBLIC
+         $<INSTALL_INTERFACE:include>
+         $<BUILD_INTERFACE:${INCLUDE_DIR}>
+-        PRIVATE
+-        ${fgblur_SOURCE_DIR}
+ )
+
+ set_target_properties(
+@@ -88,7 +71,6 @@
+ 
+ # install headers
+ install(DIRECTORY include/ DESTINATION include)
+-install(DIRECTORY ${fgblur_SOURCE_DIR}/ DESTINATION include)
+ 
+ include(CMakePackageConfigHelpers)
+ 
