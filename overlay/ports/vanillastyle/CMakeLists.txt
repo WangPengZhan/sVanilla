@@ -21,18 +21,18 @@ set(RESOURCES
     ${RESOURCE_DIR}/VanillaStyleRobotoFont.qrc
     $<$<PLATFORM_ID:Windows>:${RESOURCE_DIR}/VanillaStyleFont.qrc>
 )
-set(LIBRAY_NAME VanillaStyle)
+set(LIBRARY_NAME VanillaStyle)
 
-add_library(${LIBRAY_NAME} SHARED)
+add_library(${LIBRARY_NAME} SHARED)
 target_sources(
-    ${LIBRAY_NAME}
+    ${LIBRARY_NAME}
     PRIVATE
     ${SRC}
     ${RESOURCES}
     ${HEADER}
 )
 
-target_link_libraries(${LIBRAY_NAME}
+target_link_libraries(${LIBRARY_NAME}
     PUBLIC
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Widgets
@@ -42,26 +42,27 @@ target_link_libraries(${LIBRAY_NAME}
 )
 
 target_include_directories(
-    ${LIBRAY_NAME}
+    ${LIBRARY_NAME}
     PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${INCLUDE_DIR}>
 )
 
 set_target_properties(
-    ${LIBRAY_NAME}
+    ${LIBRARY_NAME}
     PROPERTIES
     AUTOMOC ON
     AUTORCC ON
-    OUTPUT_NAME ${LIBRAY_NAME}
-    PROJECT_LABEL ${LIBRAY_NAME}
+    OUTPUT_NAME ${LIBRARY_NAME}
+    PROJECT_LABEL ${LIBRARY_NAME}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    IMPORTED_CONFIGURATIONS "RELEASE;DEBUG"
     DEBUG_POSTFIX _debug
 )
 
-install(TARGETS ${LIBRAY_NAME}
-    EXPORT ${LIBRAY_NAME}Targets
+install(TARGETS ${LIBRARY_NAME}
+    EXPORT ${LIBRARY_NAME}Targets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
@@ -75,30 +76,30 @@ include(CMakePackageConfigHelpers)
 
 # add version file
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${LIBRAY_NAME}ConfigVersion.cmake
+    ${CMAKE_BINARY_DIR}/${LIBRARY_NAME}ConfigVersion.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion
 )
 
 # export cmake target files
-export(EXPORT ${LIBRAY_NAME}Targets
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/${LIBRAY_NAME}Targets.cmake
+export(EXPORT ${LIBRARY_NAME}Targets
+    FILE ${CMAKE_BINARY_DIR}/${LIBRARY_NAME}Targets.cmake
 )
 
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${LIBRAY_NAME}Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${LIBRAY_NAME}Config.cmake
-    INSTALL_DESTINATION lib/cmake/${LIBRAY_NAME}
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${LIBRARY_NAME}Config.cmake.in
+    ${CMAKE_BINARY_DIR}/${LIBRARY_NAME}Config.cmake
+    INSTALL_DESTINATION lib/cmake/${LIBRARY_NAME}
 )
 
-install(EXPORT ${LIBRAY_NAME}Targets
-    FILE ${LIBRAY_NAME}Targets.cmake
-    NAMESPACE ${LIBRAY_NAME}::
-    DESTINATION lib/cmake/${LIBRAY_NAME}
+install(EXPORT ${LIBRARY_NAME}Targets
+    FILE ${LIBRARY_NAME}Targets.cmake
+    NAMESPACE ${LIBRARY_NAME}::
+    DESTINATION lib/cmake/${LIBRARY_NAME}
 )
 
 # Install version and config files
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${LIBRAY_NAME}Config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/${LIBRAY_NAME}ConfigVersion.cmake
-    DESTINATION lib/cmake/${LIBRAY_NAME}
+    ${CMAKE_BINARY_DIR}/${LIBRARY_NAME}Config.cmake
+    ${CMAKE_BINARY_DIR}/${LIBRARY_NAME}ConfigVersion.cmake
+    DESTINATION lib/cmake/${LIBRARY_NAME}
 )
