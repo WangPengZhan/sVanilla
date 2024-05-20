@@ -2,20 +2,12 @@
     "default-registry": {
         "kind": "git",
         "repository": "https://github.com/microsoft/vcpkg.git",
-        "baseline": "7eb700c9688daed6d8bdcdc571ebe3eedea6a774"
+        "baseline": "66a252f70eebdd744c02d7ab8c1cc6fe123c70ee"
     },
-    "registries": [
-        {
-            "kind": "git",
-            "repository": "https://github.com/AlanusMeminius/svanilla-vcpkg-registry.git",
-            "baseline": "97b067df0aa9b8ba9d806c7d377fa19c12fda98d",
-            "packages": [
-                "spdlog",
-                "qwindowkit",
-                "vanillastyle",
-                "qmsetup",
-                "syscmdline"
-            ]
-        }
+    "overlay-ports": [
+        "overlay/ports"
+    ],
+    "overlay-triplets": [
+        "overlay/triplets"
     ]
 }
