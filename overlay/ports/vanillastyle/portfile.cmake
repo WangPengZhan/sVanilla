@@ -1,16 +1,10 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO AlanusMeminius/VanillaStyle
-    REF e2e0df866ad629c363293f57267cac6e3f7a6480
-    SHA512 a6f65bd40374f3c79657fc68e6eada7af349a98796281aebf0e99b47555d22afb786c05860d8b9fa36edd945aa5ca950287f3443feb2d80b84a8e9557d4ee471
-)
-file(REMOVE
-    "${SOURCE_PATH}/${PORT}/CMakeLists.txt"
-)
-
-file(COPY
-    "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt"
-    DESTINATION "${SOURCE_PATH}/${PORT}"
+    REF a115db4062e1528638d3a9e83cfe16818c72e349
+    SHA512 d105f88d2975159c5c900fa74fb5ee2f5a390a620164404610de3030c6d6febc64a3df31f52ff9dc20a2b1dac92c3d6849d7da182667dbdcf3278e8507974d05
+    PATCHES
+    dependence.patch
 )
 
 vcpkg_download_distfile(
@@ -54,7 +48,7 @@ vcpkg_cmake_install()
 
 vcpkg_cmake_config_fixup(
     PACKAGE_NAME ${PORT}
-    CONFIG_PATH "lib/cmake/VanillaStyle"
+    CONFIG_PATH "cmake"
 )
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
