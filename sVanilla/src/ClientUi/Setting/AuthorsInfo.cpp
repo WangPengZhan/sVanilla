@@ -67,8 +67,10 @@ void AuthorsInfo::loadAuthors()
     int i = 0;
     for (const auto& author : authors)
     {
-        ui->tableAuthors->setItem(i, 0, new QTableWidgetItem(author[0]));
-        ui->tableAuthors->setItem(i, 1, new QTableWidgetItem(author[1]));
+        auto authorStr = author[0].trimmed();
+        auto emailStr = author[1].trimmed();
+        ui->tableAuthors->setItem(i, 0, new QTableWidgetItem(authorStr));
+        ui->tableAuthors->setItem(i, 1, new QTableWidgetItem(emailStr));
         i++;
     }
 }

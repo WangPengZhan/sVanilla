@@ -12,46 +12,64 @@ function(deployqt arg_target)
     set(qt_components ${ARGN})
 
     if (WIN32)
-        add_custom_command(TARGET ${arg_target} 
-            POST_BUILD 
-                COMMAND
-                    "${qt_deployqt_executable}"
-                    --libdir "$<TARGET_FILE_DIR:${arg_target}>"
-                    --plugindir "$<TARGET_FILE_DIR:${arg_target}>"
-                    --no-translations
-                    --no-compiler-runtime
-                    --no-system-d3d-compiler
-                    --no-opengl-sw
-                    $<$<CONFIG:Debug>:--pdb>
-                    "$<TARGET_FILE:${arg_target}>"
+        add_custom_command(TARGET ${arg_target}
+            POST_BUILD
+            COMMAND
+            "${qt_deployqt_executable}"
+            --libdir "$<TARGET_FILE_DIR:${arg_target}>"
+            --plugindir "$<TARGET_FILE_DIR:${arg_target}>"
+            --no-translations
+            --no-compiler-runtime
+            --no-system-d3d-compiler
+            --no-opengl-sw
+            $<$<CONFIG:Debug>:--pdb>
+            "$<TARGET_FILE:${arg_target}>"
         )
 
         # 根据find_package后面的component拷贝需要的动态库(防止遗漏)
         foreach (component IN LISTS qt_components)
             get_qt_library_target(${component} qt_component_target)
-            add_custom_command(TARGET ${arg_target} 
-                POST_BUILD 
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                        "$<TARGET_FILE:${qt_component_target}>"
-                        "$<TARGET_FILE_DIR:${arg_target}>"
+            add_custom_command(TARGET ${arg_target}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "$<TARGET_FILE:${qt_component_target}>"
+                "$<TARGET_FILE_DIR:${arg_target}>"
             )
-        endforeach()
-    elseif(APPLE)
-        add_custom_command(TARGET ${arg_target} 
-            POST_BUILD 
-                COMMAND
-                    "${qt_deployqt_executable}"
-                    "$<TARGET_FILE:${arg_target}>"
-                    -always-overwrite
+        endforeach ()
+    elseif (APPLE)
+        get_target_property(mac_app_dir ${arg_target} BINARY_DIR)
+        set(mac_app_path "${mac_app_dir}/${arg_target}.app")
+        add_custom_command(TARGET ${arg_target}
+            POST_BUILD
+            COMMAND
+            "${qt_deployqt_executable}"
+            "${mac_app_path}"
+            -always-overwrite
         )
-    elseif(UNIX)
-        add_custom_command(TARGET ${arg_target} 
-            POST_BUILD 
-                COMMAND
-                    "${qt_deployqt_executable}"
-                    "$<TARGET_FILE:${arg_target}>"
-                    -always-overwrite
-                    -unsupported-allow-new-glibc
+        find_program(CMAKE_INSTALL_NAME_TOOL NAMES install_name_tool)
+
+        set(FREETYPE_PATH "${mac_app_dir}/${arg_target}.app/Contents/Frameworks/libfreetype.6.dylib")
+
+        add_custom_command(TARGET ${arg_target}
+            POST_BUILD
+            COMMAND
+            [ -f "${FREETYPE_PATH}" ]
+            &&
+            ${CMAKE_INSTALL_NAME_TOOL} -change
+            @loader_path/../../../../opt/libpng/lib/libpng16.16.dylib
+            @loader_path/libpng16.16.dylib
+            ${FREETYPE_PATH}
+            ||
+            echo "can not find ${FREETYPE_PATH}"
         )
-    endif()
+    elseif (UNIX)
+        add_custom_command(TARGET ${arg_target}
+            POST_BUILD
+            COMMAND
+            "${qt_deployqt_executable}"
+            "$<TARGET_FILE:${arg_target}>"
+            -always-overwrite
+            -unsupported-allow-new-glibc
+        )
+    endif ()
 endfunction()
