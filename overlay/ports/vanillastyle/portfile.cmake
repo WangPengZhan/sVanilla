@@ -50,6 +50,8 @@ vcpkg_cmake_config_fixup(
     PACKAGE_NAME ${PORT}
     CONFIG_PATH "cmake"
 )
+vcpkg_copy_pdbs()
+
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
