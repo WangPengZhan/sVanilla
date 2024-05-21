@@ -38,7 +38,11 @@ public:
     void downloadCover(const CoverInfo& coverInfo);
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const;
 
-    void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView);
+    void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const;
+    void downloadAll();
+    void downloadSelected();
+    void prepareDownloadTaskList();
+
     Q_SIGNAL void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
 
     void clearVideo() const;

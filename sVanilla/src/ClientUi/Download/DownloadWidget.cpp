@@ -87,7 +87,8 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     download::ResourseInfo info;
     info.videoUris = video_urls;
     info.audioUris = audio_urls;
-    info.option.out = util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) + ".mp4";
+    const auto fileName = videoInfo->fileName.empty() ? util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) : videoInfo->fileName;
+    info.option.out = fileName + ".mp4";
     info.option.dir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString();
     videoInfo->downloadConfig->downloadDir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     videoInfo->downloadConfig->nameRule = QString::fromStdString(util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) + ".mp4");

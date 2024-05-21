@@ -41,8 +41,8 @@
         "lineEditOutline": "#87a0be",
         "iconLabelText": "#50727B",
         "scrollBarSliderColor": "#87a0be",
-        "menuBackground": "#99F5F5F5",
-        "menuSeparatorColor": "#CCF5EFE6",
+        "menuBackground": "#E6FEFAF6",
+        "menuSeparatorColor": "#CCDAC0A3",
         "comboBoxDropDownBackground": "#CCd9dee8"
     },
     "size": {

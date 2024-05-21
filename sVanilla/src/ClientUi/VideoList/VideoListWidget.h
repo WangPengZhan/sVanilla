@@ -25,12 +25,14 @@ public:
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
 
     void updateVideoItem();
+    void downloadItem() const;
 
 private:
     void signalsAndSlots();
-
     void showInfoPanel() const;
-    void downloadItem() const;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
     std::shared_ptr<VideoInfoFull> m_infoFull;
@@ -52,6 +54,11 @@ public:
     void updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const;
 
     Q_SIGNAL void downloandBtnClick(const std::shared_ptr<VideoInfoFull>& infoFull);
+
+private:
+    void downloadAllItem() const;
+    void downloadSelectedItem() const;
+    void downloadItem(QListWidgetItem* item) const;
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;

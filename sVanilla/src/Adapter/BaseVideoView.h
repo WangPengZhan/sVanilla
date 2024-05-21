@@ -14,6 +14,7 @@ struct BaseVideoView {
     std::string Cover;
     std::string Duration;
     std::string Description;
+    std::string PublishDate;
 };
 
 using VideoView = std::vector<BaseVideoView>;

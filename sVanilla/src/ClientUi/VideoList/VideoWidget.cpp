@@ -35,23 +35,29 @@ VideoWidget::~VideoWidget()
 void VideoWidget::signalsAndSlots()
 {
     connect(ui->btnSwitch, &Vanilla::ToggleButton::currentItemChanged, ui->videoStackedPage, &QStackedWidget::setCurrentIndex);
-    connect(ui->videoStackedPage, &QStackedWidget::currentChanged, this, [this]() {
-        // ui->videoGridWidget->hideDetailPanel();
+    connect(ui->videoStackedPage, &QStackedWidget::currentChanged, this, [this](const int index) {
+        ui->videoGridInfoWidget->hide();
+        ui->videoListInfoWidget->hide();
     });
 
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
     connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+    connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
+
     connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
         prepareBiliVideoView(ui->lineEditSearch->text().toStdString());
     });
+
+    connect(ui->btnDownloadSelected, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTaskList);
 }
 
 void VideoWidget::setUi()
 {
     ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
     const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
-    ui->btnSwitch->setColumnWidth(45);
+    constexpr int columnWidth = 45;
+    ui->btnSwitch->setColumnWidth(columnWidth);
     ui->btnSwitch->setItemList(horizonNavigation);
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
@@ -117,9 +123,26 @@ void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) 
     ui->videoListWidget->addVideoItem(videoInfo);
 }
 
-void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& videoView)
+void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
-    emit createBiliDownloadTask(videoView);
+    emit createBiliDownloadTask(infoFull);
+}
+
+void VideoWidget::downloadAll()
+{
+    if (ui->videoStackedPage->currentIndex() == 0)
+    {
+    }
+}
+
+void VideoWidget::prepareDownloadTaskList()
+{
+    for (const auto& item : ui->videoGridWidget->selectedItems())
+    {
+        auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
+        auto* widget = dynamic_cast<VideoGridItemWidget*>(itemWidget);
+        prepareDownloadTask(widget->getVideoInfo());
+    }
 }
 
 void VideoWidget::clearVideo() const

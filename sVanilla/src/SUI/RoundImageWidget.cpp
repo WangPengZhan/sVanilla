@@ -61,7 +61,7 @@ void RoundImageWidget::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     QPainterPath path;
-    const auto target = rect().center() - QPoint(m_pixmap.width() / 2, m_pixmap.height() / 2);
+    const auto target = QPoint(rect().center().x() - m_pixmap.width() / 2, rect().top());
     const auto source = QRect(target, m_pixmap.size());
     path.addRoundedRect(source, m_radius, m_radius);
     painter.setClipPath(path);

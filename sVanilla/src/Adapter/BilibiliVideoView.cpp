@@ -2,6 +2,16 @@
 #include <sstream>
 #include <QDebug>
 
+std::string convertTimestamp(long long timestamp)
+{
+    std::chrono::time_point<std::chrono::system_clock> tp = std::chrono::system_clock::from_time_t(static_cast<std::time_t>(timestamp));
+    std::time_t tt = std::chrono::system_clock::to_time_t(tp);
+    std::tm* t = std::gmtime(&tt);
+    std::ostringstream oss;
+    oss << std::put_time(t, "%F");
+    return oss.str();
+}
+
 std::string formatDuration(const int duration)
 {
     std::chrono::seconds sec(duration);
@@ -29,7 +39,9 @@ Adapter::Views ConvertVideoView(const biliapi::VideoView& data)
         const auto episodes = data.ugc_season.sections.front().episodes;
         for (const auto& e : episodes)
         {
-            videoListView.push_back(ConvertEpisodes(e));
+            const auto item = ConvertEpisodes(e);
+            item->Publisher = data.owner.name;
+            videoListView.push_back(item);
         }
         return videoListView;
     }
@@ -69,7 +81,8 @@ std::shared_ptr<Adapter::BaseVideoView> ConvertEpisodes(const biliapi::UgcEpisod
     item->Title = data.title;
     item->Cover = data.arc.pic;
     item->Duration = formatDuration(data.page.duration);
-    item->Description = data.arc.desc;
+    item->Description = data.arc.desc.empty() ? data.arc.desc : data.page.part;
+    item->PublishDate = convertTimestamp(data.arc.pubdate);
     return item;
 }
 std::shared_ptr<Adapter::BaseVideoView> ConvertPages(const biliapi::VideoPage& data)
@@ -93,5 +106,6 @@ std::shared_ptr<Adapter::BaseVideoView> ConvertSingleVideo(const biliapi::VideoV
     item->Cover = data.pic;
     item->Duration = formatDuration(data.duration);
     item->Description = data.desc;
+    item->PublishDate = convertTimestamp(data.pubdate);
     return item;
 }

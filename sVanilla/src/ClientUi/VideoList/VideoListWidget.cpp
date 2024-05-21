@@ -1,5 +1,6 @@
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QMenu>
 
 #include "VideoListWidget.h"
 #include "VideoInfoWidget.h"
@@ -53,13 +54,25 @@ void VideoListItemWidget::showInfoPanel() const
         m_listWidget->updateInfoPanel(m_infoFull);
     }
 }
+void VideoListItemWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    auto* menu = new QMenu(this);
+    auto* downloadAction = new QAction("Download", this);
+    menu->addAction(downloadAction);
+    connect(downloadAction, &QAction::triggered, this, &VideoListItemWidget::downloadItem);
+    auto* infoAction = new QAction("Show Infomation", this);
+    menu->addAction(infoAction);
+    connect(infoAction, &QAction::triggered, this, &VideoListItemWidget::showInfoPanel);
+    menu->popup(event->globalPos());
+}
 
 void VideoListItemWidget::downloadItem() const
 {
     emit m_listWidget->downloandBtnClick(m_infoFull);
 }
 
-VideoListWidget::VideoListWidget(QWidget* /*parent*/)
+VideoListWidget::VideoListWidget(QWidget* parent)
+    : QListWidget(parent)
 {
     setSelectionMode(ExtendedSelection);
 }
@@ -111,4 +124,27 @@ void VideoListWidget::showInfoPanel(int row)
 void VideoListWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
     m_infoWidget->updateUi(infoFull);
+}
+
+void VideoListWidget::downloadAllItem() const
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        downloadItem(item(i));
+    }
+}
+
+void VideoListWidget::downloadSelectedItem() const
+{
+    for (const auto& item : selectedItems())
+    {
+        downloadItem(item);
+    }
+}
+
+void VideoListWidget::downloadItem(QListWidgetItem* item) const
+{
+    auto* const widgetItem = itemWidget(item);
+    const auto* listWidget = dynamic_cast<VideoListItemWidget*>(widgetItem);
+    listWidget->downloadItem();
 }
