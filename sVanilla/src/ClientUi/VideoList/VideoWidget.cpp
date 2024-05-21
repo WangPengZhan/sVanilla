@@ -38,18 +38,7 @@ void VideoWidget::signalsAndSlots()
     connect(ui->videoStackedPage, &QStackedWidget::currentChanged, this, [this](const int index) {
         ui->videoGridInfoWidget->hide();
         ui->videoListInfoWidget->hide();
-        if (index == 1)
-        {
-            ui->btnDownloadAll->show();
-            ui->btnDownloadSelected->show();
-        }
-        else
-        {
-            ui->btnDownloadAll->hide();
-            ui->btnDownloadSelected->hide();
-        }
     });
-    // connect(ui->btnDownloadAll, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTask);
 
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
@@ -59,6 +48,8 @@ void VideoWidget::signalsAndSlots()
     connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
         prepareBiliVideoView(ui->lineEditSearch->text().toStdString());
     });
+
+    connect(ui->btnDownloadSelected, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTaskList);
 }
 
 void VideoWidget::setUi()
@@ -132,9 +123,26 @@ void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) 
     ui->videoListWidget->addVideoItem(videoInfo);
 }
 
-void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull)
+void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
     emit createBiliDownloadTask(infoFull);
+}
+
+void VideoWidget::downloadAll()
+{
+    if (ui->videoStackedPage->currentIndex() == 0)
+    {
+    }
+}
+
+void VideoWidget::prepareDownloadTaskList()
+{
+    for (const auto& item : ui->videoGridWidget->selectedItems())
+    {
+        auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
+        auto* widget = dynamic_cast<VideoGridItemWidget*>(itemWidget);
+        prepareDownloadTask(widget->getVideoInfo());
+    }
 }
 
 void VideoWidget::clearVideo() const

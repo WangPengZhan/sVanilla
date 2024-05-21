@@ -59,7 +59,8 @@ void VideoListItemWidget::downloadItem() const
     emit m_listWidget->downloandBtnClick(m_infoFull);
 }
 
-VideoListWidget::VideoListWidget(QWidget* /*parent*/)
+VideoListWidget::VideoListWidget(QWidget* parent)
+    : QListWidget(parent)
 {
     setSelectionMode(ExtendedSelection);
 }
@@ -111,4 +112,27 @@ void VideoListWidget::showInfoPanel(int row)
 void VideoListWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
     m_infoWidget->updateUi(infoFull);
+}
+
+void VideoListWidget::downloadAllItem() const
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        downloadItem(item(i));
+    }
+}
+
+void VideoListWidget::downloadSelectedItem() const
+{
+    for (const auto& item : selectedItems())
+    {
+        downloadItem(item);
+    }
+}
+
+void VideoListWidget::downloadItem(QListWidgetItem* item) const
+{
+    auto* const widgetItem = itemWidget(item);
+    const auto* listWidget = dynamic_cast<VideoListItemWidget*>(widgetItem);
+    listWidget->downloadItem();
 }

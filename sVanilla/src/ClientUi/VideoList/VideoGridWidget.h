@@ -32,12 +32,14 @@ public:
 
     void setGridWidget(VideoGridWidget* gridWidget, QListWidgetItem* widgetItem);
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
-
+    std::shared_ptr<VideoInfoFull> getVideoInfo();
     void setCover();
     void updateVideoCard();
     void updateCover();
 
     void updateInfoFileName(const QString& fileName);
+
+    void downloadItem() const;
 
     [[nodiscard]] QSize sizeHint() const override;
 
@@ -50,7 +52,6 @@ private:
     void signalsAndSlots();
 
     void showInfoPanel() const;
-    void downloadItem() const;
 
 private:
     std::shared_ptr<VideoInfoFull> m_infoFull;
@@ -80,8 +81,12 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private:
+    void setUi();
     void adjustItemSize() const;
     void setItemSize(const QSize& size) const;
+    void downloadAllItem() const;
+    void downloadSelectedItem() const;
+    void downloadItem(QListWidgetItem* item) const;
 
 private:
     QSplitter* m_splitter = nullptr;

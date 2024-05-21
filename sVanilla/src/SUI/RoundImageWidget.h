@@ -20,5 +20,5 @@ private:
     QPixmap m_pixmap;
     QPixmap m_originalPixmap;
 
-    constexpr static int m_radius = 15;
+    constexpr static int m_radius = 10;
 };

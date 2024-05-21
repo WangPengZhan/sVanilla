@@ -55,6 +55,11 @@ void VideoGridItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& inf
     updateVideoCard();
 }
 
+std::shared_ptr<VideoInfoFull> VideoGridItemWidget::getVideoInfo()
+{
+    return m_infoFull;
+}
+
 void VideoGridItemWidget::setUi()
 {
     const QPixmap pixmap(":/CoverSpace.svg");
@@ -149,7 +154,7 @@ void VideoGridItemWidget::contextMenuEvent(QContextMenuEvent* event)
 VideoGridWidget::VideoGridWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    setProperty("noBackground", true);
+    setUi();
 }
 
 void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
@@ -164,8 +169,15 @@ void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoVi
 
 void VideoGridWidget::resizeEvent(QResizeEvent* event)
 {
-    adjustItemSize();
     QListWidget::resizeEvent(event);
+    adjustItemSize();
+}
+
+void VideoGridWidget::setUi()
+{
+    constexpr int itemSpacing = 5;
+    setSpacing(itemSpacing);
+    setSelectionMode(ExtendedSelection);
 }
 
 void VideoGridWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter)
@@ -192,8 +204,8 @@ void VideoGridWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& info
 void VideoGridWidget::adjustItemSize() const
 {
     const int n = width() / itemBaseWidth;
-    constexpr int itemPadding = 25;
-    const int itemWidth = (width() - itemPadding) / n;
+    constexpr int itemPadding = 22;
+    const int itemWidth = (width() - n * itemPadding) / n;
     const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
     setItemSize(QSize(itemWidth, itemHeight));
 }
@@ -204,6 +216,29 @@ void VideoGridWidget::setItemSize(const QSize& size) const
     {
         item(i)->setSizeHint(size);
     }
+}
+
+void VideoGridWidget::downloadAllItem() const
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        downloadItem(item(i));
+    }
+}
+
+void VideoGridWidget::downloadSelectedItem() const
+{
+    for (const auto& item : selectedItems())
+    {
+        downloadItem(item);
+    }
+}
+
+void VideoGridWidget::downloadItem(QListWidgetItem* item) const
+{
+    auto* const widgetItem = itemWidget(item);
+    const auto* gridWidget = dynamic_cast<VideoGridItemWidget*>(widgetItem);
+    gridWidget->downloadItem();
 }
 
 void VideoGridWidget::clearVideo()
