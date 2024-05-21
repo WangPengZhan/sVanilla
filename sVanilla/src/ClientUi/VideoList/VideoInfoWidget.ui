@@ -10,7 +10,7 @@
     <height>431</height>
    </rect>
   </property>
-  <layout class="QGridLayout" name="VideoDetailLayout">
+  <layout class="QGridLayout" name="VideoDetailLayout" columnstretch="0,1,0" rowminimumheight="0,0,0,0,0,0,0,32,0,0,0,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -23,8 +23,15 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="2" column="1" colspan="2">
-    <widget class="QLabel" name="labelPublisher">
+   <item row="6" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>FileName:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLabel" name="labelDuration">
      <property name="text">
       <string/>
      </property>
@@ -33,27 +40,10 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelPublishIdentifier">
+   <item row="9" column="0">
+    <widget class="QLabel" name="labelSaveFolderIdentifier">
      <property name="text">
-      <string>PublishDate:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>FileName:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelPublisherIdentifier">
-     <property name="text">
-      <string>Publisher：</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+      <string>SaveFolder:</string>
      </property>
     </widget>
    </item>
@@ -67,8 +57,45 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QLineEdit" name="lineEditFile"/>
+   <item row="2" column="1" colspan="2">
+    <widget class="QLabel" name="labelPublisher">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelDurationIdentifier">
+     <property name="text">
+      <string>Duration：</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QLabel" name="labelPublishDate">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item row="0" column="1" colspan="2">
     <widget class="QWidget" name="widget" native="true">
@@ -114,44 +141,24 @@
           <normaloff>:/icon/video/close.svg</normaloff>:/icon/video/close.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
+         <string notr="true">CleanButtonPatch</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLabel" name="labelDescription">
+   <item row="10" column="0">
+    <widget class="QLabel" name="labelResolutionIdentifier">
      <property name="text">
-      <string/>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+      <string>Resolution:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QLabel" name="labelPublishDate">
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelPublishIdentifier">
      <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="labelSaveFolderIdentifier">
-     <property name="text">
-      <string>SaveFolder:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelDurationIdentifier">
-     <property name="text">
-      <string>Duration：</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+      <string>PublishDate:</string>
      </property>
     </widget>
    </item>
@@ -165,63 +172,6 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="2">
-    <widget class="QPushButton" name="btnResetFileName">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/icon/video/reset.svg</normaloff>:/icon/video/reset.svg</iconset>
-     </property>
-     <property name="_vanillaStyle_Patch" stdset="0">
-      <string>CleanButtonPatch</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QLabel" name="labelDuration">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="8" column="1" colspan="2">
-    <widget class="QComboBox" name="comboBox"/>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="labelResolutionIdentifier">
-     <property name="text">
-      <string>Resolution:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1" colspan="2">
-    <widget class="::FileSelector" name="lineEditSaveFolder">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="0">
     <widget class="QLabel" name="labelDescriptionIdentifier">
      <property name="text">
@@ -232,6 +182,42 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelPublisherIdentifier">
+     <property name="text">
+      <string>Publisher：</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1" colspan="2">
+    <widget class="QComboBox" name="comboBox"/>
+   </item>
+   <item row="9" column="1" colspan="2">
+    <widget class="::FileSelector" name="lineEditSaveFolder">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QLabel" name="labelDescription">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" rowspan="2" colspan="2">
+    <widget class="NameRuleWidget" name="fileNameRule" native="true"/>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -240,6 +226,12 @@
    <class>::FileSelector</class>
    <extends>QLineEdit</extends>
    <header>SUI/FileSelector.h</header>
+  </customwidget>
+  <customwidget>
+   <class>NameRuleWidget</class>
+   <extends>QWidget</extends>
+   <header>SUI/NameRule/NameRuleWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -31,9 +31,14 @@ void VideoInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& infoFull)
     ui->labelPublishDate->setText(QString::fromStdString(infoFull->videoView->PublishDate));
     ui->labelDescription->setText(QString::fromStdString(infoFull->videoView->Description));
 
-    const auto fileName = infoFull->fileName.empty() ? QString::fromStdString(infoFull->videoView->Title) : QString::fromStdString(infoFull->fileName);
-    ui->lineEditFile->setText(fileName);
-    previousFileName = fileName;
+    const std::unordered_map<std::string, std::string> rules{
+        {"title",  infoFull->videoView->Title      },
+        {"date",   infoFull->videoView->PublishDate},
+        {"author", infoFull->videoView->Publisher  }
+    };
+
+    ui->fileNameRule->init(rules);
+    ui->fileNameRule->updateLineEdit(infoFull->downloadConfig->nameRule);
 
     const auto isConfigDownloadDirValid = infoFull->downloadConfig->downloadDir.isEmpty();
     const auto saveFolder =
@@ -44,8 +49,5 @@ void VideoInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& infoFull)
 void VideoInfoWidget::signalsAndSlots()
 {
     connect(ui->btnClose, &QPushButton::clicked, this, &VideoInfoWidget::hide);
-    connect(ui->lineEditFile, &QLineEdit::editingFinished, this, [&]() {
-        previousFileName = ui->lineEditFile->text();
-        emit fileNameEditingFinished(previousFileName);
-    });
+    connect(ui->fileNameRule, &NameRuleWidget::editingFinished, this, &VideoInfoWidget::fileNameEditingFinished);
 }

@@ -32,7 +32,7 @@ struct DownloadConfig
 {
     QString downloadDir;
     VideQuality videoQuality = VideQuality::Best;
-    QString nameRule;
+    QString nameRule = "$title$-$author$";
 };
 
 class SingleConfig

@@ -27,5 +27,4 @@ private:
 
 private:
     Ui::VideoInfoWidget* ui;
-    QString previousFileName;
 };
