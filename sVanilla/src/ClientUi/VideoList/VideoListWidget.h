@@ -29,8 +29,10 @@ public:
 
 private:
     void signalsAndSlots();
-
     void showInfoPanel() const;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
     std::shared_ptr<VideoInfoFull> m_infoFull;

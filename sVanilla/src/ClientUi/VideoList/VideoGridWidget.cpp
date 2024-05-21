@@ -144,8 +144,10 @@ void VideoGridItemWidget::contextMenuEvent(QContextMenuEvent* event)
     auto* menu = new QMenu(this);
     auto* downloadAction = new QAction("Download", this);
     menu->addAction(downloadAction);
-    auto* detailAction = new QAction("Check Detail", this);
-    menu->addAction(detailAction);
+    connect(downloadAction, &QAction::triggered, this, &VideoGridItemWidget::downloadItem);
+    auto* infoAction = new QAction("Show Infomation", this);
+    menu->addAction(infoAction);
+    connect(infoAction, &QAction::triggered, this, &VideoGridItemWidget::showInfoPanel);
     auto* similarAction = new QAction("Find Similar", this);
     menu->addAction(similarAction);
     menu->popup(event->globalPos());
