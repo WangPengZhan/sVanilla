@@ -63,7 +63,7 @@ void DefaultSettings::signalsAndSlots()
 
     connect(ui->checkBoxEnableTray, &QCheckBox::stateChanged, this, &DefaultSettings::enableTray);
 
-    connect(ui->checkBoxMinToTray, &QCheckBox::stateChanged, this, [this](Qt::CheckState state) {
+    connect(ui->checkBoxMinToTray, &QCheckBox::stateChanged, this, [this](int state) {
         if (state == Qt::CheckState::Checked)
         {
             ui->checkBoxEnableTray->setCheckState(Qt::CheckState::Checked);

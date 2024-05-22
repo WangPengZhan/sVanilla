@@ -29,7 +29,7 @@ public:
 
 signals:
     void updateTheme(int theme);
-    void enableTray(Qt::CheckState);
+    void enableTray(int);
 
 private:
     void setUi();

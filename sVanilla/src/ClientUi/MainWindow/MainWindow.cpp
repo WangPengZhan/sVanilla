@@ -198,7 +198,7 @@ void MainWindow::createTrayIcon()
     setTrayIconVisible(ui->settingPage->getTrayState());
 }
 
-void MainWindow::setTrayIconVisible(const Qt::CheckState state)
+void MainWindow::setTrayIconVisible(int state)
 {
     if (state == Qt::Checked)
     {

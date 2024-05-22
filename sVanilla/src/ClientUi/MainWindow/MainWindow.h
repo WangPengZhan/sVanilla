@@ -63,7 +63,7 @@ private:
 #endif
     void installWindowAgent();
     void createTrayIcon();
-    void setTrayIconVisible(Qt::CheckState state);
+    void setTrayIconVisible(int state);
 
 signals:
     void onSettingPage();
