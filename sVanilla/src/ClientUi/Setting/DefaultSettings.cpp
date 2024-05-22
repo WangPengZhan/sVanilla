@@ -61,9 +61,9 @@ void DefaultSettings::signalsAndSlots()
         emit updateTheme(id);
     });
 
-    connect(ui->checkBoxEnableTray, &QCheckBox::checkStateChanged, this, &DefaultSettings::enableTray);
+    connect(ui->checkBoxEnableTray, &QCheckBox::stateChanged, this, &DefaultSettings::enableTray);
 
-    connect(ui->checkBoxMinToTray, &QCheckBox::checkStateChanged, this, [this](Qt::CheckState state) {
+    connect(ui->checkBoxMinToTray, &QCheckBox::stateChanged, this, [this](Qt::CheckState state) {
         if (state == Qt::CheckState::Checked)
         {
             ui->checkBoxEnableTray->setCheckState(Qt::CheckState::Checked);
