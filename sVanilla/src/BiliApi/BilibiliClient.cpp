@@ -11,12 +11,17 @@
 #include "Logger/Logger.h"
 #include "Util/JsonProcess.h"
 #include "BiliApiConstants.h"
+#include "BilibiliLog.h"
 #include "BilibiliUtils.h"
 #include "NetWork/NetworkLog.h"
 #include "Util/UrlProcess.h"
 
 namespace biliapi
 {
+static constexpr int Seconds = 60;
+static constexpr int Minutes = 60;
+static constexpr int Hours = 24;
+static constexpr int DaySeconds = Hours * Minutes * Seconds;  // 24*60*60
 
 BilibiliClient::BilibiliClient()
     : m_logined(false)
@@ -34,7 +39,7 @@ BilibiliClient& BilibiliClient::globalClient()
 VideoViewOrigin BilibiliClient::getVideoView(const std::string& bvid)
 {
     ParamType param;
-    param["bvid"] = bvid;
+    param.emplace("bvid", bvid);
 
     std::string response;
     get(VideoURL::View, response, param);
@@ -91,26 +96,15 @@ void BilibiliClient::resetWbi()
     std::string response;
     get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
 
-    std::string img_url;
-    std::string sub_url;
-    try
-    {
-        auto jsonData = nlohmann::json::parse(response);
-        img_url = jsonData["data"]["wbi_img"]["img_url"].get<std::string>();
-        sub_url = jsonData["data"]["wbi_img"]["sub_url"].get<std::string>();
-    }
-    catch (nlohmann::json::parse_error& e)
-    {
-        NETWORK_LOG_ERROR("Error parsing NAV response: ", e.what());
-    }
+    const auto key = WbiImg(getDataFromRespones(response));
 
-    if (!img_url.empty() && !sub_url.empty())
+    if (!key.img_url.empty() && !key.sub_url.empty())
     {
-        img_url = util::u8ToString(std::filesystem::u8path(img_url).stem().u8string());
-        sub_url = util::u8ToString(std::filesystem::u8path(sub_url).stem().u8string());
+        const auto img_url = util::u8ToString(std::filesystem::u8path(key.img_url).stem().u8string());
+        const auto sub_url = util::u8ToString(std::filesystem::u8path(key.sub_url).stem().u8string());
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
-        j.emplace("Expires", (std::time(nullptr) + 60 * 60 * 24) / 86400);  // 有效期一天
+        j.emplace("Expires", (std::time(nullptr) + DaySeconds) / DaySeconds);  // 有效期一天
         updateData("mixinKey", j);
     }
 }
@@ -125,7 +119,7 @@ void BilibiliClient::encodeWithWbi(ParamType& params)
     }
     // 添加 wts 字段
     const time_t curr_time = time(nullptr);
-    params["wts"] = std::to_string(curr_time);
+    params.emplace("wts", std::to_string(curr_time));
 
     // 按照 key 重排参数
     std::vector<std::string> sortedParams;
@@ -143,7 +137,7 @@ void BilibiliClient::encodeWithWbi(ParamType& params)
     });
 
     // 计算 w_rid 字段
-    params["w_rid"] = MD5Hash(query + mixinKey.mixin_key);
+    params.emplace("w_rid", MD5Hash(query + mixinKey.mixin_key));
 }
 
 void BilibiliClient::parseCookie(const std::string& url)
@@ -160,7 +154,7 @@ void BilibiliClient::parseCookie(const std::string& url)
         {
             // 将 Expires 时间戳字符串转换为天数, 以便与 mixinKey 日更同步
             auto expires = static_cast<std::time_t>(std::stoll(value));
-            result.emplace("Expires", expires / 86400);
+            result.emplace("Expires", expires / DaySeconds);
         }
         else if (key == "SESSDATA" || key == "bili_jct")
         {
@@ -180,6 +174,7 @@ nlohmann::json BilibiliClient::getDataFromRespones(const std::string& respones)
     }
     catch (std::exception& e)
     {
+        BILIBILI_LOG_ERROR("Error parsing response: ", e.what());
     }
 
     return json;
@@ -206,7 +201,8 @@ void BilibiliClient::initDefaultHeaders()
 
 void BilibiliClient::initDefaultOptions()
 {
-    auto timeout = std::make_shared<network::TimeOut>(5000);
+    constexpr time_t timeoutSecond = 5000;
+    auto timeout = std::make_shared<network::TimeOut>(timeoutSecond);
     m_commonOptions.insert({timeout->getOption(), timeout});
     auto acceptEncoding = std::make_shared<network::AcceptEncoding>("gzip");
     m_commonOptions.insert({acceptEncoding->getOption(), acceptEncoding});

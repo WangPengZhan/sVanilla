@@ -1,16 +1,14 @@
 #include <openssl/md5.h>
 #include <openssl/evp.h>
-#include "BilibiliUtils.h"
-#include "BiliApi.h"
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 #include <algorithm>
-
 #include <curl/curl.h>
 
+#include "BiliApi.h"
 #include "BilibiliUtils.h"
 
 namespace biliapi
@@ -46,6 +44,7 @@ void saveJson(const std::string& filename, const nlohmann::json& content)
     o << content;
     o.close();
 }
+
 nlohmann::json readJson(const std::string& filename)
 {
     std::ifstream file(filename);
@@ -71,6 +70,7 @@ nlohmann::json readJson(const std::string& filename)
     }
     return j;
 }
+
 void updateData(const std::string& key, const nlohmann::json& value)
 {
     const std::string filename = "sVanilla.data";
@@ -93,17 +93,19 @@ std::string filterCharacters(const std::string& input)
 
     return result;
 }
+
 std::string urlEncode(const std::string& decoded)
 {
-    const auto encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
+    auto *const encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
     std::string result(encoded_value);
     curl_free(encoded_value);
     return result;
 }
+
 std::string urlDecode(const std::string& encoded)
 {
     int output_length;
-    const auto decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
+    auto *const decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
     std::string result(decoded_value, output_length);
     curl_free(decoded_value);
     return result;
@@ -118,6 +120,7 @@ std::string GetMixinKey(const std::string& orig)
     }
     return result.substr(0, 32);
 }
+
 std::string MD5Hash(const std::string& str)
 {
     unsigned char md_value[EVP_MAX_MD_SIZE];
