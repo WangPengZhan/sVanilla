@@ -24,10 +24,15 @@ public:
     void updateStatus(const std::string& status);
     void updateVersion(const std::string& version);
     void updateFeatures(const std::string& features);
+    [[nodiscard]] Qt::CheckState getTrayState() const;
+    [[nodiscard]] Qt::CheckState isEnableMinimizeTray() const;
 
-    Q_SIGNAL void UpdateTheme(int theme);
+signals:
+    void updateTheme(int theme);
+    void enableTray(Qt::CheckState);
 
 private:
+    void setUi();
     void signalsAndSlots();
     inline void setRedStatus();
     inline void setGreenStatus();

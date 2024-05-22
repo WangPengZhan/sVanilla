@@ -40,5 +40,6 @@
         <file>icon/setting/unchecked.svg</file>
         <file>icon/account.svg</file>
         <file>CoverSpace.svg</file>
+        <file>sVanilla.svg</file>
     </qresource>
 </RCC>
