@@ -3,6 +3,8 @@
 #include "WindowBar.h"
 #include "Aria2Net/Protocol/Protocol.h"
 #include "Util/Setting.h"
+
+#include <QSystemTrayIcon>
 #include <QtWidgets/QMainWindow>
 
 namespace Adapter
@@ -45,6 +47,8 @@ public:
     ~MainWindow();
 
 protected:
+    void closeEvent(QCloseEvent* event) override;
+
 private:
     void setUi();
     void signalsAndSlots();
@@ -58,6 +62,8 @@ private:
     void loadSystemButton();
 #endif
     void installWindowAgent();
+    void createTrayIcon();
+    void setTrayIconVisible(int state);
 
 signals:
     void onSettingPage();
@@ -68,6 +74,7 @@ private:
     QWK::WidgetWindowAgent* windowAgent;
     QWK::StyleAgent* styleAgent;
     WindowBar* windowBar;
+    QSystemTrayIcon* systemTray;
 #ifndef __APPLE__
     QString currentBlurEffect;
 #endif

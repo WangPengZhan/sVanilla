@@ -2,19 +2,15 @@
 #include "ThreadPool/ThreadPool.h"
 #include "SettingsPage.h"
 #include "ui_SettingsPage.h"
+#include "ClientUi/Utils/RunTask.h"
 
 SettingsPage::SettingsPage(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::SettingsPage)
 {
     ui->setupUi(this);
-
-    const QStringList horizonNavigationBtn{tr("Defalut"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("Authors"), tr("License"), tr("About")};
-    ui->horizonNavigation->setItemList(horizonNavigationBtn);
-    ui->horizonNavigation->setUseIcon(false);
-    ui->horizonNavigation->setColumnWidth(80);
-    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->settingStackedPage, &QStackedWidget::setCurrentIndex);
-    connect(ui->defaultSettings, &DefaultSettings::UpdateTheme, this, &SettingsPage::UpdateTheme);
+    setUi();
+    signalsAndSlots();
 }
 
 void SettingsPage::connectAria2Server()
@@ -22,23 +18,40 @@ void SettingsPage::connectAria2Server()
     auto taskFunc = [this]() {
         return aria2net::AriaClient::globalClient().GetAriaVersionAsync();
     };
-    const auto task = std::make_shared<TemplateSignalReturnTask<decltype(taskFunc)>>(taskFunc);
-    connect(task.get(), &SignalReturnTask::result, this, [this](const std::any& res) {
-        try
+    auto callback = [this](const aria2net::AriaVersion& result) {
+        if (!result.id.empty() && result.error.message.empty())
         {
-            auto result = std::any_cast<aria2net::AriaVersion>(res);
-            if (!result.id.empty() && result.error.message.empty())
-            {
-                isConnect = true;
-            }
-            updateAria2Version(std::make_shared<aria2net::AriaVersion>(result));
+            isConnect = true;
         }
-        catch (const std::bad_any_cast& e)
-        {
-            ui->defaultSettings->updateStatus(e.what());
-        }
-    });
-    ThreadPool::instance().enqueue(task);
+        updateAria2Version(std::make_shared<aria2net::AriaVersion>(result));
+    };
+    runTask(taskFunc, callback, this);
+}
+
+Qt::CheckState SettingsPage::getTrayState() const
+{
+    return ui->defaultSettings->getTrayState();
+}
+
+Qt::CheckState SettingsPage::isEnableMinimizeTray() const
+{
+    return ui->defaultSettings->isEnableMinimizeTray();
+}
+
+void SettingsPage::setUi()
+{
+    const QStringList horizonNavigationBtn{tr("Defalut"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("Authors"), tr("License"), tr("About")};
+    ui->horizonNavigation->setItemList(horizonNavigationBtn);
+    ui->horizonNavigation->setUseIcon(false);
+    constexpr int settingNavWidth = 80;
+    ui->horizonNavigation->setColumnWidth(settingNavWidth);
+}
+
+void SettingsPage::signalsAndSlots()
+{
+    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->settingStackedPage, &QStackedWidget::setCurrentIndex);
+    connect(ui->defaultSettings, &DefaultSettings::updateTheme, this, &SettingsPage::updateTheme);
+    connect(ui->defaultSettings, &DefaultSettings::enableTray, this, &SettingsPage::enableTray);
 }
 
 void SettingsPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const

@@ -1,6 +1,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QFile>
+#include <QMenu>
 #include <QTimer>
 #include <QStackedWidget>
 #include <QShortcut>
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QWidget* parent)
     , windowAgent(new QWK::WidgetWindowAgent(this))
     , styleAgent(new QWK::StyleAgent(this))
     , windowBar(new WindowBar(this))
+    , systemTray(new QSystemTrayIcon(this))
 {
     ui->setupUi(this);
     installWindowAgent();
@@ -39,12 +41,31 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() = default;
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    if (!event->spontaneous() || !isVisible())
+    {
+        return;
+    }
+    if (systemTray->isVisible() && ui->settingPage->isEnableMinimizeTray() == Qt::Checked)
+    {
+        hide();
+        event->ignore();
+    }
+    else
+    {
+        QMainWindow::closeEvent(event);
+    }
+}
+
 void MainWindow::setUi()
 {
     ui->stackedWidget->setCurrentWidget(ui->homePage);
-    resize(800, 600);
+    constexpr QSize defaultSize(800, 600);
+    resize(defaultSize);
     Toast::create(this);
     setLightTheme();
+    createTrayIcon();
 }
 
 void MainWindow::signalsAndSlots()
@@ -58,7 +79,7 @@ void MainWindow::signalsAndSlots()
             ui->settingPage->connectAria2Server();
         }
     });
-    connect(ui->settingPage, &SettingsPage::UpdateTheme, this, &MainWindow::setTheme);
+    connect(ui->settingPage, &SettingsPage::updateTheme, this, &MainWindow::setTheme);
 
     connect(ui->homePage, &HomePage::loadBiliViewView, [this](const std::string& uri) {
         ui->VideoPage->prepareBiliVideoView(uri);
@@ -67,6 +88,8 @@ void MainWindow::signalsAndSlots()
     });
 
     connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::getBiliUrl);
+
+    connect(ui->settingPage, &SettingsPage::enableTray, this, &MainWindow::setTrayIconVisible);
 }
 
 void MainWindow::setUpShortcuts()
@@ -150,6 +173,45 @@ void MainWindow::installWindowAgent()
 #ifndef __APPLE__
     loadSystemButton();
 #endif
+}
+
+void MainWindow::createTrayIcon()
+{
+    auto* const trayIconMenu = new QMenu(this);
+
+    auto* const restoreAction = new QAction(tr("&Restore"), this);
+    connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
+    trayIconMenu->addAction(restoreAction);
+
+    auto* const minimizeAction = new QAction(tr("Mi&nimize"), this);
+    trayIconMenu->addAction(minimizeAction);
+    connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
+
+    trayIconMenu->addSeparator();
+
+    auto* const quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+    trayIconMenu->addAction(quitAction);
+
+    systemTray->setContextMenu(trayIconMenu);
+
+    setTrayIconVisible(ui->settingPage->getTrayState());
+}
+
+void MainWindow::setTrayIconVisible(int state)
+{
+    if (state == Qt::Checked)
+    {
+        if (systemTray->icon().isNull())
+        {
+            systemTray->setIcon(QIcon(":/sVanilla.svg"));
+        }
+        systemTray->show();
+    }
+    else
+    {
+        systemTray->hide();
+    }
 }
 
 void MainWindow::setBlurEffect(const BlurEffect effect)

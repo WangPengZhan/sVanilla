@@ -20,7 +20,16 @@ public:
     void updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const;
     void connectAria2Server();
 
-    Q_SIGNAL void UpdateTheme(int theme);
+    [[nodiscard]] Qt::CheckState getTrayState() const;
+    [[nodiscard]] Qt::CheckState isEnableMinimizeTray() const;
+
+private:
+    void setUi();
+    void signalsAndSlots();
+
+signals:
+    void updateTheme(int theme);
+    void enableTray(int);
 
 public:
     bool isConnect = false;
