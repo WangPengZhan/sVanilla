@@ -7,14 +7,6 @@
 namespace biliapi
 {
 
-constexpr char const mainUrl[] = "https://www.bilibili.com/";
-constexpr char const videoViewUrl[] = "https://api.bilibili.com/x/web-interface/view";
-constexpr char const videoPlayUrl[] = "https://api.bilibili.com/x/player/wbi/playurl";
-
-constexpr char passBaseUrl[] = "https://passport.bilibili.com/";
-constexpr char loginUrl[] = "x/passport-login/web/qrcode/generate";
-constexpr char loginStatusUrl[] = "x/passport-login/web/qrcode/poll";
-
 class BilibiliClient : public network::NetWork
 {
 public:
@@ -29,7 +21,7 @@ public:
     LoginStatusScanning getLoginStatus(const std::string& qrcodeKey);
 
     void setLogined(bool logined);
-    bool isLogined() const;
+    [[nodiscard]] bool isLogined() const;
 
     void resetWbi();
     void encodeWithWbi(ParamType& params);

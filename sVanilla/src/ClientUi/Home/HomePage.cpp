@@ -8,11 +8,12 @@
 
 #include "HomePage.h"
 #include "ui_HomePage.h"
+#include "BiliApi/BilibiliUrl.h"
 #include "Plugin/PluginManager.h"
 #include "Util/UrlProcess.h"
 #include "VanillaStyle/Style.h"
 
-constexpr char mainPage[] = "https://svanilla.app/";
+inline const std::string mainPage = "https://svanilla.app/";
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
@@ -43,7 +44,7 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
-        QDesktopServices::openUrl(QUrl(mainPage));
+        QDesktopServices::openUrl(QUrl(QString::fromStdString(mainPage)));
     });
     connect(ui->btnLoadPlugin, &QPushButton::clicked, this, [this] {
         const QString pluginDir = QDir(QString::fromStdString(plugin::PluginManager::m_pluginDir)).absolutePath();
@@ -73,13 +74,7 @@ void HomePage::signalsAndSlots()
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
-        if (const QString originalText = clipboard->text(); !util::UrlProcess::IsUrl(originalText))
-        {
-        }
-        else
-        {
-            parseUri({originalText.toStdString()});
-        }
+        parseUri({clipboard->text().toStdString()});
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
 
@@ -97,6 +92,16 @@ void HomePage::setUi()
 
 void HomePage::parseUri(const std::string& uri)
 {
-    // if bili
-    emit loadBiliViewView(uri);
+    if (uri.empty())
+    {
+        return;
+    }
+    {
+        if (isValidUrl(uri))
+        {
+            const auto id = getID(uri);
+            emit loadBiliViewView(id);
+            return;
+        }
+    }
 }
