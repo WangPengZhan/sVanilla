@@ -17,7 +17,6 @@
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadingItemWidget)
-    , m_listWidget(nullptr)
     , m_downloader(std::move(downloader))
 {
     ui->setupUi(this);
@@ -89,6 +88,8 @@ void DownloadingItemWidget::signalsAndSlots()
 
     connect(m_downloader.get(), &UiDownloader::finished, this, &DownloadingItemWidget::finishedItem);
     connect(m_downloader.get(), &UiDownloader::update, this, &DownloadingItemWidget::updateDownloadingItem);
+
+    connect(m_downloader.get(), &UiDownloader::statusChanged, this, &DownloadingItemWidget::updateStatusIcon);
 }
 
 void DownloadingItemWidget::deleteItem()
@@ -185,6 +186,42 @@ void DownloadingItemWidget::finishedItem()
         emit m_listWidget->finished(m_downloader->videoINfoFull());
         delete item;
         deleteLater();
+    }
+}
+
+void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Status status)
+{
+    switch (status)
+    {
+    case download::AbstractDownloader::Downloading:
+    {
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/downloading.svg")));
+        break;
+    }
+    case download::AbstractDownloader::Paused:
+    {
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/pause.svg")));
+        break;
+    }
+    case download::AbstractDownloader::Waitting:
+    {
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/waiting.svg")));
+        break;
+    }
+    case download::AbstractDownloader::Finished:
+    {
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/completed.svg")));
+        break;
+    }
+    case download::AbstractDownloader::Error:
+    {
+        ui->btnStatus->setText("error");
+        break;
+    }
+        default:
+    {
+        ui->btnStatus->setText("Ready");
+    }
     }
 }
 

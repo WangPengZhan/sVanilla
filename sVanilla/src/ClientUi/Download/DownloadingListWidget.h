@@ -26,8 +26,8 @@ public:
     ~DownloadingItemWidget();
 
     void setListWidget(DownloadingListWidget* listWidget, QListWidgetItem* widgetItem);
-    DownloadingListWidget* listWidget() const;
-    std::shared_ptr<UiDownloader> downloaoder() const;
+    [[nodiscard]] DownloadingListWidget* listWidget() const;
+    [[nodiscard]] std::shared_ptr<UiDownloader> downloaoder() const;
 
     void setStart();
     void setStop();
@@ -44,6 +44,7 @@ private:
     void updateDownloadingItem(const download::DownloadInfo& info);
     void finishedItem();
 
+    void updateStatusIcon(download::AbstractDownloader::Status status);
     void showInfoPanel() const;
 
 private:

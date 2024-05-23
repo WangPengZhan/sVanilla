@@ -22,7 +22,7 @@ public:
     UiDownloader(std::shared_ptr<AbstractDownloader> downloader, std::shared_ptr<VideoInfoFull> videoInfoFull, QObject* parent = nullptr);
     ~UiDownloader();
 
-    void setRealDownloader(std::shared_ptr<AbstractDownloader> realDownloader);
+    void setRealDownloader(const std::shared_ptr<AbstractDownloader>& realDownloader);
     std::shared_ptr<AbstractDownloader> realDownloader();
 
     void setFileName(const std::string& filename);
@@ -38,7 +38,7 @@ public:
 
 signals:
     void finished(QString msg);
-    void statusChanged();
+    void statusChanged(download::AbstractDownloader::Status status);
     void update(download::DownloadInfo downloadInfo, QString msg);
 
 private:
