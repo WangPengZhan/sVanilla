@@ -24,7 +24,10 @@ private:
     void signalsAndSlots();
     void setUi();
     void parseUri(const std::string& uri);
+    void createHistoryMenu();
 
 private:
     Ui::HomePage* ui;
+    std::list<std::string> m_history;
+    QMenu* m_historyMenu = nullptr;
 };

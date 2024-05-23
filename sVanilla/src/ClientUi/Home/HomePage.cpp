@@ -1,6 +1,6 @@
 #include <QClipboard>
 #include <QTimer>
-#include <QDebug>
+#include <QMenu>
 #include <QPushButton>
 #include <QStandardPaths>
 #include <QDesktopServices>
@@ -77,7 +77,9 @@ void HomePage::signalsAndSlots()
         parseUri({clipboard->text().toStdString()});
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
-
+        createHistoryMenu();
+        const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(0, -m_historyMenu->sizeHint().height()));
+        m_historyMenu->exec(pos);
     });
 }
 
@@ -101,7 +103,35 @@ void HomePage::parseUri(const std::string& uri)
         {
             const auto id = getID(uri);
             emit loadBiliViewView(id);
-            return;
+            m_history.push_back(uri);
         }
+    }
+}
+
+void HomePage::createHistoryMenu()
+{
+    if (m_historyMenu == nullptr)
+    {
+        m_historyMenu = new QMenu(this);
+    }
+    else
+    {
+        m_historyMenu->clear();
+    }
+
+    const auto maxWidth = width() / 3;
+    for (const auto& uri : m_history)
+    {
+        const auto text = QString::fromStdString(uri);
+        QString elidedText = text;
+        if (const QFontMetrics fontMetrics(m_historyMenu->font()); fontMetrics.horizontalAdvance(text) > maxWidth)
+        {
+            elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
+        }
+
+        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {
+            ui->lineEditHome->setText(QString::fromStdString(uri));
+        });
+        action->setToolTip(text);
     }
 }
