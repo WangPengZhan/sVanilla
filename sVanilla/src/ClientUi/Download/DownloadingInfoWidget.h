@@ -7,7 +7,7 @@
 #include "ClientUi/VideoList/VideoData.h"
 #include "Download/AbstractDownloader.h"
 
-
+class DownloadingItemWidget;
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -30,7 +30,7 @@ public:
     explicit DownloadingInfoWidget(QWidget* parent = nullptr);
     ~DownloadingInfoWidget() override;
 
-    void updateInfoPanel(const DownloadingInfo& info);
+    void updateInfoPanel(const DownloadingItemWidget* itemWidget);
 
 private:
     void signalsAndSlots();

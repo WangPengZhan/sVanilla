@@ -17,6 +17,20 @@ class UiDownloader;
 class DownloadingListWidget;
 class DownloadingInfoWidget;
 
+struct DonwloadingStatus
+{
+    QString uri;
+    QString stage;
+    QString fileName;
+    QString folderPath;
+    QString speed;
+    QString totalSize;
+    QString downloadedSize;
+    QString remainingTime;
+    double progress;
+    download::AbstractDownloader::Status Status;
+};
+
 class DownloadingItemWidget : public QWidget
 {
     Q_OBJECT
@@ -32,7 +46,10 @@ public:
     void setStart();
     void setStop();
 
-    Q_SIGNAL void updateInfoPanel(const DownloadingInfo& info);
+    [[nodiscard]] DonwloadingStatus status() const;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
     void setUi();
@@ -45,6 +62,7 @@ private:
     void finishedItem();
 
     void updateStatusIcon(download::AbstractDownloader::Status status);
+    void updateItemText();
     void showInfoPanel() const;
 
 private:
@@ -52,6 +70,7 @@ private:
     DownloadingListWidget* m_listWidget = nullptr;
     QListWidgetItem* m_listWidgetItem = nullptr;
     std::shared_ptr<UiDownloader> m_downloader;
+    DonwloadingStatus m_status;
 };
 
 class DownloadingListWidget : public QListWidget
@@ -72,7 +91,7 @@ public:
     QListWidgetItem* itemFromWidget(DownloadingItemWidget* target);
     void showInfoPanel(int index);
     void hideInfoPanel() const;
-    void updateInfoPanel(const DownloadingInfo& info) const;
+    void updateInfoPanel(const DownloadingItemWidget* item) const;
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
@@ -82,6 +101,7 @@ protected:
 
 private:
     [[nodiscard]] DownloadingItemWidget* indexOfItem(int row) const;
+    void setUi();
     void signalsAndSlots() const;
 
 private:

@@ -180,6 +180,8 @@ void VideoGridWidget::setUi()
     constexpr int itemSpacing = 5;
     setSpacing(itemSpacing);
     setSelectionMode(ExtendedSelection);
+    constexpr  int scrollStep = 5;
+    verticalScrollBar()->setSingleStep(scrollStep);
 }
 
 void VideoGridWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter)

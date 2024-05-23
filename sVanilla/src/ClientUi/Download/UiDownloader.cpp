@@ -42,7 +42,17 @@ const std::string& UiDownloader::filename() const
     return m_filename;
 }
 
-std::shared_ptr<VideoInfoFull> UiDownloader::videoINfoFull() const
+void UiDownloader::setUri(const std::string& uri)
+{
+    m_uri = uri;
+}
+
+const std::string& UiDownloader::uri() const
+{
+    return m_uri;
+}
+
+std::shared_ptr<VideoInfoFull> UiDownloader::videoInfoFull() const
 {
     return m_videoInfoFull;
 }

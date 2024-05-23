@@ -152,7 +152,11 @@ void DownloadWidget::addTaskITem(const std::shared_ptr<download::BiliDownloader>
     }
     fullPath += biliDownloader->filename();
     uiDownloader->setFileName(fullPath);
-
+    const auto uri = biliDownloader->uris();
+    if (!uri.empty())
+    {
+        uiDownloader->setUri(uri.front());
+    }
     ui->downloadingListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }

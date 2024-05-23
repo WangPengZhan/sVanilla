@@ -1,5 +1,5 @@
-
 #include "DownloadingInfoWidget.h"
+#include "DownloadingListWidget.h"
 #include "ui_DownloadingInfoWidget.h"
 #include "Util/SpeedUtil.h"
 
@@ -17,11 +17,23 @@ DownloadingInfoWidget::~DownloadingInfoWidget()
     delete ui;
 }
 
-void DownloadingInfoWidget::updateInfoPanel(const DownloadingInfo& info)
+void DownloadingInfoWidget::updateInfoPanel(const DownloadingItemWidget* itemWidget)
 {
-    ui->labelFilePath->setText(QString::fromStdString(info.filePath));
-    ui->labelSpeed->setText(formatSpeed(info.downloadingInfo.speed));
-    ui->labelTotalSize->setText(formatSize(info.downloadingInfo.total));
+    auto setOnce = [](QLabel* label, const QString& value) {
+        if (label->text().isEmpty())
+        {
+            label->setText(value);
+        }
+    };
+    setOnce(ui->labelFolderPath, itemWidget->status().folderPath);
+    setOnce(ui->labelFileName, itemWidget->status().fileName);
+    setOnce(ui->labelTotalSize, itemWidget->status().totalSize);
+    setOnce(ui->labelURI, itemWidget->status().uri);
+
+    ui->labelSpeed->setText(itemWidget->status().speed);
+    const auto percentage = QString::number(itemWidget->status().progress, 'f', 1);
+    ui->labelDownloaded->setText(itemWidget->status().downloadedSize + "(" + percentage + "%)");
+    ui->labelRemainingTime->setText(itemWidget->status().remainingTime);
 }
 
 void DownloadingInfoWidget::signalsAndSlots()

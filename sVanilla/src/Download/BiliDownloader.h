@@ -28,6 +28,7 @@ public:
     const std::string& path() const;
     void setFilename(std::string filename);
     const std::string& filename() const;
+    const std::list<std::string>& uris() const;
 
     bool isFinished() const;
 
@@ -41,6 +42,7 @@ private:
     std::string m_path;
     std::string m_filename;
     std::string m_uniqueId;
+    std::list<std::string> m_uris;
     AriaDownloader m_videoDownloader;
     AriaDownloader m_audioDownloader;
     bool m_finished;
