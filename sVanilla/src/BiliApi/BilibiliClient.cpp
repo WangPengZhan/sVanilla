@@ -96,8 +96,8 @@ void BilibiliClient::resetWbi()
     std::string response;
     get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
 
-    const auto key = WbiImg(getDataFromRespones(response));
-
+    const auto navData = Nav(getDataFromRespones(response));
+    const auto key = navData.data.wbi_img;
     if (!key.img_url.empty() && !key.sub_url.empty())
     {
         const auto img_url = util::u8ToString(std::filesystem::u8path(key.img_url).stem().u8string());
@@ -174,7 +174,7 @@ nlohmann::json BilibiliClient::getDataFromRespones(const std::string& respones)
     }
     catch (std::exception& e)
     {
-        BILIBILI_LOG_ERROR("Error parsing response: ", e.what());
+        // BILIBILI_LOG_ERROR("Error parsing response: ", e.what());
     }
 
     return json;

@@ -50,7 +50,9 @@ Adapter::Views ConvertVideoView(const biliapi::VideoView& data)
         const auto pages = data.pages;
         for (const auto& p : pages)
         {
-            videoListView.push_back(ConvertPages(p));
+            const auto item = ConvertPages(p);
+            item->Identifier = data.bvid;
+            videoListView.push_back(item);
         }
         return videoListView;
     }
