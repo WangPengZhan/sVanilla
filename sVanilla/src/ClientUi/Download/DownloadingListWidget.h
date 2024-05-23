@@ -65,12 +65,15 @@ private:
     void updateItemText();
     void showInfoPanel() const;
 
+    void createContextMenu();
+
 private:
     Ui::DownloadingItemWidget* ui;
     DownloadingListWidget* m_listWidget = nullptr;
     QListWidgetItem* m_listWidgetItem = nullptr;
     std::shared_ptr<UiDownloader> m_downloader;
     DonwloadingStatus m_status;
+    QMenu* m_contextMenu = nullptr;
 };
 
 class DownloadingListWidget : public QListWidget
@@ -92,6 +95,9 @@ public:
     void showInfoPanel(int index);
     void hideInfoPanel() const;
     void updateInfoPanel(const DownloadingItemWidget* item) const;
+
+    void startSelectedItem();
+    void deleteSelectedItem();
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);

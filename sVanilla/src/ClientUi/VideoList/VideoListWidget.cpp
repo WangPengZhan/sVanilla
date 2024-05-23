@@ -54,16 +54,25 @@ void VideoListItemWidget::showInfoPanel() const
         m_listWidget->updateInfoPanel(m_infoFull);
     }
 }
-void VideoListItemWidget::contextMenuEvent(QContextMenuEvent* event)
+
+void VideoListItemWidget::createContextMenu()
 {
-    auto* menu = new QMenu(this);
     auto* downloadAction = new QAction("Download", this);
-    menu->addAction(downloadAction);
+    m_menu->addAction(downloadAction);
     connect(downloadAction, &QAction::triggered, this, &VideoListItemWidget::downloadItem);
     auto* infoAction = new QAction("Show Infomation", this);
-    menu->addAction(infoAction);
+    m_menu->addAction(infoAction);
     connect(infoAction, &QAction::triggered, this, &VideoListItemWidget::showInfoPanel);
-    menu->popup(event->globalPos());
+}
+
+void VideoListItemWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    if (m_menu == nullptr)
+    {
+        m_menu = new QMenu(this);
+        createContextMenu();
+    }
+    m_menu->popup(event->globalPos());
 }
 
 void VideoListItemWidget::downloadItem() const

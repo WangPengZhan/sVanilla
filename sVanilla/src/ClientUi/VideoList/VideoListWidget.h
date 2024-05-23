@@ -31,6 +31,8 @@ private:
     void signalsAndSlots();
     void showInfoPanel() const;
 
+    void createContextMenu();
+
 protected:
     void contextMenuEvent(QContextMenuEvent* event) override;
 
@@ -39,6 +41,8 @@ private:
     VideoListWidget* m_listWidget = nullptr;
     QListWidgetItem* m_listWidgetItem = nullptr;
     Ui::VideoListItemWidget* ui;
+    QMenu* m_menu = nullptr;
+
 };
 
 class VideoListWidget : public QListWidget

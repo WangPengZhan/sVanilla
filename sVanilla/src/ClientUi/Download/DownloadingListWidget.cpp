@@ -83,45 +83,12 @@ DonwloadingStatus DownloadingItemWidget::status() const
 
 void DownloadingItemWidget::contextMenuEvent(QContextMenuEvent* event)
 {
-    auto* menu = new QMenu(this);
-    auto* downloadAction = new QAction("Start Download", this);
-    menu->addAction(downloadAction);
-    connect(downloadAction, &QAction::triggered, this, [this]() {
-        pauseItem(false);
-    });
-
-    auto* pauseAction = new QAction("Pause Download", this);
-    menu->addAction(pauseAction);
-    connect(pauseAction, &QAction::triggered, this, [this]() {
-        pauseItem(true);
-    });
-    if (m_status.Status == download::AbstractDownloader::Downloading)
+    if (m_contextMenu == nullptr)
     {
-        downloadAction->setDisabled(true);
-        pauseAction->setDisabled(false);
+        m_contextMenu = new QMenu(this);
+        createContextMenu();
     }
-    else
-    {
-        downloadAction->setDisabled(false);
-        pauseAction->setDisabled(true);
-    }
-
-    auto* deleteAction = new QAction("Delete", this);
-    menu->addAction(deleteAction);
-    connect(deleteAction, &QAction::triggered, this, &DownloadingItemWidget::deleteItem);
-
-    menu->addSeparator();
-
-    auto* openFolderAction = new QAction("Open Folder", this);
-    menu->addAction(openFolderAction);
-    connect(openFolderAction, &QAction::triggered, this, &DownloadingItemWidget::openItemFolder);
-
-    auto* infoAction = new QAction("Show Infomation", this);
-    menu->addAction(infoAction);
-    connect(infoAction, &QAction::triggered, this, &DownloadingItemWidget::showInfoPanel);
-
-    menu->popup(event->globalPos());
-    QWidget::contextMenuEvent(event);
+    m_contextMenu->popup(event->globalPos());
 }
 
 void DownloadingItemWidget::setUi()
@@ -264,12 +231,12 @@ void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Statu
     }
     case download::AbstractDownloader::Error:
     {
-        ui->btnStatus->setText("error");
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/error.svg")));
         break;
     }
     default:
     {
-        ui->btnStatus->setText("Ready");
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/downloading.svg")));
     }
     }
 }
@@ -291,6 +258,45 @@ void DownloadingItemWidget::showInfoPanel() const
         return;
     }
     m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
+}
+
+void DownloadingItemWidget::createContextMenu()
+{
+    auto* downloadAction = new QAction("Start Download", this);
+    m_contextMenu->addAction(downloadAction);
+    connect(downloadAction, &QAction::triggered, this, [this]() {
+        pauseItem(false);
+    });
+
+    auto* pauseAction = new QAction("Pause Download", this);
+    m_contextMenu->addAction(pauseAction);
+    connect(pauseAction, &QAction::triggered, this, [this]() {
+        pauseItem(true);
+    });
+    if (m_status.Status == download::AbstractDownloader::Downloading)
+    {
+        downloadAction->setDisabled(true);
+        pauseAction->setDisabled(false);
+    }
+    else
+    {
+        downloadAction->setDisabled(false);
+        pauseAction->setDisabled(true);
+    }
+
+    auto* deleteAction = new QAction("Delete", this);
+    m_contextMenu->addAction(deleteAction);
+    connect(deleteAction, &QAction::triggered, this, &DownloadingItemWidget::deleteItem);
+
+    m_contextMenu->addSeparator();
+
+    auto* openFolderAction = new QAction("Open Folder", this);
+    m_contextMenu->addAction(openFolderAction);
+    connect(openFolderAction, &QAction::triggered, this, &DownloadingItemWidget::openItemFolder);
+
+    auto* infoAction = new QAction("Show Infomation", this);
+    m_contextMenu->addAction(infoAction);
+    connect(infoAction, &QAction::triggered, this, &DownloadingItemWidget::showInfoPanel);
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)
@@ -356,6 +362,34 @@ QListWidgetItem* DownloadingListWidget::itemFromWidget(DownloadingItemWidget* ta
     }
 
     return nullptr;
+}
+
+void DownloadingListWidget::startSelectedItem()
+{
+    for (auto* widgetItem : selectedItems())
+    {
+        auto* const downloadingItemWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(widgetItem));
+        if (downloadingItemWidget != nullptr)
+        {
+            downloadingItemWidget->setStart();
+        }
+    }
+}
+
+void DownloadingListWidget::deleteSelectedItem()
+{
+    for (auto* widgetItem : selectedItems())
+    {
+        auto* const downloadingItemWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(widgetItem));
+        if (downloadingItemWidget != nullptr)
+        {
+            downloadingItemWidget->setStop();
+            const auto row = indexFromItem(widgetItem).row();
+            auto* const item = takeItem(row);
+            removeItemWidget(item);
+            delete item;
+        }
+    }
 }
 
 void DownloadingListWidget::mouseMoveEvent(QMouseEvent* event)

@@ -54,7 +54,13 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
        </spacer>
       </item>
@@ -71,7 +77,7 @@
        <item>
         <widget class="QSplitter" name="downloadSplitter">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <widget class="::DownloadingListWidget" name="downloadingListWidget"/>
          <widget class="::DownloadingInfoWidget" name="downloadingInfoWidget" native="true"/>
@@ -80,6 +86,13 @@
        <item>
         <widget class="QWidget" name="downloadPageBtnGroup" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="btnSelectionAciton">
+            <property name="text">
+             <string>Selected Action</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPushButton" name="btnStopAll">
             <property name="text">
@@ -111,7 +124,7 @@
        <item>
         <widget class="QSplitter" name="downloadedSplitter">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <widget class="::DownloadedListWidget" name="downloadedListWidget"/>
          <widget class="::DownloadedInfoWidget" name="downloadedInfoWidget" native="true"/>

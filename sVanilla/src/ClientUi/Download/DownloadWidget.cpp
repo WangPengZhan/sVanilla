@@ -1,4 +1,5 @@
 #include <QStandardPaths>
+#include <QMenu>
 
 #include "DownloadWidget.h"
 #include "ui_DownloadWidget.h"
@@ -121,6 +122,7 @@ void DownloadWidget::setUi()
     ui->stackedWidget->setCurrentWidget(ui->widgetDownloading);
     ui->downloadingListWidget->setInfoPanelSignal(ui->downloadingInfoWidget);
     ui->downloadedListWidget->setInfoPanelSignal(ui->downloadedInfoWidget);
+    createSelectedActionMenu();
 }
 
 void DownloadWidget::signalsAndSlots()
@@ -159,4 +161,25 @@ void DownloadWidget::addTaskITem(const std::shared_ptr<download::BiliDownloader>
     }
     ui->downloadingListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
+}
+
+void DownloadWidget::createSelectedActionMenu()
+{
+    const auto& btn = ui->btnSelectionAciton;
+    auto* const menu = new QMenu(btn);
+    connect(btn, &QPushButton::clicked, [btn, menu]() {
+        const QPoint pos = btn->mapToGlobal(QPoint(0, -menu->sizeHint().height()));
+        menu->exec(pos);
+    });
+
+    auto* startAction = new QAction("Start Selected", menu);
+    menu->addAction(startAction);
+    connect(startAction, &QAction::triggered, ui->downloadingListWidget, &DownloadingListWidget::startSelectedItem);
+
+    auto* pauseAction = new QAction("Pause Selected", menu);
+    menu->addAction(pauseAction);
+
+    auto* deleteAction = new QAction("Delete Selected", menu);
+    menu->addAction(deleteAction);
+    connect(deleteAction, &QAction::triggered, ui->downloadingListWidget, &DownloadingListWidget::deleteSelectedItem);
 }

@@ -52,13 +52,14 @@ private:
     void signalsAndSlots();
 
     void showInfoPanel() const;
+    void createContextMenu();
 
 private:
     std::shared_ptr<VideoInfoFull> m_infoFull;
     VideoGridWidget* m_gridWidget = nullptr;
     QListWidgetItem* m_listWidgetItem = nullptr;
     Ui::VideoGridItemWidget* ui;
-
+    QMenu* m_menu = nullptr;
 };
 
 class VideoGridWidget : public QListWidget
