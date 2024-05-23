@@ -42,6 +42,7 @@ BiliDownloader::BiliDownloader(ResourseInfo info)
     setAriaFileName();
     m_videoDownloader.setStatus(Ready);
     m_audioDownloader.setStatus(Ready);
+    m_uris = m_resourseInfo.videoUris;
 }
 
 void BiliDownloader::start()
@@ -164,6 +165,11 @@ void BiliDownloader::setFilename(std::string filename)
 const std::string& BiliDownloader::filename() const
 {
     return m_filename;
+}
+
+const std::list<std::string>& BiliDownloader::uris() const
+{
+    return m_uris;
 }
 
 bool BiliDownloader::isFinished() const

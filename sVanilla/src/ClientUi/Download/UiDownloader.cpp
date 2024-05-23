@@ -22,7 +22,7 @@ UiDownloader::~UiDownloader()
 {
 }
 
-void UiDownloader::setRealDownloader(std::shared_ptr<AbstractDownloader> realDownloader)
+void UiDownloader::setRealDownloader(const std::shared_ptr<AbstractDownloader>& realDownloader)
 {
     m_realDownloader = realDownloader;
 }
@@ -42,7 +42,17 @@ const std::string& UiDownloader::filename() const
     return m_filename;
 }
 
-std::shared_ptr<VideoInfoFull> UiDownloader::videoINfoFull() const
+void UiDownloader::setUri(const std::string& uri)
+{
+    m_uri = uri;
+}
+
+const std::string& UiDownloader::uri() const
+{
+    return m_uri;
+}
+
+std::shared_ptr<VideoInfoFull> UiDownloader::videoInfoFull() const
 {
     return m_videoInfoFull;
 }
@@ -57,15 +67,15 @@ void UiDownloader::start()
 void UiDownloader::stop()
 {
     m_realDownloader->stop();
-    setStatus(Waitting);
-    updateDbStatus();
+    setStatus(Stopped);
+    deleteDbDownloadingItem();
 }
 
 void UiDownloader::pause()
 {
     m_realDownloader->pause();
     setStatus(Paused);
-    deleteDbDownloadingItem();
+    updateDbStatus();
 }
 
 void UiDownloader::resume()
@@ -107,7 +117,7 @@ void UiDownloader::createDbDownloadingItem()
     item.title = m_videoInfoFull->videoView->Title;
     item.auther = m_videoInfoFull->videoView->Publisher;
     item.url = "https://www.bilibili.com/video/" + item.bvid;
-    item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
+    item.duration = std::stoi(m_videoInfoFull->videoView->Duration);
     item.progress = 0;
     item.status = static_cast<int>(status());
     item.type = 0;
@@ -116,16 +126,18 @@ void UiDownloader::createDbDownloadingItem()
 
 void UiDownloader::updateDbStatus()
 {
-    auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
+    const auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
     sqlite::ConditionWrapper condition;
     condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, guid());
 
     m_storageManager.downloadingStorage()->updateStatus(status(), condition);
+
+    emit statusChanged(status());
 }
 
 void UiDownloader::deleteDbDownloadingItem()
 {
-    auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
+    const auto& table = sqlite::TableStructInfo<DownloadingItemStorage::Entity>::self();
     sqlite::ConditionWrapper condition;
     condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, guid());
     m_storageManager.downloadingStorage()->deleteEntities(condition);

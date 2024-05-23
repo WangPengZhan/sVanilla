@@ -17,6 +17,20 @@ class UiDownloader;
 class DownloadingListWidget;
 class DownloadingInfoWidget;
 
+struct DonwloadingStatus
+{
+    QString uri;
+    QString stage;
+    QString fileName;
+    QString folderPath;
+    QString speed;
+    QString totalSize;
+    QString downloadedSize;
+    QString remainingTime;
+    double progress;
+    download::AbstractDownloader::Status Status;
+};
+
 class DownloadingItemWidget : public QWidget
 {
     Q_OBJECT
@@ -26,13 +40,16 @@ public:
     ~DownloadingItemWidget();
 
     void setListWidget(DownloadingListWidget* listWidget, QListWidgetItem* widgetItem);
-    DownloadingListWidget* listWidget() const;
-    std::shared_ptr<UiDownloader> downloaoder() const;
+    [[nodiscard]] DownloadingListWidget* listWidget() const;
+    [[nodiscard]] std::shared_ptr<UiDownloader> downloaoder() const;
 
     void setStart();
     void setStop();
 
-    Q_SIGNAL void updateInfoPanel(const DownloadingInfo& info);
+    [[nodiscard]] DonwloadingStatus status() const;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
     void setUi();
@@ -44,13 +61,19 @@ private:
     void updateDownloadingItem(const download::DownloadInfo& info);
     void finishedItem();
 
+    void updateStatusIcon(download::AbstractDownloader::Status status);
+    void updateItemText();
     void showInfoPanel() const;
+
+    void createContextMenu();
 
 private:
     Ui::DownloadingItemWidget* ui;
     DownloadingListWidget* m_listWidget = nullptr;
     QListWidgetItem* m_listWidgetItem = nullptr;
     std::shared_ptr<UiDownloader> m_downloader;
+    DonwloadingStatus m_status;
+    QMenu* m_contextMenu = nullptr;
 };
 
 class DownloadingListWidget : public QListWidget
@@ -71,7 +94,10 @@ public:
     QListWidgetItem* itemFromWidget(DownloadingItemWidget* target);
     void showInfoPanel(int index);
     void hideInfoPanel() const;
-    void updateInfoPanel(const DownloadingInfo& info) const;
+    void updateInfoPanel(const DownloadingItemWidget* item) const;
+
+    void startSelectedItem();
+    void deleteSelectedItem();
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
@@ -81,6 +107,7 @@ protected:
 
 private:
     [[nodiscard]] DownloadingItemWidget* indexOfItem(int row) const;
+    void setUi();
     void signalsAndSlots() const;
 
 private:

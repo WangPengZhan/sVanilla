@@ -32,6 +32,9 @@
         <file>icon/download/details.svg</file>
         <file>icon/download/restart.svg</file>
         <file>icon/download/downloading.svg</file>
+        <file>icon/download/completed.svg</file>
+        <file>icon/download/waiting.svg</file>
+        <file>icon/download/error.svg</file>
         <file>icon/setting/arrow-down.svg</file>
         <file>icon/setting/arrow-down-disable.svg</file>
         <file>icon/setting/arrow-up.svg</file>

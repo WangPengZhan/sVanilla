@@ -15,6 +15,7 @@ AriaDownloader::AriaDownloader(std::list<std::string> uris, std::string path, st
     m_ariaSendOption.dir = std::move(path);
     m_ariaSendOption.out = std::move(filename);
 }
+
 AriaDownloader::AriaDownloader(std::list<std::string> uris, const aria2net::AriaSendOption& option)
     : m_ariaSendOption(option)
     , m_uris(std::move(uris))

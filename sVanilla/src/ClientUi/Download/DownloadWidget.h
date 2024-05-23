@@ -54,6 +54,8 @@ private:
 
     void addTaskITem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader);
 
+    void createSelectedActionMenu();
+
 private:
     Ui::DownloadWidget* ui;
     DownloadManager* m_downloadManager;

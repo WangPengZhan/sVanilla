@@ -37,7 +37,7 @@ private:
     std::string m_gid;
     aria2net::AriaSendOption m_ariaSendOption;
     std::list<std::string> m_uris;
-    std::size_t m_fileSize;
+    std::size_t m_fileSize{};
     aria2net::AriaTellStatus m_downloadTellStatus;
     bool m_finished;
 };

@@ -83,6 +83,18 @@ void VideoGridItemWidget::showInfoPanel() const
     m_gridWidget->updateInfoPanel(m_infoFull);
 }
 
+void VideoGridItemWidget::createContextMenu()
+{
+    auto* downloadAction = new QAction("Download", this);
+    m_menu->addAction(downloadAction);
+    connect(downloadAction, &QAction::triggered, this, &VideoGridItemWidget::downloadItem);
+    auto* infoAction = new QAction("Show Infomation", this);
+    m_menu->addAction(infoAction);
+    connect(infoAction, &QAction::triggered, this, &VideoGridItemWidget::showInfoPanel);
+    auto* similarAction = new QAction("Find Similar", this);
+    m_menu->addAction(similarAction);
+}
+
 void VideoGridItemWidget::downloadItem() const
 {
     emit m_gridWidget->downloandBtnClick(m_infoFull);
@@ -141,16 +153,12 @@ void VideoGridItemWidget::resizeEvent(QResizeEvent* event)
 
 void VideoGridItemWidget::contextMenuEvent(QContextMenuEvent* event)
 {
-    auto* menu = new QMenu(this);
-    auto* downloadAction = new QAction("Download", this);
-    menu->addAction(downloadAction);
-    connect(downloadAction, &QAction::triggered, this, &VideoGridItemWidget::downloadItem);
-    auto* infoAction = new QAction("Show Infomation", this);
-    menu->addAction(infoAction);
-    connect(infoAction, &QAction::triggered, this, &VideoGridItemWidget::showInfoPanel);
-    auto* similarAction = new QAction("Find Similar", this);
-    menu->addAction(similarAction);
-    menu->popup(event->globalPos());
+    if (m_menu == nullptr)
+    {
+        m_menu = new QMenu(this);
+        createContextMenu();
+    }
+    m_menu->popup(event->globalPos());
 }
 
 VideoGridWidget::VideoGridWidget(QWidget* parent)
@@ -180,6 +188,8 @@ void VideoGridWidget::setUi()
     constexpr int itemSpacing = 5;
     setSpacing(itemSpacing);
     setSelectionMode(ExtendedSelection);
+    constexpr int scrollStep = 5;
+    verticalScrollBar()->setSingleStep(scrollStep);
 }
 
 void VideoGridWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter)
