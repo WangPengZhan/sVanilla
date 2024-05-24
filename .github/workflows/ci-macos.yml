@@ -25,16 +25,28 @@ jobs:
         qt_modules: [qtwebengine]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          submodules: true
 
-      - name: Init Submodules
+      - uses: lukka/get-cmake@latest
+      - name: List $RUNNER_WORKSPACE before vcpkg is setup
+        run: find $RUNNER_WORKSPACE
         shell: bash
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        id: runvcpkg
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
+
+      - name: List $RUNNER_WORKSPACE before build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
+
+      - name: Prints output of run-vcpkg's action.
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
 
       - name: Install Dependencies
         run: |
@@ -75,6 +87,9 @@ jobs:
       - name:  Install Project
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
 
+      - name: List $RUNNER_WORKSPACE after build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
       # when stable to test
       # - name: Test
       #   working-directory: ${{ github.workspace }}/build
