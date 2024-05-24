@@ -89,17 +89,22 @@ if (ENABLE_TEST)
     add_subdirectory(test)
 endif ()
 
+
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${QT_MOC}
     ${UI}
     ${UIS}
     ${QRC}
-    ${RESOURCE_FILES}
 )
 
 include(cmake/appicon.cmake)
 appicon(${PROJECT_NAME} RESOURCE_FILES)
+
+target_sources(${PROJECT_NAME} 
+    PRIVATE  
+        ${RESOURCE_FILES}
+)
 
 # include(cmake/filemarco.cmake)
 # redefine_file_macro(${PROJECT_NAME})
@@ -170,14 +175,14 @@ endif ()
 
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
-    ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
-    ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_licenses.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
+        ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
+        ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/get_licenses.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 option(ENABLE_DEPLOY "Enable deploy" ON)
@@ -207,7 +212,12 @@ if (VCPAKG_DEP_DIRS)
             set(VCPKG_LIB ${VCPAKG_DEP_DIR}/bin/)
         endif ()
 
-        if (EXISTS ${VCPKG_LIB}/)
+        string(FIND "${VCPAKG_DEP_DIR}" "gtest" POS)
+        if (EXISTS ${VCPKG_LIB} AND ${POS} EQUAL 0)
+            add_custom_command(TARGET ${PROJECT_NAME}
+                POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${VCPKG_LIB} $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
             install(DIRECTORY ${VCPKG_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
         endif ()
     endforeach ()
