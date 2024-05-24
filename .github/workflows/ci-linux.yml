@@ -21,19 +21,12 @@ jobs:
         c_compiler: [gcc]
         cpp_compiler: [g++]
 
-
-
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          submodules: true
 
-      - name: Init Submodules
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive
+      - uses: lukka/get-cmake@latest
 
       - name: Install linuxdeploy
         uses: miurahr/install-linuxdeploy-action@v1
@@ -45,12 +38,12 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libfcitx5-qt-dev tree
 
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1  # not v2!
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        id: runvcpkg
         with:
-          path: ../Qt
-          key: ${{ runner.os }}-QtCache-6.5
+          vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v3

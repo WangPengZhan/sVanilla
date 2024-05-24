@@ -27,23 +27,18 @@ jobs:
         qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          submodules: true
 
-      - name: Init Submodules
-        shell: bash
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive
+      - uses: lukka/get-cmake@latest
 
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1  # not v2!
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        id: runvcpkg
         with:
-          path: ../Qt
-          key: ${{runner.os}}-${{matrix.arch}}-QtCache-${{matrix.qt}}
+          vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
 
       - name: Install Qt Official Build
         uses: jurplel/install-qt-action@v3
