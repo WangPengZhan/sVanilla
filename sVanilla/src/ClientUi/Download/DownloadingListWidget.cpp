@@ -62,18 +62,23 @@ void DownloadingItemWidget::setStart()
     }
 }
 
-void DownloadingItemWidget::setStop()
+void DownloadingItemWidget::setPause()
 {
     if (m_downloader->status() == download::AbstractDownloader::Downloading)
     {
         m_downloader->setStatus(download::AbstractDownloader::Paused);
         ui->btnPause->setChecked(true);
-        ui->btnPause->setIcon(QIcon(":/icon/download/pause.svg"));
+        ui->btnPause->setIcon(QIcon(":/icon/download/start.svg"));
     }
     else if (m_downloader->status() == download::AbstractDownloader::Ready)
     {
         m_downloader->setStatus(download::AbstractDownloader::Waitting);
     }
+}
+
+void DownloadingItemWidget::setStop()
+{
+    deleteItem();
 }
 
 DonwloadingStatus DownloadingItemWidget::status() const
@@ -125,6 +130,7 @@ void DownloadingItemWidget::deleteItem()
         delete item;
         deleteLater();
     }
+    emit m_listWidget->downloadingCountChanged(m_listWidget->count());
     m_listWidget->hideInfoPanel();
 }
 
@@ -202,6 +208,7 @@ void DownloadingItemWidget::finishedItem()
         delete item;
         deleteLater();
     }
+    emit m_listWidget->downloadingCountChanged(m_listWidget->count());
 }
 
 void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Status status)
@@ -314,6 +321,7 @@ void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>&
     pWidget->setListWidget(this, pItem);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
+    emit downloadingCountChanged(count());
 }
 
 void DownloadingListWidget::startAll()
@@ -328,7 +336,19 @@ void DownloadingListWidget::startAll()
     }
 }
 
-void DownloadingListWidget::stopAll()
+void DownloadingListWidget::pauseAll()
+{
+    const int nCount = count();
+    for (int i = 0; i < nCount; ++i)
+    {
+        if (indexOfItem(i) != nullptr)
+        {
+            indexOfItem(i)->setPause();
+        }
+    }
+}
+
+void DownloadingListWidget::deleteAll()
 {
     const int nCount = count();
     for (int i = 0; i < nCount; ++i)
@@ -338,12 +358,8 @@ void DownloadingListWidget::stopAll()
             indexOfItem(i)->setStop();
         }
     }
-}
-
-void DownloadingListWidget::deleteAll()
-{
-    stopAll();
-    clear();
+    emit downloadingCountChanged(count());
+    // clear();
 }
 
 void DownloadingListWidget::setInfoPanelSignal(DownloadingInfoWidget* infoWidget)
@@ -383,13 +399,14 @@ void DownloadingListWidget::deleteSelectedItem()
         auto* const downloadingItemWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(widgetItem));
         if (downloadingItemWidget != nullptr)
         {
-            downloadingItemWidget->setStop();
+            downloadingItemWidget->setPause();
             const auto row = indexFromItem(widgetItem).row();
             auto* const item = takeItem(row);
             removeItemWidget(item);
             delete item;
         }
     }
+    emit downloadingCountChanged(count());
 }
 
 void DownloadingListWidget::mouseMoveEvent(QMouseEvent* event)

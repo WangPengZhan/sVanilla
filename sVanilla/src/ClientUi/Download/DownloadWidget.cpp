@@ -131,9 +131,11 @@ void DownloadWidget::signalsAndSlots()
 
     connect(this, &DownloadWidget::sigDownloadTask, this, &DownloadWidget::addDownloadTask);
     connect(ui->btnStartAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::startAll);
-    connect(ui->btnStopAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::stopAll);
+    connect(ui->btnStopAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::pauseAll);
     connect(ui->btnDeleteAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::deleteAll);
     connect(ui->downloadingListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addFinishedItem);
+    connect(ui->downloadingListWidget, &DownloadingListWidget::downloadingCountChanged, this, &DownloadWidget::setDownloadingNumber);
+    connect(ui->downloadedListWidget, &DownloadedListWidget::downloadedCountChanged, this, &DownloadWidget::setDownloadedNumber);
 
     connect(ui->btnClearAll, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::clearAll);
     connect(ui->btnRedownload, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::reloadAll);
@@ -182,4 +184,16 @@ void DownloadWidget::createSelectedActionMenu()
     auto* deleteAction = new QAction("Delete Selected", menu);
     menu->addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, ui->downloadingListWidget, &DownloadingListWidget::deleteSelectedItem);
+}
+
+void DownloadWidget::setDownloadingNumber(int number)
+{
+    ui->widgetDownloadCount->setDownloadingCount(number);
+    emit downloadingCountChanged(number);
+}
+
+void DownloadWidget::setDownloadedNumber(int number)
+{
+    ui->widgetDownloadCount->setDownloadedCount(number);
+    emit downloadedCountChanged(number);
 }

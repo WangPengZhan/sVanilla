@@ -130,6 +130,34 @@
                     "buttonBorderColor": "#00000000"
                 }
             }
+        },
+        {
+            "enable": true,
+            "widgetType": "QPushButton",
+            "propertyValue": "BlueBackgroundButtonPatch",
+            "configPatch": {
+                "color": {
+                    "textColor": "#B4B4B8",
+                    "buttonForeground": "#C08B5C",
+                    "buttonBackground": "#016FEE",
+                    "buttonHoveredForeground": "#00000000",
+                    "buttonHoveredBackground": "#016FEE",
+                    "buttonPressedForeground": "#C08B5C",
+                    "buttonPressedBackground": "#F5EEE6",
+                    "buttonBorderColor": "#00000000"
+                }
+            }
+        },
+        {
+            "enable": true,
+            "widgetType": "VideoGridWidget",
+            "propertyValue": "WhiteBackgroundListWidgetPatch",
+            "configPatch": {
+                "color": {
+                    "itemViewEvenRowColor": "#FFFFFF",
+                    "itemViewOddRowColor": "#FFFFFF"
+                }
+            }
         }
     ]
 }

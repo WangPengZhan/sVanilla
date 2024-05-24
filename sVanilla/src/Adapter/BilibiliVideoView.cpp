@@ -12,6 +12,7 @@ Adapter::Views ConvertVideoView(const biliapi::VideoView& data)
         {
             const auto item = ConvertEpisodes(e);
             item->Publisher = data.owner.name;
+            item->PlayListTitle = data.ugc_season.title;
             videoListView.push_back(item);
         }
         return videoListView;
@@ -54,10 +55,11 @@ std::shared_ptr<Adapter::BaseVideoView> ConvertEpisodes(const biliapi::UgcEpisod
     item->Title = data.title;
     item->Cover = data.arc.pic;
     item->Duration = formatDuration(data.page.duration);
-    item->Description = data.arc.desc.empty() ? data.arc.desc : data.page.part;
+    item->Description = !data.arc.desc.empty() ? data.arc.desc : data.page.part;
     item->PublishDate = convertTimestamp(data.arc.pubdate);
     return item;
 }
+
 std::shared_ptr<Adapter::BaseVideoView> ConvertPages(const biliapi::VideoPage& data)
 {
     auto item = std::make_shared<Adapter::BaseVideoView>();
@@ -68,6 +70,7 @@ std::shared_ptr<Adapter::BaseVideoView> ConvertPages(const biliapi::VideoPage& d
     item->Duration = formatDuration(data.duration);
     return item;
 }
+
 std::shared_ptr<Adapter::BaseVideoView> ConvertSingleVideo(const biliapi::VideoView& data)
 {
     auto item = std::make_shared<Adapter::BaseVideoView>();

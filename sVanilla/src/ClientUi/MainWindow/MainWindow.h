@@ -1,11 +1,12 @@
 #pragma once
 
-#include "WindowBar.h"
-#include "Aria2Net/Protocol/Protocol.h"
-#include "Util/Setting.h"
-
 #include <QSystemTrayIcon>
-#include <QtWidgets/QMainWindow>
+#include <QMainWindow>
+
+#include "WindowBar.h"
+#include "Util/Setting.h"
+#include "Aria2Net/Protocol/Protocol.h"
+#include "ClientUi/Utils/UriProcess.h"
 
 namespace Adapter
 {
@@ -65,6 +66,8 @@ private:
     void createTrayIcon();
     void setTrayIconVisible(int state);
 
+    void startLoading(const UriProcess::UriInfo& uriInfo);
+
 signals:
     void onSettingPage();
     void downloadBtnClick(const std::shared_ptr<Adapter::BaseVideoView>& videoView);
@@ -75,6 +78,8 @@ private:
     QWK::StyleAgent* styleAgent;
     WindowBar* windowBar;
     QSystemTrayIcon* systemTray;
+    std::list<std::string> m_history;
+    UriProcess* m_uriProcess;
 #ifndef __APPLE__
     QString currentBlurEffect;
 #endif

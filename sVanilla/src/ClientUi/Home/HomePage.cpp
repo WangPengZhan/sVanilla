@@ -1,6 +1,6 @@
 #include <QClipboard>
 #include <QTimer>
-#include <QDebug>
+#include <QMenu>
 #include <QPushButton>
 #include <QStandardPaths>
 #include <QDesktopServices>
@@ -10,8 +10,7 @@
 #include "ui_HomePage.h"
 #include "BiliApi/BilibiliUrl.h"
 #include "Plugin/PluginManager.h"
-#include "Util/UrlProcess.h"
-#include "VanillaStyle/Style.h"
+#include "Util/HistoryUtil.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 
@@ -29,6 +28,11 @@ HomePage::~HomePage()
     delete ui;
 }
 
+void HomePage::setWebsiteIcon(const QString& iconPath)
+{
+    ui->lineEditHome->setWebsiteIcon(iconPath);
+}
+
 void HomePage::signalsAndSlots()
 {
     connect(ui->btnIcon, &QPushButton::clicked, this, [this] {
@@ -36,11 +40,18 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->lineEditHome, &SearchLineEdit::Complete, this, [this] {
-        parseUri({ui->lineEditHome->text().toStdString()});
+        emit parseUri({ui->lineEditHome->text().toStdString()});
+    });
+
+    connect(ui->lineEditHome, &SearchLineEdit::textChanged, this, [this](const QString& text) {
+        if (!text.isEmpty() && text.length() > 1)
+        {
+            emit updateWebsiteIcon(text.toStdString());
+        }
     });
 
     connect(ui->btnSubmit, &QPushButton::clicked, this, [this] {
-        parseUri({ui->lineEditHome->text().toStdString()});
+        emit parseUri({ui->lineEditHome->text().toStdString()});
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
@@ -74,10 +85,12 @@ void HomePage::signalsAndSlots()
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
-        parseUri({clipboard->text().toStdString()});
+        emit parseUri({clipboard->text().toStdString()});
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
-
+        createHistoryMenu();
+        const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(0, -m_historyMenu->sizeHint().height()));
+        m_historyMenu->exec(pos);
     });
 }
 
@@ -90,18 +103,30 @@ void HomePage::setUi()
     ui->lineEditHome->setFixedHeight(homeLineEditHeight);
 }
 
-void HomePage::parseUri(const std::string& uri)
+void HomePage::createHistoryMenu()
 {
-    if (uri.empty())
+    if (m_historyMenu == nullptr)
     {
-        return;
+        m_historyMenu = new QMenu(this);
     }
+    else
     {
-        if (isValidUrl(uri))
+        m_historyMenu->clear();
+    }
+
+    const auto maxWidth = width() / 3;
+    for (const auto& uri : SearchHistory::global().history())
+    {
+        const auto text = QString::fromStdString(uri);
+        QString elidedText = text;
+        if (const QFontMetrics fontMetrics(m_historyMenu->font()); fontMetrics.horizontalAdvance(text) > maxWidth)
         {
-            const auto id = getID(uri);
-            emit loadBiliViewView(id);
-            return;
+            elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
         }
+
+        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {
+            ui->lineEditHome->setText(QString::fromStdString(uri));
+        });
+        action->setToolTip(text);
     }
 }

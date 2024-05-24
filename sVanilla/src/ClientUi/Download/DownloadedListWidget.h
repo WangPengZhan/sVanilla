@@ -66,6 +66,7 @@ public:
 
 signals:
     void reloadItem(std::shared_ptr<VideoInfoFull>& videoInfoFull);
+    void downloadedCountChanged(int count);
 
 protected:
     void mouseMoveEvent(QMouseEvent* event) override;

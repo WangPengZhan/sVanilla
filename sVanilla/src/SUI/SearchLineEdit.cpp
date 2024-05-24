@@ -3,6 +3,8 @@
 #include "ui_SearchLineEdit.h"
 #include "SearchLineEdit.h"
 
+static constexpr int iconMargin = 30;
+
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
     , ui(new Ui::SearchLineEdit())
@@ -33,30 +35,36 @@ void SearchLineEdit::SetEditFinishedSearch(bool enabled)
     }
 }
 
+void SearchLineEdit::setWebsiteIcon(const QString& iconPath) const
+{
+    ui->btnWebsite->setIcon(QIcon(iconPath));
+}
+
 void SearchLineEdit::resizeEvent(QResizeEvent* event)
 {
-    ui->ClearBtn->resize(height(), height());
-    ui->ClearBtn->move(width() - 50, 0);
-    ui->SearchBtn->resize(height(), height());
-    ui->SearchBtn->move(width() - 25, 0);
+    ui->btnWebsite->resize(height(), height());
+    ui->btnWebsite->move(0, 0);
+    ui->btnClear->resize(height(), height());
+    ui->btnClear->move(width() - 2 * iconMargin, 0);
+    ui->btnSearch->resize(height(), height());
+    ui->btnSearch->move(width() - iconMargin, 0);
     QLineEdit::resizeEvent(event);
 }
 
 void SearchLineEdit::setUi()
 {
-    ui->ClearBtn->setVisible(false);
-    ui->ClearBtn->setIcon(QIcon(QStringLiteral(":/icon/home/clear.svg")));
-    ui->SearchBtn->setIcon(QIcon(QStringLiteral(":/icon/home/search.svg")));
+    setTextMargins(iconMargin - 5, 0, 2 * iconMargin, 0);
+    ui->btnClear->setVisible(false);
 }
 
 void SearchLineEdit::signalsAndSlots()
 {
-    connect(ui->SearchBtn, &QPushButton::clicked, this, &SearchLineEdit::Complete);
+    connect(ui->btnSearch, &QPushButton::clicked, this, &SearchLineEdit::Complete);
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
-        ui->ClearBtn->setVisible(!text.isEmpty());
+        ui->btnClear->setVisible(!text.isEmpty());
     });
-    connect(ui->ClearBtn, &QPushButton::clicked, this, [this] {
+    connect(ui->btnClear, &QPushButton::clicked, this, [this] {
         this->clear();
-        ui->ClearBtn->setVisible(false);
+        ui->btnClear->setVisible(false);
     });
 }

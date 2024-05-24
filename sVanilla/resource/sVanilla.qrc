@@ -25,6 +25,7 @@
         <file>icon/video/download.svg</file>
         <file>icon/video/close.svg</file>
         <file>icon/video/reset.svg</file>
+        <file>icon/video/inbox.svg</file>
         <file>icon/download/delete.svg</file>
         <file>icon/download/start.svg</file>
         <file>icon/download/pause.svg</file>
@@ -35,13 +36,8 @@
         <file>icon/download/completed.svg</file>
         <file>icon/download/waiting.svg</file>
         <file>icon/download/error.svg</file>
-        <file>icon/setting/arrow-down.svg</file>
-        <file>icon/setting/arrow-down-disable.svg</file>
-        <file>icon/setting/arrow-up.svg</file>
-        <file>icon/setting/arrow-up-disable.svg</file>
-        <file>icon/setting/checked.svg</file>
-        <file>icon/setting/unchecked.svg</file>
-        <file>icon/account.svg</file>
+        <file>icon/website/default.svg</file>
+        <file>icon/website/bilibili.svg</file>
         <file>CoverSpace.svg</file>
         <file>sVanilla.svg</file>
     </qresource>

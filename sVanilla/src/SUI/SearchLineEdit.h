@@ -15,6 +15,7 @@ public:
     ~SearchLineEdit();
 
     void SetEditFinishedSearch(bool enabled);
+    void setWebsiteIcon(const QString& iconPath) const;
 
 protected:
     void resizeEvent(QResizeEvent* event) override;

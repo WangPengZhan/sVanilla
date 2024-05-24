@@ -103,6 +103,7 @@ void DownloadedItemWidget::restartItem()
         deleteLater();
         return;
     }
+    emit m_listWidget->downloadedCountChanged(m_listWidget->count());
 }
 
 void DownloadedItemWidget::openItemFolder()
@@ -161,6 +162,7 @@ void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull
     pWidget->setListWidget(this, pItem);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
+    emit downloadedCountChanged(count());
 }
 
 void DownloadedListWidget::clearAll()
@@ -173,6 +175,7 @@ void DownloadedListWidget::clearAll()
             indexOfItem(i)->clearItem();
         }
     }
+    emit downloadedCountChanged(count());
 }
 
 void DownloadedListWidget::reloadAll()

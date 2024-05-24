@@ -39,10 +39,10 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="HomePage" name="homePage"/>
-      <widget class="VideoWidget" name="VideoPage"/>
+      <widget class="VideoWidget" name="videoPage"/>
       <widget class="DownloadWidget" name="downloadPage"/>
       <widget class="SettingsPage" name="settingPage"/>
      </widget>

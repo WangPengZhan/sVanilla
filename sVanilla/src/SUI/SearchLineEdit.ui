@@ -22,7 +22,7 @@
   <property name="clearButtonEnabled">
    <bool>false</bool>
   </property>
-  <widget class="Vanilla::IconButton" name="ClearBtn">
+  <widget class="QPushButton" name="btnClear">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -34,8 +34,15 @@
    <property name="text">
     <string/>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/home/clear.svg</normaloff>:/icon/home/clear.svg</iconset>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
   </widget>
-  <widget class="Vanilla::IconButton" name="SearchBtn">
+  <widget class="QPushButton" name="btnSearch">
    <property name="geometry">
     <rect>
      <x>340</x>
@@ -47,16 +54,36 @@
    <property name="text">
     <string/>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/home/search.svg</normaloff>:/icon/home/search.svg</iconset>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnWebsite">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>100</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/website/default.svg</normaloff>:/icon/website/default.svg</iconset>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Vanilla::IconButton</class>
-   <extends>QPushButton</extends>
-   <header>VanillaStyle/Widgets/IconButton.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

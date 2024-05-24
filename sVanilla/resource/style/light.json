@@ -2,7 +2,7 @@
     "name": "Crescent",
     "mode": "light",
     "color": {
-        "backgroundColor": "#8cffffff",
+        "backgroundColor": "#B3F8F8F8",
         "primaryTextColor": "#322C2B",
         "textColor": "#2f343f",
         "pressedTextColor": "#344955",
@@ -32,13 +32,13 @@
         "progressBarText": "#F97300",
         "toggleButtonBackground": "#EEEEEE",
         "toggleButtonForeground": "#FDAF7B",
-        "toggleButtonIndicatorColor": "#BBBBBB",
+        "toggleButtonIndicatorColor": "#E2DFD0",
         "toggleButtonIconColor": "#2f343f",
         "itemViewEvenRowColor": "#c8c8c8",
         "itemViewOddRowColor": "#dcdcdc",
         "itemViewSelectedColor": "#87a0be",
-        "lineEditFocusOutline": "#87C4FF",
-        "lineEditOutline": "#87a0be",
+        "lineEditFocusOutline": "#76ABAE",
+        "lineEditOutline": "#B4B4B8",
         "iconLabelText": "#50727B",
         "scrollBarSliderColor": "#87a0be",
         "menuBackground": "#E6FEFAF6",
@@ -132,6 +132,35 @@
                     "buttonPressedForeground": "#00000000",
                     "buttonPressedBackground": "#00000000",
                     "buttonBorderColor": "#00000000"
+                }
+            }
+        },
+        {
+            "enable": true,
+            "widgetType": "QPushButton",
+            "propertyValue": "BlueBackgroundButtonPatch",
+            "configPatch": {
+                "color": {
+                    "indicatorColor": "#C7C8CC",
+                    "textColor": "#B4B4B8",
+                    "buttonForeground": "#C08B5C",
+                    "buttonBackground": "#5AB2FF",
+                    "buttonHoveredForeground": "#00000000",
+                    "buttonHoveredBackground": "#016FEE",
+                    "buttonPressedForeground": "#C08B5C",
+                    "buttonPressedBackground": "#F5EEE6",
+                    "buttonBorderColor": "#00000000"
+                }
+            }
+        },
+        {
+            "enable": true,
+            "widgetType": "VideoGridWidget",
+            "propertyValue": "WhiteBackgroundListWidgetPatch",
+            "configPatch": {
+                "color": {
+                    "itemViewEvenRowColor": "#FFFFFF",
+                    "itemViewOddRowColor": "#FFFFFF"
                 }
             }
         }
