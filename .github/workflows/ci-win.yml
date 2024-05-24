@@ -38,7 +38,7 @@ jobs:
         id: runvcpkg
         with:
           vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
-          vcpkgJsonGlob: '**/vcpkg-configuration.json'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
 
       - name: Install Qt Official Build
         uses: jurplel/install-qt-action@v3
