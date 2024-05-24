@@ -43,19 +43,28 @@ public:
     void downloadSelected();
     void prepareDownloadTaskList();
 
-    Q_SIGNAL void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
-
     void clearVideo() const;
     void updateCover(int id) const;
+
+    void setWebsiteIcon(const QString& iconPath);
+    void setDownloadingNumber(int number) const;
+    void setDownloadedNumber(int number) const;
+
+signals:
+    void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
+    void updateWebsiteIcon(const std::string& string);
+    void parseUri(const std::string& uri);
 
 private:
     void signalsAndSlots();
     void setUi();
+    void createHistoryMenu();
     Q_SIGNAL void allReady() const;
     Q_SIGNAL void coverReady(int id) const;
 
 private:
     Ui::VideoPage* ui;
+    QMenu* m_historyMenu = nullptr;
 
     unsigned long totalCoverSize = 0;
     unsigned long currentCoverSize = 0;

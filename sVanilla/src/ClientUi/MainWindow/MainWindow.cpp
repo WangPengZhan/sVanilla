@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
     , styleAgent(new QWK::StyleAgent(this))
     , windowBar(new WindowBar(this))
     , systemTray(new QSystemTrayIcon(this))
+    , m_uriProcess(new UriProcess(this))
 {
     ui->setupUi(this);
     installWindowAgent();
@@ -79,16 +80,21 @@ void MainWindow::signalsAndSlots()
             ui->settingPage->connectAria2Server();
         }
     });
+    connect(ui->homePage, &HomePage::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
+    connect(ui->videoPage, &VideoWidget::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
+    connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->homePage, &HomePage::setWebsiteIcon);
+    connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->videoPage, &VideoWidget::setWebsiteIcon);
+
+    connect(ui->homePage, &HomePage::parseUri, m_uriProcess, &UriProcess::parseUri);
+    connect(ui->videoPage, &VideoWidget::parseUri, m_uriProcess, &UriProcess::parseUri);
+    connect(m_uriProcess, &UriProcess::uriProcessComplete, this, &MainWindow::startLoading);
+
+    connect(ui->videoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::getBiliUrl);
+
+    connect(ui->downloadPage, &DownloadWidget::downloadingCountChanged, ui->videoPage, &VideoWidget::setDownloadingNumber);
+    connect(ui->downloadPage, &DownloadWidget::downloadedCountChanged, ui->videoPage, &VideoWidget::setDownloadedNumber);
+
     connect(ui->settingPage, &SettingsPage::updateTheme, this, &MainWindow::setTheme);
-
-    connect(ui->homePage, &HomePage::loadBiliViewView, [this](const std::string& uri) {
-        ui->VideoPage->prepareBiliVideoView(uri);
-        ui->stackedWidget->setCurrentIndex(1);
-        emit windowBar->tabChanged(1);
-    });
-
-    connect(ui->VideoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::getBiliUrl);
-
     connect(ui->settingPage, &SettingsPage::enableTray, this, &MainWindow::setTrayIconVisible);
 }
 
@@ -211,6 +217,22 @@ void MainWindow::setTrayIconVisible(int state)
     else
     {
         systemTray->hide();
+    }
+}
+
+void MainWindow::startLoading(const UriProcess::UriInfo& uriInfo)
+{
+    if (uriInfo.type == "default")
+    {
+        ui->stackedWidget->setCurrentIndex(2);
+        emit windowBar->tabChanged(2);
+    }
+    else
+    {
+        ui->stackedWidget->setCurrentIndex(1);
+        emit windowBar->tabChanged(1);
+
+        ui->videoPage->prepareBiliVideoView(uriInfo.id);
     }
 }
 

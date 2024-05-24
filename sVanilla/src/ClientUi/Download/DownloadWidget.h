@@ -47,6 +47,8 @@ public:
 
 signals:
     void sigDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
+    void downloadingCountChanged(int count);
+    void downloadedCountChanged(int count);
 
 private:
     void setUi();
@@ -55,6 +57,9 @@ private:
     void addTaskITem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader);
 
     void createSelectedActionMenu();
+
+    void setDownloadingNumber(int number);
+    void setDownloadedNumber(int number);
 
 private:
     Ui::DownloadWidget* ui;

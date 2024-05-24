@@ -2,7 +2,8 @@
 #include <QPushButton>
 #include <QStandardPaths>
 #include <QLabel>
-#include <type_traits>
+#include <QMenu>
+#include <QClipboard>
 
 #include "Download/AbstractDownloader.h"
 #include "Adapter/BilibiliVideoView.h"
@@ -16,7 +17,9 @@
 #include "ClientUi/Utils/RunTask.h"
 #include "Util/UrlProcess.h"
 #include "ClientUi/Config//SingleConfig.h"
+#include "ClientUi/Utils/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
+#include "Util/HistoryUtil.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -40,14 +43,32 @@ void VideoWidget::signalsAndSlots()
         ui->videoListInfoWidget->hide();
     });
 
+    connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
+        emit parseUri(ui->lineEditSearch->text().toStdString());
+    });
+
+    connect(ui->lineEditSearch, &SearchLineEdit::textChanged, this, [this](const QString& text) {
+        if (!text.isEmpty() && text.length() > 1)
+        {
+            emit updateWebsiteIcon(text.toStdString());
+        }
+    });
+
+    connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
+        createHistoryMenu();
+        const auto menuX = ui->btnHistory->width() - m_historyMenu->sizeHint().width();
+        const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(menuX, m_historyMenu->sizeHint().height()));
+        m_historyMenu->exec(pos);
+    });
+    connect(ui->btnClipboard, &QPushButton::clicked, this, [this] {
+        const QClipboard* clipboard = QGuiApplication::clipboard();
+        emit parseUri(clipboard->text().toStdString());
+    });
+
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
     connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
     connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
-
-    connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
-        prepareBiliVideoView(ui->lineEditSearch->text().toStdString());
-    });
 
     connect(ui->btnDownloadSelected, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTaskList);
 }
@@ -59,8 +80,38 @@ void VideoWidget::setUi()
     constexpr int columnWidth = 45;
     ui->btnSwitch->setColumnWidth(columnWidth);
     ui->btnSwitch->setItemList(horizonNavigation);
+
+    constexpr int searchLineEditHeight = 25;
+    ui->lineEditSearch->setFixedHeight(searchLineEditHeight);
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
+}
+
+void VideoWidget::createHistoryMenu()
+{
+    if (m_historyMenu == nullptr)
+    {
+        m_historyMenu = new QMenu(this);
+    }
+    else
+    {
+        m_historyMenu->clear();
+    }
+    const auto maxWidth = width() / 3;
+    for (const auto& uri : SearchHistory::global().history())
+    {
+        const auto text = QString::fromStdString(uri);
+        QString elidedText = text;
+        if (const QFontMetrics fontMetrics(m_historyMenu->font()); fontMetrics.horizontalAdvance(text) > maxWidth)
+        {
+            elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
+        }
+
+        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {
+            ui->lineEditSearch->setText(QString::fromStdString(uri));
+        });
+        action->setToolTip(text);
+    }
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
@@ -87,6 +138,12 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     // 2. add video item
     const QString tempPath = QApplication::applicationDirPath();  // It is now in the temporary area
     const auto views = ConvertVideoView(videoView.data);
+    if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
+    {
+        const auto title = QString::fromStdString(playlistTitle);
+        const auto playlistSize = std::to_string(views.size());
+        ui->labelPlaylistTitle->setText(title + QStringLiteral("  (") + QString::fromStdString(playlistSize) + QStringLiteral(")"));
+    }
     for (int i = 0; i < views.size(); ++i)
     {
         auto videoInfoFull = std::make_shared<VideoInfoFull>();
@@ -154,4 +211,23 @@ void VideoWidget::clearVideo() const
 void VideoWidget::updateCover(const int id) const
 {
     ui->videoGridWidget->coverReady(id);
+}
+
+void VideoWidget::setWebsiteIcon(const QString& iconPath)
+{
+    ui->lineEditSearch->setWebsiteIcon(iconPath);
+}
+
+void VideoWidget::setDownloadingNumber(int number) const
+{
+    ui->widgetDownloadCount->setDownloadingCount(number);
+    // const auto taskNumber = util::taskNumberToText(ui->btnTaskNumber->text(), number , true);
+    // ui->btnTaskNumber->setText(taskNumber);
+}
+
+void VideoWidget::setDownloadedNumber(int number) const
+{
+    ui->widgetDownloadCount->setDownloadedCount(number);
+    // const auto taskNumber = util::taskNumberToText(ui->btnTaskNumber->text(), number , false);
+    // ui->btnTaskNumber->setText(taskNumber);
 }

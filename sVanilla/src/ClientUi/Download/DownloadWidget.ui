@@ -36,7 +36,7 @@
        <number>10</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>12</number>
       </property>
       <property name="bottomMargin">
        <number>0</number>
@@ -63,6 +63,9 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="DownloadCount" name="widgetDownloadCount" native="true"/>
       </item>
      </layout>
     </widget>
@@ -191,6 +194,12 @@
    <class>::DownloadedInfoWidget</class>
    <extends>QWidget</extends>
    <header>ClientUi/Download/DownloadedInfoWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DownloadCount</class>
+   <extends>QWidget</extends>
+   <header>SUI/DownloadCount.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

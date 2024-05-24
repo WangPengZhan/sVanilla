@@ -10,8 +10,7 @@
 #include "ui_HomePage.h"
 #include "BiliApi/BilibiliUrl.h"
 #include "Plugin/PluginManager.h"
-#include "Util/UrlProcess.h"
-#include "VanillaStyle/Style.h"
+#include "Util/HistoryUtil.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 
@@ -29,6 +28,11 @@ HomePage::~HomePage()
     delete ui;
 }
 
+void HomePage::setWebsiteIcon(const QString& iconPath)
+{
+    ui->lineEditHome->setWebsiteIcon(iconPath);
+}
+
 void HomePage::signalsAndSlots()
 {
     connect(ui->btnIcon, &QPushButton::clicked, this, [this] {
@@ -36,11 +40,18 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->lineEditHome, &SearchLineEdit::Complete, this, [this] {
-        parseUri({ui->lineEditHome->text().toStdString()});
+        emit parseUri({ui->lineEditHome->text().toStdString()});
+    });
+
+    connect(ui->lineEditHome, &SearchLineEdit::textChanged, this, [this](const QString& text) {
+        if (!text.isEmpty() && text.length() > 1)
+        {
+            emit updateWebsiteIcon(text.toStdString());
+        }
     });
 
     connect(ui->btnSubmit, &QPushButton::clicked, this, [this] {
-        parseUri({ui->lineEditHome->text().toStdString()});
+        emit parseUri({ui->lineEditHome->text().toStdString()});
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
@@ -74,7 +85,7 @@ void HomePage::signalsAndSlots()
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
-        parseUri({clipboard->text().toStdString()});
+        emit parseUri({clipboard->text().toStdString()});
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
         createHistoryMenu();
@@ -92,22 +103,6 @@ void HomePage::setUi()
     ui->lineEditHome->setFixedHeight(homeLineEditHeight);
 }
 
-void HomePage::parseUri(const std::string& uri)
-{
-    if (uri.empty())
-    {
-        return;
-    }
-    {
-        if (isValidUrl(uri))
-        {
-            const auto id = getID(uri);
-            emit loadBiliViewView(id);
-            m_history.push_back(uri);
-        }
-    }
-}
-
 void HomePage::createHistoryMenu()
 {
     if (m_historyMenu == nullptr)
@@ -120,7 +115,7 @@ void HomePage::createHistoryMenu()
     }
 
     const auto maxWidth = width() / 3;
-    for (const auto& uri : m_history)
+    for (const auto& uri : SearchHistory::global().history())
     {
         const auto text = QString::fromStdString(uri);
         QString elidedText = text;

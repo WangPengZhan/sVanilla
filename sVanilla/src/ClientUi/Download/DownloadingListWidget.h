@@ -44,6 +44,7 @@ public:
     [[nodiscard]] std::shared_ptr<UiDownloader> downloaoder() const;
 
     void setStart();
+    void setPause();
     void setStop();
 
     [[nodiscard]] DonwloadingStatus status() const;
@@ -86,7 +87,7 @@ public:
     void addDownloadItem(const std::shared_ptr<UiDownloader>& downloader);
 
     void startAll();
-    void stopAll();
+    void pauseAll();
     void deleteAll();
 
     void setInfoPanelSignal(DownloadingInfoWidget* infoWidget);
@@ -101,6 +102,7 @@ public:
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
+    void downloadingCountChanged(int count);
 
 protected:
     void mouseMoveEvent(QMouseEvent* event) override;

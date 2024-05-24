@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>577</width>
-    <height>545</height>
+    <width>610</width>
+    <height>589</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -18,14 +18,8 @@
     <number>10</number>
    </property>
    <item>
-    <widget class="QWidget" name="switchBtnWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="leftMargin">
        <number>10</number>
       </property>
@@ -33,14 +27,11 @@
        <number>10</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>10</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
-      <item>
-       <widget class="Vanilla::ToggleButton" name="btnSwitch" native="true"/>
-      </item>
       <item>
        <widget class="::SearchLineEdit" name="lineEditSearch" native="true">
         <property name="sizePolicy">
@@ -52,10 +43,91 @@
         <property name="minimumSize">
          <size>
           <width>400</width>
-          <height>0</height>
+          <height>20</height>
          </size>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnClipboard">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnHistory">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="switchBtnWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item>
+       <widget class="Vanilla::ToggleButton" name="btnSwitch" native="true"/>
+      </item>
+      <item>
+       <widget class="DownloadCount" name="widgetDownloadCount" native="true"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelPlaylistTitle">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -111,6 +183,9 @@
        </property>
        <property name="itemAlignment">
         <set>Qt::AlignmentFlag::AlignHCenter</set>
+       </property>
+       <property name="_vanillaStyle_Patch" stdset="0">
+        <string>WhiteBackgroundListWidgetPatch</string>
        </property>
       </widget>
       <widget class="::VideoInfoWidget" name="videoGridInfoWidget" native="true"/>
@@ -205,7 +280,15 @@
    <header>SUI/SearchLineEdit.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>DownloadCount</class>
+   <extends>QWidget</extends>
+   <header>SUI/DownloadCount.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

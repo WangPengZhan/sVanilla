@@ -14,16 +14,18 @@ class HomePage : public QWidget
 
 public:
     explicit HomePage(QWidget* parent = nullptr);
-    ~HomePage() override;
+    ~HomePage();
+
+    void setWebsiteIcon(const QString& iconPath);
 
 signals:
     void HasAdded(bool hasAdded);
-    void loadBiliViewView(const std::string& uri);
+    void updateWebsiteIcon(const std::string& uri);
+    void parseUri(const std::string& uri);
 
 private:
     void signalsAndSlots();
     void setUi();
-    void parseUri(const std::string& uri);
     void createHistoryMenu();
 
 private:
