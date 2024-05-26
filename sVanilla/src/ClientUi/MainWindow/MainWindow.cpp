@@ -23,6 +23,7 @@
 #include "ui_MainWindow.h"
 
 static constexpr int systemButtonSize = 14;
+constexpr char softwareName[] = "sVanilla";
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -35,6 +36,8 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
     installWindowAgent();
+    setWindowTitle(softwareName);
+    setWindowIcon(QIcon(":/app.ico"));
     setUi();
     signalsAndSlots();
     setUpShortcuts();

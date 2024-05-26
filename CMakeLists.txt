@@ -4,8 +4,14 @@ set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/scripts/b
     CACHE STRING "")
 set(VCPKG_APPLOCAL_DEPS ON)
 
+project(sVanilla 
+    VERSION 1.0.0 
+    DESCRIPTION "A downloader of stream that may be video, audio or music."
+    HOMEPAGE_URL "https://svanilla.app/"
+    LANGUAGES CXX)
 
-project(sVanilla VERSION 1.0.0 LANGUAGES CXX)
+set(PROJECT_COMPANY_NAME "sVanilla Studio")
+set(PROJECT_COPYRIGHT "Copyright (c) iveswang and other contributors")
 
 # if(CMAKE_VERSION VERSION_LESS "3.7.0")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -134,14 +140,6 @@ target_link_libraries(${PROJECT_NAME}
     spdlog::spdlog
     ${OPENSSL_LIBRARIES}
     VanillaStyle::VanillaStyle
-)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
 )
 
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)
