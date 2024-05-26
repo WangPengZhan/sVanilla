@@ -40,11 +40,15 @@ Qt::CheckState SettingsPage::isEnableMinimizeTray() const
 
 void SettingsPage::setUi()
 {
-    const QStringList horizonNavigationBtn{tr("Defalut"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("Authors"), tr("License"), tr("About")};
+    const QStringList horizonNavigationBtn{tr("Default"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("About")};
     ui->horizonNavigation->setItemList(horizonNavigationBtn);
-    ui->horizonNavigation->setUseIcon(false);
-    constexpr int settingNavWidth = 80;
+    const QStringList iconList({QStringLiteral(":/icon/setting/default.svg"), QStringLiteral(":/icon/setting/account.svg"),
+                                QStringLiteral(":/icon/setting/advanced.svg"), QStringLiteral(":/icon/setting/plugin.svg"),
+                                QStringLiteral(":/icon/setting/about.svg")});
+    ui->horizonNavigation->setIconList(iconList);
+    constexpr int settingNavWidth = 120;
     ui->horizonNavigation->setColumnWidth(settingNavWidth);
+    ui->horizonNavigation->setFixedHeight(30);
 }
 
 void SettingsPage::signalsAndSlots()

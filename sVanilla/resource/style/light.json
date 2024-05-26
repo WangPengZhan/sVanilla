@@ -30,15 +30,17 @@
         "progressBarBackground": "#F1DEC9",
         "progressBarForeground": "#C8B6A6",
         "progressBarText": "#F97300",
-        "toggleButtonBackground": "#EEEEEE",
+        "toggleButtonBackground": "#C7C8CC",
         "toggleButtonForeground": "#FDAF7B",
-        "toggleButtonIndicatorColor": "#E2DFD0",
+        "toggleButtonIndicatorColor": "#FFFFFF",
         "toggleButtonIconColor": "#2f343f",
         "itemViewEvenRowColor": "#c8c8c8",
         "itemViewOddRowColor": "#dcdcdc",
         "itemViewSelectedColor": "#87a0be",
-        "lineEditFocusOutline": "#76ABAE",
-        "lineEditOutline": "#B4B4B8",
+        "lineEditFocusOutline": "#B4B4B8",
+        "lineEditOutline": "#7D7C7C",
+        "lineEditFocusBackground": "#F0F0F0",
+        "lineEditBackground": "#F1EFEF",
         "iconLabelText": "#50727B",
         "scrollBarSliderColor": "#87a0be",
         "menuBackground": "#E6FEFAF6",
@@ -54,7 +56,7 @@
         "fontH5": 13,
         "fontH6": 11,
         "borderWidth": 2,
-        "iconSize": 16,
+        "iconSize": 18,
         "normalRadius": 4,
         "buttonRadius": 4,
         "menuItemRadius": 4,
@@ -75,7 +77,7 @@
             "configPatch": {
                 "color": {
                     "textColor": "#B4B4B8",
-                    "buttonForeground": "#C08B5C",
+                    "buttonForeground": "#31363F",
                     "buttonBackground": "#00000000",
                     "buttonHoveredForeground": "#00000000",
                     "buttonHoveredBackground": "#F8F0E5",
@@ -145,8 +147,27 @@
                     "textColor": "#B4B4B8",
                     "buttonForeground": "#C08B5C",
                     "buttonBackground": "#5AB2FF",
+                    "buttonHoveredForeground": "#C08B5C",
+                    "buttonHoveredBackground": "#5AB2FF",
+                    "buttonPressedForeground": "#C08B5C",
+                    "buttonPressedBackground": "#F5EEE6",
+                    "buttonBorderColor": "#00000000"
+                },
+                "size": {
+                    "buttonRadius": 10
+                }
+            }
+        },
+        {
+            "enable": true,
+            "widgetType": "QPushButton",
+            "propertyValue": "CustomIconColorButtonPatch",
+            "configPatch": {
+                "color": {
+                    "buttonForeground": "#EEF5FF",
+                    "buttonBackground": "#00A9FF",
                     "buttonHoveredForeground": "#00000000",
-                    "buttonHoveredBackground": "#016FEE",
+                    "buttonHoveredBackground": "#00000000",
                     "buttonPressedForeground": "#C08B5C",
                     "buttonPressedBackground": "#F5EEE6",
                     "buttonBorderColor": "#00000000"
@@ -161,6 +182,19 @@
                 "color": {
                     "itemViewEvenRowColor": "#FFFFFF",
                     "itemViewOddRowColor": "#FFFFFF"
+                }
+            }
+        },
+        {
+            "enable": true,
+            "widgetType": "Vanilla::ToggleButton",
+            "propertyValue": "AboutNavigationWidgetPatch",
+            "configPatch": {
+                "color": {
+                    "toggleButtonBackground": "#00000000",
+                    "toggleButtonForeground": "#FDAF7B",
+                    "toggleButtonIndicatorColor": "#FFFFFF",
+                    "toggleButtonIconColor": "#2f343f"
                 }
             }
         }

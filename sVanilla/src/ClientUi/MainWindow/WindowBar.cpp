@@ -1,7 +1,7 @@
 #include "WindowBar.h"
 #include "ui_WindowBar.h"
 
-static constexpr int columnWidth = 35;
+static constexpr int columnWidth = 45;
 static constexpr int columnSpacing = 15;
 
 WindowBar::WindowBar(QWidget* parent)
@@ -56,7 +56,8 @@ void WindowBar::setUi() const
 {
     const QStringList horizonNavigation({QStringLiteral(":/icon/bar/home.svg"), QStringLiteral(":/icon/bar/video.svg"),
                                          QStringLiteral(":/icon/bar/download.svg"), QStringLiteral(":/icon/bar/setting.svg")});
-    ui->Hit->setItemList(horizonNavigation);
+    ui->Hit->setIconList(horizonNavigation);
     ui->Hit->setColumnWidth(columnWidth);
+    ui->Hit->setEnableBackground(false);
     ui->systemBtnLayout->setSpacing(columnSpacing);
 }

@@ -14,20 +14,39 @@
    <string>SettingPage</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>20</number>
-   </property>
-   <property name="topMargin">
-    <number>20</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
-    <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true"/>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item>
+       <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true"/>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QStackedWidget" name="settingStackedPage">
@@ -35,8 +54,6 @@
      <widget class="AccountsInfo" name="accountsInfo"/>
      <widget class="AdvanceSettings" name="advanceSettings"/>
      <widget class="PluginsInfo" name="pluginsInfo"/>
-     <widget class="AuthorsInfo" name="authorsInfo"/>
-     <widget class="LicenseInfoWidget" name="licenseInfo"/>
      <widget class="About" name="about"/>
     </widget>
    </item>
@@ -68,21 +85,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>AuthorsInfo</class>
-   <extends>QWidget</extends>
-   <header>ClientUi/Setting/AuthorsInfo.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>DefaultSettings</class>
    <extends>QWidget</extends>
    <header>ClientUi/Setting/DefaultSettings.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>LicenseInfoWidget</class>
-   <extends>QWidget</extends>
-   <header>ClientUi/Setting/LicenseInfoWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

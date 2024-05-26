@@ -10,7 +10,6 @@
 
 #include <VanillaStyle/Style.h>
 #include <VanillaStyle/Style/VanillaStyle.h>
-#include <VanillaStyle/Widgets/IconButton.h>
 
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>

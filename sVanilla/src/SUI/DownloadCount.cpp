@@ -6,11 +6,12 @@
 static constexpr int padding = 3;
 static constexpr int radius = 5;
 static constexpr int textWidth = 30;
-static constexpr int textHeight = 16;
+static constexpr int textHeight = 18;
 
 DownloadCount::DownloadCount(QWidget* parent)
     : QWidget(parent)
 {
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 }
 
 int DownloadCount::downloadCount() const
@@ -40,7 +41,8 @@ void DownloadCount::paintEvent(QPaintEvent* /*event*/)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     const auto rect = this->rect().adjusted(1, 3, -1, -3);
-    painter.setPen(Qt::lightGray);
+    constexpr qreal border = 1.5;
+    painter.setPen(QPen(Qt::lightGray, border, Qt::SolidLine));
     painter.setBrush(Qt::NoBrush);
     painter.drawRoundedRect(rect, radius, radius);
 

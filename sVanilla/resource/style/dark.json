@@ -36,6 +36,8 @@
         "itemViewSelectedColor": "#B9B4C7",
         "lineEditFocusOutline": "#B5C0D0",
         "lineEditOutline": "#AF8260",
+        "lineEditFocusBackground": "#F5EEE6",
+        "lineEditBackground": "#F5EEE6",
         "iconLabelText": "#50727B",
         "scrollBarSliderColor": "#50727B",
         "menuBackground": "#99F5F5F5",

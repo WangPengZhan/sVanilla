@@ -26,6 +26,7 @@
         <file>icon/video/close.svg</file>
         <file>icon/video/reset.svg</file>
         <file>icon/video/inbox.svg</file>
+        <file>icon/video/addlink.svg</file>
         <file>icon/download/delete.svg</file>
         <file>icon/download/start.svg</file>
         <file>icon/download/pause.svg</file>
@@ -36,6 +37,17 @@
         <file>icon/download/completed.svg</file>
         <file>icon/download/waiting.svg</file>
         <file>icon/download/error.svg</file>
+        <file>icon/download/sort.svg</file>
+        <file>icon/download/filter.svg</file>
+        <file>icon/setting/about.svg</file>
+        <file>icon/setting/author.svg</file>
+        <file>icon/setting/license.svg</file>
+        <file>icon/setting/account.svg</file>
+        <file>icon/setting/advanced.svg</file>
+        <file>icon/setting/default.svg</file>
+        <file>icon/setting/plugin.svg</file>
+        <file>icon/setting/down.svg</file>
+        <file>icon/setting/up.svg</file>
         <file>icon/website/default.svg</file>
         <file>icon/website/bilibili.svg</file>
         <file>CoverSpace.svg</file>

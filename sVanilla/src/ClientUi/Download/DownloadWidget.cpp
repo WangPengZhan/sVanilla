@@ -114,11 +114,14 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const F
 
 void DownloadWidget::setUi()
 {
-    const QStringList horizonNavigationBtn = {tr("Downloading"), tr("Downloaded")};
-    ui->horizonNavigation->setItemList(horizonNavigationBtn);
-    ui->horizonNavigation->setUseIcon(false);
+    const QStringList textList = {tr("Downloading"), tr("Completed"), tr("Error")};
+    ui->horizonNavigation->setItemList(textList);
+    const QStringList iconList(
+        {QStringLiteral(":/icon/download/downloading.svg"), QStringLiteral(":/icon/download/completed.svg"), QStringLiteral(":/icon/download/error.svg")});
+    ui->horizonNavigation->setIconList(iconList);
     constexpr int horizonNavigationWidth = 120;
     ui->horizonNavigation->setColumnWidth(horizonNavigationWidth);
+    ui->horizonNavigation->setFixedHeight(30);
     ui->stackedWidget->setCurrentWidget(ui->widgetDownloading);
     ui->downloadingListWidget->setInfoPanelSignal(ui->downloadingInfoWidget);
     ui->downloadedListWidget->setInfoPanelSignal(ui->downloadedInfoWidget);
@@ -188,12 +191,10 @@ void DownloadWidget::createSelectedActionMenu()
 
 void DownloadWidget::setDownloadingNumber(int number)
 {
-    ui->widgetDownloadCount->setDownloadingCount(number);
     emit downloadingCountChanged(number);
 }
 
 void DownloadWidget::setDownloadedNumber(int number)
 {
-    ui->widgetDownloadCount->setDownloadedCount(number);
     emit downloadedCountChanged(number);
 }

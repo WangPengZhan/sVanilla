@@ -17,8 +17,19 @@ About::~About()
 
 void About::setUi()
 {
+    const QStringList textList = {tr("About"), tr("Authors"), tr("License")};
+    ui->verticalNavigationWidget->setItemList(textList);
+    const QStringList iconList(
+        {QStringLiteral(":/icon/setting/about.svg"), QStringLiteral(":/icon/setting/author.svg"), QStringLiteral(":/icon/setting/license.svg")});
+    ui->verticalNavigationWidget->setIconList(iconList);
+    ui->verticalNavigationWidget->setVertical();
+    constexpr int navigationWidth = 100;
+    ui->verticalNavigationWidget->setColumnWidth(navigationWidth);
+    constexpr int navigationRowHeight = 35;
+    ui->verticalNavigationWidget->setRowHeight(navigationRowHeight);
 }
 
 void About::signalsAndSlots()
 {
+    connect(ui->verticalNavigationWidget, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 }

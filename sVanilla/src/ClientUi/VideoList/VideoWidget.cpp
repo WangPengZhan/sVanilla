@@ -43,16 +43,16 @@ void VideoWidget::signalsAndSlots()
         ui->videoListInfoWidget->hide();
     });
 
-    connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
-        emit parseUri(ui->lineEditSearch->text().toStdString());
-    });
-
-    connect(ui->lineEditSearch, &SearchLineEdit::textChanged, this, [this](const QString& text) {
-        if (!text.isEmpty() && text.length() > 1)
-        {
-            emit updateWebsiteIcon(text.toStdString());
-        }
-    });
+    // connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
+    //     emit parseUri(ui->lineEditSearch->text().toStdString());
+    // });
+    //
+    // connect(ui->lineEditSearch, &SearchLineEdit::textChanged, this, [this](const QString& text) {
+    //     if (!text.isEmpty() && text.length() > 1)
+    //     {
+    //         emit updateWebsiteIcon(text.toStdString());
+    //     }
+    // });
 
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
         createHistoryMenu();
@@ -76,13 +76,14 @@ void VideoWidget::signalsAndSlots()
 void VideoWidget::setUi()
 {
     ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
-    const QStringList horizonNavigation({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
-    constexpr int columnWidth = 45;
+    const QStringList iconList({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
+    ui->btnSwitch->setIconList(iconList);
+    const QStringList textList({tr("Grid"), tr("List")});
+    ui->btnSwitch->setItemList(textList);
+    constexpr int columnWidth = 100;
     ui->btnSwitch->setColumnWidth(columnWidth);
-    ui->btnSwitch->setItemList(horizonNavigation);
+    ui->btnSwitch->setFixedHeight(30);
 
-    constexpr int searchLineEditHeight = 25;
-    ui->lineEditSearch->setFixedHeight(searchLineEditHeight);
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
 }
@@ -107,9 +108,7 @@ void VideoWidget::createHistoryMenu()
             elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
         }
 
-        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {
-            ui->lineEditSearch->setText(QString::fromStdString(uri));
-        });
+        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {});
         action->setToolTip(text);
     }
 }
@@ -140,9 +139,6 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     const auto views = ConvertVideoView(videoView.data);
     if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
     {
-        const auto title = QString::fromStdString(playlistTitle);
-        const auto playlistSize = std::to_string(views.size());
-        ui->labelPlaylistTitle->setText(title + QStringLiteral("  (") + QString::fromStdString(playlistSize) + QStringLiteral(")"));
     }
     for (int i = 0; i < views.size(); ++i)
     {
@@ -215,19 +211,12 @@ void VideoWidget::updateCover(const int id) const
 
 void VideoWidget::setWebsiteIcon(const QString& iconPath)
 {
-    ui->lineEditSearch->setWebsiteIcon(iconPath);
 }
 
 void VideoWidget::setDownloadingNumber(int number) const
 {
-    ui->widgetDownloadCount->setDownloadingCount(number);
-    // const auto taskNumber = util::taskNumberToText(ui->btnTaskNumber->text(), number , true);
-    // ui->btnTaskNumber->setText(taskNumber);
 }
 
 void VideoWidget::setDownloadedNumber(int number) const
 {
-    ui->widgetDownloadCount->setDownloadedCount(number);
-    // const auto taskNumber = util::taskNumberToText(ui->btnTaskNumber->text(), number , false);
-    // ui->btnTaskNumber->setText(taskNumber);
 }

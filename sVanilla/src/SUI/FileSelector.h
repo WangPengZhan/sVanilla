@@ -28,7 +28,7 @@ public:
     void chooseFile();
 
 signals:
-    void modeChanged(Mode mode);
+    void modeChanged(FileSelector::Mode mode);
 
 private:
     Mode m_mode = Directory;
