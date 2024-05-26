@@ -1,10 +1,13 @@
 #pragma once
+
 #include <QLineEdit>
 
+QT_BEGIN_NAMESPACE
 namespace Ui
 {
 class SearchLineEdit;
-};
+}
+QT_END_NAMESPACE
 
 class SearchLineEdit : public QLineEdit
 {
@@ -14,14 +17,8 @@ public:
     explicit SearchLineEdit(QWidget* parent = nullptr);
     ~SearchLineEdit();
 
-    void SetEditFinishedSearch(bool enabled);
-    void setWebsiteIcon(const QString& iconPath) const;
-
 protected:
     void resizeEvent(QResizeEvent* event) override;
-
-signals:
-    void Complete();
 
 private:
     void setUi();
@@ -30,3 +27,4 @@ private:
 private:
     Ui::SearchLineEdit* ui;
 };
+

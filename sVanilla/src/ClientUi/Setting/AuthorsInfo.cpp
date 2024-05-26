@@ -30,11 +30,8 @@ void AuthorsInfo::resizeEvent(QResizeEvent* event)
                 ui->tableAuthors->setColumnWidth(i, ui->tableAuthors->width() / ui->tableAuthors->columnCount());
             }
         }
-
-        m_resized = true;
     }
-
-    return QWidget::resizeEvent(event);
+    QWidget::resizeEvent(event);
 }
 
 void AuthorsInfo::setUi()
@@ -69,6 +66,7 @@ void AuthorsInfo::loadAuthors()
     {
         auto authorStr = author[0].trimmed();
         auto emailStr = author[1].trimmed();
+        ui->tableAuthors->setRowHeight(i, 40);
         ui->tableAuthors->setItem(i, 0, new QTableWidgetItem(authorStr));
         ui->tableAuthors->setItem(i, 1, new QTableWidgetItem(emailStr));
         i++;

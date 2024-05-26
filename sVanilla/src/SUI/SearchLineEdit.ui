@@ -6,46 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>453</width>
-    <height>48</height>
+    <width>601</width>
+    <height>55</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>SearchLineEdit</string>
   </property>
-  <property name="clearButtonEnabled">
-   <bool>false</bool>
-  </property>
-  <widget class="QPushButton" name="btnClear">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>10</y>
-     <width>100</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>:/icon/home/clear.svg</normaloff>:/icon/home/clear.svg</iconset>
-   </property>
-   <property name="_vanillaStyle_Patch" stdset="0">
-    <string>AppIconButtonPatch</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="btnSearch">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>10</x>
      <y>10</y>
      <width>100</width>
      <height>32</height>
@@ -62,10 +33,10 @@
     <string>AppIconButtonPatch</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnWebsite">
+  <widget class="QPushButton" name="btnClear">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>480</x>
      <y>10</y>
      <width>100</width>
      <height>32</height>
@@ -76,14 +47,13 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>:/icon/website/default.svg</normaloff>:/icon/website/default.svg</iconset>
+     <normaloff>:/icon/home/clear.svg</normaloff>:/icon/home/clear.svg</iconset>
    </property>
    <property name="_vanillaStyle_Patch" stdset="0">
     <string>AppIconButtonPatch</string>
    </property>
   </widget>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

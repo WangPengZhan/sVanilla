@@ -29,7 +29,6 @@ void LicenseItemWidget::setLicense(const LicenseInfo& license)
     ui->labelLib->setText(QString::fromStdString(license.name));
     ui->labelVersion->setText(QString::fromStdString(license.version));
     ui->labelGithub->setText(QString("<a href=\"%1\">%1</a>").arg(QString::fromStdString(license.github)));
-    ui->labelLicenseType->setText(QString::fromStdString("license " + license.licenseType));
     ui->labelLicenseContext->setText(QString::fromStdString(license.license));
 }
 

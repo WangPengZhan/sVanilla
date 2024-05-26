@@ -6,45 +6,71 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>610</width>
+    <width>679</width>
     <height>589</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>10</number>
-   </property>
-   <property name="topMargin">
-    <number>10</number>
-   </property>
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <widget class="QWidget" name="switchBtnWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
-       <number>10</number>
+       <number>5</number>
       </property>
       <property name="topMargin">
-       <number>10</number>
+       <number>5</number>
       </property>
       <property name="rightMargin">
-       <number>10</number>
+       <number>5</number>
       </property>
       <property name="bottomMargin">
        <number>5</number>
       </property>
       <item>
-       <widget class="::SearchLineEdit" name="lineEditSearch" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="Vanilla::ToggleButton" name="btnSwitch" native="true"/>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="minimumSize">
+        <property name="sizeHint" stdset="0">
          <size>
-          <width>400</width>
+          <width>40</width>
           <height>20</height>
          </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnHistory">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
         </property>
        </widget>
       </item>
@@ -63,71 +89,46 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnHistory">
+       <widget class="QPushButton" name="btnAddLink">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+          <normaloff>:/icon/video/addlink.svg</normaloff>:/icon/video/addlink.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="switchBtnWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>10</number>
-      </property>
-      <property name="leftMargin">
-       <number>10</number>
-      </property>
-      <property name="topMargin">
-       <number>10</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>5</number>
-      </property>
-      <item>
-       <widget class="Vanilla::ToggleButton" name="btnSwitch" native="true"/>
-      </item>
-      <item>
-       <widget class="DownloadCount" name="widgetDownloadCount" native="true"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelPlaylistTitle">
-        <property name="text">
-         <string/>
+         <string>CustomIconColorButtonPatch</string>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+       <widget class="::SearchLineEdit" name="lineEditSearch">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="minimumSize">
          <size>
-          <width>40</width>
-          <height>20</height>
+          <width>100</width>
+          <height>25</height>
          </size>
         </property>
-       </spacer>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -151,38 +152,38 @@
        </sizepolicy>
       </property>
       <property name="orientation">
-       <enum>Qt::Orientation::Vertical</enum>
+       <enum>Qt::Vertical</enum>
       </property>
       <widget class="::VideoGridWidget" name="videoGridWidget">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+        <enum>Qt::ScrollBarAsNeeded</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
        <property name="verticalScrollMode">
-        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
        <property name="horizontalScrollMode">
-        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
        <property name="flow">
-        <enum>QListView::Flow::LeftToRight</enum>
+        <enum>QListView::LeftToRight</enum>
        </property>
        <property name="isWrapping" stdset="0">
         <bool>true</bool>
        </property>
        <property name="resizeMode">
-        <enum>QListView::ResizeMode::Adjust</enum>
+        <enum>QListView::Adjust</enum>
        </property>
        <property name="itemAlignment">
-        <set>Qt::AlignmentFlag::AlignHCenter</set>
+        <set>Qt::AlignHCenter</set>
        </property>
        <property name="_vanillaStyle_Patch" stdset="0">
         <string>WhiteBackgroundListWidgetPatch</string>
@@ -198,7 +199,7 @@
        </sizepolicy>
       </property>
       <property name="orientation">
-       <enum>Qt::Orientation::Vertical</enum>
+       <enum>Qt::Vertical</enum>
       </property>
       <widget class="::VideoListWidget" name="videoListWidget">
        <property name="sizePolicy">
@@ -208,18 +209,18 @@
         </sizepolicy>
        </property>
        <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+        <enum>Qt::ScrollBarAsNeeded</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
        <property name="verticalScrollMode">
-        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
       </widget>
       <widget class="::VideoInfoWidget" name="videoListInfoWidget" native="true">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -276,15 +277,8 @@
   </customwidget>
   <customwidget>
    <class>::SearchLineEdit</class>
-   <extends>QWidget</extends>
+   <extends>QLineEdit</extends>
    <header>SUI/SearchLineEdit.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>DownloadCount</class>
-   <extends>QWidget</extends>
-   <header>SUI/DownloadCount.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -39,11 +39,11 @@ void HomePage::signalsAndSlots()
 
     });
 
-    connect(ui->lineEditHome, &SearchLineEdit::Complete, this, [this] {
+    connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
         emit parseUri({ui->lineEditHome->text().toStdString()});
     });
 
-    connect(ui->lineEditHome, &SearchLineEdit::textChanged, this, [this](const QString& text) {
+    connect(ui->lineEditHome, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
         if (!text.isEmpty() && text.length() > 1)
         {
             emit updateWebsiteIcon(text.toStdString());

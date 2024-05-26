@@ -14,32 +14,38 @@
    <string>DownloadWidget</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>10</number>
-   </property>
-   <property name="topMargin">
-    <number>10</number>
-   </property>
    <item>
     <widget class="QWidget" name="NavigationWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>30</height>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="leftMargin">
-       <number>10</number>
+       <number>5</number>
       </property>
       <property name="topMargin">
-       <number>10</number>
+       <number>5</number>
       </property>
       <property name="rightMargin">
-       <number>12</number>
+       <number>5</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
       <item>
        <widget class="Vanilla::ToggleButton" name="horizonNavigation" native="true">
@@ -54,7 +60,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -65,22 +71,90 @@
        </spacer>
       </item>
       <item>
-       <widget class="DownloadCount" name="widgetDownloadCount" native="true"/>
+       <widget class="QPushButton" name="btnFilter">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/filter.svg</normaloff>:/icon/download/filter.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSort">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/sort.svg</normaloff>:/icon/download/sort.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string notr="true">CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="::SearchLineEdit" name="lineEditSearch">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="widgetDownloading">
       <layout class="QVBoxLayout" name="downloadingLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QSplitter" name="downloadSplitter">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <widget class="::DownloadingListWidget" name="downloadingListWidget"/>
          <widget class="::DownloadingInfoWidget" name="downloadingInfoWidget" native="true"/>
@@ -124,10 +198,22 @@
      </widget>
      <widget class="QWidget" name="widgetDownloaded">
       <layout class="QVBoxLayout" name="downloadedLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QSplitter" name="downloadedSplitter">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <widget class="::DownloadedListWidget" name="downloadedListWidget"/>
          <widget class="::DownloadedInfoWidget" name="downloadedInfoWidget" native="true"/>
@@ -136,6 +222,18 @@
        <item>
         <widget class="QWidget" name="DownloadedBtnGroup" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QPushButton" name="btnClearAll">
             <property name="text">
@@ -174,6 +272,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>::SearchLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>SUI/SearchLineEdit.h</header>
+  </customwidget>
+  <customwidget>
    <class>::DownloadingListWidget</class>
    <extends>QListWidget</extends>
    <header>ClientUi/Download/DownloadingListWidget.h</header>
@@ -196,13 +299,9 @@
    <header>ClientUi/Download/DownloadedInfoWidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>DownloadCount</class>
-   <extends>QWidget</extends>
-   <header>SUI/DownloadCount.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

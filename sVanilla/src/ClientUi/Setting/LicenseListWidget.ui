@@ -30,35 +30,8 @@
     <number>10</number>
    </property>
    <item>
-    <widget class="QLabel" name="labelLib">
-     <property name="text">
-      <string>Qt</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="labelVersion">
-     <property name="text">
-      <string>6.5.3</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="labelGithub">
-     <property name="text">
-      <string>&lt;a href=&quot;https://github.com/qt&quot;&gt;https://github.com/qt&lt;/a&gt;</string>
-     </property>
-     <property name="openExternalLinks">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widgetLicense" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -72,9 +45,16 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="labelLicenseType">
+       <widget class="QLabel" name="labelLib">
         <property name="text">
-         <string>LicenseType</string>
+         <string>Qt</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelVersion">
+        <property name="text">
+         <string>6.5.3</string>
         </property>
        </widget>
       </item>
@@ -85,7 +65,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>258</width>
+          <width>40</width>
           <height>20</height>
          </size>
         </property>
@@ -114,9 +94,28 @@
         <property name="text">
          <string/>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icon/setting/down.svg</normaloff>:/icon/setting/down.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelGithub">
+     <property name="text">
+      <string>
+                            &lt;a
+                            href=&quot;https://github.com/qt&quot;&gt;https://github.com/qt&lt;/a&gt;</string>
+     </property>
+     <property name="openExternalLinks">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
