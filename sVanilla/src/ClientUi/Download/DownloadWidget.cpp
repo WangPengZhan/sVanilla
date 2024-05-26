@@ -191,12 +191,10 @@ void DownloadWidget::createSelectedActionMenu()
 
 void DownloadWidget::setDownloadingNumber(int number)
 {
-    // ui->widgetDownloadCount->setDownloadingCount(number);
     emit downloadingCountChanged(number);
 }
 
 void DownloadWidget::setDownloadedNumber(int number)
 {
-    // ui->widgetDownloadCount->setDownloadedCount(number);
     emit downloadedCountChanged(number);
 }

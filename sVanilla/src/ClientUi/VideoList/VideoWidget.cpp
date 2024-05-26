@@ -110,9 +110,7 @@ void VideoWidget::createHistoryMenu()
             elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
         }
 
-        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {
-            // ui->lineEditSearch->setText(QString::fromStdString(uri));
-        });
+        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {});
         action->setToolTip(text);
     }
 }
@@ -143,9 +141,6 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     const auto views = ConvertVideoView(videoView.data);
     if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
     {
-        // const auto title = QString::fromStdString(playlistTitle);
-        // const auto playlistSize = std::to_string(views.size());
-        // ui->labelPlaylistTitle->setText(title + QStringLiteral("  (") + QString::fromStdString(playlistSize) + QStringLiteral(")"));
     }
     for (int i = 0; i < views.size(); ++i)
     {
@@ -218,15 +213,12 @@ void VideoWidget::updateCover(const int id) const
 
 void VideoWidget::setWebsiteIcon(const QString& iconPath)
 {
-    // ui->lineEditSearch->setWebsiteIcon(iconPath);
 }
 
 void VideoWidget::setDownloadingNumber(int number) const
 {
-    // ui->widgetDownloadCount->setDownloadingCount(number);
 }
 
 void VideoWidget::setDownloadedNumber(int number) const
 {
-    // ui->widgetDownloadCount->setDownloadedCount(number);
 }
