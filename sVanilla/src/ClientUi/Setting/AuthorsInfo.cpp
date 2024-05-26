@@ -30,6 +30,7 @@ void AuthorsInfo::resizeEvent(QResizeEvent* event)
                 ui->tableAuthors->setColumnWidth(i, ui->tableAuthors->width() / ui->tableAuthors->columnCount());
             }
         }
+        m_resized = true;
     }
     QWidget::resizeEvent(event);
 }

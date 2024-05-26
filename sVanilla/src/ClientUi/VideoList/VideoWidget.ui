@@ -12,6 +12,62 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="::AddLinkLineEdit" name="lineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnHistory">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnClipboard">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QWidget" name="switchBtnWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -61,34 +117,6 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="btnHistory">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnClipboard">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="btnAddLink">
         <property name="minimumSize">
          <size>
@@ -101,32 +129,10 @@
         </property>
         <property name="icon">
          <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/video/addlink.svg</normaloff>:/icon/video/addlink.svg</iconset>
+          <normaloff>:/icon/home/search.svg</normaloff>:/icon/home/search.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CustomIconColorButtonPatch</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="::SearchLineEdit" name="lineEditSearch">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>25</height>
-         </size>
         </property>
        </widget>
       </item>
@@ -253,6 +259,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>::AddLinkLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>SUI/AddLinkLineEdit.h</header>
+  </customwidget>
+  <customwidget>
    <class>Vanilla::ToggleButton</class>
    <extends>QWidget</extends>
    <header>VanillaStyle/Widgets/ToggleButton.h</header>
@@ -274,11 +285,6 @@
    <extends>QWidget</extends>
    <header>ClientUi/VideoList/VideoInfoWidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>::SearchLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>SUI/SearchLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

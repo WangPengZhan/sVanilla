@@ -84,8 +84,6 @@ void VideoWidget::setUi()
     ui->btnSwitch->setColumnWidth(columnWidth);
     ui->btnSwitch->setFixedHeight(30);
 
-    constexpr int searchLineEditHeight = 25;
-    ui->lineEditSearch->setFixedHeight(searchLineEditHeight);
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
 }
