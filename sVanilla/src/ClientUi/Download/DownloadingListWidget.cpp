@@ -4,7 +4,11 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <QMenu>
+#include <QFileInfo>
+#include <QDir>
+
 #include <utility>
+#include <limits>
 
 #include "UiDownloader.h"
 #include "DownloadingListWidget.h"
@@ -98,9 +102,9 @@ void DownloadingItemWidget::contextMenuEvent(QContextMenuEvent* event)
 
 void DownloadingItemWidget::setUi()
 {
-    std::filesystem::path filepath(m_downloader->filename());
-    m_status.fileName = QString::fromStdString(filepath.filename().string());
-    m_status.folderPath = QString::fromStdString(filepath.parent_path().string());
+    QFileInfo filepath(QString::fromStdString(m_downloader->filename()));
+    m_status.fileName = filepath.fileName();
+    m_status.folderPath = filepath.absoluteDir().absolutePath();
     m_status.uri = QString::fromStdString(m_downloader->uri());
 }
 
@@ -184,7 +188,15 @@ void DownloadingItemWidget::updateDownloadingItem(const download::DownloadInfo& 
     {
         const double progress = static_cast<double>(info.complete) / static_cast<double>(info.total);
         m_status.progress = progress * 100.;
-        const auto remainingTime = (info.total - info.complete) / info.speed;
+        long long remainingTime = 0;
+        if (info.speed == 0)
+        {
+            remainingTime = (progress == 1) ? 0 : std::numeric_limits<decltype(remainingTime)>::max();
+        }
+        else
+        {
+            remainingTime = (info.total - info.complete) / info.speed;
+        }
         m_status.remainingTime = QString::fromStdString(formatDuration(static_cast<int>(remainingTime)));
     }
 

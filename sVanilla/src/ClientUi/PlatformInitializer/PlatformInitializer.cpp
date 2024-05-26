@@ -13,6 +13,11 @@ void PlatformInitializer::allApplicationBefore()
 #endif  // Qt < 6.0.0
 
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+    QApplication::setApplicationName("sVanilla");
+    QApplication::setApplicationVersion("1.0.0");
+    QApplication::setOrganizationDomain("sVanilla.app");
+    QApplication::setOrganizationName("sVanilla Studio");
 }
 
 void PlatformInitializer::allInit()

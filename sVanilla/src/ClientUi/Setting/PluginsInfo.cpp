@@ -24,6 +24,7 @@ void PluginsInfo::setUi()
 
 void PluginsInfo::signalsAndSlots()
 {
+    ui->tableWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 }
 
 void PluginsInfo::initPluginInfos()
