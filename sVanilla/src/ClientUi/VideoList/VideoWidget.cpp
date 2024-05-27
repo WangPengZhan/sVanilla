@@ -43,21 +43,21 @@ void VideoWidget::signalsAndSlots()
         ui->videoListInfoWidget->hide();
     });
 
-    // connect(ui->lineEditSearch, &SearchLineEdit::Complete, this, [this]() {
-    //     emit parseUri(ui->lineEditSearch->text().toStdString());
-    // });
-    //
-    // connect(ui->lineEditSearch, &SearchLineEdit::textChanged, this, [this](const QString& text) {
-    //     if (!text.isEmpty() && text.length() > 1)
-    //     {
-    //         emit updateWebsiteIcon(text.toStdString());
-    //     }
-    // });
+    connect(ui->lineEdit, &AddLinkLineEdit::Complete, this, [this]() {
+        emit parseUri(ui->lineEdit->text().toStdString());
+    });
+
+    connect(ui->lineEdit, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
+        if (!text.isEmpty() && text.length() > 1)
+        {
+            emit updateWebsiteIcon(text.toStdString());
+        }
+    });
 
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
         createHistoryMenu();
         const auto menuX = ui->btnHistory->width() - m_historyMenu->sizeHint().width();
-        const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(menuX, m_historyMenu->sizeHint().height()));
+        const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(menuX, ui->btnHistory->sizeHint().height()));
         m_historyMenu->exec(pos);
     });
     connect(ui->btnClipboard, &QPushButton::clicked, this, [this] {
@@ -65,6 +65,10 @@ void VideoWidget::signalsAndSlots()
         emit parseUri(clipboard->text().toStdString());
     });
 
+    connect(ui->btnSearch, &QPushButton::clicked, this, &VideoWidget::showSearchLineEdit);
+    connect(ui->lineEditSearch, &SearchLineEdit::startHide, this, &VideoWidget::hideSearchLineEdit);
+
+    connect(ui->lineEditSearch, &SearchLineEdit::readyHide, ui->btnSearch, &QPushButton::show);
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
     connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
@@ -76,13 +80,10 @@ void VideoWidget::signalsAndSlots()
 void VideoWidget::setUi()
 {
     ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
-    const QStringList iconList({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
-    ui->btnSwitch->setIconList(iconList);
-    const QStringList textList({tr("Grid"), tr("List")});
-    ui->btnSwitch->setItemList(textList);
-    constexpr int columnWidth = 100;
-    ui->btnSwitch->setColumnWidth(columnWidth);
-    ui->btnSwitch->setFixedHeight(30);
+    setNavigationBar();
+
+    ui->lineEditSearch->hide();
+    ui->lineEditSearch->setFocusOutHide();
 
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
@@ -98,19 +99,46 @@ void VideoWidget::createHistoryMenu()
     {
         m_historyMenu->clear();
     }
-    const auto maxWidth = width() / 3;
-    for (const auto& uri : SearchHistory::global().history())
+    if (getHistory)
     {
-        const auto text = QString::fromStdString(uri);
-        QString elidedText = text;
-        if (const QFontMetrics fontMetrics(m_historyMenu->font()); fontMetrics.horizontalAdvance(text) > maxWidth)
-        {
-            elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
-        }
-
-        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {});
-        action->setToolTip(text);
+        const auto actionCallback = [this](const QString& text) {
+            ui->lineEdit->setText(text);
+        };
+        util::createMenu(m_historyMenu, width() / 3, getHistory(), actionCallback);
     }
+}
+
+void VideoWidget::showSearchLineEdit()
+{
+    const auto btnFilterPos = ui->btnFilter->pos();
+    const auto btnSortPos = ui->btnSort->pos();
+    ui->btnSearch->hide();
+    ui->lineEditSearch->show();
+    util::moveAnimate(ui->btnFilter, {btnFilterPos, ui->btnFilter->pos()});
+    util::moveAnimate(ui->btnSort, {btnSortPos, ui->btnSort->pos()});
+    ui->lineEditSearch->setFocus();
+}
+
+void VideoWidget::hideSearchLineEdit()
+{
+    const auto btnSearchMarginPoint = QPoint(ui->btnSearch->width(), 0);
+    const auto btnSortMarginPoint = QPoint(ui->btnSort->width(), 0);
+    const auto sortEndValue = ui->btnSearch->geometry().topLeft() - btnSearchMarginPoint;
+    const auto filterEndValue = sortEndValue - btnSortMarginPoint;
+    util::moveAnimate(ui->btnSort, {ui->btnSort->pos(), sortEndValue});
+    util::moveAnimate(ui->btnFilter, {ui->btnFilter->pos(), filterEndValue});
+}
+
+void VideoWidget::setNavigationBar()
+{
+    const QStringList iconList({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
+    ui->btnSwitch->setIconList(iconList);
+    const QStringList textList({tr("Grid"), tr("List")});
+    ui->btnSwitch->setItemList(textList);
+    constexpr int columnWidth = 100;
+    ui->btnSwitch->setColumnWidth(columnWidth);
+    constexpr int swtchHeight = 30;
+    ui->btnSwitch->setFixedHeight(swtchHeight);
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
@@ -139,6 +167,8 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     const auto views = ConvertVideoView(videoView.data);
     if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
     {
+        const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
+        ui->labelPlayListTitle->setText(title);
     }
     for (int i = 0; i < views.size(); ++i)
     {
@@ -211,6 +241,7 @@ void VideoWidget::updateCover(const int id) const
 
 void VideoWidget::setWebsiteIcon(const QString& iconPath)
 {
+    ui->lineEdit->setWebsiteIcon(iconPath);
 }
 
 void VideoWidget::setDownloadingNumber(int number) const
@@ -219,4 +250,9 @@ void VideoWidget::setDownloadingNumber(int number) const
 
 void VideoWidget::setDownloadedNumber(int number) const
 {
+}
+
+void VideoWidget::setHistoryFunc(const std::function<const std::list<std::string>()>& get)
+{
+    getHistory = get;
 }

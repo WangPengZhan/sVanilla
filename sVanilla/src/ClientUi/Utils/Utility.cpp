@@ -1,5 +1,7 @@
+#include <QPropertyAnimation>
 #include <QProcess>
 #include <QDir>
+#include <QMenu>
 
 #include "ClientUi/Utils/Utility.h"
 
@@ -22,6 +24,41 @@ void showInFileExplorer(const QString& filePath)
 #endif
 
     QProcess::startDetached(explorerCommand, arguments);
+}
+
+void createMenu(QMenu* menu, int width, const std::list<std::string>& history, const std::function<void(const QString&)>& actionCallback)
+{
+    for (const auto& uri : history)
+    {
+        const auto text = QString::fromStdString(uri);
+        QString elidedText = text;
+        if (const QFontMetrics fontMetrics(menu->font()); fontMetrics.horizontalAdvance(text) > width)
+        {
+            elidedText = fontMetrics.elidedText(text, Qt::ElideRight, width);
+        }
+
+        auto* const action = new QAction(elidedText, menu);
+        menu->addAction(action);
+        QObject::connect(action, &QAction::triggered, menu, [actionCallback, text]() {
+            actionCallback(text);
+        });
+        action->setToolTip(text);
+    }
+}
+
+void moveAnimate(QObject* obj, MoveStartEndValue posChange, const std::function<void()>& finishedCallback)
+{
+    auto* animation = new QPropertyAnimation(obj, "pos");
+    static constexpr int duration = 300;
+    animation->setDuration(duration);
+    animation->setEasingCurve(QEasingCurve::InQuad);
+    animation->setStartValue(posChange.startValue);
+    animation->setEndValue(posChange.endValue);
+    if (finishedCallback)
+    {
+        QObject::connect(animation, &QPropertyAnimation::finished, finishedCallback);
+    }
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 }  // namespace util

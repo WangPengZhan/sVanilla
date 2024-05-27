@@ -45,6 +45,9 @@ void LicenseItemWidget::setUi()
 void LicenseItemWidget::signalsAndSlots()
 {
     connect(ui->btnExpended, &QPushButton::clicked, this, [this]() {
+        const auto upIcon = QIcon(QString(":/icon/setting/up.svg"));
+        const auto downIcon = QIcon(QString(":/icon/setting/down.svg"));
+        ui->btnExpended->setIcon(ui->btnExpended->isChecked() ? upIcon : downIcon);
         ui->labelLicenseContext->setHidden(!ui->labelLicenseContext->isHidden());
         adjustSize();
         m_item->setSizeHint(QSize(0, sizeHint().height()));

@@ -1,6 +1,8 @@
+#include <QTimer>
 
 #include "SearchLineEdit.h"
 #include "ui_SearchLineEdit.h"
+#include "ClientUi/Utils/Utility.h"
 
 static constexpr int iconMargin = 30;
 
@@ -18,6 +20,11 @@ SearchLineEdit::~SearchLineEdit()
     delete ui;
 }
 
+void SearchLineEdit::setFocusOutHide()
+{
+    focusOutHide = true;
+}
+
 void SearchLineEdit::resizeEvent(QResizeEvent* event)
 {
     ui->btnSearch->resize(height(), height());
@@ -25,6 +32,25 @@ void SearchLineEdit::resizeEvent(QResizeEvent* event)
     ui->btnClear->resize(height(), height());
     ui->btnClear->move(width() - iconMargin, 0);
     QLineEdit::resizeEvent(event);
+}
+
+void SearchLineEdit::focusOutEvent(QFocusEvent* event)
+{
+    if (focusOutHide)
+    {
+        emit startHide();
+        startHideAnimation();
+    }
+    QLineEdit::focusOutEvent(event);
+}
+
+void SearchLineEdit::showEvent(QShowEvent* event)
+{
+    if (focusOutHide)
+    {
+        util::moveAnimate(this, {geometry().topRight(), geometry().topLeft()});
+    }
+    QLineEdit::showEvent(event);
 }
 
 void SearchLineEdit::setUi()
@@ -43,4 +69,14 @@ void SearchLineEdit::signalsAndSlots()
         this->clear();
         ui->btnClear->setVisible(false);
     });
+}
+
+void SearchLineEdit::startHideAnimation()
+{
+    util::MoveStartEndValue changeValue = {geometry().topLeft(), geometry().topRight()};
+    const auto animationFinished = [=]() {
+        hide();
+        emit readyHide();
+    };
+    util::moveAnimate(this, changeValue, animationFinished);
 }

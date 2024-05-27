@@ -98,6 +98,12 @@
          <iconset>
           <normaloff>:/icon/setting/down.svg</normaloff>:/icon/setting/down.svg</iconset>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
         </property>

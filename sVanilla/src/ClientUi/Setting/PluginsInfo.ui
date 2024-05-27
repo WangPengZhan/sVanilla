@@ -16,7 +16,7 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <layout class="QGridLayout" name="Layout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>10</number>
    </property>
@@ -29,22 +29,47 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QLineEdit" name="lineEdit"/>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item>
+       <widget class="::SearchLineEdit" name="lineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QTableWidget" name="tableWidget">
      <property name="editTriggers">
-      <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
+      <enum>QAbstractItemView::NoSelection</enum>
      </property>
      <property name="verticalScrollMode">
-      <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
      <property name="horizontalScrollMode">
-      <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
      <property name="showGrid">
       <bool>false</bool>
@@ -84,6 +109,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>::SearchLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>SUI/SearchLineEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

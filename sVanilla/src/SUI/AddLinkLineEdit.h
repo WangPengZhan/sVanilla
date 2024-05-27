@@ -19,6 +19,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
 
 signals:
     void Complete();
@@ -26,6 +27,7 @@ signals:
 private:
     void setUi();
     void signalsAndSlots();
+    void resizeIcons(const QSize& size);
 
 private:
     Ui::AddLinkLineEdit* ui;

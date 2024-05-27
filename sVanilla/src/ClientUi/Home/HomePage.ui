@@ -95,33 +95,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnSubmit">
-        <property name="text">
-         <string>Submit</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>:/icon/home/enter.svg</normaloff>:/icon/home/enter.svg</iconset>
-        </property>
-        <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CleanButtonPatch</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

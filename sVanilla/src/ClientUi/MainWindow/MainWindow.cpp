@@ -69,6 +69,12 @@ void MainWindow::setUi()
     Toast::create(this);
     setLightTheme();
     createTrayIcon();
+
+    const auto getHistoryFunc = [this]() {
+        return m_uriProcess->getHistory();
+    };
+    ui->videoPage->setHistoryFunc(getHistoryFunc);
+    ui->homePage->setHistoryFunc(getHistoryFunc);
 }
 
 void MainWindow::signalsAndSlots()

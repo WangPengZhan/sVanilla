@@ -160,17 +160,14 @@
         },
         {
             "enable": true,
-            "widgetType": "QPushButton",
-            "propertyValue": "CustomIconColorButtonPatch",
+            "widgetType": "AddLinkLineEdit",
+            "propertyValue": "CustomLineEditPatch",
             "configPatch": {
                 "color": {
-                    "buttonForeground": "#EEF5FF",
-                    "buttonBackground": "#00A9FF",
-                    "buttonHoveredForeground": "#00000000",
-                    "buttonHoveredBackground": "#00000000",
-                    "buttonPressedForeground": "#C08B5C",
-                    "buttonPressedBackground": "#F5EEE6",
-                    "buttonBorderColor": "#00000000"
+                    "lineEditFocusOutline": "#00000000",
+                    "lineEditOutline": "#00000000",
+                    "lineEditFocusBackground": "#00000000",
+                    "lineEditBackground": "#00000000"
                 }
             }
         },

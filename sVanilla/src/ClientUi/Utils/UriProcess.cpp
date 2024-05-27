@@ -36,6 +36,7 @@ void UriProcess::parseUri(const std::string& uri)
         emit uriProcessComplete(info);
     }
     SearchHistory::global().append(uri);
+    m_history.push_back(uri);
 }
 
 void UriProcess::updateWebsiteIcon(const std::string& uri)
@@ -65,4 +66,9 @@ std::string UriProcess::checkUriType(const std::string& uri)
         return "bilibili";
     }
     return "default";
+}
+
+const std::list<std::string>& UriProcess::getHistory()
+{
+    return m_history;
 }

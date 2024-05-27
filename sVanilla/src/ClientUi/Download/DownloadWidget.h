@@ -50,6 +50,9 @@ signals:
     void downloadingCountChanged(int count);
     void downloadedCountChanged(int count);
 
+protected:
+    void resizeEvent(QResizeEvent* event) override;
+
 private:
     void setUi();
     void signalsAndSlots();

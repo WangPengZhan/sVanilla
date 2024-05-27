@@ -112,6 +112,15 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const F
     return res;
 }
 
+void DownloadWidget::resizeEvent(QResizeEvent* event)
+{
+    const auto needHide = this->width() < 650;
+    ui->btnFilter->setVisible(!needHide);
+    ui->btnSort->setVisible(!needHide);
+    ui->lineEditSearch->setVisible(!needHide);
+    QWidget::resizeEvent(event);
+}
+
 void DownloadWidget::setUi()
 {
     const QStringList textList = {tr("Downloading"), tr("Completed"), tr("Error")};
