@@ -9,6 +9,7 @@
 #include "HomePage.h"
 #include "ui_HomePage.h"
 #include "BiliApi/BilibiliUrl.h"
+#include "ClientUi/Utils/Utility.h"
 #include "Plugin/PluginManager.h"
 #include "Util/HistoryUtil.h"
 
@@ -33,6 +34,11 @@ void HomePage::setWebsiteIcon(const QString& iconPath)
     ui->lineEditHome->setWebsiteIcon(iconPath);
 }
 
+void HomePage::setHistoryFunc(const std::function<const std::list<std::string>()>& historyFunc)
+{
+    getHistory = historyFunc;
+}
+
 void HomePage::signalsAndSlots()
 {
     connect(ui->btnIcon, &QPushButton::clicked, this, [this] {
@@ -48,10 +54,6 @@ void HomePage::signalsAndSlots()
         {
             emit updateWebsiteIcon(text.toStdString());
         }
-    });
-
-    connect(ui->btnSubmit, &QPushButton::clicked, this, [this] {
-        emit parseUri({ui->lineEditHome->text().toStdString()});
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
@@ -113,20 +115,11 @@ void HomePage::createHistoryMenu()
     {
         m_historyMenu->clear();
     }
-
-    const auto maxWidth = width() / 3;
-    for (const auto& uri : SearchHistory::global().history())
+    if (getHistory)
     {
-        const auto text = QString::fromStdString(uri);
-        QString elidedText = text;
-        if (const QFontMetrics fontMetrics(m_historyMenu->font()); fontMetrics.horizontalAdvance(text) > maxWidth)
-        {
-            elidedText = fontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
-        }
-
-        auto* const action = m_historyMenu->addAction(elidedText, this, [this, uri] {
-            ui->lineEditHome->setText(QString::fromStdString(uri));
-        });
-        action->setToolTip(text);
+        const auto actionCallback = [this](const QString& text) {
+            ui->lineEditHome->setText(text);
+        };
+        util::createMenu(m_historyMenu, width() / 3, getHistory(), actionCallback);
     }
 }

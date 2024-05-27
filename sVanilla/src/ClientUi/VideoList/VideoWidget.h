@@ -49,6 +49,7 @@ public:
     void setWebsiteIcon(const QString& iconPath);
     void setDownloadingNumber(int number) const;
     void setDownloadedNumber(int number) const;
+    void setHistoryFunc(const std::function<const std::list<std::string>()>&);
 
 signals:
     void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
@@ -60,13 +61,17 @@ private:
     void setUi();
     void createHistoryMenu();
     void showSearchLineEdit();
-    Q_SIGNAL void allReady() const;
-    Q_SIGNAL void coverReady(int id) const;
+    void hideSearchLineEdit();
+    void setNavigationBar();
+
+signals:
+    void allReady() const;
+    void coverReady(int id) const;
 
 private:
     Ui::VideoPage* ui;
     QMenu* m_historyMenu = nullptr;
-
+    std::function<const std::list<std::string>()> getHistory;
     unsigned long totalCoverSize = 0;
     unsigned long currentCoverSize = 0;
 };

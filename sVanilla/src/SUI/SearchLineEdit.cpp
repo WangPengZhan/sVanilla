@@ -2,6 +2,7 @@
 
 #include "SearchLineEdit.h"
 #include "ui_SearchLineEdit.h"
+#include "ClientUi/Utils/Utility.h"
 
 static constexpr int iconMargin = 30;
 
@@ -22,11 +23,6 @@ SearchLineEdit::~SearchLineEdit()
 void SearchLineEdit::setFocusOutHide()
 {
     focusOutHide = true;
-    // m_animation = new QPropertyAnimation(this, "pos");
-    // timer = new QTimer(this);
-    // timer->setInterval(3000);
-    // m_animation->setDuration(300);
-    // m_animation->setEasingCurve(QEasingCurve::Linear);
 }
 
 void SearchLineEdit::resizeEvent(QResizeEvent* event)
@@ -42,6 +38,7 @@ void SearchLineEdit::focusOutEvent(QFocusEvent* event)
 {
     if (focusOutHide)
     {
+        emit startHide();
         startHideAnimation();
     }
     QLineEdit::focusOutEvent(event);
@@ -51,12 +48,7 @@ void SearchLineEdit::showEvent(QShowEvent* event)
 {
     if (focusOutHide)
     {
-        auto* animation = new QPropertyAnimation(this, "pos");
-        animation->setDuration(300);
-        animation->setEasingCurve(QEasingCurve::Linear);
-        animation->setStartValue(geometry().topRight());
-        animation->setEndValue(geometry().topLeft());
-        animation->start(QAbstractAnimation::DeleteWhenStopped);
+        util::moveAnimate(this, {geometry().topRight(), geometry().topLeft()});
     }
     QLineEdit::showEvent(event);
 }
@@ -81,14 +73,10 @@ void SearchLineEdit::signalsAndSlots()
 
 void SearchLineEdit::startHideAnimation()
 {
-    auto* animation = new QPropertyAnimation(this, "pos");
-    animation->setDuration(300);
-    animation->setEasingCurve(QEasingCurve::Linear);
-    animation->setStartValue(geometry().topLeft());
-    animation->setEndValue(geometry().topRight());
-    connect(animation, &QPropertyAnimation::finished, [=]() {
+    util::MoveStartEndValue changeValue = {geometry().topLeft(), geometry().topRight()};
+    const auto animationFinished = [=]() {
         hide();
         emit readyHide();
-    });
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    };
+    util::moveAnimate(this, changeValue, animationFinished);
 }

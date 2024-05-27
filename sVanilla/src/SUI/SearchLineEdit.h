@@ -20,7 +20,9 @@ public:
 
     void setFocusOutHide();
 
-    Q_SIGNAL void readyHide();
+signals:
+    void readyHide();
+    void startHide();
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
@@ -36,4 +38,3 @@ private:
     Ui::SearchLineEdit* ui;
     bool focusOutHide = false;
 };
-

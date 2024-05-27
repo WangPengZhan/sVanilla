@@ -37,7 +37,7 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>25</height>
+          <height>27</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -45,6 +45,9 @@
           <width>16777215</width>
           <height>25</height>
          </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::ClickFocus</enum>
         </property>
        </widget>
       </item>
@@ -134,6 +137,34 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnFilter">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/filter.svg</normaloff>:/icon/download/filter.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSort">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/sort.svg</normaloff>:/icon/download/sort.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="::SearchLineEdit" name="lineEditSearch">

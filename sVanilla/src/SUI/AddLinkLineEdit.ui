@@ -1,89 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-  <class>AddLinkLineEdit</class>
-  <widget class="QLineEdit" name="AddLinkLineEdit">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>453</width>
-        <height>48</height>
-      </rect>
-    </property>
-    <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-      </sizepolicy>
-    </property>
-    <property name="windowTitle">
-      <string>SearchLineEdit</string>
-    </property>
-    <property name="clearButtonEnabled">
-      <bool>false</bool>
-    </property>
-    <widget class="QPushButton" name="btnClear">
-      <property name="geometry">
-        <rect>
-          <x>230</x>
-          <y>10</y>
-          <width>100</width>
-          <height>32</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string />
-      </property>
-      <property name="icon">
-        <iconset>
-          <normaloff>:/icon/home/clear.svg</normaloff>:/icon/home/clear.svg</iconset>
-      </property>
-      <property name="_vanillaStyle_Patch" stdset="0">
-        <string>AppIconButtonPatch</string>
-      </property>
-    </widget>
-    <widget class="QPushButton" name="btnSearch">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>10</y>
-          <width>100</width>
-          <height>32</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string />
-      </property>
-      <property name="icon">
-        <iconset>
-          <normaloff>:/icon/home/add.svg</normaloff>:/icon/home/add.svg</iconset>
-      </property>
-      <property name="_vanillaStyle_Patch" stdset="0">
-        <string>AppIconButtonPatch</string>
-      </property>
-    </widget>
-    <widget class="QPushButton" name="btnWebsite">
-      <property name="geometry">
-        <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>100</width>
-          <height>32</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string />
-      </property>
-      <property name="icon">
-        <iconset>
-          <normaloff>:/icon/website/default.svg</normaloff>:/icon/website/default.svg</iconset>
-      </property>
-      <property name="_vanillaStyle_Patch" stdset="0">
-        <string>AppIconButtonPatch</string>
-      </property>
-    </widget>
+ <class>AddLinkLineEdit</class>
+ <widget class="QLineEdit" name="AddLinkLineEdit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>453</width>
+    <height>48</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>SearchLineEdit</string>
+  </property>
+  <property name="clearButtonEnabled">
+   <bool>false</bool>
+  </property>
+  <widget class="QPushButton" name="btnClear">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>10</y>
+     <width>100</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/home/clear.svg</normaloff>:/icon/home/clear.svg</iconset>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
   </widget>
-  <layoutdefault spacing="6" margin="11" />
-  <resources />
-  <connections />
+  <widget class="QPushButton" name="btnMore">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>10</y>
+     <width>100</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/setting/down.svg</normaloff>:/icon/setting/down.svg</iconset>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnWebsite">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>100</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/website/default.svg</normaloff>:/icon/website/default.svg</iconset>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnSearch">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>10</y>
+     <width>100</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/home/enter.svg</normaloff>:/icon/home/enter.svg</iconset>
+   </property>
+   <property name="_vanillaStyle_Patch" stdset="0">
+    <string>AppIconButtonPatch</string>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
 </ui>
