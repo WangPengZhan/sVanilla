@@ -59,6 +59,7 @@ private:
     void signalsAndSlots();
     void setUi();
     void createHistoryMenu();
+    void showSearchLineEdit();
     Q_SIGNAL void allReady() const;
     Q_SIGNAL void coverReady(int id) const;
 

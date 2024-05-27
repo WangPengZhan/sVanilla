@@ -14,6 +14,18 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
       <item>
        <widget class="::AddLinkLineEdit" name="lineEdit">
         <property name="sizePolicy">
@@ -104,6 +116,13 @@
        <widget class="Vanilla::ToggleButton" name="btnSwitch" native="true"/>
       </item>
       <item>
+       <widget class="QLabel" name="labelPlayListTitle">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -117,13 +136,17 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="btnAddLink">
+       <widget class="::SearchLineEdit" name="lineEditSearch">
         <property name="minimumSize">
          <size>
-          <width>50</width>
-          <height>0</height>
+          <width>0</width>
+          <height>25</height>
          </size>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSearch">
         <property name="text">
          <string/>
         </property>
@@ -132,7 +155,7 @@
           <normaloff>:/icon/home/search.svg</normaloff>:/icon/home/search.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
-         <string>CustomIconColorButtonPatch</string>
+         <string>CleanButtonPatch</string>
         </property>
        </widget>
       </item>
@@ -285,6 +308,11 @@
    <extends>QWidget</extends>
    <header>ClientUi/VideoList/VideoInfoWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>::SearchLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>SUI/SearchLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources>
