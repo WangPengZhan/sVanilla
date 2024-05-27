@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
     }
 
     sVanilla.init();
+    application.init();
 
     application.pluginManager().loadPlugins();
 

@@ -11,7 +11,7 @@ project(sVanilla
     LANGUAGES CXX)
 
 set(PROJECT_COMPANY_NAME "sVanilla Studio")
-set(PROJECT_COPYRIGHT "Copyright (c) iveswang and other contributors")
+set(PROJECT_COPYRIGHT "Copyright © iveswang and other contributors")
 
 # if(CMAKE_VERSION VERSION_LESS "3.7.0")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

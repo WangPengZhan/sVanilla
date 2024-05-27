@@ -20,11 +20,12 @@ PluginsInfo::~PluginsInfo()
 
 void PluginsInfo::setUi()
 {
+    auto horHeader = ui->tableWidget->horizontalHeader();
+    horHeader->setDefaultAlignment(Qt::AlignLeft);
 }
 
 void PluginsInfo::signalsAndSlots()
 {
-    ui->tableWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 }
 
 void PluginsInfo::initPluginInfos()
