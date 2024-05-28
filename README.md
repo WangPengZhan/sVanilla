@@ -26,7 +26,7 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
 * **Easy**. A link to get what you want, whether it's a playlist or a channel.
 * **Themeable**. With VanillaStyle, you can more easily customize themes, appearance is the biggest motivation.
 * **Plugin System**. With the plug-in system, support many different websites.
-* **Cross Platform**. Support Windows, Linux, and macOS.
+* **Cross Platform**. Support Windows, Linux and macOS.
 * **Login Account**. Login your account for downloading corresponding context.
 * **Rich Settings**. Custom theme, style, configuration,download to suit your taste.
 * **Open Source**. You can get the source code to add your own features.

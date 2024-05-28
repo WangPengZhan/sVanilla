@@ -12,6 +12,8 @@ public:
     SApplication(int& argc, char** argv);
     ~SApplication();
 
+    void init();
+
     aria2net::AriaServer& ariaServer();
     plugin::PluginManager& pluginManager();
 

@@ -5,13 +5,17 @@
 SApplication::SApplication(int& argc, char** argv)
     : QApplication(argc, argv)
 {
-    m_watcher.addPath(applicationDirPath() + "/" + QString::fromStdString(plugin::PluginManager::pluginDir()));
-    startServer();
-    signalsAndSlots();
 }
 
 SApplication::~SApplication()
 {
+}
+
+void SApplication::init()
+{
+    m_watcher.addPath(applicationDirPath() + "/" + QString::fromStdString(plugin::PluginManager::pluginDir()));
+    startServer();
+    signalsAndSlots();
 }
 
 aria2net::AriaServer& SApplication::ariaServer()

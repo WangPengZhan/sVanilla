@@ -409,7 +409,7 @@ template <>
 class TableStructInfo<FinishedItem> : public BaseTableStructInfo
 {
 public:
-    ColumnInfo m_uniqueId = ColumnInfo(std::string(""), &FinishedItem::uniqueId, &m_columnInfos);
+    ColumnInfo m_uniqueId = ColumnInfo(std::string(""), &FinishedItem::uniqueId, &m_columnInfos, &m_primaryColunmInfos, false, false, false);
 
 public:
     static const TableStructInfo<FinishedItem>& self()
