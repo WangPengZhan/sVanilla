@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
+        <file>app.ico</file>
+        <file>sVanillaTitleDark.svg</file>
+        <file>sVanillaTitleLight.svg</file>
         <file>icon/common/success.svg</file>
         <file>icon/common/info.svg</file>
         <file>icon/common/warn.svg</file>

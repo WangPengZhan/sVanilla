@@ -35,6 +35,19 @@ struct DownloadConfig
     QString nameRule = "$title$-$author$";
 };
 
+struct SystemTrayConfig
+{
+    bool enable = true;
+    bool minimize = false;
+};
+
+struct StartUpConfig
+{
+    bool autoStart = false;
+    bool keepMainWindow = false;
+    bool autoRemuseUnfinishedTask = false;
+};
+
 class SingleConfig
 {
 public:
@@ -45,6 +58,21 @@ public:
 
     void setDownloadConfig(const DownloadConfig& config);
     DownloadConfig downloadConfig() const;
+
+    void setTheme(int theme);
+    int theme() const;
+
+    void setLanguage(int language);
+    int language() const;
+
+    void setSystemTrayConfig(const SystemTrayConfig& systemTrayConfig);
+    SystemTrayConfig systemTrayConfig() const;
+
+    void setStartUpConfig(const StartUpConfig& startUpConfig);
+    StartUpConfig startConfig() const;
+
+    void setDownloadThreadNum(int threadNum);
+    int downloadThreadNum() const;
 
 private:
     SingleConfig();

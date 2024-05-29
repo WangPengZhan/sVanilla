@@ -5,6 +5,7 @@
 SApplication::SApplication(int& argc, char** argv)
     : QApplication(argc, argv)
 {
+    m_translater.setLanguage(static_cast<Translater::Language>(SingleConfig::instance().language()));
 }
 
 SApplication::~SApplication()
@@ -26,6 +27,11 @@ aria2net::AriaServer& SApplication::ariaServer()
 plugin::PluginManager& SApplication::pluginManager()
 {
     return m_pluginManager;
+}
+
+Translater& SApplication::translater()
+{
+    return m_translater;
 }
 
 void SApplication::startServer()

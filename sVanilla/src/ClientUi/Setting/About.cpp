@@ -1,5 +1,6 @@
 #include "About.h"
 #include "ui_About.h"
+#include "version.h"
 
 About::About(QWidget* parent)
     : QWidget(parent)
@@ -27,6 +28,12 @@ void About::setUi()
     ui->verticalNavigationWidget->setColumnWidth(navigationWidth);
     constexpr int navigationRowHeight = 35;
     ui->verticalNavigationWidget->setRowHeight(navigationRowHeight);
+
+    ui->verticalLayoutAppInfo->setAlignment(ui->labelIcon, Qt::AlignCenter);
+    ui->labelVerContext->setText(SVNLA_VERSION_STR);
+    ui->labelGitHashContext->setText(GIT_HASH);
+    ui->labelBranchName->setText(GIT_BRANCH);
+    ui->labelBuildTimeContext->setText(SVNLA_BUILD_STR);
 }
 
 void About::signalsAndSlots()
