@@ -1,4 +1,5 @@
 #include <QPushButton>
+#include <QContextMenuEvent>
 #include <QPainter>
 #include <QMenu>
 #include <QEvent>
@@ -8,6 +9,15 @@
 
 static constexpr int iconMargin = 26;
 static constexpr int padding = 5;
+static std::unordered_map<QString, QString> contextMenuIcon{
+    {"&Undo",      ":/icon/common/undo.svg"     },
+    {"&Redo",      ":/icon/common/redo.svg"     },
+    {"Cu&t",       ":/icon/common/cut.svg"      },
+    {"&Copy",      ":/icon/common/copy.svg"     },
+    {"Delete",     ":/icon/common/delete.svg"   },
+    {"&Paste",     ":/icon/common/paste.svg"    },
+    {"Select All", ":/icon/common/selectAll.svg"}
+};
 
 AddLinkLineEdit::AddLinkLineEdit(QWidget* parent)
     : QLineEdit(parent)
@@ -65,6 +75,20 @@ bool AddLinkLineEdit::eventFilter(QObject* watched, QEvent* event)
         m_moreAction->setChecked(false);
     }
     return QLineEdit::eventFilter(watched, event);
+}
+
+void AddLinkLineEdit::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu* menu = createStandardContextMenu();
+    for (QAction* action : menu->actions())
+    {
+        if (contextMenuIcon.contains(action->text()))
+        {
+            action->setIcon(QIcon(contextMenuIcon[action->text()]));
+        }
+    }
+    menu->exec(event->globalPos());
+    delete menu;
 }
 
 void AddLinkLineEdit::setUi()

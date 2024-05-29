@@ -15,6 +15,7 @@ public:
 protected:
     void paintEvent(QPaintEvent* event) override;
     bool eventFilter(QObject* watched, QEvent* event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 signals:
     void Complete();

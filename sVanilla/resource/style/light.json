@@ -98,7 +98,7 @@
                     "textColor": "#434242",
                     "buttonForeground": "#4e5668",
                     "buttonBackground": "#00000000",
-                    "buttonHoveredForeground": "#00000000",
+                    "buttonHoveredForeground": "#434242",
                     "buttonHoveredBackground": "#00000000",
                     "buttonPressedForeground": "#C08B5C",
                     "buttonPressedBackground": "#F5EEE6",

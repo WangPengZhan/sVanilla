@@ -39,18 +39,14 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>AppIconButtonPatch</string>
         </property>
-        <property name="CustomIconColor" stdset="0">
-         <color>
-          <red>152</red>
-          <green>187</green>
-          <blue>186</blue>
-         </color>
+        <property name="UseOriginalColor" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -169,7 +165,7 @@
          <string>Learn about sVanilla </string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -208,8 +204,8 @@
          <string>Login Download Website</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/common/login.svg</normaloff>:/icon/common/login.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>ButtonWithBorderPatch</string>
@@ -272,7 +268,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -286,7 +282,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -319,6 +315,8 @@
    <header>SUI/AddLinkLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>
