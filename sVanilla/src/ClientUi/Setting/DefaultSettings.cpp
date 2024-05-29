@@ -4,6 +4,8 @@
 
 #include "DefaultSettings.h"
 #include "ui_DefaultSettings.h"
+#include "ClientUi/Config/SingleConfig.h"
+#include "ClientUi/MainWindow/SApplication.h"
 
 DefaultSettings::DefaultSettings(QWidget* parent)
     : QWidget(parent)
@@ -13,6 +15,7 @@ DefaultSettings::DefaultSettings(QWidget* parent)
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    emit updateTheme(m_themeGroup->checkedId());
 }
 
 DefaultSettings::~DefaultSettings()
@@ -51,7 +54,31 @@ void DefaultSettings::setUi()
     m_themeGroup->addButton(ui->DarkThemeButton, 1);
     m_themeGroup->addButton(ui->AutoThemeButton, 2);
 
+    auto& singleConfig = SingleConfig::instance();
+    auto theme = singleConfig.theme();
+    if (theme == 0)
+    {
+        ui->LightThemeButton->setChecked(true);
+    }
+    else if (theme == 1)
+    {
+        ui->DarkThemeButton->setChecked(true);
+    }
+    else if (theme == 2)
+    {
+        ui->AutoThemeButton->setChecked(true);
+    }
+
+    ui->comboBoxLanguge->setCurrentIndex(singleConfig.language());
     ui->checkBoxEnableTray->setCheckState(Qt::CheckState::Checked);
+    auto systemTrayConfig = singleConfig.systemTrayConfig();
+    ui->checkBoxEnableTray->setCheckState(systemTrayConfig.enable ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->checkBoxMinToTray->setCheckState(systemTrayConfig.minimize ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    auto startConfig = singleConfig.startConfig();
+    ui->checkBoxOpenStartup->setCheckState(startConfig.autoStart ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->checkBoxKeepState->setCheckState(startConfig.keepMainWindow ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->checkBoxResumeTask->setCheckState(startConfig.autoRemuseUnfinishedTask ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->spinBoxThread->setValue(singleConfig.downloadThreadNum());
 }
 
 void DefaultSettings::signalsAndSlots()
@@ -59,15 +86,48 @@ void DefaultSettings::signalsAndSlots()
     connect(m_themeGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this, [this](QAbstractButton* button) {
         const int id = m_themeGroup->id(button);
         emit updateTheme(id);
+        SingleConfig::instance().setTheme(id);
     });
 
-    connect(ui->checkBoxEnableTray, &QCheckBox::stateChanged, this, &DefaultSettings::enableTray);
+    connect(ui->comboBoxLanguge, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this](int language) {
+        sApp->translater().setLanguage(static_cast<Translater::Language>(language));
+    });
+
+    connect(ui->checkBoxEnableTray, &QCheckBox::stateChanged, this, [&](bool enable) {
+        emit DefaultSettings::enableTray(enable);
+        SystemTrayConfig systemTrayConfig = SingleConfig::instance().systemTrayConfig();
+        systemTrayConfig.enable = enable;
+        SingleConfig::instance().setSystemTrayConfig(systemTrayConfig);
+    });
 
     connect(ui->checkBoxMinToTray, &QCheckBox::stateChanged, this, [this](int state) {
-        if (state == Qt::CheckState::Checked)
-        {
-            ui->checkBoxEnableTray->setCheckState(Qt::CheckState::Checked);
-        }
+        SystemTrayConfig systemTrayConfig = SingleConfig::instance().systemTrayConfig();
+        systemTrayConfig.minimize = state;
+        SingleConfig::instance().setSystemTrayConfig(systemTrayConfig);
+    });
+
+    connect(ui->checkBoxMinToTray, &QCheckBox::stateChanged, this, [this](int state) {
+        SystemTrayConfig systemTrayConfig = SingleConfig::instance().systemTrayConfig();
+        systemTrayConfig.minimize = state;
+        SingleConfig::instance().setSystemTrayConfig(systemTrayConfig);
+    });
+
+    connect(ui->checkBoxOpenStartup, &QCheckBox::stateChanged, this, [this](int state) {
+        auto startConfig = SingleConfig::instance().startConfig();
+        startConfig.autoStart = state;
+        SingleConfig::instance().setStartUpConfig(startConfig);
+    });
+
+    connect(ui->checkBoxKeepState, &QCheckBox::stateChanged, this, [this](int state) {
+        auto startConfig = SingleConfig::instance().startConfig();
+        startConfig.keepMainWindow = state;
+        SingleConfig::instance().setStartUpConfig(startConfig);
+    });
+
+    connect(ui->checkBoxResumeTask, &QCheckBox::stateChanged, this, [this](int state) {
+        auto startConfig = SingleConfig::instance().startConfig();
+        startConfig.autoRemuseUnfinishedTask = state;
+        SingleConfig::instance().setStartUpConfig(startConfig);
     });
 }
 

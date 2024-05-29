@@ -55,6 +55,91 @@ DownloadConfig SingleConfig::downloadConfig() const
     return config;
 }
 
+void SingleConfig::setTheme(int theme)
+{
+    m_appSettings->beginGroup("AppConfig");
+    m_appSettings->setValue("Theme", theme);
+    m_appSettings->endGroup();
+}
+
+int SingleConfig::theme() const
+{
+    m_appSettings->beginGroup("AppConfig");
+    auto nTheme = m_appSettings->value("Theme").toInt();
+    m_appSettings->endGroup();
+    return nTheme;
+}
+
+void SingleConfig::setLanguage(int language)
+{
+    m_appSettings->beginGroup("AppConfig");
+    m_appSettings->setValue("Language", language);
+    m_appSettings->endGroup();
+}
+
+int SingleConfig::language() const
+{
+    m_appSettings->beginGroup("AppConfig");
+    int nLanguage = m_appSettings->value("Language").toInt();
+    m_appSettings->endGroup();
+    return nLanguage;
+}
+
+void SingleConfig::setSystemTrayConfig(const SystemTrayConfig& systemTrayConfig)
+{
+    m_appSettings->beginGroup("SystemTrayConfig");
+    m_appSettings->setValue("Enable", systemTrayConfig.enable);
+    m_appSettings->setValue("Minimize", systemTrayConfig.minimize);
+    m_appSettings->endGroup();
+}
+
+SystemTrayConfig SingleConfig::systemTrayConfig() const
+{
+    SystemTrayConfig systemTrayConfig;
+    m_appSettings->beginGroup("SystemTrayConfig");
+    systemTrayConfig.enable = m_appSettings->value("Enable").toBool();
+    systemTrayConfig.minimize = m_appSettings->value("Minimize").toBool();
+    m_appSettings->endGroup();
+
+    return systemTrayConfig;
+}
+
+void SingleConfig::setStartUpConfig(const StartUpConfig& startUpConfig)
+{
+    m_appSettings->beginGroup("StartUpConfig");
+    m_appSettings->setValue("AutoStart", startUpConfig.autoStart);
+    m_appSettings->setValue("KeepMainWindow", startUpConfig.keepMainWindow);
+    m_appSettings->setValue("AutoRemuseUnfinishedTask", startUpConfig.autoRemuseUnfinishedTask);
+    m_appSettings->endGroup();
+}
+
+StartUpConfig SingleConfig::startConfig() const
+{
+    StartUpConfig startUpConfig;
+    m_appSettings->beginGroup("StartUpConfig");
+    startUpConfig.autoStart = m_appSettings->value("AutoStart").toBool();
+    startUpConfig.keepMainWindow = m_appSettings->value("KeepMainWindow").toBool();
+    startUpConfig.autoRemuseUnfinishedTask = m_appSettings->value("AutoRemuseUnfinishedTask").toBool();
+    m_appSettings->endGroup();
+
+    return startUpConfig;
+}
+
+void SingleConfig::setDownloadThreadNum(int threadNum)
+{
+    m_appSettings->beginGroup("AppConfig");
+    m_appSettings->setValue("ThreadNum", threadNum);
+    m_appSettings->endGroup();
+}
+
+int SingleConfig::downloadThreadNum() const
+{
+    m_appSettings->beginGroup("AppConfig");
+    int nThreadNum = m_appSettings->value("ThreadNum").toInt();
+    m_appSettings->endGroup();
+    return nThreadNum;
+}
+
 SingleConfig::SingleConfig()
 {
     iniConfig();
@@ -91,6 +176,11 @@ void SingleConfig::iniConfig()
         config.isRemote = false;
 #endif
         setAriaConfig(config);
+
+        SystemTrayConfig systemTrayConfig;
+        setSystemTrayConfig(systemTrayConfig);
+        setDownloadThreadNum(1);
+        StartUpConfig setStartUpConfig(StartUpConfig());
     }
 
     const QString aria2ConfigPath = QApplication::applicationDirPath() + "/config/aria2conf.conf";
