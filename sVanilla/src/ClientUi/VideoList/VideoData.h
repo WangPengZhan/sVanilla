@@ -19,3 +19,10 @@ struct VideoInfoFull
 private:
     mutable std::string guid;
 };
+
+struct InfoPanelData
+{
+    int previousRow;
+    int currentRow;
+    const std::shared_ptr<VideoInfoFull>& info;
+};

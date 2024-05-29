@@ -62,7 +62,6 @@ void DownloadingItemWidget::setStart()
     {
         m_downloader->setStatus(download::AbstractDownloader::Resumed);
         ui->btnPause->setChecked(false);
-        ui->btnPause->setIcon(QIcon(":/icon/download/start.svg"));
     }
 }
 
@@ -72,7 +71,6 @@ void DownloadingItemWidget::setPause()
     {
         m_downloader->setStatus(download::AbstractDownloader::Paused);
         ui->btnPause->setChecked(true);
-        ui->btnPause->setIcon(QIcon(":/icon/download/start.svg"));
     }
     else if (m_downloader->status() == download::AbstractDownloader::Ready)
     {
@@ -164,7 +162,6 @@ void DownloadingItemWidget::pauseItem(bool isResume)
     {
         ui->btnPause->setChecked(!isResume);
     }
-    ui->btnPause->setIcon(QIcon(isResume ? ":/icon/download/start.svg" : ":/icon/download/pause.svg"));
 }
 
 void DownloadingItemWidget::openItemFolder()

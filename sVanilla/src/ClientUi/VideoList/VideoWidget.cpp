@@ -19,7 +19,6 @@
 #include "ClientUi/Config//SingleConfig.h"
 #include "ClientUi/Utils/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
-#include "Util/HistoryUtil.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -71,6 +70,16 @@ void VideoWidget::signalsAndSlots()
     connect(ui->lineEditSearch, &SearchLineEdit::readyHide, ui->btnSearch, &QPushButton::show);
     connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
 
+    connect(ui->videoGridWidget, &VideoGridWidget::infoBtnClick, this, [this](const InfoPanelData& data) {
+        showInfo(ui->videoGridInfoWidget, ui->videoGrid, data.currentRow, data.previousRow);
+        if (ui->videoGridInfoWidget->isVisible())
+        {
+            ui->videoGridInfoWidget->updateUi(data.info);
+        }
+    });
+
+    connect(ui->videoGridInfoWidget, &VideoInfoWidget::fileNameEditingFinished, ui->videoGridWidget, &VideoGridWidget::updateFileName);
+
     connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
     connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
 
@@ -86,7 +95,6 @@ void VideoWidget::setUi()
     ui->lineEditSearch->setFocusOutHide();
 
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
-    ui->videoGridWidget->setInfoPanelSignalPointer(ui->videoGridInfoWidget, ui->videoGrid);
 }
 
 void VideoWidget::createHistoryMenu()
@@ -223,7 +231,7 @@ void VideoWidget::prepareDownloadTaskList()
     for (const auto& item : ui->videoGridWidget->selectedItems())
     {
         auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
-        auto* widget = dynamic_cast<VideoGridItemWidget*>(itemWidget);
+        auto* widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
         prepareDownloadTask(widget->getVideoInfo());
     }
 }

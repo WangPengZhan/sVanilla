@@ -7,6 +7,7 @@
 
 #include "Adapter/BaseVideoView.h"
 
+struct InfoPanelData;
 class VideoGridWidget;
 class Spiner;
 constexpr int itemBaseWidth = 240;
@@ -30,7 +31,7 @@ public:
     explicit VideoGridItemWidget(QWidget* parent = nullptr);
     ~VideoGridItemWidget();
 
-    void setGridWidget(VideoGridWidget* gridWidget, QListWidgetItem* widgetItem);
+    void saveWidgetItem(QListWidgetItem* widgetItem);
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
     std::shared_ptr<VideoInfoFull> getVideoInfo();
     void setCover();
@@ -39,9 +40,11 @@ public:
 
     void updateInfoFileName(const QString& fileName);
 
-    void downloadItem() const;
-
     [[nodiscard]] QSize sizeHint() const override;
+
+signals:
+    void downloadTrigger();
+    void showInfoTigger();
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
@@ -51,14 +54,12 @@ private:
     void setUi();
     void signalsAndSlots();
 
-    void showInfoPanel() const;
     void createContextMenu();
 
 private:
-    std::shared_ptr<VideoInfoFull> m_infoFull;
-    VideoGridWidget* m_gridWidget = nullptr;
-    QListWidgetItem* m_listWidgetItem = nullptr;
     Ui::VideoGridItemWidget* ui;
+    std::shared_ptr<VideoInfoFull> m_infoFull;
+    QListWidgetItem* m_listWidgetItem = nullptr;
     QMenu* m_menu = nullptr;
 };
 
@@ -71,26 +72,31 @@ public:
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView);
     void clearVideo();
 
-    void setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter);
-    void showInfoPanel(int index);
-    void updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const;
     void coverReady(int id) const;
+    void updateFileName(const QString& fileName);
 
-    Q_SIGNAL void downloandBtnClick(const std::shared_ptr<VideoInfoFull>& infoFull);
+signals:
+    void downloandBtnClick(const std::shared_ptr<VideoInfoFull>&);
+    void infoBtnClick(const InfoPanelData&);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private:
     void setUi();
+    void setItemShortCuts();
+
     void adjustItemSize() const;
     void setItemSize(const QSize& size) const;
-    void downloadAllItem() const;
-    void downloadSelectedItem() const;
-    void downloadItem(QListWidgetItem* item) const;
+
+    void downloadAllItem();
+    void downloadSelectedItem();
+    void downloadItem(QListWidgetItem* item);
+    void showInfo(QListWidgetItem* widget);
+
+    VideoGridItemWidget* getItem(QListWidgetItem* item) const;
+    [[nodiscard]] VideoGridItemWidget* getItem(int index) const;
 
 private:
-    QSplitter* m_splitter = nullptr;
-    VideoInfoWidget* m_infoWidget = nullptr;
     int previousRow = -1;
 };

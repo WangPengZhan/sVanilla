@@ -13,13 +13,13 @@
         "labelBackground": "#00FFFFFF",
         "labelForeground": "#00FFFFFF",
         "labelBorderColor": "#00FFFFFF",
-        "buttonForeground": "#C08B5C",
-        "buttonBackground": "#DAC0A3",
+        "buttonForeground": "#4e5668",
+        "buttonBackground": "#F8F6F4",
         "buttonHoveredForeground": "#C08C64",
         "buttonHoveredBackground": "#F8F0E5",
         "buttonPressedForeground": "#C08B5C",
         "buttonPressedBackground": "#F5EEE6",
-        "buttonBorderColor": "#00000000",
+        "buttonBorderColor": "#4e5668",
         "checkBoxBackground": "#00000000",
         "checkBoxForeground": "#A4907C",
         "checkBoxCheckedForeground": "#F5EEE6",
@@ -43,8 +43,9 @@
         "lineEditBackground": "#F1EFEF",
         "iconLabelText": "#50727B",
         "scrollBarSliderColor": "#87a0be",
-        "menuBackground": "#E6FEFAF6",
+        "menuBackground": "#E6FFFFFF",
         "menuSeparatorColor": "#CCDAC0A3",
+        "menuShortCutsBackground": "#CCDDE6ED",
         "comboBoxDropDownBackground": "#CCd9dee8"
     },
     "size": {
@@ -60,6 +61,7 @@
         "normalRadius": 4,
         "buttonRadius": 4,
         "menuItemRadius": 4,
+        "menuBorder": 0,
         "itemViewRadius": 8
     },
     "icons": {
@@ -79,7 +81,7 @@
                     "textColor": "#B4B4B8",
                     "buttonForeground": "#31363F",
                     "buttonBackground": "#00000000",
-                    "buttonHoveredForeground": "#00000000",
+                    "buttonHoveredForeground": "#31363F",
                     "buttonHoveredBackground": "#F8F0E5",
                     "buttonPressedForeground": "#C08B5C",
                     "buttonPressedBackground": "#F5EEE6",
@@ -107,6 +109,22 @@
         {
             "enable": true,
             "widgetType": "QPushButton",
+            "propertyValue": "OnlyIconButtonPatch",
+            "configPatch": {
+                "color": {
+                    "buttonForeground": "#31363F",
+                    "buttonBackground": "#00000000",
+                    "buttonHoveredForeground": "#454c5c",
+                    "buttonHoveredBackground": "#00000000",
+                    "buttonPressedForeground": "#454c5c",
+                    "buttonPressedBackground": "#00000000",
+                    "buttonBorderColor": "#00000000"
+                }
+            }
+        },
+        {
+            "enable": true,
+            "widgetType": "QPushButton",
             "propertyValue": "AppIconButtonPatch",
             "configPatch": {
                 "color": {
@@ -117,7 +135,8 @@
                     "buttonPressedForeground": "#00000000",
                     "buttonPressedBackground": "#00000000",
                     "buttonBorderColor": "#00000000"
-                }
+                },
+                "iconsColorizeMode": false
             }
         },
         {
@@ -139,46 +158,13 @@
         },
         {
             "enable": true,
-            "widgetType": "QPushButton",
-            "propertyValue": "BlueBackgroundButtonPatch",
-            "configPatch": {
-                "color": {
-                    "indicatorColor": "#C7C8CC",
-                    "textColor": "#B4B4B8",
-                    "buttonForeground": "#C08B5C",
-                    "buttonBackground": "#5AB2FF",
-                    "buttonHoveredForeground": "#C08B5C",
-                    "buttonHoveredBackground": "#5AB2FF",
-                    "buttonPressedForeground": "#C08B5C",
-                    "buttonPressedBackground": "#F5EEE6",
-                    "buttonBorderColor": "#00000000"
-                },
-                "size": {
-                    "buttonRadius": 10
-                }
-            }
-        },
-        {
-            "enable": true,
-            "widgetType": "AddLinkLineEdit",
-            "propertyValue": "CustomLineEditPatch",
-            "configPatch": {
-                "color": {
-                    "lineEditFocusOutline": "#00000000",
-                    "lineEditOutline": "#00000000",
-                    "lineEditFocusBackground": "#00000000",
-                    "lineEditBackground": "#00000000"
-                }
-            }
-        },
-        {
-            "enable": true,
             "widgetType": "VideoGridWidget",
             "propertyValue": "WhiteBackgroundListWidgetPatch",
             "configPatch": {
                 "color": {
                     "itemViewEvenRowColor": "#FFFFFF",
-                    "itemViewOddRowColor": "#FFFFFF"
+                    "itemViewOddRowColor": "#FFFFFF",
+                    "itemViewSelectedColor": "#87a0be"
                 }
             }
         },

@@ -1,28 +1,24 @@
 #include <QPushButton>
 #include <QPainter>
+#include <QMenu>
+#include <QEvent>
+#include <QTimer>
 
-#include "ui_AddLinkLineEdit.h"
 #include "AddLinkLineEdit.h"
 
-static constexpr int iconMargin = 30;
+static constexpr int iconMargin = 26;
 static constexpr int padding = 5;
 
 AddLinkLineEdit::AddLinkLineEdit(QWidget* parent)
     : QLineEdit(parent)
-    , ui(new Ui::AddLinkLineEdit())
+    , m_moreMenu(new QMenu(this))
 {
-    ui->setupUi(this);
     setUi();
-
     signalsAndSlots();
-
     SetEditFinishedSearch(true);
 }
 
-AddLinkLineEdit::~AddLinkLineEdit()
-{
-    delete ui;
-}
+AddLinkLineEdit::~AddLinkLineEdit() = default;
 
 void AddLinkLineEdit::SetEditFinishedSearch(bool enabled)
 {
@@ -39,19 +35,7 @@ void AddLinkLineEdit::SetEditFinishedSearch(bool enabled)
 
 void AddLinkLineEdit::setWebsiteIcon(const QString& iconPath) const
 {
-    ui->btnWebsite->setIcon(QIcon(iconPath));
-}
-
-void AddLinkLineEdit::resizeEvent(QResizeEvent* event)
-{
-    const auto iconSize = QSize(height(), height());
-    resizeIcons(iconSize);
-    ui->btnWebsite->move(0, 0);
-    ui->btnClear->move(width() - 3 * iconMargin - padding, 0);
-    ui->btnSearch->move(width() - 2 * iconMargin - padding, 0);
-    ui->btnMore->move(width() - iconMargin, 0);
-
-    QLineEdit::resizeEvent(event);
+    m_webSiteAction->setIcon(QIcon(iconPath));
 }
 
 void AddLinkLineEdit::paintEvent(QPaintEvent* event)
@@ -65,33 +49,80 @@ void AddLinkLineEdit::paintEvent(QPaintEvent* event)
     painter.drawLine(dividingX, rect().top() + padding + 1, dividingX, rect().bottom() - padding);
 }
 
+bool AddLinkLineEdit::eventFilter(QObject* watched, QEvent* event)
+{
+    if (watched == m_moreMenu && event->type() == QEvent::MouseButtonRelease)
+    {
+        auto action = qobject_cast<QMenu*>(watched)->activeAction();
+        if (action && action->isCheckable())
+        {
+            action->trigger();
+            return true;
+        }
+    }
+    if (watched == m_moreMenu && event->type() == QEvent::Hide)
+    {
+        m_moreAction->setChecked(false);
+    }
+    return QLineEdit::eventFilter(watched, event);
+}
+
 void AddLinkLineEdit::setUi()
 {
-    setTextMargins(iconMargin - 5, 0, 2 * iconMargin, 0);
-    ui->btnClear->setVisible(false);
-    connect(ui->btnMore, &QPushButton::clicked, this, [this]() {
-        const auto upIcon = QIcon(QString(":/icon/setting/up.svg"));
-        const auto downIcon = QIcon(QString(":/icon/setting/down.svg"));
-        ui->btnMore->setIcon(ui->btnMore->isChecked() ? upIcon : downIcon);
-    });
+    m_webSiteAction = addAction(QIcon(":icon/website/default.svg"), LeadingPosition);
+    QIcon moreIcon;
+    moreIcon.addFile(QString::fromUtf8(":/icon/setting/down.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    moreIcon.addFile(QString::fromUtf8(":/icon/setting/up.svg"), QSize(), QIcon::Normal, QIcon::On);
+    m_moreAction = addAction(moreIcon, TrailingPosition);
+    m_moreAction->setCheckable(true);
+    m_enterAction = addAction(QIcon(":icon/home/enter.svg"), TrailingPosition);
+    m_clearAction = addAction(QIcon(":icon/home/clear.svg"), TrailingPosition);
+
+    m_clearAction->setVisible(false);
+    m_moreAction->setCheckable(true);
+    m_moreAction->setChecked(false);
+    createMoreMenu();
+    m_moreMenu->installEventFilter(this);
 }
 
 void AddLinkLineEdit::signalsAndSlots()
 {
-    connect(ui->btnSearch, &QPushButton::clicked, this, &AddLinkLineEdit::Complete);
+    connect(m_enterAction, &QAction::triggered, this, &AddLinkLineEdit::Complete);
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
-        ui->btnClear->setVisible(!text.isEmpty());
+        m_clearAction->setVisible(!text.isEmpty());
     });
-    connect(ui->btnClear, &QPushButton::clicked, this, [this] {
+    connect(m_clearAction, &QAction::triggered, this, [this] {
         this->clear();
-        ui->btnClear->setVisible(false);
+        m_clearAction->setVisible(false);
     });
+    connect(m_moreAction, &QAction::toggled, this, &AddLinkLineEdit::btnMoreClick);
 }
 
-void AddLinkLineEdit::resizeIcons(const QSize& size)
+void AddLinkLineEdit::btnMoreClick(bool checked)
 {
-    ui->btnWebsite->resize(size);
-    ui->btnClear->resize(size);
-    ui->btnSearch->resize(size);
-    ui->btnMore->resize(size);
+    if (checked)
+    {
+        const auto menuX = width() - m_moreMenu->sizeHint().width();
+        const QPoint pos = mapToGlobal(QPoint(menuX, height()));
+        m_moreMenu->exec(pos);
+    }
+    else
+    {
+        m_moreMenu->hide();
+    }
+}
+
+void AddLinkLineEdit::createMoreMenu()
+{
+    auto* const doNotParse = new QAction("Don't Parse Playlist\t⌘ P", this);
+    doNotParse->setCheckable(true);
+    m_moreMenu->addAction(doNotParse);
+
+    auto* const advancedDownload = new QAction("Advanced Download\t⌘ V", this);
+    m_moreMenu->addAction(advancedDownload);
+}
+
+void AddLinkLineEdit::setMoreBtnIcon(bool checked)
+{
+    m_moreAction->setIcon(QIcon(checked ? ":/icon/setting/up.svg" : ":/icon/setting/down.svg"));
 }

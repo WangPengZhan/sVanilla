@@ -1,11 +1,6 @@
 #pragma once
 #include <QLineEdit>
 
-namespace Ui
-{
-class AddLinkLineEdit;
-};
-
 class AddLinkLineEdit : public QLineEdit
 {
     Q_OBJECT
@@ -18,8 +13,8 @@ public:
     void setWebsiteIcon(const QString& iconPath) const;
 
 protected:
-    void resizeEvent(QResizeEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 signals:
     void Complete();
@@ -27,8 +22,14 @@ signals:
 private:
     void setUi();
     void signalsAndSlots();
-    void resizeIcons(const QSize& size);
+    void btnMoreClick(bool checked);
+    void createMoreMenu();
+    void setMoreBtnIcon(bool checked);
 
 private:
-    Ui::AddLinkLineEdit* ui;
+    QMenu* m_moreMenu;
+    QAction* m_webSiteAction{nullptr};
+    QAction* m_clearAction{nullptr};
+    QAction* m_enterAction{nullptr};
+    QAction* m_moreAction{nullptr};
 };

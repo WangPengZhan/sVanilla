@@ -74,7 +74,7 @@ void SearchLineEdit::signalsAndSlots()
 void SearchLineEdit::startHideAnimation()
 {
     util::MoveStartEndValue changeValue = {geometry().topLeft(), geometry().topRight()};
-    const auto animationFinished = [=]() {
+    const auto animationFinished = [this]() {
         hide();
         emit readyHide();
     };
