@@ -4,6 +4,14 @@
         <file>icon/common/info.svg</file>
         <file>icon/common/warn.svg</file>
         <file>icon/common/error.svg</file>
+        <file>icon/common/copy.svg</file>
+        <file>icon/common/cut.svg</file>
+        <file>icon/common/delete.svg</file>
+        <file>icon/common/paste.svg</file>
+        <file>icon/common/redo.svg</file>
+        <file>icon/common/selectAll.svg</file>
+        <file>icon/common/undo.svg</file>
+        <file>icon/common/login.svg</file>
         <file>icon/bar/minimize.svg</file>
         <file>icon/bar/maximize.svg</file>
         <file>icon/bar/close.svg</file>

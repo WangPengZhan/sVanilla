@@ -30,7 +30,7 @@
      <normaloff>:/icon/home/search.svg</normaloff>:/icon/home/search.svg</iconset>
    </property>
    <property name="_vanillaStyle_Patch" stdset="0">
-    <string>AppIconButtonPatch</string>
+    <string>OnlyIconButtonPatch</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnClear">
@@ -50,7 +50,7 @@
      <normaloff>:/icon/home/clear.svg</normaloff>:/icon/home/clear.svg</iconset>
    </property>
    <property name="_vanillaStyle_Patch" stdset="0">
-    <string>AppIconButtonPatch</string>
+    <string>OnlyIconButtonPatch</string>
    </property>
   </widget>
  </widget>

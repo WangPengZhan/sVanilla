@@ -11,7 +11,6 @@
 #include "BiliApi/BilibiliUrl.h"
 #include "ClientUi/Utils/Utility.h"
 #include "Plugin/PluginManager.h"
-#include "Util/HistoryUtil.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 
@@ -100,7 +99,6 @@ void HomePage::setUi()
 {
     constexpr int iconSize = 40;
     ui->btnIcon->setIconSize({iconSize, iconSize});
-
     constexpr int homeLineEditHeight = 30;
     ui->lineEditHome->setFixedHeight(homeLineEditHeight);
 }

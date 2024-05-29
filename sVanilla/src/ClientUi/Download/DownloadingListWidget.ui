@@ -90,7 +90,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/download/delete.svg</normaloff>:/icon/download/delete.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -176,8 +176,9 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/download/pause.svg</normaloff>:/icon/download/pause.svg</iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/download/pause.svg</normaloff>
+          <normalon>:/icon/download/start.svg</normalon>:/icon/download/pause.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -193,7 +194,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/download/folder.svg</normaloff>:/icon/download/folder.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -213,7 +214,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/download/details.svg</normaloff>:/icon/download/details.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -227,6 +228,8 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

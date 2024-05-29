@@ -2,6 +2,7 @@
 #include <memory>
 
 #include <QStackedWidget>
+#include <QSplitter>
 
 #include "Adapter/BaseVideoView.h"
 
@@ -57,12 +58,15 @@ signals:
     void parseUri(const std::string& uri);
 
 private:
-    void signalsAndSlots();
     void setUi();
+    void signalsAndSlots();
     void createHistoryMenu();
     void showSearchLineEdit();
     void hideSearchLineEdit();
     void setNavigationBar();
+
+    template <typename Widget>
+    void showInfo(Widget* widget, QSplitter* splitter, int currentRow, int previousRow);
 
 signals:
     void allReady() const;
@@ -72,6 +76,25 @@ private:
     Ui::VideoPage* ui;
     QMenu* m_historyMenu = nullptr;
     std::function<const std::list<std::string>()> getHistory;
-    unsigned long totalCoverSize = 0;
-    unsigned long currentCoverSize = 0;
 };
+
+template <typename Widget>
+void VideoWidget::showInfo(Widget* widget, QSplitter* splitter, int currentRow, int previousRow)
+{
+    const auto setSizes = [this, widget, splitter](const bool isVisible) {
+        const QList<int> sizes{splitter->height(), isVisible ? widget->height() : 0};
+        splitter->setSizes(sizes);
+    };
+
+    if (widget->isVisible() && previousRow == currentRow)
+    {
+        widget->hide();
+        setSizes(false);
+    }
+    else
+    {
+        widget->setVisible(true);
+        widget->adjustSize();
+        setSizes(true);
+    }
+}

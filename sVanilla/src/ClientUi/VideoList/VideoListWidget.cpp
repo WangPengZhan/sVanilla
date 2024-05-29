@@ -153,7 +153,15 @@ void VideoListWidget::downloadSelectedItem() const
 
 void VideoListWidget::downloadItem(QListWidgetItem* item) const
 {
+    if (item == nullptr)
+    {
+        return;
+    }
     auto* const widgetItem = itemWidget(item);
-    const auto* listWidget = dynamic_cast<VideoListItemWidget*>(widgetItem);
+    const auto* listWidget = qobject_cast<VideoListItemWidget*>(widgetItem);
+    if (listWidget == nullptr)
+    {
+        return;
+    }
     listWidget->downloadItem();
 }

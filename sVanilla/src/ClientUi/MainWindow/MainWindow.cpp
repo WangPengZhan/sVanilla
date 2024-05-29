@@ -207,6 +207,15 @@ void MainWindow::createTrayIcon()
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     trayIconMenu->addAction(quitAction);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    restoreAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
+    minimizeAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_M));
+    quitAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+#else
+    restoreAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    minimizeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
+    quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+#endif
     systemTray->setContextMenu(trayIconMenu);
 
     setTrayIconVisible(ui->settingPage->getTrayState());

@@ -61,7 +61,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -95,8 +95,9 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/setting/down.svg</normaloff>:/icon/setting/down.svg</iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/setting/down.svg</normaloff>
+          <normalon>:/icon/setting/up.svg</normalon>:/icon/setting/down.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -116,8 +117,8 @@
     <widget class="QLabel" name="labelGithub">
      <property name="text">
       <string>
-                            &lt;a
-                            href=&quot;https://github.com/qt&quot;&gt;https://github.com/qt&lt;/a&gt;</string>
+              &lt;a
+              href=&quot;https://github.com/qt&quot;&gt;https://github.com/qt&lt;/a&gt;</string>
      </property>
      <property name="openExternalLinks">
       <bool>true</bool>
@@ -134,6 +135,8 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

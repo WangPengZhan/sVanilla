@@ -13,6 +13,7 @@ public:
 
     explicit UriProcess(QObject* parent = nullptr);
 
+    static bool isUri(const std::string& uri);
     void parseUri(const std::string& uri);
     void updateWebsiteIcon(const std::string& uri);
     std::string checkUriType(const std::string& uri);

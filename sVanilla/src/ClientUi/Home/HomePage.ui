@@ -23,7 +23,7 @@
       <item>
        <spacer name="horizontalSpacer_5">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -39,25 +39,21 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>AppIconButtonPatch</string>
         </property>
-        <property name="CustomIconColor" stdset="0">
-         <color>
-          <red>152</red>
-          <green>187</green>
-          <blue>186</blue>
-         </color>
+        <property name="UseOriginalColor" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_6">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -104,7 +100,7 @@
       <string>Download What You Want</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -114,7 +110,7 @@
       <string>&quot;www.bilibili.com&quot;</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -124,7 +120,7 @@
       <string>&quot;www.youtube.com&quot;</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -134,7 +130,7 @@
       <string>...</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -144,7 +140,7 @@
       <item>
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -163,13 +159,13 @@
          </sizepolicy>
         </property>
         <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
+         <enum>Qt::LayoutDirection::LeftToRight</enum>
         </property>
         <property name="text">
          <string>Learn about sVanilla </string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -202,14 +198,14 @@
          </sizepolicy>
         </property>
         <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
+         <enum>Qt::LayoutDirection::LeftToRight</enum>
         </property>
         <property name="text">
          <string>Login Download Website</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
+          <normaloff>:/icon/common/login.svg</normaloff>:/icon/common/login.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>ButtonWithBorderPatch</string>
@@ -219,7 +215,7 @@
       <item>
        <spacer name="horizontalSpacer_4">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -235,7 +231,7 @@
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -272,7 +268,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -286,7 +282,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../../resource/sVanilla.qrc">
           <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
@@ -297,7 +293,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -319,6 +315,8 @@
    <header>SUI/AddLinkLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

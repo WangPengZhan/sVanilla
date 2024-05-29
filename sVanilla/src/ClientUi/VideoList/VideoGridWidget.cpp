@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QMenu>
+#include <QShortcut>
 #include <QContextMenuEvent>
 
 #include "VideoGridWidget.h"
@@ -43,9 +44,8 @@ VideoGridItemWidget::~VideoGridItemWidget()
     delete ui;
 }
 
-void VideoGridItemWidget::setGridWidget(VideoGridWidget* gridWidget, QListWidgetItem* widgetItem)
+void VideoGridItemWidget::saveWidgetItem(QListWidgetItem* widgetItem)
 {
-    m_gridWidget = gridWidget;
     m_listWidgetItem = widgetItem;
 }
 
@@ -68,36 +68,29 @@ void VideoGridItemWidget::setUi()
 
 void VideoGridItemWidget::signalsAndSlots()
 {
-    connect(ui->btnInfo, &QPushButton::clicked, this, &VideoGridItemWidget::showInfoPanel);
-    connect(ui->btnDownload, &QPushButton::clicked, this, &VideoGridItemWidget::downloadItem);
-}
-
-void VideoGridItemWidget::showInfoPanel() const
-{
-    if (m_gridWidget == nullptr)
-    {
-        return;
-    }
-
-    m_gridWidget->showInfoPanel(m_gridWidget->row(m_listWidgetItem));
-    m_gridWidget->updateInfoPanel(m_infoFull);
+    connect(ui->btnInfo, &QPushButton::clicked, this, &VideoGridItemWidget::showInfoTigger);
+    connect(ui->btnDownload, &QPushButton::clicked, this, &VideoGridItemWidget::downloadTrigger);
 }
 
 void VideoGridItemWidget::createContextMenu()
 {
-    auto* downloadAction = new QAction("Download", this);
-    m_menu->addAction(downloadAction);
-    connect(downloadAction, &QAction::triggered, this, &VideoGridItemWidget::downloadItem);
-    auto* infoAction = new QAction("Show Infomation", this);
-    m_menu->addAction(infoAction);
-    connect(infoAction, &QAction::triggered, this, &VideoGridItemWidget::showInfoPanel);
+#ifdef _WIN32
+    auto* downloadAction = new QAction(QIcon(":icon/video/download.svg"), "Download\tCTRL D", this);
+    auto* infoAction = new QAction(QIcon(":icon/video/detail.svg"), "Show Infomation\tCTRL I", this);
     auto* similarAction = new QAction("Find Similar", this);
-    m_menu->addAction(similarAction);
-}
+#else
+    auto* downloadAction = new QAction(QIcon(":icon/video/download.svg"), "Download\t⌘ D", this);
+    auto* infoAction = new QAction(QIcon(":icon/video/detail.svg"), "Show Infomation\t⌘ I", this);
+    auto* similarAction = new QAction("Find Similar", this);
+#endif
 
-void VideoGridItemWidget::downloadItem() const
-{
-    emit m_gridWidget->downloandBtnClick(m_infoFull);
+    connect(downloadAction, &QAction::triggered, this, &VideoGridItemWidget::downloadTrigger);
+    m_menu->addAction(downloadAction);
+
+    m_menu->addAction(infoAction);
+    connect(infoAction, &QAction::triggered, this, &VideoGridItemWidget::showInfoTigger);
+
+    m_menu->addAction(similarAction);
 }
 
 void VideoGridItemWidget::setCover()
@@ -171,10 +164,28 @@ void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoVi
 {
     auto* const videoItem = new VideoGridItemWidget(this);
     auto* const item = new QListWidgetItem(this);
-    videoItem->setGridWidget(this, item);
+    videoItem->saveWidgetItem(item);
     item->setSizeHint(videoItem->sizeHint());
     setItemWidget(item, videoItem);
     videoItem->setVideoInfo(videoView);
+    connect(videoItem, &VideoGridItemWidget::downloadTrigger, this, [this, item]() {
+        downloadItem(item);
+    });
+    connect(videoItem, &VideoGridItemWidget::showInfoTigger, this, [this, item]() {
+        showInfo(item);
+    });
+}
+
+void VideoGridWidget::clearVideo()
+{
+    clear();
+    update();
+}
+
+void VideoGridWidget::coverReady(const int id) const
+{
+    auto* const itemWidget = getItem(id);
+    itemWidget->updateCover();
 }
 
 void VideoGridWidget::resizeEvent(QResizeEvent* event)
@@ -190,27 +201,27 @@ void VideoGridWidget::setUi()
     setSelectionMode(ExtendedSelection);
     constexpr int scrollStep = 5;
     verticalScrollBar()->setSingleStep(scrollStep);
+    setItemShortCuts();
 }
 
-void VideoGridWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter)
+void VideoGridWidget::setItemShortCuts()
 {
-    m_infoWidget = infoWidget;
-    m_splitter = splitter;
-    connect(m_infoWidget, &VideoInfoWidget::fileNameEditingFinished, this, [this](const QString& fileName) {
-        auto* gridWidget = itemWidget(item(previousRow));
-        auto* videoItem = dynamic_cast<VideoGridItemWidget*>(gridWidget);
-        videoItem->updateInfoFileName(fileName);
+    auto* const downloadShortcut = new QShortcut(this);
+    connect(downloadShortcut, &QShortcut::activated, this, [this]() {
+        downloadItem(currentItem());
     });
-}
+    auto* const infoShortcut = new QShortcut(this);
+    connect(infoShortcut, &QShortcut::activated, this, [this]() {
+        showInfo(currentItem());
+    });
 
-void VideoGridWidget::showInfoPanel(int index)
-{
-    setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
-}
-
-void VideoGridWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const
-{
-    m_infoWidget->updateUi(infoFull);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    downloadShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_D));
+    infoShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_I));
+#else
+    downloadShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_D));
+    infoShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_I));
+#endif
 }
 
 void VideoGridWidget::adjustItemSize() const
@@ -230,7 +241,7 @@ void VideoGridWidget::setItemSize(const QSize& size) const
     }
 }
 
-void VideoGridWidget::downloadAllItem() const
+void VideoGridWidget::downloadAllItem()
 {
     for (int i = 0; i < count(); ++i)
     {
@@ -238,7 +249,7 @@ void VideoGridWidget::downloadAllItem() const
     }
 }
 
-void VideoGridWidget::downloadSelectedItem() const
+void VideoGridWidget::downloadSelectedItem()
 {
     for (const auto& item : selectedItems())
     {
@@ -246,22 +257,50 @@ void VideoGridWidget::downloadSelectedItem() const
     }
 }
 
-void VideoGridWidget::downloadItem(QListWidgetItem* item) const
+void VideoGridWidget::downloadItem(QListWidgetItem* item)
 {
+    const auto gridWidget = getItem(item);
+    if (gridWidget == nullptr)
+    {
+        return;
+    }
+    emit downloandBtnClick(gridWidget->getVideoInfo());
+}
+
+void VideoGridWidget::showInfo(QListWidgetItem* item)
+{
+    const auto gridWidget = getItem(item);
+    if (gridWidget == nullptr)
+    {
+        return;
+    }
+    const auto index = row(item);
+    emit infoBtnClick({previousRow, index, gridWidget->getVideoInfo()});
+    previousRow = index;
+}
+
+void VideoGridWidget::updateFileName(const QString& fileName)
+{
+    const auto gridWidget = getItem(previousRow);
+    if (gridWidget == nullptr)
+    {
+        return;
+    }
+    gridWidget->updateInfoFileName(fileName);
+}
+
+VideoGridItemWidget* VideoGridWidget::getItem(QListWidgetItem* item) const
+{
+    if (item == nullptr)
+    {
+        return nullptr;
+    }
     auto* const widgetItem = itemWidget(item);
-    const auto* gridWidget = dynamic_cast<VideoGridItemWidget*>(widgetItem);
-    gridWidget->downloadItem();
+    return qobject_cast<VideoGridItemWidget*>(widgetItem);
 }
 
-void VideoGridWidget::clearVideo()
+VideoGridItemWidget* VideoGridWidget::getItem(const int index) const
 {
-    clear();
-    update();
+    return getItem(item(index));
 }
 
-void VideoGridWidget::coverReady(const int id) const
-{
-    auto* const widget = itemWidget(item(id));
-    auto* const itemWidget = qobject_cast<VideoGridItemWidget*>(widget);
-    itemWidget->updateCover();
-}
