@@ -72,15 +72,23 @@ void VideoGridItemWidget::signalsAndSlots()
     connect(ui->btnDownload, &QPushButton::clicked, this, &VideoGridItemWidget::downloadTrigger);
 }
 
+void VideoGridItemWidget::updateCard()
+{
+    elideText(ui->labelTitle, m_cardInfo.title);
+    ui->labelDuration->setText(m_cardInfo.duration);
+    elideText(ui->labelAuthor, m_cardInfo.author);
+    elideText(ui->labelPublishDate, m_cardInfo.publishDate);
+}
+
 void VideoGridItemWidget::createContextMenu()
 {
 #ifdef _WIN32
-    auto* downloadAction = new QAction(QIcon(":icon/video/download.svg"), "Download\tCTRL D", this);
-    auto* infoAction = new QAction(QIcon(":icon/video/detail.svg"), "Show Infomation\tCTRL I", this);
+    auto* downloadAction = new QAction(QIcon(":icon/download.svg"), "Download\tCTRL D", this);
+    auto* infoAction = new QAction(QIcon(":icon/detail.svg"), "Show Infomation\tCTRL I", this);
     auto* similarAction = new QAction("Find Similar", this);
 #else
-    auto* downloadAction = new QAction(QIcon(":icon/video/download.svg"), "Download\t⌘ D", this);
-    auto* infoAction = new QAction(QIcon(":icon/video/detail.svg"), "Show Infomation\t⌘ I", this);
+    auto* downloadAction = new QAction(QIcon(":icon/download.svg"), "Download\t⌘ D", this);
+    auto* infoAction = new QAction(QIcon(":icon/detail.svg"), "Show Infomation\t⌘ I", this);
     auto* similarAction = new QAction("Find Similar", this);
 #endif
 
@@ -107,25 +115,32 @@ void VideoGridItemWidget::setCover()
 
 void VideoGridItemWidget::updateVideoCard()
 {
-    elideText(ui->labelTitle, QString::fromStdString(m_infoFull->videoView->Title));
-    ui->labelDuration->setText(QString::fromStdString(m_infoFull->videoView->Duration));
-    elideText(ui->labelAuthor, QString::fromStdString(m_infoFull->videoView->Publisher));
-    elideText(ui->labelPublishDate, QString::fromStdString(m_infoFull->videoView->PublishDate));
+    const auto& view = m_infoFull->videoView;
+    m_cardInfo = {QString::fromStdString(view->Title), QString::fromStdString(view->Duration), QString::fromStdString(view->Publisher),
+                  QString::fromStdString(view->PublishDate)};
+
+    updateCard();
 }
 
 void VideoGridItemWidget::updateCover()
 {
     setCover();
-    if (ui->spinner != nullptr && ui->spinner->isVisible())
+    if (ui->spinner != nullptr)
     {
-        ui->spinner->hide();
+        ui->spinner->setVisible(false);
         ui->spinner->deleteLater();
+        ui->spinner = nullptr;
     }
 }
 
 void VideoGridItemWidget::updateInfoFileName(const QString& fileName)
 {
     m_infoFull->fileName = fileName.toStdString();
+}
+
+const VideoGridItemWidget::CardInfo& VideoGridItemWidget::getCardInfo() const
+{
+    return m_cardInfo;
 }
 
 QSize VideoGridItemWidget::sizeHint() const
@@ -138,9 +153,10 @@ void VideoGridItemWidget::resizeEvent(QResizeEvent* event)
     QWidget::resizeEvent(event);
     if (m_infoFull != nullptr)
     {
-        elideText(ui->labelTitle, QString::fromStdString(m_infoFull->videoView->Title));
-        elideText(ui->labelAuthor, QString::fromStdString(m_infoFull->videoView->Publisher));
-        elideText(ui->labelPublishDate, QString::fromStdString(m_infoFull->videoView->PublishDate));
+        if (m_listWidgetItem != nullptr)
+        {
+            updateCard();
+        }
     }
 }
 
@@ -184,6 +200,10 @@ void VideoGridWidget::clearVideo()
 
 void VideoGridWidget::coverReady(const int id) const
 {
+    if (id > count())
+    {
+        return;
+    }
     auto* const itemWidget = getItem(id);
     itemWidget->updateCover();
 }
@@ -191,6 +211,10 @@ void VideoGridWidget::coverReady(const int id) const
 void VideoGridWidget::resizeEvent(QResizeEvent* event)
 {
     QListWidget::resizeEvent(event);
+    if (count() == 0)
+    {
+        return;
+    }
     adjustItemSize();
 }
 
@@ -289,6 +313,14 @@ void VideoGridWidget::updateFileName(const QString& fileName)
     gridWidget->updateInfoFileName(fileName);
 }
 
+void VideoGridWidget::updateCovers()
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        coverReady(i);
+    }
+}
+
 VideoGridItemWidget* VideoGridWidget::getItem(QListWidgetItem* item) const
 {
     if (item == nullptr)
@@ -302,5 +334,38 @@ VideoGridItemWidget* VideoGridWidget::getItem(QListWidgetItem* item) const
 VideoGridItemWidget* VideoGridWidget::getItem(const int index) const
 {
     return getItem(item(index));
+}
+
+std::vector<VideoGridItemWidget*> VideoGridWidget::getItems() const
+{
+    std::vector<VideoGridItemWidget*> items;
+    items.reserve(count());
+    for (int i = 0; i < count(); ++i)
+    {
+        items.emplace_back(getItem(i));
+    }
+    return items;
+}
+
+std::vector<QListWidgetItem*> VideoGridWidget::getWidgetItems() const
+{
+    std::vector<QListWidgetItem*> items;
+    items.reserve(count());
+    for (int i = 0; i < count(); ++i)
+    {
+        items.emplace_back(item(i));
+    }
+    return items;
+}
+
+std::vector<std::shared_ptr<VideoInfoFull>> VideoGridWidget::getVideoInfo() const
+{
+    std::vector<std::shared_ptr<VideoInfoFull>> infos;
+    infos.reserve(count());
+    for (int i = 0; i < count(); ++i)
+    {
+        infos.emplace_back(getItem(i)->getVideoInfo());
+    }
+    return infos;
 }
 

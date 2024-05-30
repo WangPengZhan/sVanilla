@@ -60,8 +60,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/video/reset.svg</normaloff>:/icon/video/reset.svg</iconset>
+            <iconset theme=":/icon/reset.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string notr="true">CleanButtonPatch</string>

@@ -1,37 +1,20 @@
 #include <QTimer>
 
 #include "SearchLineEdit.h"
-#include "ui_SearchLineEdit.h"
 #include "ClientUi/Utils/Utility.h"
-
-static constexpr int iconMargin = 30;
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)
-    , ui(new Ui::SearchLineEdit)
 {
-    ui->setupUi(this);
     setUi();
     signalsAndSlots();
 }
 
-SearchLineEdit::~SearchLineEdit()
-{
-    delete ui;
-}
+SearchLineEdit::~SearchLineEdit()=default;
 
 void SearchLineEdit::setFocusOutHide()
 {
     focusOutHide = true;
-}
-
-void SearchLineEdit::resizeEvent(QResizeEvent* event)
-{
-    ui->btnSearch->resize(height(), height());
-    ui->btnSearch->move(0, 0);
-    ui->btnClear->resize(height(), height());
-    ui->btnClear->move(width() - iconMargin, 0);
-    QLineEdit::resizeEvent(event);
 }
 
 void SearchLineEdit::focusOutEvent(QFocusEvent* event)
@@ -55,19 +38,20 @@ void SearchLineEdit::showEvent(QShowEvent* event)
 
 void SearchLineEdit::setUi()
 {
-    setTextMargins(iconMargin - 5, 0, iconMargin, 0);
-    ui->btnClear->setVisible(false);
+    m_searchAction = addAction(QIcon(":/icon/search.svg"), LeadingPosition);
+    m_clearAction = addAction(QIcon(":/icon/clear.svg"), TrailingPosition);
+    m_clearAction->setVisible(false);
     setPlaceholderText(tr("Try to Search"));
 }
 
 void SearchLineEdit::signalsAndSlots()
 {
     connect(this, &QLineEdit::textChanged, this, [this](const QString& text) {
-        ui->btnClear->setVisible(!text.isEmpty());
+        m_clearAction->setVisible(!text.isEmpty());
     });
-    connect(ui->btnClear, &QPushButton::clicked, this, [this] {
+    connect(m_clearAction, &QAction::triggered, this, [this] {
         this->clear();
-        ui->btnClear->setVisible(false);
+        m_clearAction->setVisible(false);
     });
 }
 

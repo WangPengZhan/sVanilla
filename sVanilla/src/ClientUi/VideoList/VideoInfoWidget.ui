@@ -138,7 +138,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/icon/video/close.svg</normaloff>:/icon/video/close.svg</iconset>
+          <normaloff>:/icon/close.svg</normaloff>:/icon/close.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string notr="true">CleanButtonPatch</string>

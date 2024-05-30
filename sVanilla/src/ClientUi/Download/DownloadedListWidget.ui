@@ -70,8 +70,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/download/delete.svg</normaloff>:/icon/download/delete.svg</iconset>
+            <iconset theme=":/icon/delete.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -136,8 +135,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/download/restart.svg</normaloff>:/icon/download/restart.svg</iconset>
+            <iconset theme=":/icon/restart.svg"/>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -153,8 +151,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/download/folder.svg</normaloff>:/icon/download/folder.svg</iconset>
+            <iconset theme=":/icon/folder.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -173,8 +170,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/icon/download/details.svg</normaloff>:/icon/download/details.svg</iconset>
+            <iconset theme=":/icon/info.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>

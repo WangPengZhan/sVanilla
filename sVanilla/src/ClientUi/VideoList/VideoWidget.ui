@@ -47,7 +47,7 @@
          </size>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::ClickFocus</enum>
+         <enum>Qt::FocusPolicy::ClickFocus</enum>
         </property>
        </widget>
       </item>
@@ -57,8 +57,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+         <iconset>
+          <normaloff>:/icon/history.svg</normaloff>:/icon/history.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -71,8 +71,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
+         <iconset>
+          <normaloff>:/icon/clipboard.svg</normaloff>:/icon/clipboard.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -128,7 +128,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -144,8 +144,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/filter.svg</normaloff>:/icon/download/filter.svg</iconset>
+         <iconset>
+          <normaloff>:/icon/filter.svg</normaloff>:/icon/filter.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -158,8 +158,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/sort.svg</normaloff>:/icon/download/sort.svg</iconset>
+         <iconset>
+          <normaloff>:/icon/sort.svg</normaloff>:/icon/sort.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -177,13 +177,27 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="btnReset">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icon/undo.svg</normaloff>:/icon/undo.svg</iconset>
+        </property>
+        <property name="_vanillaStyle_Patch" stdset="0">
+         <string>CleanButtonPatch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnSearch">
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/search.svg</normaloff>:/icon/home/search.svg</iconset>
+         <iconset>
+          <normaloff>:/icon/search.svg</normaloff>:/icon/search.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -212,7 +226,7 @@
        </sizepolicy>
       </property>
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Orientation::Vertical</enum>
       </property>
       <widget class="::VideoGridWidget" name="videoGridWidget">
        <property name="sizePolicy">
@@ -222,28 +236,28 @@
         </sizepolicy>
        </property>
        <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAsNeeded</enum>
+        <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
        </property>
        <property name="verticalScrollMode">
-        <enum>QAbstractItemView::ScrollPerPixel</enum>
+        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
        </property>
        <property name="horizontalScrollMode">
-        <enum>QAbstractItemView::ScrollPerPixel</enum>
+        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
        </property>
        <property name="flow">
-        <enum>QListView::LeftToRight</enum>
+        <enum>QListView::Flow::LeftToRight</enum>
        </property>
        <property name="isWrapping" stdset="0">
         <bool>true</bool>
        </property>
        <property name="resizeMode">
-        <enum>QListView::Adjust</enum>
+        <enum>QListView::ResizeMode::Adjust</enum>
        </property>
        <property name="itemAlignment">
-        <set>Qt::AlignHCenter</set>
+        <set>Qt::AlignmentFlag::AlignHCenter</set>
        </property>
        <property name="_vanillaStyle_Patch" stdset="0">
         <string>WhiteBackgroundListWidgetPatch</string>
@@ -259,7 +273,7 @@
        </sizepolicy>
       </property>
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Orientation::Vertical</enum>
       </property>
       <widget class="::VideoListWidget" name="videoListWidget">
        <property name="sizePolicy">
@@ -269,13 +283,13 @@
         </sizepolicy>
        </property>
        <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAsNeeded</enum>
+        <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
        </property>
        <property name="verticalScrollMode">
-        <enum>QAbstractItemView::ScrollPerPixel</enum>
+        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
        </property>
       </widget>
       <widget class="::VideoInfoWidget" name="videoListInfoWidget" native="true">
@@ -346,8 +360,6 @@
    <header>SUI/SearchLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

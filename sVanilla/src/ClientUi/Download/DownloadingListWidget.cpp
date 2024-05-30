@@ -227,32 +227,32 @@ void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Statu
     {
     case download::AbstractDownloader::Downloading:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/downloading.svg")));
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/downloading.svg")));
         break;
     }
     case download::AbstractDownloader::Paused:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/pause.svg")));
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/pause.svg")));
         break;
     }
     case download::AbstractDownloader::Waitting:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/waiting.svg")));
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/waiting.svg")));
         break;
     }
     case download::AbstractDownloader::Finished:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/completed.svg")));
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/completed.svg")));
         break;
     }
     case download::AbstractDownloader::Error:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/error.svg")));
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/error.svg")));
         break;
     }
     default:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/download/downloading.svg")));
+        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/downloading.svg")));
     }
     }
 }

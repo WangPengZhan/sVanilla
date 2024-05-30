@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
     installWindowAgent();
     setWindowTitle(softwareName);
-    setWindowIcon(QIcon(":/app.ico"));
+    setWindowIcon(QIcon(":/appIcon/svanilla.ico"));
     setUi();
     signalsAndSlots();
     setUpShortcuts();
@@ -46,6 +46,13 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+    QString path = QApplication::applicationDirPath();
+    const auto outPath = path + "/output";
+    const auto sessionPath = path + "/aria/aira.session";
+    const auto logPath = path + "/aria/aira.log";
+    QDir(outPath).removeRecursively();
+    QFile::remove(sessionPath);
+    QFile::remove(logPath);
     if (!event->spontaneous() || !isVisible())
     {
         return;

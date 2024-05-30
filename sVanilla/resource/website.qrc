@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>website/default.svg</file>
+        <file>website/bilibili.svg</file>
+    </qresource>
+</RCC>

@@ -45,7 +45,6 @@ public:
     void prepareDownloadTaskList();
 
     void clearVideo() const;
-    void updateCover(int id) const;
 
     void setWebsiteIcon(const QString& iconPath);
     void setDownloadingNumber(int number) const;
@@ -65,6 +64,12 @@ private:
     void hideSearchLineEdit();
     void setNavigationBar();
 
+    void searchItem(const QString& text);
+    void resetList();
+
+    void showBtnReset();
+    void hideBtnReset();
+
     template <typename Widget>
     void showInfo(Widget* widget, QSplitter* splitter, int currentRow, int previousRow);
 
@@ -72,9 +77,13 @@ signals:
     void allReady() const;
     void coverReady(int id) const;
 
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
+
 private:
     Ui::VideoPage* ui;
     QMenu* m_historyMenu = nullptr;
+    std::vector<std::shared_ptr<VideoInfoFull>> m_originalList;
     std::function<const std::list<std::string>()> getHistory;
 };
 

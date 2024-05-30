@@ -1,11 +1,11 @@
 function(appicon TARGET_NAME RESOURCE_FILES)
     if(WIN32)
-        set(ICON_RESOURCE sVanilla/resource/app.ico)
+        set(ICON_RESOURCE sVanilla/resource/appIcon/sVanilla.ico)
         set(RC_FILE ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.rc)
         configure_file(${CMAKE_SOURCE_DIR}/cmake/sVanilla.rc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.rc)
         set(RESOURCE_FILES ${ICON_RESOURCE} ${TARGET_NAME}.rc PARENT_SCOPE)
     elseif(APPLE)
-        set(ICON_FILE sVanilla/resource/app.icns)
+        set(ICON_FILE sVanilla/resource/appIcon/sVanilla.icns)
         get_filename_component(ICON_FILE_NAME ${ICON_FILE} NAME)
         set_target_properties(${PROJECT_NAME} PROPERTIES
             MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME}
@@ -30,7 +30,7 @@ function(appicon TARGET_NAME RESOURCE_FILES)
         add_custom_command(TARGET ${TARGET_NAME}
             POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory ${ICON_DIR}
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/sVanilla/resource/sVanilla.svg ${ICON_DIR}
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/sVanilla/resource/appIcon/sVanilla.svg ${ICON_DIR}
         )
     endif()
 endfunction()

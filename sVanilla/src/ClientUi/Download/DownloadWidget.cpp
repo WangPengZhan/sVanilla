@@ -125,8 +125,7 @@ void DownloadWidget::setUi()
 {
     const QStringList textList = {tr("Downloading"), tr("Completed"), tr("Error")};
     ui->horizonNavigation->setItemList(textList);
-    const QStringList iconList(
-        {QStringLiteral(":/icon/download/downloading.svg"), QStringLiteral(":/icon/download/completed.svg"), QStringLiteral(":/icon/download/error.svg")});
+    const QStringList iconList({QStringLiteral(":/icon/downloading.svg"), QStringLiteral(":/icon/completed.svg"), QStringLiteral(":/icon/error.svg")});
     ui->horizonNavigation->setIconList(iconList);
     constexpr int horizonNavigationWidth = 120;
     ui->horizonNavigation->setColumnWidth(horizonNavigationWidth);

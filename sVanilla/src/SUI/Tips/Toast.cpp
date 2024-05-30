@@ -121,7 +121,7 @@ void Toast::paintEvent(QPaintEvent* event)
     const auto iconRect = QRect(rect().x() + 10, rect().y() + 10, rect().height() - 20, rect().height() - 20);
     QSvgRenderer grid;
     const auto level = QStringList{"success", "info", "warn", "error"}[m_level];
-    const QString iconPath = QString(":/icon/common/") + level + ".svg";
+    const QString iconPath = QString(":/icon/toast/") + level + ".svg";
     grid.load(iconPath);
     grid.render(&painter, iconRect);
 }

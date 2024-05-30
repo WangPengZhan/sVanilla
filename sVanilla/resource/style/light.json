@@ -164,7 +164,7 @@
                 "color": {
                     "itemViewEvenRowColor": "#FFFFFF",
                     "itemViewOddRowColor": "#FFFFFF",
-                    "itemViewSelectedColor": "#87a0be"
+                    "itemViewSelectedColor": "#c8c8c8"
                 }
             }
         },

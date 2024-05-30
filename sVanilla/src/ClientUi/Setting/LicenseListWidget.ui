@@ -95,9 +95,9 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/setting/down.svg</normaloff>
-          <normalon>:/icon/setting/up.svg</normalon>:/icon/setting/down.svg</iconset>
+         <iconset>
+          <normaloff>:/icon/down.svg</normaloff>
+          <normalon>:/icon/up.svg</normalon>:/icon/down.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -135,8 +135,5 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
  <connections/>
 </ui>

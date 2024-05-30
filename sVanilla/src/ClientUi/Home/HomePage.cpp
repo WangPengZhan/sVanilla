@@ -21,6 +21,7 @@ HomePage::HomePage(QWidget* parent)
     ui->setupUi(this);
     signalsAndSlots();
     setUi();
+    ui->lineEditHome->setText("https://www.bilibili.com/video/BV1ot4y1p7Cc/?spm_id_from=333.999.0.0&vd_source=8e96db620348a13ca5576069fc5d5fff");
 }
 
 HomePage::~HomePage()

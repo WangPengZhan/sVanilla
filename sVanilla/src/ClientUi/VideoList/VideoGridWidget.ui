@@ -34,16 +34,23 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <widget class="Vanilla::Spinner" name="spinner" native="true">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>50</y>
-        <width>120</width>
-        <height>80</height>
-       </rect>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="leftMargin">
+                <number>0</number>
+            </property>
+            <property name="topMargin">
+                <number>0</number>
       </property>
-     </widget>
+            <property name="rightMargin">
+                <number>0</number>
+            </property>
+            <property name="bottomMargin">
+                <number>0</number>
+            </property>
+            <item>
+                <widget class="Vanilla::Spinner" name="spinner" native="true"/>
+            </item>
+        </layout>
     </widget>
    </item>
    <item>
@@ -132,7 +139,8 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/icon/video/detail.svg</normaloff>:/icon/video/detail.svg</iconset>
+             <normaloff>:/icon/info.svg</normaloff>:/icon/info.svg
+         </iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -152,7 +160,8 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/icon/video/download.svg</normaloff>:/icon/video/download.svg</iconset>
+             <normaloff>:/icon/download.svg</normaloff>:/icon/download.svg
+         </iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>

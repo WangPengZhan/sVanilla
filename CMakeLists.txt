@@ -48,6 +48,11 @@ set(QT_COMPONENTS
     Network
     Svg
 )
+include(FetchContent)
+FetchContent_Declare(rapidfuzz
+    GIT_REPOSITORY https://github.com/rapidfuzz/rapidfuzz-cpp.git
+    GIT_TAG main)
+FetchContent_MakeAvailable(rapidfuzz)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
@@ -147,6 +152,7 @@ target_link_libraries(${PROJECT_NAME}
     spdlog::spdlog
     ${OPENSSL_LIBRARIES}
     VanillaStyle::VanillaStyle
+    rapidfuzz::rapidfuzz
 )
 
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)

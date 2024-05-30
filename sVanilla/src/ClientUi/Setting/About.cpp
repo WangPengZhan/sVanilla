@@ -20,8 +20,7 @@ void About::setUi()
 {
     const QStringList textList = {tr("About"), tr("Authors"), tr("License")};
     ui->verticalNavigationWidget->setItemList(textList);
-    const QStringList iconList(
-        {QStringLiteral(":/icon/setting/about.svg"), QStringLiteral(":/icon/setting/author.svg"), QStringLiteral(":/icon/setting/license.svg")});
+    const QStringList iconList({QStringLiteral(":/icon/about.svg"), QStringLiteral(":/icon/author.svg"), QStringLiteral(":/icon/license.svg")});
     ui->verticalNavigationWidget->setIconList(iconList);
     ui->verticalNavigationWidget->setVertical();
     constexpr int navigationWidth = 100;
