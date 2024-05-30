@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
     installWindowAgent();
     setWindowTitle(softwareName);
-    setWindowIcon(QIcon(":/app.ico"));
+    setWindowIcon(QIcon(":/appIcon/svanilla.ico"));
     setUi();
     signalsAndSlots();
     setUpShortcuts();
@@ -227,7 +227,7 @@ void MainWindow::setTrayIconVisible(int state)
     {
         if (systemTray->icon().isNull())
         {
-            systemTray->setIcon(QIcon(":/sVanilla.svg"));
+            systemTray->setIcon(QIcon(":/appIcon/sVanilla.svg"));
         }
         systemTray->show();
     }

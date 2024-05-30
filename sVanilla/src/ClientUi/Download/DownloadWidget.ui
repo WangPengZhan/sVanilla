@@ -76,8 +76,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/filter.svg</normaloff>:/icon/download/filter.svg</iconset>
+            <iconset theme=":/icon/filter.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -93,8 +92,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/sort.svg</normaloff>:/icon/download/sort.svg</iconset>
+            <iconset theme=":/icon/sort.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string notr="true">CleanButtonPatch</string>
@@ -300,8 +298,5 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
  <connections/>
 </ui>

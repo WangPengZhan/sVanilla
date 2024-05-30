@@ -27,7 +27,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>:/icon/home/search.svg</normaloff>:/icon/home/search.svg</iconset>
+     <normaloff>:/icon/search.svg</normaloff>:/icon/search.svg</iconset>
    </property>
    <property name="_vanillaStyle_Patch" stdset="0">
     <string>OnlyIconButtonPatch</string>

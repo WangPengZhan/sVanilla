@@ -48,7 +48,7 @@ FileSelector::FileSelector(Mode mode, QWidget* parent)
     , m_validator(new ModeValidator(this, this))
 {
     m_action = new QAction(this);
-    m_action->setIcon(QIcon(":icon/download/folder.svg"));
+    m_action->setIcon(QIcon(":icon/folder.svg"));
     addAction(m_action, QLineEdit::TrailingPosition);
     setMode(mode);
     setValidator(m_validator);

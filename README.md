@@ -1,9 +1,9 @@
 <div align="center">
 
 <div style="display: flex; align-items: center; justify-content: center; padding-top:15px">
-  <source media="(prefers-color-scheme: dark)" srcset="sVanilla/resource/sVanillaTitleDark.svg" height="90" width="328">
-  <source media="(prefers-color-scheme: light)" srcset="sVanilla/resource/sVanillaTitleLight.svg" height="90" width="328">
-  <img src="sVanilla/resource/sVanillaTitleLight.svg" alt="logo" style="vertical-align: middle;" height="90" width="328">
+  <source media="(prefers-color-scheme: dark)" srcset="sVanilla/resource/appIcon/sVanillaTitleDark.svg" height="90" width="328">
+  <source media="(prefers-color-scheme: light)" srcset="sVanilla/resource/appIcon/sVanillaTitleLight.svg" height="90" width="328">
+  <img src="sVanilla/resource/appIcon/sVanillaTitleLight.svg" alt="logo" style="vertical-align: middle;" height="90" width="328">
 </div>
 <div>
 <img alt="C++" src="https://img.shields.io/badge/C++-20-%2300599C?logo=cplusplus">

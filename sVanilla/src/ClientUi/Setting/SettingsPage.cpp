@@ -42,9 +42,9 @@ void SettingsPage::setUi()
 {
     const QStringList horizonNavigationBtn{tr("Default"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("About")};
     ui->horizonNavigation->setItemList(horizonNavigationBtn);
-    const QStringList iconList({QStringLiteral(":/icon/setting/default.svg"), QStringLiteral(":/icon/setting/account.svg"),
-                                QStringLiteral(":/icon/setting/advanced.svg"), QStringLiteral(":/icon/setting/plugin.svg"),
-                                QStringLiteral(":/icon/setting/about.svg")});
+    const QStringList iconList({QStringLiteral(":/icon/default.svg"), QStringLiteral(":/icon/account.svg"),
+                                QStringLiteral(":/icon/advanced.svg"), QStringLiteral(":/icon/plugin.svg"),
+                                QStringLiteral(":/icon/about.svg")});
     ui->horizonNavigation->setIconList(iconList);
     constexpr int settingNavWidth = 120;
     ui->horizonNavigation->setColumnWidth(settingNavWidth);

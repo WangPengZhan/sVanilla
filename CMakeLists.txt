@@ -61,13 +61,8 @@ find_package(spdlog REQUIRED)
 find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)
-# 寻找OpenSSL库
+find_package(rapidfuzz REQUIRED)
 find_package(OpenSSL REQUIRED)
-
-# 如果OpenSSL被找到，包含OpenSSL的头文件目录
-if (OPENSSL_FOUND)
-    include_directories(${OPENSSL_INCLUDE_DIR})
-endif ()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
@@ -145,8 +140,10 @@ target_link_libraries(${PROJECT_NAME}
     QWindowKit::Widgets
     unofficial::minizip::minizip
     spdlog::spdlog
-    ${OPENSSL_LIBRARIES}
+    OpenSSL::SSL
+    OpenSSL::Crypto
     VanillaStyle::VanillaStyle
+    rapidfuzz::rapidfuzz
 )
 
 # add_dependencies(${PROJECT_NAME} ads::qt6advanceddocking)

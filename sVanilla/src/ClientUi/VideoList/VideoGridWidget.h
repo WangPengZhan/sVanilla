@@ -28,6 +28,14 @@ class VideoGridItemWidget : public QWidget
 {
     Q_OBJECT
 public:
+    struct CardInfo
+    {
+        QString title;
+        QString author;
+        QString duration;
+        QString publishDate;
+    };
+
     explicit VideoGridItemWidget(QWidget* parent = nullptr);
     ~VideoGridItemWidget();
 
@@ -39,6 +47,12 @@ public:
     void updateCover();
 
     void updateInfoFileName(const QString& fileName);
+
+    const CardInfo& getCardInfo() const;
+    QListWidgetItem* getWidgetItem() const
+    {
+        return m_listWidgetItem;
+    }
 
     [[nodiscard]] QSize sizeHint() const override;
 
@@ -54,6 +68,7 @@ private:
     void setUi();
     void signalsAndSlots();
 
+    void updateCard();
     void createContextMenu();
 
 private:
@@ -61,6 +76,7 @@ private:
     std::shared_ptr<VideoInfoFull> m_infoFull;
     QListWidgetItem* m_listWidgetItem = nullptr;
     QMenu* m_menu = nullptr;
+    CardInfo m_cardInfo;
 };
 
 class VideoGridWidget : public QListWidget
@@ -74,6 +90,13 @@ public:
 
     void coverReady(int id) const;
     void updateFileName(const QString& fileName);
+    void updateCovers();
+
+    VideoGridItemWidget* getItem(QListWidgetItem* item) const;
+    [[nodiscard]] VideoGridItemWidget* getItem(int index) const;
+    std::vector<VideoGridItemWidget*> getItems() const;
+    std::vector<QListWidgetItem*> getWidgetItems() const;
+    std::vector<std::shared_ptr<VideoInfoFull>> getVideoInfo() const;
 
 signals:
     void downloandBtnClick(const std::shared_ptr<VideoInfoFull>&);
@@ -93,9 +116,6 @@ private:
     void downloadSelectedItem();
     void downloadItem(QListWidgetItem* item);
     void showInfo(QListWidgetItem* widget);
-
-    VideoGridItemWidget* getItem(QListWidgetItem* item) const;
-    [[nodiscard]] VideoGridItemWidget* getItem(int index) const;
 
 private:
     int previousRow = -1;

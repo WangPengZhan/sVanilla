@@ -17,6 +17,7 @@
 #include "ClientUi/Utils/RunTask.h"
 #include "Util/UrlProcess.h"
 #include "ClientUi/Config//SingleConfig.h"
+#include "ClientUi/Utils/SortItems.h"
 #include "ClientUi/Utils/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
 
@@ -66,9 +67,12 @@ void VideoWidget::signalsAndSlots()
 
     connect(ui->btnSearch, &QPushButton::clicked, this, &VideoWidget::showSearchLineEdit);
     connect(ui->lineEditSearch, &SearchLineEdit::startHide, this, &VideoWidget::hideSearchLineEdit);
-
     connect(ui->lineEditSearch, &SearchLineEdit::readyHide, ui->btnSearch, &QPushButton::show);
-    connect(this, &VideoWidget::coverReady, this, &VideoWidget::updateCover);
+    connect(ui->lineEditSearch, &SearchLineEdit::textChanged, this, &VideoWidget::searchItem);
+
+    connect(ui->btnReset, &QPushButton::clicked, this, &VideoWidget::resetList);
+
+    connect(this, &VideoWidget::coverReady, ui->videoGridWidget, &VideoGridWidget::coverReady);
 
     connect(ui->videoGridWidget, &VideoGridWidget::infoBtnClick, this, [this](const InfoPanelData& data) {
         showInfo(ui->videoGridInfoWidget, ui->videoGrid, data.currentRow, data.previousRow);
@@ -90,7 +94,7 @@ void VideoWidget::setUi()
 {
     ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
     setNavigationBar();
-
+    ui->btnReset->hide();
     ui->lineEditSearch->hide();
     ui->lineEditSearch->setFocusOutHide();
 
@@ -122,8 +126,8 @@ void VideoWidget::showSearchLineEdit()
     const auto btnSortPos = ui->btnSort->pos();
     ui->btnSearch->hide();
     ui->lineEditSearch->show();
-    util::moveAnimate(ui->btnFilter, {btnFilterPos, ui->btnFilter->pos()});
-    util::moveAnimate(ui->btnSort, {btnSortPos, ui->btnSort->pos()});
+    util::animate(ui->btnFilter, {btnFilterPos, ui->btnFilter->pos()});
+    util::animate(ui->btnSort, {btnSortPos, ui->btnSort->pos()});
     ui->lineEditSearch->setFocus();
 }
 
@@ -133,13 +137,13 @@ void VideoWidget::hideSearchLineEdit()
     const auto btnSortMarginPoint = QPoint(ui->btnSort->width(), 0);
     const auto sortEndValue = ui->btnSearch->geometry().topLeft() - btnSearchMarginPoint;
     const auto filterEndValue = sortEndValue - btnSortMarginPoint;
-    util::moveAnimate(ui->btnSort, {ui->btnSort->pos(), sortEndValue});
-    util::moveAnimate(ui->btnFilter, {ui->btnFilter->pos(), filterEndValue});
+    util::animate(ui->btnSort, {ui->btnSort->pos(), sortEndValue});
+    util::animate(ui->btnFilter, {ui->btnFilter->pos(), filterEndValue});
 }
 
 void VideoWidget::setNavigationBar()
 {
-    const QStringList iconList({QStringLiteral(":/icon/video/grid.svg"), QStringLiteral(":/icon/video/list.svg")});
+    const QStringList iconList({QStringLiteral(":/icon/grid.svg"), QStringLiteral(":/icon/list.svg")});
     ui->btnSwitch->setIconList(iconList);
     const QStringList textList({tr("Grid"), tr("List")});
     ui->btnSwitch->setItemList(textList);
@@ -147,6 +151,66 @@ void VideoWidget::setNavigationBar()
     ui->btnSwitch->setColumnWidth(columnWidth);
     constexpr int swtchHeight = 30;
     ui->btnSwitch->setFixedHeight(swtchHeight);
+}
+
+void VideoWidget::searchItem(const QString& text)
+{
+    if (text.isEmpty())
+    {
+        return;
+    }
+    if (!ui->btnReset->isVisible())
+    {
+        showBtnReset();
+    }
+    const auto items = ui->videoGridWidget->getVideoInfo();
+    if (m_originalList.empty())
+    {
+        m_originalList = items;
+    }
+    const std::function<std::string(std::shared_ptr<VideoInfoFull>)> getData = [](std::shared_ptr<VideoInfoFull> info) {
+        return info->videoView->Title;
+    };
+    const auto sortedItems = sortSimilarItems(items, text.toStdString(), getData, 0.0);
+    const auto& grid = ui->videoGridWidget;
+    grid->clear();
+    for (const auto& info : sortedItems)
+    {
+        addVideoItem(info);
+    }
+    grid->updateCovers();
+}
+
+void VideoWidget::resetList()
+{
+    const auto& grid = ui->videoGridWidget;
+    grid->clear();
+    for (const auto& item : m_originalList)
+    {
+        addVideoItem(item);
+    }
+    grid->updateCovers();
+    hideBtnReset();
+}
+
+void VideoWidget::showBtnReset()
+{
+    ui->btnReset->show();
+}
+
+void VideoWidget::hideBtnReset()
+{
+    const auto btnResetWidth = ui->btnReset->sizeHint().width();
+    const auto finished = [this, btnResetWidth]() {
+        ui->btnReset->hide();
+        ui->btnReset->setMinimumWidth(btnResetWidth);
+    };
+    util::animate(ui->btnReset, {btnResetWidth, 0}, "maximumWidth", finished);
+}
+
+bool VideoWidget::eventFilter(QObject* watched, QEvent* event)
+{
+    return QWidget::eventFilter(watched, event);
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
@@ -240,11 +304,6 @@ void VideoWidget::clearVideo() const
 {
     ui->videoGridWidget->clearVideo();
     ui->videoListWidget->clearVideo();
-}
-
-void VideoWidget::updateCover(const int id) const
-{
-    ui->videoGridWidget->coverReady(id);
 }
 
 void VideoWidget::setWebsiteIcon(const QString& iconPath)

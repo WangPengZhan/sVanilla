@@ -94,7 +94,7 @@
             <string />
           </property>
           <property name="icon">
-            <iconset theme=":/icon/video/detail.svg" />
+              <iconset theme=":/icon/info.svg"/>
           </property>
           <property name="_vanillaStyle_Patch" stdset="0">
             <string>CleanButtonPatch</string>
@@ -113,7 +113,7 @@
             <string />
           </property>
           <property name="icon">
-            <iconset theme=":/icon/video/download.svg" />
+              <iconset theme=":/icon/download.svg"/>
           </property>
           <property name="_vanillaStyle_Patch" stdset="0">
             <string>CleanButtonPatch</string>

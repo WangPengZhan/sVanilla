@@ -3,13 +3,6 @@
 #include <QLineEdit>
 #include <QPropertyAnimation>
 
-QT_BEGIN_NAMESPACE
-namespace Ui
-{
-class SearchLineEdit;
-}
-QT_END_NAMESPACE
-
 class SearchLineEdit : public QLineEdit
 {
     Q_OBJECT
@@ -25,7 +18,6 @@ signals:
     void startHide();
 
 protected:
-    void resizeEvent(QResizeEvent* event) override;
     void focusOutEvent(QFocusEvent* event) override;
     void showEvent(QShowEvent* event) override;
 
@@ -35,6 +27,7 @@ private:
     void startHideAnimation();
 
 private:
-    Ui::SearchLineEdit* ui;
     bool focusOutHide = false;
+    QAction* m_clearAction{nullptr};
+    QAction* m_searchAction{nullptr};
 };

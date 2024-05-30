@@ -10,13 +10,13 @@
 static constexpr int iconMargin = 26;
 static constexpr int padding = 5;
 static std::unordered_map<QString, QString> contextMenuIcon{
-    {"&Undo",      ":/icon/common/undo.svg"     },
-    {"&Redo",      ":/icon/common/redo.svg"     },
-    {"Cu&t",       ":/icon/common/cut.svg"      },
-    {"&Copy",      ":/icon/common/copy.svg"     },
-    {"Delete",     ":/icon/common/delete.svg"   },
-    {"&Paste",     ":/icon/common/paste.svg"    },
-    {"Select All", ":/icon/common/selectAll.svg"}
+    {"&Undo",      ":/icon/undo.svg"     },
+    {"&Redo",      ":/icon/redo.svg"     },
+    {"Cu&t",       ":/icon/cut.svg"      },
+    {"&Copy",      ":/icon/copy.svg"     },
+    {"Delete",     ":/icon/delete.svg"   },
+    {"&Paste",     ":/icon/paste.svg"    },
+    {"Select All", ":/icon/selectAll.svg"}
 };
 
 AddLinkLineEdit::AddLinkLineEdit(QWidget* parent)
@@ -93,14 +93,14 @@ void AddLinkLineEdit::contextMenuEvent(QContextMenuEvent* event)
 
 void AddLinkLineEdit::setUi()
 {
-    m_webSiteAction = addAction(QIcon(":icon/website/default.svg"), LeadingPosition);
+    m_webSiteAction = addAction(QIcon(":website/default.svg"), LeadingPosition);
     QIcon moreIcon;
-    moreIcon.addFile(QString::fromUtf8(":/icon/setting/down.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    moreIcon.addFile(QString::fromUtf8(":/icon/setting/up.svg"), QSize(), QIcon::Normal, QIcon::On);
+    moreIcon.addFile(QString::fromUtf8(":/icon/down.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    moreIcon.addFile(QString::fromUtf8(":/icon/up.svg"), QSize(), QIcon::Normal, QIcon::On);
     m_moreAction = addAction(moreIcon, TrailingPosition);
     m_moreAction->setCheckable(true);
-    m_enterAction = addAction(QIcon(":icon/home/enter.svg"), TrailingPosition);
-    m_clearAction = addAction(QIcon(":icon/home/clear.svg"), TrailingPosition);
+    m_enterAction = addAction(QIcon(":icon/enter.svg"), TrailingPosition);
+    m_clearAction = addAction(QIcon(":icon/clear.svg"), TrailingPosition);
 
     m_clearAction->setVisible(false);
     m_moreAction->setCheckable(true);
@@ -144,9 +144,4 @@ void AddLinkLineEdit::createMoreMenu()
 
     auto* const advancedDownload = new QAction("Advanced Download\t⌘ V", this);
     m_moreMenu->addAction(advancedDownload);
-}
-
-void AddLinkLineEdit::setMoreBtnIcon(bool checked)
-{
-    m_moreAction->setIcon(QIcon(checked ? ":/icon/setting/up.svg" : ":/icon/setting/down.svg"));
 }

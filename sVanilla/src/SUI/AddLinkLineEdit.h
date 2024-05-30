@@ -25,7 +25,6 @@ private:
     void signalsAndSlots();
     void btnMoreClick(bool checked);
     void createMoreMenu();
-    void setMoreBtnIcon(bool checked);
 
 private:
     QMenu* m_moreMenu;

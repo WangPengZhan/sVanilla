@@ -24,7 +24,7 @@
    <item row="0" column="3">
     <widget class="QPushButton" name="btnClose">
      <property name="icon">
-      <iconset theme=":/icon/video/close.svg"/>
+         <iconset theme=":/icon/close.svg"/>
      </property>
      <property name="_vanillaStyle_Patch" stdset="0">
       <string>CleanButtonPatch</string>

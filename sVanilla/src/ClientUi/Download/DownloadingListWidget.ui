@@ -56,9 +56,6 @@
       </item>
       <item>
        <widget class="QLabel" name="labelTitle">
-        <property name="text">
-         <string>-</string>
-        </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>QLabelPatch</string>
         </property>
@@ -90,8 +87,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/delete.svg</normaloff>:/icon/download/delete.svg</iconset>
+            <iconset theme=":/icon/delete.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -176,9 +172,10 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/pause.svg</normaloff>
-          <normalon>:/icon/download/start.svg</normalon>:/icon/download/pause.svg</iconset>
+            <iconset>
+                <normaloff>:/icon/pause.svg</normaloff>
+                <normalon>:/icon/start.svg</normalon>:/icon/pause.svg
+            </iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -194,8 +191,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/folder.svg</normaloff>:/icon/download/folder.svg</iconset>
+            <iconset theme=":/icon/folder.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -214,8 +210,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/download/details.svg</normaloff>:/icon/download/details.svg</iconset>
+            <iconset theme=":/icon/details.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -228,8 +223,5 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
  <connections/>
 </ui>

@@ -180,7 +180,7 @@ void SingleConfig::iniConfig()
         SystemTrayConfig systemTrayConfig;
         setSystemTrayConfig(systemTrayConfig);
         setDownloadThreadNum(1);
-        StartUpConfig setStartUpConfig(StartUpConfig());
+        setStartUpConfig(StartUpConfig());
     }
 
     const QString aria2ConfigPath = QApplication::applicationDirPath() + "/config/aria2conf.conf";

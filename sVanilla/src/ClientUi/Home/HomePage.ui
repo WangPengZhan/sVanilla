@@ -39,8 +39,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/whiteBg.svg</normaloff>:/icon/home/whiteBg.svg</iconset>
+            <iconset theme=":/appIcon/white-sVanilla.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>AppIconButtonPatch</string>
@@ -165,8 +164,7 @@
          <string>Learn about sVanilla </string>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/openurl.svg</normaloff>:/icon/home/openurl.svg</iconset>
+            <iconset theme=":/icon/openurl.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>ButtonWithBorderPatch</string>
@@ -204,8 +202,7 @@
          <string>Login Download Website</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/common/login.svg</normaloff>:/icon/common/login.svg</iconset>
+            <iconset theme=":/icon/login.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>ButtonWithBorderPatch</string>
@@ -268,8 +265,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/clipboard.svg</normaloff>:/icon/home/clipboard.svg</iconset>
+            <iconset theme=":/icon/clipboard.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -282,8 +278,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../resource/sVanilla.qrc">
-          <normaloff>:/icon/home/history.svg</normaloff>:/icon/home/history.svg</iconset>
+            <iconset theme=":/icon/history.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -315,8 +310,5 @@
    <header>SUI/AddLinkLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../resource/sVanilla.qrc"/>
- </resources>
  <connections/>
 </ui>
