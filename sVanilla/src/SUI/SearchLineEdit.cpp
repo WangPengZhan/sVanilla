@@ -1,4 +1,6 @@
 #include <QTimer>
+#include <QIcon>
+#include <QAction>
 
 #include "SearchLineEdit.h"
 #include "ClientUi/Utils/Utility.h"

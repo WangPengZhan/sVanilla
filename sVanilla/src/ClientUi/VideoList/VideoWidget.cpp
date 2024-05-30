@@ -195,10 +195,7 @@ void VideoWidget::resetList()
 
 void VideoWidget::showBtnReset()
 {
-    // const auto btnResetWidth = ui->btnReset->sizeHint().width();
-    // ui->btnReset->setMaximumWidth(0);
     ui->btnReset->show();
-    // util::animate(ui->btnReset, {0, btnResetWidth});
 }
 
 void VideoWidget::hideBtnReset()

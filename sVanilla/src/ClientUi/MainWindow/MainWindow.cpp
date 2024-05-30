@@ -46,13 +46,6 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    QString path = QApplication::applicationDirPath();
-    const auto outPath = path + "/output";
-    const auto sessionPath = path + "/aria/aira.session";
-    const auto logPath = path + "/aria/aira.log";
-    QDir(outPath).removeRecursively();
-    QFile::remove(sessionPath);
-    QFile::remove(logPath);
     if (!event->spontaneous() || !isVisible())
     {
         return;
@@ -234,7 +227,7 @@ void MainWindow::setTrayIconVisible(int state)
     {
         if (systemTray->icon().isNull())
         {
-            systemTray->setIcon(QIcon(":/sVanilla.svg"));
+            systemTray->setIcon(QIcon(":/appIcon/sVanilla.svg"));
         }
         systemTray->show();
     }

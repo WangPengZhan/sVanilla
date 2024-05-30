@@ -1,13 +1,15 @@
 #pragma once
+#undef max
+#undef min
 #include <rapidfuzz/fuzz.hpp>
 #include <vector>
 #include <QString>
 
 #include "ClientUi/VideoList/VideoGridWidget.h"
 
-template <typename Query, typename Iterable ,typename Sentence = typename Iterable::value_type>
+template <typename Query, typename Iterable, typename Sentence = typename Iterable::value_type>
 Iterable sortSimilarItems(const Iterable& items, const Query& lookupQuery, const std::function<Query(Sentence)>& dataExtractor,
-                           const double similarityThreshold = 0.0)
+                          const double similarityThreshold = 0.0)
 {
     rapidfuzz::fuzz::CachedRatio<typename Query::value_type> similarityScorer(lookupQuery);
     std::vector<float> scoreList(items.size());

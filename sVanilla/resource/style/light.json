@@ -145,10 +145,9 @@
             "propertyValue": "SystemButtonPatch",
             "configPatch": {
                 "color": {
-                    "indicatorColor": "#C7C8CC",
-                    "buttonForeground": "#00000000",
+                    "buttonForeground": "#222831",
                     "buttonBackground": "#00000000",
-                    "buttonHoveredForeground": "#00000000",
+                    "buttonHoveredForeground": "#222831",
                     "buttonHoveredBackground": "#B4B4B8",
                     "buttonPressedForeground": "#00000000",
                     "buttonPressedBackground": "#00000000",
