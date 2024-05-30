@@ -48,11 +48,6 @@ set(QT_COMPONENTS
     Network
     Svg
 )
-include(FetchContent)
-FetchContent_Declare(rapidfuzz
-    GIT_REPOSITORY https://github.com/rapidfuzz/rapidfuzz-cpp.git
-    GIT_TAG main)
-FetchContent_MakeAvailable(rapidfuzz)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
@@ -66,13 +61,8 @@ find_package(spdlog REQUIRED)
 find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)
-# 寻找OpenSSL库
+find_package(rapidfuzz REQUIRED)
 find_package(OpenSSL REQUIRED)
-
-# 如果OpenSSL被找到，包含OpenSSL的头文件目录
-if (OPENSSL_FOUND)
-    include_directories(${OPENSSL_INCLUDE_DIR})
-endif ()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/sVanilla/src
@@ -150,7 +140,8 @@ target_link_libraries(${PROJECT_NAME}
     QWindowKit::Widgets
     unofficial::minizip::minizip
     spdlog::spdlog
-    ${OPENSSL_LIBRARIES}
+    OpenSSL::SSL
+    OpenSSL::Crypto
     VanillaStyle::VanillaStyle
     rapidfuzz::rapidfuzz
 )
