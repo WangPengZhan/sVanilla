@@ -26,6 +26,7 @@ public:
     void updateFeatures(const std::string& features);
     [[nodiscard]] Qt::CheckState getTrayState() const;
     [[nodiscard]] Qt::CheckState isEnableMinimizeTray() const;
+    [[nodiscard]] Qt::CheckState isSaveMainWindow() const;
 
 signals:
     void updateTheme(int theme);
@@ -36,6 +37,7 @@ private:
     void signalsAndSlots();
     inline void setRedStatus();
     inline void setGreenStatus();
+    void autoStartRun(bool isRun);
 
 private:
     Ui::DefaultSettings* ui;

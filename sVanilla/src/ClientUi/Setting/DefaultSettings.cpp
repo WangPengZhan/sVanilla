@@ -1,6 +1,10 @@
 #include <sstream>
 
 #include <QButtonGroup>
+#include <QFile>
+#include <QStandardPaths>
+#include <QDir>
+#include <QSettings>
 
 #include "DefaultSettings.h"
 #include "ui_DefaultSettings.h"
@@ -113,6 +117,7 @@ void DefaultSettings::signalsAndSlots()
     });
 
     connect(ui->checkBoxOpenStartup, &QCheckBox::stateChanged, this, [this](int state) {
+        autoStartRun(state);
         auto startConfig = SingleConfig::instance().startConfig();
         startConfig.autoStart = state;
         SingleConfig::instance().setStartUpConfig(startConfig);
@@ -156,6 +161,11 @@ Qt::CheckState DefaultSettings::isEnableMinimizeTray() const
     return ui->checkBoxMinToTray->checkState();
 }
 
+Qt::CheckState DefaultSettings::isSaveMainWindow() const
+{
+    return ui->checkBoxKeepState->checkState();
+}
+
 void DefaultSettings::setRedStatus()
 {
     auto palette = ui->labelAria2Status->palette();
@@ -168,4 +178,47 @@ void DefaultSettings::setGreenStatus()
     auto palette = ui->labelAria2Status->palette();
     palette.setColor(QPalette::WindowText, Qt::darkGreen);
     ui->labelAria2Status->setPalette(palette);
+}
+
+void DefaultSettings::autoStartRun(bool isRun)
+{
+    QString appName = QCoreApplication::applicationName();
+    QString appPath = QCoreApplication::applicationFilePath();
+
+#ifdef _WIN32
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+    if (isRun)
+    {
+        settings.setValue(appName, appPath.replace("/", "\\"));
+    }
+    else
+    {
+        settings.remove(appName);
+    }
+#elif __APPLE__
+    QString appListName = "sVanilla.my.app.plist";
+    QString appList = QDir::cleanPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + QDir::separator() + "Library" + QDir::separator() +
+                                      "LaunchAgents" + QDir::separator() + appListName);
+
+    QSettings autoRun(appPath, QSettings::NativeFormat);
+    autoRun.setValue("Label", "sVanilla.my.app.plist");
+    autoRun.setValue("Program", appPath);
+    autoRun.setValue("WorkingDirectory", QDir::cleanPath(QCoreApplication::applicationDirPath()));
+    autoRun.setValue("Disabled", false);
+    autoRun.setValue("RunAtLoad", isRun);
+#elif __linux__
+    std::string appDesktopFile = QCoreApplication::applicationDirPath().toStdString() + "/share/applications/sVanilla.desktop";
+    std::string autoCopyPath = "/etc/xdg/autostart/sVanilla.desktop";
+    std::string cmd;
+    if (isRun)
+    {
+        cmd = "pkexec cp " + appDesktopFile + " " + autoCopyPath;
+    }
+    else
+    {
+        cmd = "pkexec rm " + autoCopyPath;
+    }
+
+    system(cmd.c_str());
+#endif
 }

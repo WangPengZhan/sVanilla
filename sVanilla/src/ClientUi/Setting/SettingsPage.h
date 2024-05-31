@@ -22,6 +22,7 @@ public:
 
     [[nodiscard]] Qt::CheckState getTrayState() const;
     [[nodiscard]] Qt::CheckState isEnableMinimizeTray() const;
+    [[nodiscard]] Qt::CheckState isSaveMainWindow() const;
 
 private:
     void setUi();
