@@ -5,6 +5,7 @@
 SApplication::SApplication(int& argc, char** argv)
     : QApplication(argc, argv)
 {
+    m_translater.setTranslatesDir(QApplication::applicationDirPath() + "/translations");
     m_translater.setLanguage(static_cast<Translater::Language>(SingleConfig::instance().language()));
 }
 

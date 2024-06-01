@@ -7,6 +7,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QPushButton>
+#include <QApplication>
 
 #include <VanillaStyle/Style.h>
 #include <VanillaStyle/Style/VanillaStyle.h>
@@ -46,10 +47,6 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    if (!event->spontaneous() || !isVisible())
-    {
-        return;
-    }
     if (systemTray->isVisible() && ui->settingPage->isEnableMinimizeTray() == Qt::Checked)
     {
         hide();
@@ -75,6 +72,17 @@ void MainWindow::setUi()
     };
     ui->videoPage->setHistoryFunc(getHistoryFunc);
     ui->homePage->setHistoryFunc(getHistoryFunc);
+
+    if (ui->settingPage->isSaveMainWindow() == Qt::Checked)
+    {
+        QString projectPath = QApplication::applicationDirPath() + "/.sVanilla";
+        QFile projectFile(projectPath + "/MainWindow");
+        if (projectFile.open(QIODevice::ReadOnly))
+        {
+            restoreGeometry(projectFile.readAll());
+            projectFile.close();
+        }
+    }
 }
 
 void MainWindow::signalsAndSlots()
@@ -104,6 +112,26 @@ void MainWindow::signalsAndSlots()
 
     connect(ui->settingPage, &SettingsPage::updateTheme, this, &MainWindow::setTheme);
     connect(ui->settingPage, &SettingsPage::enableTray, this, &MainWindow::setTrayIconVisible);
+    connect(qApp, &QApplication::aboutToQuit, this, [&]() {
+        if (ui->settingPage->isSaveMainWindow() != Qt::Checked)
+        {
+            return;
+        }
+
+        QString projectPath = QApplication::applicationDirPath() + "/.sVanilla";
+        QDir projectDir(projectPath);
+        if (!projectDir.exists())
+        {
+            projectDir.mkdir(projectPath);
+        }
+
+        QFile projectFile(projectPath + "/MainWindow");
+        if (projectFile.open(QIODevice::WriteOnly))
+        {
+            projectFile.write(saveGeometry());
+            projectFile.close();
+        }
+    });
 }
 
 void MainWindow::setUpShortcuts()
@@ -219,6 +247,22 @@ void MainWindow::createTrayIcon()
     systemTray->setContextMenu(trayIconMenu);
 
     setTrayIconVisible(ui->settingPage->getTrayState());
+
+    connect(systemTray, &QSystemTrayIcon::activated, this, [&](QSystemTrayIcon::ActivationReason reason) {
+        if (reason == QSystemTrayIcon::Trigger)
+        {
+            if (isVisible() || QApplication::activeWindow())
+            {
+                hide();
+            }
+            else
+            {
+                raise();
+                activateWindow();
+                show();
+            }
+        }
+    });
 }
 
 void MainWindow::setTrayIconVisible(int state)

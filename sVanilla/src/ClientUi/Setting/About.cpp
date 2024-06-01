@@ -1,3 +1,5 @@
+#include <QClipboard>
+
 #include "About.h"
 #include "ui_About.h"
 #include "version.h"
@@ -38,4 +40,12 @@ void About::setUi()
 void About::signalsAndSlots()
 {
     connect(ui->verticalNavigationWidget, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    connect(ui->btnCopyInfo, &QPushButton::clicked, this, [&]() {
+        QString split = ": ";
+        QString text = ui->labelVersion->text() + split + ui->labelVerContext->text() + "\r\n" + ui->labelGitHash->text() + split +
+                       ui->labelGitHashContext->text() + "\r\n" + ui->labelBransh->text() + split + ui->labelBranchName->text() + "\r\n" +
+                       ui->labelBuildTime->text() + split + ui->labelBuildTimeContext->text() + "\r\n";
+        QClipboard* clipboard = QGuiApplication::clipboard();
+        clipboard->setText(text);
+    });
 }

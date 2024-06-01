@@ -1,5 +1,6 @@
 #include <QDir>
-#include <qapplication.h>
+#include <QApplication>
+#include <QDebug>
 
 #include "Translater.h"
 #include "ClientUi/Config/SingleConfig.h"
@@ -53,7 +54,10 @@ void Translater::setLanguage(Language language)
 
     for (const auto& translateFile : qmFiles)
     {
-        m_translator.load(translateFile);
+        if (!m_translator.load(translateFile, translateDir.absolutePath()))
+        {
+            qDebug() << "translator load error, file: " << translateFile;
+        }
     }
 
     qApp->removeTranslator(&m_translator);
