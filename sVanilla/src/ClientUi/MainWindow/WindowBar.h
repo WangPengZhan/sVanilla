@@ -25,6 +25,9 @@ public:
     void setCloseButton(QAbstractButton* btn);
     QPushButton* maxButton();
 
+protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
 private:
     void signalsAndSlots();
     void setUi() const;

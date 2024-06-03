@@ -249,12 +249,12 @@ decltype(auto) indexToType(int index, Lambda lambda)
         static_assert(TypeToIndex_v<std::vector<uint8_t>> == blobStartIndex + 0, "error index");
         lambda(std::vector<uint8_t>{});
     }
-    case blobStartIndex + 1:
-    {
-        using ValueIndex = TypeToIndex<const void*>;
-        static_assert(ValueIndex::value == blobStartIndex + 1, "error index");
-        lambda(typename ValueIndex::type{});
-    }
+    // case blobStartIndex + 1:
+    //{
+    //     using ValueIndex = TypeToIndex<const void*>;
+    //     static_assert(ValueIndex::value == blobStartIndex + 1, "error index");
+    //     lambda(typename ValueIndex::type{});
+    // }
     default:
         lambda(std::string{});
         break;
@@ -297,8 +297,8 @@ public:
     ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos, bool autoIncremnet = false,
                bool unique = false);
 
-    template <typename Enity, typename ValueType>
-    ColumnInfo(std::string columnName, ValueType Enity::*memberPtr, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
+    template <typename Entity, typename ValueType>
+    ColumnInfo(std::string columnName, ValueType Entity::*memberPtr, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
                bool autoIncremnet, bool unique, bool primaryKey)
         : m_columnName(std::move(columnName))
         , m_fieldType(getFieldType<ValueType>())
@@ -308,7 +308,8 @@ public:
         , m_pPrimaryKeyColumnInfos(pPrimaryKeyColumnInfos)
         , m_valueTypeIndex(TypeToIndex_v<ValueType>)
     {
-        auto pMemberPtr = new (ValueType Enity::*);
+        using MemberPtrType = ValueType Entity::*;
+        auto pMemberPtr = new (MemberPtrType);
         *pMemberPtr = memberPtr;
         m_memberPtr = pMemberPtr;
 

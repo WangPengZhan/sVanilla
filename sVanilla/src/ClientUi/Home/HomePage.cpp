@@ -11,6 +11,8 @@
 #include "BiliApi/BilibiliUrl.h"
 #include "ClientUi/Utils/Utility.h"
 #include "Plugin/PluginManager.h"
+#include "ClientUi/Storage/SearchHistoryStorage.h"
+#include "ClientUi//Storage/StorageManager.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 
@@ -31,11 +33,6 @@ HomePage::~HomePage()
 void HomePage::setWebsiteIcon(const QString& iconPath)
 {
     ui->lineEditHome->setWebsiteIcon(iconPath);
-}
-
-void HomePage::setHistoryFunc(const std::function<const std::list<std::string>()>& historyFunc)
-{
-    getHistory = historyFunc;
 }
 
 void HomePage::signalsAndSlots()
@@ -113,11 +110,11 @@ void HomePage::createHistoryMenu()
     {
         m_historyMenu->clear();
     }
-    if (getHistory)
-    {
-        const auto actionCallback = [this](const QString& text) {
-            ui->lineEditHome->setText(text);
-        };
-        util::createMenu(m_historyMenu, width() / 3, getHistory(), actionCallback);
-    }
+
+    const auto actionCallback = [this](const QString& text) {
+        ui->lineEditHome->setText(text);
+    };
+    auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
+    auto history = historyStorage->allItems();
+    util::createMenu(m_historyMenu, width() / 3, history, actionCallback);
 }

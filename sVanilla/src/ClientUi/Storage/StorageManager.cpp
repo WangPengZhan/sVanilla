@@ -1,6 +1,7 @@
 #include "Sqlite/Storage/SqliteDBManager.h"
-#include "FinishedItemStorage.h"
+#include "ClientUi/Storage/FinishedItemStorage.h"
 #include "ClientUi/Storage/DownloadingItemStorage.h"
+#include "ClientUi/Storage/SearchHistoryStorage.h"
 #include "StorageManager.h"
 
 namespace sqlite
@@ -22,6 +23,11 @@ std::shared_ptr<FinishItemStorage> StorageManager::finishedItemStorage() const
 std::shared_ptr<DownloadingItemStorage> StorageManager::downloadingStorage() const
 {
     return m_downloadingItemStorage;
+}
+
+std::shared_ptr<SearchHistoryStorage> StorageManager::searchHistoryStorage() const
+{
+    return m_searchHistoryStorage;
 }
 
 bool StorageManager::isDownloaded(const std::string& guid) const
@@ -63,10 +69,29 @@ std::shared_ptr<DownloadingItemStorage> StorageManager::createDownloadingItemSto
     return std::make_shared<DownloadingItemStorage>(readPtr, tableName, writePtr);
 }
 
+std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage(const std::string& tableName)
+{
+    auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
+    auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
+    auto& tableStruct = sqlite::TableStructInfo<typename SearchHistoryStorage::Entity>::self();
+    sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
+    std::string trigger = "CREATE TRIGGER IF NOT EXISTS limit_table_size AFTER INSERT ON " + tableName + " ";
+    trigger += "BEGIN DELETE FROM " + tableName + " WHERE ";
+    trigger += tableStruct.url.colunmName() + " IN ( ";
+    trigger += "SELECT " + tableStruct.url.colunmName() + " FROM " + tableName + " ";
+    trigger += "ORDER BY " + tableStruct.timestamp.colunmName() + " DESC ";
+    trigger += "LIMIT 1 OFFSET " + std::to_string(SearchHistoryStorage::maxNum) + " );";
+    trigger += "END;";
+    writePtr->execute(trigger);
+
+    return std::make_shared<SearchHistoryStorage>(readPtr, tableName, writePtr);
+}
+
 StorageManager::StorageManager()
 {
     m_downloadingItemStorage = createDownloadingItemStorage("DownloadingItem");
     m_finishedItemStorage = createFinishedItemStorage("FinishedItem");
+    m_searchHistoryStorage = createSearchHistoryStorage("SearchHistory");
 }
 
 }  // namespace sqlite

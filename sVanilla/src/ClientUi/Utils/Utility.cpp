@@ -26,7 +26,7 @@ void showInFileExplorer(const QString& filePath)
     QProcess::startDetached(explorerCommand, arguments);
 }
 
-void createMenu(QMenu* menu, int width, const std::list<std::string>& history, const std::function<void(const QString&)>& actionCallback)
+void createMenu(QMenu* menu, int width, const std::vector<std::string>& history, const std::function<void(const QString&)>& actionCallback)
 {
     for (const auto& uri : history)
     {

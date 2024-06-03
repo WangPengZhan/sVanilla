@@ -194,7 +194,11 @@ void SQLiteStatement::bind(const std::string& columnName)
 std::string SQLiteStatement::expandedSQL() const
 {
     char* expanded = sqlite3_expanded_sql(handle());
-    std::string strExpanded(expanded);
+    std::string strExpanded;
+    if (expanded)
+    {
+        strExpanded = expanded;
+    }
     sqlite3_free(expanded);
     return strExpanded;
 }

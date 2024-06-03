@@ -6,6 +6,7 @@ namespace Ui
 {
 class AdvanceSettings;
 }
+class QButtonGroup;
 QT_END_NAMESPACE
 
 class AdvanceSettings : public QWidget
@@ -22,4 +23,6 @@ private:
 
 private:
     Ui::AdvanceSettings* ui;
+    QButtonGroup* m_videoOrderGroup;
+    QButtonGroup* m_videoDefaultGroup;
 };

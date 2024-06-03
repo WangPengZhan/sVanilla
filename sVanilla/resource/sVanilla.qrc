@@ -7,6 +7,7 @@
         <file>appIcon/sVanillaTitleLight.svg</file>
         <file>icon/bar/minimize.svg</file>
         <file>icon/bar/maximize.svg</file>
+        <file>icon/bar/restore.svg</file>
         <file>icon/bar/close.svg</file>
         <file>icon/bar/download.svg</file>
         <file>icon/bar/setting.svg</file>

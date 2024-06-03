@@ -31,7 +31,7 @@ public:
         return json.dump(4);
     }
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(VideoOwner, mid, name, face)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(VideoOwner, mid, name, face)
 };
 
 class ArgueInfo : public Protocol
@@ -503,7 +503,7 @@ public:
         to_json(json, *this);
         return json.dump(4);
     }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Durl, order, length, size, ahead, vhead, url, backup_url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Durl, order, length, size, ahead, vhead, url, backup_url)
 };
 
 class SupportFormats : public Protocol
@@ -520,7 +520,7 @@ public:
         to_json(json, *this);
         return json.dump(4);
     }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SupportFormats, quality, format, new_description, display_desc, superscript)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SupportFormats, quality, format, new_description, display_desc, superscript)
 };
 
 class PlayUrlData : public Protocol
@@ -546,7 +546,8 @@ public:
         to_json(json, *this);
         return json.dump(4);
     }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayUrlData, from, result, message, quality, format, timelength, accept_format, accept_description, accept_quality,
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlData, from, result, message, quality, format, timelength, accept_format, accept_description,
+                                                accept_quality,
                                    video_codecid, seek_param, seek_type, durl, support_formats)
 };
 

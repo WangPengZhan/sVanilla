@@ -20,6 +20,8 @@
 #include "ClientUi/Utils/SortItems.h"
 #include "ClientUi/Utils/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
+#include "ClientUi/Storage/SearchHistoryStorage.h"
+#include "ClientUi//Storage/StorageManager.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -111,13 +113,13 @@ void VideoWidget::createHistoryMenu()
     {
         m_historyMenu->clear();
     }
-    if (getHistory)
-    {
-        const auto actionCallback = [this](const QString& text) {
-            ui->lineEdit->setText(text);
-        };
-        util::createMenu(m_historyMenu, width() / 3, getHistory(), actionCallback);
-    }
+
+    auto actionCallback = [this](const QString& text) {
+        ui->lineEdit->setText(text);
+    };
+    auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
+    auto history = historyStorage->allItems();
+    util::createMenu(m_historyMenu, width() / 3, history, actionCallback);
 }
 
 void VideoWidget::showSearchLineEdit()
@@ -317,9 +319,4 @@ void VideoWidget::setDownloadingNumber(int number) const
 
 void VideoWidget::setDownloadedNumber(int number) const
 {
-}
-
-void VideoWidget::setHistoryFunc(const std::function<const std::list<std::string>()>& get)
-{
-    getHistory = get;
 }

@@ -61,7 +61,15 @@ PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std:
     std::string response;
     get(VideoURL::Playurl, response, param);
 
-    return PlayUrlOrigin(getDataFromRespones(response));
+    try
+    {
+        return PlayUrlOrigin(getDataFromRespones(response));
+    }
+    catch (const std::exception& e)
+    {
+        std::string str = e.what();
+        return PlayUrlOrigin();
+    }
 }
 
 LoginUrlOrigin BilibiliClient::getLoginUrl()

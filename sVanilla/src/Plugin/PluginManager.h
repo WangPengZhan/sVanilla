@@ -6,6 +6,8 @@
 #include <unordered_set>
 #include <mutex>
 #include <set>
+#include <shared_mutex>
+#include <compare>
 
 #include <nlohmann/json.hpp>
 
@@ -17,34 +19,18 @@ namespace plugin
 
 struct PluginConfig
 {
-    std::string pluginName;
-    std::string version;
-    std::string libName;
-    bool enabled;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PluginConfig, pluginName, version, libName, enabled)
-};
-
-struct PluginInfo
-{
     std::string name;
     std::string version;
+    std::string libName;
     int id;
     std::string description;
     std::string libFile;
+    bool enabled;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PluginConfig, name, version, libName, id, description, libFile, enabled)
 
-    bool operator>(const PluginInfo& other) const
+    std::strong_ordering operator<=>(const PluginConfig& other) const
     {
-        return id > other.id;
-    }
-
-    bool operator==(const PluginInfo& other) const
-    {
-        return id == other.id;
-    }
-
-    bool operator<(const PluginInfo& other) const
-    {
-        return id < other.id;
+        return id <=> other.id;
     }
 };
 
@@ -64,7 +50,7 @@ public:
 
     void pluginDirFileAdded();
 
-    std::set<PluginInfo> getPluginsInfo() const;
+    std::set<PluginConfig> getPluginConfig() const;
 
     void loadConfig();
     void saveConfig() const;
@@ -96,9 +82,9 @@ namespace std
 {
 
 template <>
-class hash<plugin::PluginInfo>
+class hash<plugin::PluginConfig>
 {
-    size_t operator()(const plugin::PluginInfo& pluginInfo) const
+    size_t operator()(const plugin::PluginConfig& pluginInfo) const
     {
         return hash<int>()(pluginInfo.id);
     }

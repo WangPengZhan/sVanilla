@@ -17,7 +17,6 @@ public:
     ~HomePage();
 
     void setWebsiteIcon(const QString& iconPath);
-    void setHistoryFunc(const std::function<const std::list<std::string>()>&);
 
 signals:
     void HasAdded(bool hasAdded);
@@ -32,5 +31,4 @@ private:
 private:
     Ui::HomePage* ui;
     QMenu* m_historyMenu = nullptr;
-    std::function<const std::list<std::string>()> getHistory;
 };

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
+    <width>529</width>
     <height>599</height>
    </rect>
   </property>
@@ -29,8 +29,8 @@
    <property name="bottomMargin">
     <number>10</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QLabel" name="labelLanguageIdentifier">
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelSystemTray">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -38,112 +38,18 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Language</string>
+      <string>SystemTray</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="2">
-    <widget class="::FileSelector" name="folderSelectorDownloadPath">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>23</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelStartUpIdentifier">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="4" column="1" colspan="3">
+    <widget class="QCheckBox" name="checkBoxOpenStartup">
      <property name="text">
-      <string>StartUp</string>
+      <string>Open at startup</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="2" colspan="2">
-    <widget class="QCheckBox" name="checkBoxResumeTask">
-     <property name="text">
-      <string>Automatically resume all unfinished tasks</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="2">
-    <widget class="QSpinBox" name="spinBoxThread">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>23</height>
-      </size>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>32</number>
-     </property>
-     <property name="singleStep">
-      <number>1</number>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2" colspan="2">
-    <widget class="QCheckBox" name="checkBoxKeepState">
-     <property name="text">
-      <string>Keep size and position of the window when exit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="labelResolutionIdentifier">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>0</width>
-       <height>20</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Resolution</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="2">
-    <widget class="QComboBox" name="comboBoxResolution">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>23</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>1080P</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>720P</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="7" column="0">
+   <item row="7" column="1">
     <widget class="QLabel" name="labelDownloadPathIdentifier">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -158,31 +64,98 @@
       </size>
      </property>
      <property name="text">
-      <string>Download Path</string>
+      <string> Path</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QComboBox" name="comboBoxLanguge">
-     <property name="minimumSize">
+   <item row="11" column="0">
+    <widget class="QLabel" name="labelThread">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="baseSize">
       <size>
        <width>0</width>
-       <height>23</height>
+       <height>20</height>
       </size>
      </property>
-     <item>
-      <property name="text">
-       <string>English</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>中文</string>
-      </property>
-     </item>
+     <property name="text">
+      <string>Thread</string>
+     </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="12" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelStartUpIdentifier">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>StartUp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelTheme">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Theme</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="labelDownload">
+     <property name="text">
+      <string>Download</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1" colspan="2">
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
@@ -237,96 +210,15 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="2" colspan="2">
-    <widget class="QCheckBox" name="checkBoxMinToTray">
-     <property name="text">
-      <string>Minimize to SystemTray</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="labelTheme">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>0</width>
-       <height>20</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Theme</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="labelThread">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>0</width>
-       <height>20</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Thread</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="2">
-    <widget class="QCheckBox" name="checkBoxOpenStartup">
-     <property name="text">
-      <string>Open at startup</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="10" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="2" colspan="2">
+   <item row="2" column="1" colspan="3">
     <widget class="QCheckBox" name="checkBoxEnableTray">
      <property name="text">
       <string>Enable SystemTray</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelSystemTray">
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelLanguageIdentifier">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -334,18 +226,82 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>SystemTray</string>
+      <string>Language</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
-    <widget class="QLabel" name="labelAria2Identifier">
+   <item row="9" column="1">
+    <widget class="QLabel" name="labelResolutionIdentifier">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
      <property name="text">
-      <string>Aria2 Status:</string>
+      <string>Resolution</string>
      </property>
     </widget>
    </item>
-   <item row="12" column="0" colspan="4">
+   <item row="11" column="2">
+    <widget class="QSpinBox" name="spinBoxThread">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>32</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="comboBoxLanguge">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>23</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>English</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>中文</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="3">
+    <widget class="QCheckBox" name="checkBoxKeepState">
+     <property name="text">
+      <string>Keep size and position of the window when exit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0" colspan="4">
     <widget class="QWidget" name="widgetAria2" native="true">
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="leftMargin">
@@ -546,6 +502,67 @@
      </layout>
     </widget>
    </item>
+   <item row="6" column="1" colspan="3">
+    <widget class="QCheckBox" name="checkBoxResumeTask">
+     <property name="text">
+      <string>Automatically resume all unfinished tasks</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
+    <widget class="QLabel" name="labelAria2Identifier">
+     <property name="text">
+      <string>Aria2 Status:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="3">
+    <widget class="QCheckBox" name="checkBoxMinToTray">
+     <property name="text">
+      <string>Minimize to SystemTray</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="::FileSelector" name="folderSelectorDownloadPath">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>23</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
+    <widget class="QComboBox" name="comboBoxResolution">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>23</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>1080P</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>720P</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>NameRule</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2">
+    <widget class="NameRuleWidget" name="widgetNameRule" native="true"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -553,6 +570,12 @@
    <class>::FileSelector</class>
    <extends>QLineEdit</extends>
    <header>SUI/FileSelector.h</header>
+  </customwidget>
+  <customwidget>
+   <class>NameRuleWidget</class>
+   <extends>QWidget</extends>
+   <header>SUI/NameRule/NameRuleWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

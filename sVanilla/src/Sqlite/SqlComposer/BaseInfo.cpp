@@ -144,7 +144,7 @@ std::string BaseTableStructInfo::createSql() const
         {
             for (auto it = m_primaryColunmInfos.begin(); it != m_primaryColunmInfos.end(); ++it)
             {
-                ss << "PRIMARY KEY"
+                ss << ", PRIMARY KEY"
                    << "(";
                 if (it != m_primaryColunmInfos.begin())
                 {
