@@ -2,8 +2,8 @@
 
 #include "UriProcess.h"
 #include "BiliApi/BilibiliUrl.h"
-#include "ClientUi/MainWindow/SApplication.h"
-
+#include "ClientUi/Storage/StorageManager.h"
+#include "ClientUi/Storage/SearchHistoryStorage.h"
 
 UriProcess::UriProcess(QObject* parent)
     : QObject(parent)
@@ -32,6 +32,9 @@ void UriProcess::parseUri(const std::string& uri)
     {
         return;
     }
+
+    auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
+
     UriInfo info;
     info.type = type;
     if (type == "bilibili")
@@ -41,12 +44,14 @@ void UriProcess::parseUri(const std::string& uri)
         {
             info.id = id;
             emit uriProcessComplete(info);
+            historyStorage->insertOrUpdate(uri, 1);
         }
     }
     else if (type == "default")
     {
         info.id = uri;
         emit uriProcessComplete(info);
+        historyStorage->insertOrUpdate(uri, 0);
     }
 }
 
@@ -74,16 +79,10 @@ std::string UriProcess::checkUriType(const std::string& uri)
     {
         return {};
     }
-    m_history.push_back(uri);
-    // will load plugin for check, return plugin name
+
     if (isValidUrl(uri))
     {
         return "bilibili";
     }
     return "default";
-}
-
-const std::list<std::string>& UriProcess::getHistory()
-{
-    return m_history;
 }

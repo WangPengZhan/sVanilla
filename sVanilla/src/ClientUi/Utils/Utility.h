@@ -5,7 +5,7 @@ namespace util
 {
 
 void showInFileExplorer(const QString& filePath);
-void createMenu(QMenu* menu, int width, const std::list<std::string>& history, const std::function<void(const QString&)>&);
+void createMenu(QMenu* menu, int width, const std::vector<std::string>& history, const std::function<void(const QString&)>&);
 
 struct MoveStartEndValue
 {

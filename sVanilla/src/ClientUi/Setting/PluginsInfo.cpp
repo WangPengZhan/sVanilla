@@ -18,6 +18,20 @@ PluginsInfo::~PluginsInfo()
     delete ui;
 }
 
+void PluginsInfo::showEvent(QShowEvent* event)
+{
+    if (m_showFirst)
+    {
+        ui->tableWidget->setColumnWidth(0, 160);
+        ui->tableWidget->setColumnWidth(1, 60);
+        ui->tableWidget->setColumnWidth(2, 30);
+        ui->tableWidget->setColumnWidth(3, 240);
+        m_showFirst = false;
+    }
+
+    return QWidget::showEvent(event);
+}
+
 void PluginsInfo::setUi()
 {
     auto horHeader = ui->tableWidget->horizontalHeader();
@@ -30,7 +44,7 @@ void PluginsInfo::signalsAndSlots()
 
 void PluginsInfo::initPluginInfos()
 {
-    auto pluginsInfo = sApp->pluginManager().getPluginsInfo();
+    auto pluginsInfo = sApp->pluginManager().getPluginConfig();
     ui->tableWidget->setRowCount(pluginsInfo.size());
     int i = 0;
     for (const auto& pluginInfo : pluginsInfo)

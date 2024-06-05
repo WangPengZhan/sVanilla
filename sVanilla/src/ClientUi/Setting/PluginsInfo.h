@@ -16,6 +16,9 @@ public:
     explicit PluginsInfo(QWidget* parent = nullptr);
     ~PluginsInfo();
 
+protected:
+    void showEvent(QShowEvent* event) override;
+
 private:
     void setUi();
     void signalsAndSlots();
@@ -24,4 +27,5 @@ private:
 
 private:
     Ui::PluginsInfo* ui;
+    bool m_showFirst = true;
 };

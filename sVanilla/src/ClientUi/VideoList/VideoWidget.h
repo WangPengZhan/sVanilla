@@ -49,7 +49,6 @@ public:
     void setWebsiteIcon(const QString& iconPath);
     void setDownloadingNumber(int number) const;
     void setDownloadedNumber(int number) const;
-    void setHistoryFunc(const std::function<const std::list<std::string>()>&);
 
 signals:
     void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
@@ -84,7 +83,6 @@ private:
     Ui::VideoPage* ui;
     QMenu* m_historyMenu = nullptr;
     std::vector<std::shared_ptr<VideoInfoFull>> m_originalList;
-    std::function<const std::list<std::string>()> getHistory;
 };
 
 template <typename Widget>

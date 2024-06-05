@@ -27,5 +27,5 @@ public:
 private:
     QString m_translatesDir;
     Language m_language = Unknow;
-    QTranslator m_translator;
+    std::vector<std::shared_ptr<QTranslator>> m_translators;
 };

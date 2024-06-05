@@ -69,10 +69,12 @@ include_directories(
 )
 
 file(GLOB_RECURSE QTS "sVanilla/translate/*.ts")
+file(GLOB_RECURSE Q_EN_TS "sVanilla/translate/*_en.ts")
+file(GLOB_RECURSE Q_ZH_CN_TS "sVanilla/translate/*_zh_CN.ts")
+file(GLOB_RECURSE Q_ZH_TW_TS "sVanilla/translate/*_zh_TW.ts")
 file(GLOB_RECURSE QRC "sVanilla/resource/*.qrc")
 file(GLOB_RECURSE SOURCES "sVanilla/src/*.cpp" "sVanilla/src/*.h")
 file(GLOB_RECURSE UI "sVanilla/src/*.ui")
-
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
@@ -205,7 +207,6 @@ install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json" DESTINATION ${C
 install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
 file(GLOB VCPAKG_DEP_DIRS LIST_DIRECTORIES true "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/packages/*")
-message("VCPKG ${VCPAKG_DEP_DIRS}")
 if (VCPAKG_DEP_DIRS)
     foreach (VCPAKG_DEP_DIR ${VCPAKG_DEP_DIRS})
         if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
@@ -239,3 +240,12 @@ endif ()
 
 include(cmake/apptranslate.cmake)
 apptranslate(${QT_COMPONENTS})
+if (Q_EN_TS)
+    apptranslate_copy(${Q_EN_TS} "en")
+endif()
+if (Q_ZH_CN_TS)
+    apptranslate_copy(${Q_ZH_CN_TS} "zh_CN")
+endif()
+if (Q_ZH_TW_TS)
+    apptranslate_copy(${Q_ZH_TW_TS} "zh_TW")
+endif()

@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QSettings>
+#include <QStandardPaths>
 
 #include "Util/Setting.h"
 #include "SingleConfig.h"
@@ -140,6 +141,30 @@ int SingleConfig::downloadThreadNum() const
     return nThreadNum;
 }
 
+void SingleConfig::setVideoWidgetConfig(const VideoWidgetConfig& videoWidgetConfig)
+{
+    m_appSettings->beginGroup("VideoWidget");
+    m_appSettings->setValue("Order", videoWidgetConfig.order);
+    m_appSettings->setValue("OrderBy", videoWidgetConfig.orderBy);
+    m_appSettings->setValue("NoParseList", videoWidgetConfig.isNoParseList);
+    m_appSettings->setValue("WidgetLayout", videoWidgetConfig.widgetLayout);
+    m_appSettings->endGroup();
+}
+
+VideoWidgetConfig SingleConfig::videoWidgetConfig() const
+{
+    VideoWidgetConfig videoWidgetConfig;
+
+    m_appSettings->beginGroup("VideoWidget");
+    videoWidgetConfig.order = m_appSettings->value("Order").toInt();
+    videoWidgetConfig.orderBy = m_appSettings->value("OrderBy").toString();
+    videoWidgetConfig.isNoParseList = m_appSettings->value("NoParseList").toBool();
+    videoWidgetConfig.widgetLayout = m_appSettings->value("WidgetLayout").toInt();
+    m_appSettings->endGroup();
+
+    return videoWidgetConfig;
+}
+
 SingleConfig::SingleConfig()
 {
     iniConfig();
@@ -157,6 +182,13 @@ void SingleConfig::iniConfig()
         m_appSettings = std::make_shared<QSettings>(appConfigPath, QSettings::IniFormat);
 
         // compatibility
+        auto groups = m_appSettings->childGroups();
+        if (!groups.contains("Download"))
+        {
+            DownloadConfig downloadConfig;
+            // downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+            setDownloadConfig(downloadConfig);
+        }
     }
     else
     {
@@ -181,6 +213,10 @@ void SingleConfig::iniConfig()
         setSystemTrayConfig(systemTrayConfig);
         setDownloadThreadNum(1);
         setStartUpConfig(StartUpConfig());
+
+        DownloadConfig downloadConfig;
+        // downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+        setDownloadConfig(downloadConfig);
     }
 
     const QString aria2ConfigPath = QApplication::applicationDirPath() + "/config/aria2conf.conf";

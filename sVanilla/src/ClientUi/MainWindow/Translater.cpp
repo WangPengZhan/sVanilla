@@ -50,20 +50,31 @@ void Translater::setLanguage(Language language)
 
     QDir translateDir(fileDir(language));
     translateDir.setNameFilters(QStringList() << "*.qm");
-    QStringList qmFiles = translateDir.entryList();
+    QStringList translateFiles = translateDir.entryList();
 
-    for (const auto& translateFile : qmFiles)
+    std::vector<std::shared_ptr<QTranslator>> translators;
+    for (const auto& translateFile : translateFiles)
     {
-        if (!m_translator.load(translateFile, translateDir.absolutePath()))
+        auto translator = std::make_shared<QTranslator>();
+        if (!translator->load(translateFile, translateDir.absolutePath()))
         {
             qDebug() << "translator load error, file: " << translateFile;
+            continue;
         }
+        translators.push_back(translator);
     }
 
-    qApp->removeTranslator(&m_translator);
+    for (const auto& translator : m_translators)
+    {
+        qApp->removeTranslator(translator.get());
+    }
+    m_translators = translators;
     if (language != English)
     {
-        qApp->installTranslator(&m_translator);
+        for (const auto& translator : m_translators)
+        {
+            qApp->installTranslator(translator.get());
+        }
     }
 
     m_language = language;

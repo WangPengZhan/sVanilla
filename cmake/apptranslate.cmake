@@ -39,3 +39,20 @@ function(apptranslate QT_COMPMENTS)
         endforeach()
     endforeach()
 endfunction()
+
+function(apptranslate_copy TS_FILES LANGUAGE)
+    foreach(TS_FILE ${TS_FILES})
+        get_filename_component(QM_FILENAME ${TS_FILE} NAME_WE)
+        set(QM_FILE ${CMAKE_CURRENT_BINARY_DIR}/${QM_FILENAME}.qm)
+        if (EXISTS ${QM_FILE})
+            add_custom_command(TARGET ${PROJECT_NAME} 
+                POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E make_directory 
+                        $<TARGET_FILE_DIR:${PROJECT_NAME}>/translations/${LANGUAGE}/
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        ${QM_FILE}
+                        $<TARGET_FILE_DIR:${PROJECT_NAME}>/translations/${LANGUAGE}/
+            )
+        endif()
+    endforeach()
+endfunction()

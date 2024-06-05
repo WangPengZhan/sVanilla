@@ -32,7 +32,7 @@ struct DownloadConfig
 {
     QString downloadDir;
     VideQuality videoQuality = VideQuality::Best;
-    QString nameRule = "$title$-$author$";
+    QString nameRule = "$title$";
 };
 
 struct SystemTrayConfig
@@ -46,6 +46,14 @@ struct StartUpConfig
     bool autoStart = false;
     bool keepMainWindow = false;
     bool autoRemuseUnfinishedTask = false;
+};
+
+struct VideoWidgetConfig
+{
+    int order{0};
+    QString orderBy;
+    bool isNoParseList = false;
+    int widgetLayout{0};
 };
 
 class SingleConfig
@@ -73,6 +81,9 @@ public:
 
     void setDownloadThreadNum(int threadNum);
     int downloadThreadNum() const;
+
+    void setVideoWidgetConfig(const VideoWidgetConfig& startUpConfig);
+    VideoWidgetConfig videoWidgetConfig() const;
 
 private:
     SingleConfig();

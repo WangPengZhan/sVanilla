@@ -67,12 +67,6 @@ void MainWindow::setUi()
     setLightTheme();
     createTrayIcon();
 
-    const auto getHistoryFunc = [this]() {
-        return m_uriProcess->getHistory();
-    };
-    ui->videoPage->setHistoryFunc(getHistoryFunc);
-    ui->homePage->setHistoryFunc(getHistoryFunc);
-
     if (ui->settingPage->isSaveMainWindow() == Qt::Checked)
     {
         QString projectPath = QApplication::applicationDirPath() + "/.sVanilla";
@@ -398,10 +392,11 @@ void MainWindow::loadSystemButton()
     // Emulate Window system menu button behaviors
 
     connect(windowBar, &WindowBar::minimizeRequested, this, &QWidget::showMinimized);
-    connect(windowBar, &WindowBar::maximizeRequested, this, [this](const bool max) {
-        (max) ? showMaximized() : showNormal();
+    connect(windowBar, &WindowBar::maximizeRequested, this, [this]() {
+        isMaximized() ? showNormal() : showMaximized();
         emulateLeaveEvent(windowBar->maxButton());
     });
     connect(windowBar, &WindowBar::closeRequested, this, &QWidget::close);
+    installEventFilter(windowBar);
 }
 #endif

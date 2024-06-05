@@ -51,7 +51,7 @@ public:
     static bool dropViewIfExists(const SqliteWithMutexPtr& db, const std::string& tableName);
 
     template <typename Entity>
-    static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition = {});
+    static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition);
     template <typename Entity>
     static std::vector<Entity> queryEntities(const SqliteWithMutexPtr& db, const std::string& tableName, int index, int nums);
     template <typename Entity>
@@ -241,7 +241,16 @@ inline int64_t SqliteUtil::updateEntities(const SqliteWithMutexPtr& db, const st
     std::string sql = "UPDATE " + tableName + " SET ";
     sql += TableStructInfo<Entity>::self().updatePrepareSql();
 
+    ConditionWrapper conditionWrapper;
+    const auto& uniqueCols = TableStructInfo<Entity>::self().primaryColumnInfos();
+    for (const auto& uniqueCol : uniqueCols)
+    {
+        conditionWrapper.addCondition(*uniqueCol, Condition::EQUALS);
+    }
+    sql += conditionWrapper.prepareConditionString();
+
     SQLiteStatement stmt(*db, sql);
+
     db->transaction();
     try
     {
@@ -266,6 +275,14 @@ inline int64_t SqliteUtil::updateEntitiesWithOutTrans(const SqliteWithMutexPtr& 
 
     std::string sql = "UPDATE " + tableName + " SET ";
     sql += TableStructInfo<Entity>::self().updatePrepareSql();
+
+    ConditionWrapper conditionWrapper;
+    const auto& uniqueCols = TableStructInfo<Entity>::self().primaryColumnInfos();
+    for (const auto& uniqueCol : uniqueCols)
+    {
+        conditionWrapper.addCondition(*uniqueCol, Condition::EQUALS);
+    }
+    sql += conditionWrapper.prepareConditionString();
 
     SQLiteStatement stmt(*db, sql);
     insertEntitiesCore<Entity>(stmt, entities);
@@ -293,14 +310,26 @@ inline void SqliteUtil::updateEntitiesCore(SQLiteStatement& stmt, const std::vec
         int index = entity.bind(stmt);
         for (const auto& uniqueCol : uniqueCols)
         {
-            indexToType(uniqueCol, [&](auto&& elem) {
-                using ValueType = decltype(elem);
-                auto memberPtr = uniqueCol.template memberPtr<Entity, ValueType>();
+            indexToType(uniqueCol->valueTypeIndex(), [&](auto&& elem) {
+                using ValueType = std::remove_cvref_t<decltype(elem)>;
+                auto memberPtr = (*uniqueCol).template memberPtr<Entity, ValueType>();
                 auto value = entity.*(*memberPtr);
-                entity.stmt.bind(index++, elem);
+                if constexpr (std::is_same_v<ValueType, bool> || std::is_same_v<ValueType, uint8_t> || std::is_same_v<ValueType, int8_t> ||
+                              std::is_same_v<ValueType, uint16_t> || std::is_same_v<ValueType, int16_t> || std::is_same_v<ValueType, uint64_t>)
+                {
+                    stmt.bind(index++, int32_t(value));
+                }
+                else if constexpr (std::is_same_v<ValueType, float> || std::is_same_v<ValueType, long double>)
+                {
+                    stmt.bind(index++, static_cast<double>(value));
+                }
+                else
+                {
+                    stmt.bind(index++, value);
+                }
             });
         }
-        ConditionWrapper condtion;
+
         stmt.executeStep();
         stmt.reset();
     }

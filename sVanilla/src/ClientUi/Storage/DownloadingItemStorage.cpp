@@ -1,5 +1,4 @@
 #include "ClientUi/Storage/DownloadingItemStorage.h"
-#include "DownloadingItemStorage.h"
 
 int DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
 {

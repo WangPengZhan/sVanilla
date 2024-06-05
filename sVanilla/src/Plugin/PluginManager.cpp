@@ -64,19 +64,22 @@ void PluginManager::addPlugin(const std::string& pluginPath)
     PluginConfig pluginConfig;
     for (const auto& config : m_pluginConfig)
     {
-        if (config.pluginName == plugin->pluginName())
+        if (config.name == plugin->pluginName())
         {
             pluginConfig = config;
             break;
         }
     }
 
-    if (pluginConfig.pluginName.empty())
+    if (pluginConfig.name.empty())
     {
         pluginConfig.enabled = true;
-        pluginConfig.pluginName = plugin->pluginName();
+        pluginConfig.name = plugin->pluginName();
         pluginConfig.libName = std::filesystem::path(pluginPath).stem().string();
+        pluginConfig.libFile = std::filesystem::path(pluginPath).filename().string();
         pluginConfig.version = plugin->pluginVersion();
+        pluginConfig.id = plugin->pluginID();
+        pluginConfig.description = plugin->pluginDescription();
         m_configChanged = true;
         m_pluginConfig.emplace_back(pluginConfig);
     }
@@ -120,24 +123,10 @@ void PluginManager::pluginDirFileAdded()
     }
 }
 
-std::set<PluginInfo> PluginManager::getPluginsInfo() const
+std::set<PluginConfig> PluginManager::getPluginConfig() const
 {
-    std::set<PluginInfo> results;
     std::lock_guard lk(m_pluginsMutex);
-    for (const auto& plugin : m_plugins)
-    {
-        PluginInfo pluginInfo;
-        if (m_libHandles.find(plugin.first) != m_libHandles.end())
-        {
-            pluginInfo.libFile = std::filesystem::path(m_libHandles.at(plugin.first)->libraryPath()).filename().string();
-        }
-        pluginInfo.name = plugin.second->pluginName();
-        pluginInfo.version = plugin.second->pluginVersion();
-        pluginInfo.id = plugin.second->pluginID();
-        pluginInfo.description = plugin.second->pluginDescription();
-        results.insert(pluginInfo);
-    }
-    return results;
+    return std::set<PluginConfig>(m_pluginConfig.begin(), m_pluginConfig.end());
 }
 
 void PluginManager::loadConfig()
@@ -155,7 +144,7 @@ void PluginManager::loadConfig()
 
     if (m_pluginConfig.empty())
     {
-        static PluginConfig biliConfig{"bili", "1.0.0", "bili", true};
+        static PluginConfig biliConfig{"bili", "1.0.0", "bili", 1, "bili plugin for https://www.bilibili.com/", "bilibili.dll", true};
         m_pluginConfig.emplace_back(biliConfig);
         m_configChanged = true;
         saveConfig();
