@@ -7,13 +7,6 @@ NameRuleWidget::NameRuleWidget(QWidget* parent)
 {
     ui->setupUi(this);
     signalsAndSlots();
-    std::unordered_map<std::string, std::string> rules{
-        {"title",    "this is Title"   },
-        {"date",     "this is Date"    },
-        {"author",   "this is Author"  },
-        {"keywords", "this is Keywords"}
-    };
-    init(rules);
 }
 
 NameRuleWidget::~NameRuleWidget()
@@ -40,6 +33,16 @@ void NameRuleWidget::updateLineEdit(const QString& rule)
     emit ui->lineEdit->textChanged(rule);
 }
 
+void NameRuleWidget::hidePreviewLabel(bool hide)
+{
+    hide ? ui->labelPreview->hide() : ui->labelPreview->show();
+}
+
+bool NameRuleWidget::isHidePreviewLabel() const
+{
+    return ui->labelPreview->isHidden();
+}
+
 void NameRuleWidget::initListWidget(const std::vector<QString>& nameRules) const
 {
     ui->listNameRule->setNameRules(nameRules);
@@ -49,7 +52,7 @@ void NameRuleWidget::signalsAndSlots()
 {
     connect(ui->lineEdit, &NameRuleEditWidget::textChanged, this, &NameRuleWidget::updatePreview);
     connect(ui->lineEdit, &NameRuleEditWidget::editingFinished, this, [this]() {
-        emit editingFinished(ui->labelPreview->text());
+        emit editingFinished(ui->lineEdit->text());
     });
 }
 

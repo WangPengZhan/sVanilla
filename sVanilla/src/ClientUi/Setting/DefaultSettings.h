@@ -35,6 +35,9 @@ signals:
 private:
     void setUi();
     void signalsAndSlots();
+
+    void loadConfigToUi();
+
     inline void setRedStatus();
     inline void setGreenStatus();
     void autoStartRun(bool isRun);
