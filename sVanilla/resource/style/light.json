@@ -179,6 +179,28 @@
                     "toggleButtonIconColor": "#2f343f"
                 }
             }
+        },
+        {
+            "enable": true,
+            "widgetType": "QMenu",
+            "propertyValue": "MenuWithNoBorderPatch",
+            "configPatch": {
+                "color": {
+                    "buttonForeground": "#4e5668",
+                    "buttonBackground": "#F8F6F4",
+                    "buttonHoveredForeground": "#C08C64",
+                    "buttonHoveredBackground": "#F8F0E5",
+                    "buttonPressedForeground": "#C08B5C",
+                    "buttonPressedBackground": "#F5EEE6",
+                    "buttonBorderColor": "#4e5668",
+                    "menuBackground": "#E6FFFFFF",
+                    "menuSeparatorColor": "#CCDAC0A3",
+                    "menuShortCutsBackground": "#CCDDE6ED"
+                },
+                "size": {
+                    "checkBoxBorder": 0
+                }
+            }
         }
     ]
 }

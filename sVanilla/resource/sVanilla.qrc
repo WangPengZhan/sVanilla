@@ -3,6 +3,7 @@
         <file>appIcon/sVanilla.ico</file>
         <file>appIcon/white-sVanilla.svg</file>
         <file>appIcon/sVanilla.svg</file>
+        <file>appIcon/whiteFgWithNoBroder.svg</file>
         <file>appIcon/sVanillaTitleDark.svg</file>
         <file>appIcon/sVanillaTitleLight.svg</file>
         <file>icon/bar/minimize.svg</file>
@@ -27,6 +28,7 @@
         <file>icon/completed.svg</file>
         <file>icon/copy.svg</file>
         <file>icon/cut.svg</file>
+        <file>icon/date.svg</file>
         <file>icon/default.svg</file>
         <file>icon/defaultCover.svg</file>
         <file>icon/delete.svg</file>
@@ -34,6 +36,7 @@
         <file>icon/down.svg</file>
         <file>icon/download.svg</file>
         <file>icon/downloading.svg</file>
+        <file>icon/duration.svg</file>
         <file>icon/empty.svg</file>
         <file>icon/enter.svg</file>
         <file>icon/enter.svg</file>
@@ -48,6 +51,7 @@
         <file>icon/list.svg</file>
         <file>icon/login.svg</file>
         <file>icon/openurl.svg</file>
+        <file>icon/originalOrder.svg</file>
         <file>icon/paste.svg</file>
         <file>icon/pause.svg</file>
         <file>icon/plugin.svg</file>
@@ -58,6 +62,7 @@
         <file>icon/selectAll.svg</file>
         <file>icon/sort.svg</file>
         <file>icon/start.svg</file>
+        <file>icon/title.svg</file>
         <file>icon/undo.svg</file>
         <file>icon/up.svg</file>
         <file>icon/waiting.svg</file>

@@ -249,6 +249,6 @@ void DefaultSettings::autoStartRun(bool isRun)
         cmd = "pkexec rm " + autoCopyPath;
     }
 
-    system(cmd.c_str());
+    auto res = system(cmd.c_str());
 #endif
 }

@@ -265,7 +265,11 @@ void MainWindow::setTrayIconVisible(int state)
     {
         if (systemTray->icon().isNull())
         {
+#ifndef __APPLE__
             systemTray->setIcon(QIcon(":/appIcon/sVanilla.svg"));
+#else
+            systemTray->setIcon(QIcon(":/appIcon/whiteFgWithNoBroder.svg"));
+#endif
         }
         systemTray->show();
     }

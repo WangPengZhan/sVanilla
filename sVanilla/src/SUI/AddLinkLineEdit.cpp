@@ -1,11 +1,13 @@
-#include <QPushButton>
+#include <QPropertyAnimation>
 #include <QContextMenuEvent>
+#include <QPushButton>
 #include <QPainter>
 #include <QMenu>
 #include <QEvent>
 #include <QTimer>
 
 #include "AddLinkLineEdit.h"
+#include "ClientUi/Utils/Utility.h"
 
 static constexpr int iconMargin = 26;
 static constexpr int padding = 5;
@@ -107,6 +109,7 @@ void AddLinkLineEdit::setUi()
     m_moreAction->setChecked(false);
     createMoreMenu();
     m_moreMenu->installEventFilter(this);
+    m_moreMenu->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 void AddLinkLineEdit::signalsAndSlots()
@@ -128,7 +131,7 @@ void AddLinkLineEdit::btnMoreClick(bool checked)
     {
         const auto menuX = width() - m_moreMenu->sizeHint().width();
         const QPoint pos = mapToGlobal(QPoint(menuX, height()));
-        m_moreMenu->exec(pos);
+        m_moreMenu->popup(pos);
     }
     else
     {

@@ -1,9 +1,12 @@
+#include <tuple>
+
 #include <QDir>
 #include <QPushButton>
 #include <QStandardPaths>
+#include <QActionGroup>
+#include <QClipboard>
 #include <QLabel>
 #include <QMenu>
-#include <QClipboard>
 
 #include "Download/AbstractDownloader.h"
 #include "Adapter/BilibiliVideoView.h"
@@ -17,6 +20,8 @@
 #include "ClientUi/Utils/RunTask.h"
 #include "Util/UrlProcess.h"
 #include "ClientUi/Config//SingleConfig.h"
+#include "ClientUi/Setting/About.h"
+#include "ClientUi/Utils/MenuEventFilter.h"
 #include "ClientUi/Utils/SortItems.h"
 #include "ClientUi/Utils/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
@@ -26,10 +31,12 @@
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoPage)
+    , m_historyMenu(new QMenu(this))
+    , m_sortMenu(new QMenu(this))
 {
     ui->setupUi(this);
-    signalsAndSlots();
     setUi();
+    signalsAndSlots();
 }
 
 VideoWidget::~VideoWidget()
@@ -57,19 +64,22 @@ void VideoWidget::signalsAndSlots()
     });
 
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
-        createHistoryMenu();
-        const auto menuX = ui->btnHistory->width() - m_historyMenu->sizeHint().width();
-        const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(menuX, ui->btnHistory->sizeHint().height()));
-        m_historyMenu->exec(pos);
+        showMenu(ui->btnHistory, m_historyMenu, [this]() {
+            createHistoryMenu();
+        });
     });
     connect(ui->btnClipboard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
         emit parseUri(clipboard->text().toStdString());
     });
 
+    connect(ui->btnSort, &QPushButton::clicked, this, [this]() {
+        showMenu(ui->btnSort, m_sortMenu);
+    });
+
     connect(ui->btnSearch, &QPushButton::clicked, this, &VideoWidget::showSearchLineEdit);
     connect(ui->lineEditSearch, &SearchLineEdit::startHide, this, &VideoWidget::hideSearchLineEdit);
-    connect(ui->lineEditSearch, &SearchLineEdit::readyHide, ui->btnSearch, &QPushButton::show);
+    connect(ui->lineEditSearch, &SearchLineEdit::readyHide, this, &VideoWidget::showBtnSearch);
     connect(ui->lineEditSearch, &SearchLineEdit::textChanged, this, &VideoWidget::searchItem);
 
     connect(ui->btnReset, &QPushButton::clicked, this, &VideoWidget::resetList);
@@ -94,6 +104,7 @@ void VideoWidget::setUi()
 {
     ui->videoStackedPage->setCurrentWidget(ui->videoGrid);
     setNavigationBar();
+    createSortMenu();
     ui->btnReset->hide();
     ui->lineEditSearch->hide();
     ui->lineEditSearch->setFocusOutHide();
@@ -103,14 +114,7 @@ void VideoWidget::setUi()
 
 void VideoWidget::createHistoryMenu()
 {
-    if (m_historyMenu == nullptr)
-    {
-        m_historyMenu = new QMenu(this);
-    }
-    else
-    {
-        m_historyMenu->clear();
-    }
+    m_historyMenu->clear();
 
     auto actionCallback = [this](const QString& text) {
         ui->lineEdit->setText(text);
@@ -120,25 +124,54 @@ void VideoWidget::createHistoryMenu()
     util::createMenu(m_historyMenu, width() / 3, history, actionCallback);
 }
 
-void VideoWidget::showSearchLineEdit()
+void VideoWidget::createSortMenu()
 {
-    const auto btnFilterPos = ui->btnFilter->pos();
-    const auto btnSortPos = ui->btnSort->pos();
-    ui->btnSearch->hide();
-    ui->lineEditSearch->show();
-    util::animate(ui->btnFilter, {btnFilterPos, ui->btnFilter->pos()});
-    util::animate(ui->btnSort, {btnSortPos, ui->btnSort->pos()});
-    ui->lineEditSearch->setFocus();
-}
+    m_sortMenu->setProperty("_vanillaStyle_Patch", "MenuWithNoBorderPatch");
 
-void VideoWidget::hideSearchLineEdit()
-{
-    const auto btnSearchMarginPoint = QPoint(ui->btnSearch->width(), 0);
-    const auto btnSortMarginPoint = QPoint(ui->btnSort->width(), 0);
-    const auto sortEndValue = ui->btnSearch->geometry().topLeft() - btnSearchMarginPoint;
-    const auto filterEndValue = sortEndValue - btnSortMarginPoint;
-    util::animate(ui->btnSort, {ui->btnSort->pos(), sortEndValue});
-    util::animate(ui->btnFilter, {ui->btnFilter->pos(), filterEndValue});
+    const auto sortCategoryGroup = new QActionGroup(m_sortMenu);
+    sortCategoryGroup->setExclusive(true);
+
+    const std::array sortCategory{
+        m_originalOrder = new QAction(QIcon(":/icon/originalOrder.svg"), "Original Order"),
+        m_titleOrder = new QAction(QIcon(":/icon/title.svg"), "Title"),
+        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), "Pushlish Date"),
+        m_durationOrder = new QAction(QIcon(":/icon/duration.svg"), "Duration"),
+    };
+    for (const auto& category : sortCategory)
+    {
+        category->setCheckable(true);
+        sortCategoryGroup->addAction(category);
+    }
+    m_sortMenu->addActions(sortCategoryGroup->actions());
+
+    m_sortMenu->addSeparator();
+
+    const auto sortByGroup = new QActionGroup(m_sortMenu);
+    sortByGroup->setExclusive(true);
+
+    const std::array sortByCategory{
+        m_ascendingOrder = new QAction("Ascending order"),
+        m_descendingOrder = new QAction("Descending order"),
+    };
+    for (const auto& category : sortByCategory)
+    {
+        category->setCheckable(true);
+        sortByGroup->addAction(category);
+    }
+    m_sortMenu->addActions(sortByGroup->actions());
+
+    m_ascendingOrder->setChecked(true);
+    m_originalOrder->setChecked(true);
+
+    connect(m_titleOrder, &QAction::triggered, this, [this]() {
+        sortItem(OrderType::Title);
+    });
+    connect(m_dateOrder, &QAction::triggered, this, [this]() {
+        sortItem(OrderType::Date);
+    });
+    connect(m_durationOrder, &QAction::triggered, this, [this]() {
+        sortItem(OrderType::Duration);
+    });
 }
 
 void VideoWidget::setNavigationBar()
@@ -153,6 +186,58 @@ void VideoWidget::setNavigationBar()
     ui->btnSwitch->setFixedHeight(swtchHeight);
 }
 
+void VideoWidget::showMenu(QPushButton* btn, QMenu* menu, std::function<void()> creator)
+{
+    if (creator)
+    {
+        creator();
+    }
+    const auto menuX = btn->width() - menu->sizeHint().width();
+    const QPoint pos = btn->mapToGlobal(QPoint(menuX, btn->sizeHint().height()));
+    menu->exec(pos);
+}
+
+void VideoWidget::sortItem(OrderType orderType)
+{
+    const auto& grid = ui->videoGridWidget;
+
+    auto items = grid->getVideoInfo();
+    if (m_originalList.empty())
+    {
+        m_originalList = items;
+    }
+    std::function<std::string(const std::shared_ptr<VideoInfoFull>&)> getItem;
+    switch (orderType)
+    {
+    case OrderType::Title:
+    {
+        getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
+            return info->videoView->Title;
+        };
+    }
+    case OrderType::Date:
+    {
+        getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
+            return info->videoView->PublishDate;
+        };
+    }
+    case OrderType::Duration:
+        getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
+            return info->videoView->Duration;
+        };
+    }
+    const auto sordOrder = m_ascendingOrder->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder;
+
+    sortInitialsItems(items, getItem, sordOrder);
+    m_sortedList = items;
+    grid->clear();
+    for (const auto& info : items)
+    {
+        addVideoItem(info);
+    }
+    grid->updateCovers();
+}
+
 void VideoWidget::searchItem(const QString& text)
 {
     if (text.isEmpty())
@@ -163,16 +248,17 @@ void VideoWidget::searchItem(const QString& text)
     {
         showBtnReset();
     }
-    const auto items = ui->videoGridWidget->getVideoInfo();
+    const auto& grid = ui->videoGridWidget;
+
+    const auto items = grid->getVideoInfo();
     if (m_originalList.empty())
     {
         m_originalList = items;
     }
-    const std::function<std::string(std::shared_ptr<VideoInfoFull>)> getData = [](std::shared_ptr<VideoInfoFull> info) {
+    const std::function getData = [](const std::shared_ptr<VideoInfoFull>& info) {
         return info->videoView->Title;
     };
     const auto sortedItems = sortSimilarItems(items, text.toStdString(), getData, 0.0);
-    const auto& grid = ui->videoGridWidget;
     grid->clear();
     for (const auto& info : sortedItems)
     {
@@ -193,24 +279,61 @@ void VideoWidget::resetList()
     hideBtnReset();
 }
 
+void VideoWidget::showSearchLineEdit()
+{
+    const auto btnFilterBeforePos = ui->btnFilter->pos();
+    const auto btnSortBeforePos = ui->btnSort->pos();
+
+    ui->lineEditSearch->show();
+    ui->lineEditSearch->setFocus();
+
+    const auto btnFilterAfterPos = ui->btnFilter->pos();
+    const auto btnSortAfterPos = ui->btnFilter->pos();
+    util::animate(ui->btnFilter, {btnFilterBeforePos, btnFilterAfterPos});
+    util::animate(ui->btnSort, {btnSortBeforePos, btnSortAfterPos});
+
+    hideBtnSearch();
+}
+
+void VideoWidget::hideSearchLineEdit()
+{
+    const auto sortEndValue = ui->btnSearch->pos() - QPoint(ui->btnSearch->width(), 0);
+    const auto filterEndValue = sortEndValue - QPoint(ui->btnSort->width(), 0);
+    util::animate(ui->btnSort, {ui->btnSort->pos(), sortEndValue});
+    util::animate(ui->btnFilter, {ui->btnFilter->pos(), filterEndValue});
+}
+
 void VideoWidget::showBtnReset()
 {
+    const auto maxWidth = ui->btnReset->sizeHint().width();
+    util::animate(ui->btnReset, {0, maxWidth}, "maximumWidth");
     ui->btnReset->show();
 }
 
 void VideoWidget::hideBtnReset()
 {
-    const auto btnResetWidth = ui->btnReset->sizeHint().width();
-    const auto finished = [this, btnResetWidth]() {
+    const auto maxWidth = ui->btnReset->width();
+    const auto finished = [this, maxWidth]() {
         ui->btnReset->hide();
-        ui->btnReset->setMinimumWidth(btnResetWidth);
     };
-    util::animate(ui->btnReset, {btnResetWidth, 0}, "maximumWidth", finished);
+    util::animate(ui->btnReset, {maxWidth, 0}, "maximumWidth", finished);
 }
 
-bool VideoWidget::eventFilter(QObject* watched, QEvent* event)
+void VideoWidget::showBtnSearch()
 {
-    return QWidget::eventFilter(watched, event);
+    const auto maxWidth = ui->btnSearch->maximumWidth();
+    ui->btnSearch->show();
+    util::animate(ui->btnSearch, {0, maxWidth}, "maximumWidth");
+}
+
+void VideoWidget::hideBtnSearch()
+{
+    const auto maxWidth = ui->btnSearch->sizeHint().width();
+    const auto finished = [this, maxWidth]() {
+        ui->btnSearch->hide();
+        ui->btnSearch->setMaximumWidth(maxWidth);
+    };
+    util::animate(ui->btnSearch, {maxWidth, 0}, "maximumWidth", finished);
 }
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)

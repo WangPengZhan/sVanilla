@@ -5,6 +5,7 @@
 #include <QSplitter>
 
 #include "Adapter/BaseVideoView.h"
+#include "ClientUi/Utils/SortItems.h"
 
 namespace download
 {
@@ -53,34 +54,43 @@ signals:
     void updateWebsiteIcon(const std::string& string);
     void parseUri(const std::string& uri);
 
+    void allReady() const;
+    void coverReady(int id) const;
+
 private:
     void setUi();
     void signalsAndSlots();
     void createHistoryMenu();
-    void showSearchLineEdit();
-    void hideSearchLineEdit();
+    void createSortMenu();
     void setNavigationBar();
+    void showMenu(QPushButton* btn, QMenu* menu, std::function<void()> creator = {});
 
+    void sortItem(OrderType orderType);
     void searchItem(const QString& text);
     void resetList();
 
+    void showSearchLineEdit();
+    void hideSearchLineEdit();
     void showBtnReset();
     void hideBtnReset();
+    void showBtnSearch();
+    void hideBtnSearch();
 
     template <typename Widget>
     void showInfo(Widget* widget, QSplitter* splitter, int currentRow, int previousRow);
 
-signals:
-    void allReady() const;
-    void coverReady(int id) const;
-
-protected:
-    bool eventFilter(QObject* watched, QEvent* event) override;
-
 private:
     Ui::VideoPage* ui;
-    QMenu* m_historyMenu = nullptr;
+    QMenu* m_historyMenu{nullptr};
+    QMenu* m_sortMenu{nullptr};
+    QAction* m_originalOrder{nullptr};
+    QAction* m_titleOrder{nullptr};
+    QAction* m_dateOrder{nullptr};
+    QAction* m_durationOrder{nullptr};
+    QAction* m_ascendingOrder{nullptr};
+    QAction* m_descendingOrder{nullptr};
     std::vector<std::shared_ptr<VideoInfoFull>> m_originalList;
+    std::vector<std::shared_ptr<VideoInfoFull>> m_sortedList;
 };
 
 template <typename Widget>

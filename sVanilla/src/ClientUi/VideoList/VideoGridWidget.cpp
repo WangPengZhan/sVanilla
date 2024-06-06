@@ -85,11 +85,11 @@ void VideoGridItemWidget::createContextMenu()
 {
 #ifdef _WIN32
     auto* downloadAction = new QAction(QIcon(":icon/download.svg"), "Download\tCTRL D", this);
-    auto* infoAction = new QAction(QIcon(":icon/detail.svg"), "Show Infomation\tCTRL I", this);
+    auto* infoAction = new QAction(QIcon(":icon/info.svg"), "Show Infomation\tCTRL I", this);
     auto* similarAction = new QAction("Find Similar", this);
 #else
     auto* downloadAction = new QAction(QIcon(":icon/download.svg"), "Download\t⌘ D", this);
-    auto* infoAction = new QAction(QIcon(":icon/detail.svg"), "Show Infomation\t⌘ I", this);
+    auto* infoAction = new QAction(QIcon(":icon/info.svg"), "Show Infomation\t⌘ I", this);
     auto* similarAction = new QAction("Find Similar", this);
 #endif
 

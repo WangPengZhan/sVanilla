@@ -62,7 +62,7 @@ void UriProcess::updateWebsiteIcon(const std::string& uri)
     {
         return;
     }
-    const auto iconPath = QString::fromStdString(":icon/website/" + type + ".svg");
+    const auto iconPath = QString::fromStdString(":/website/" + type + ".svg");
     if (QFile::exists(iconPath))
     {
         emit setWebsiteIcon(iconPath);
