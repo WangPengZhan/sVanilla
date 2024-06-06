@@ -31,13 +31,7 @@ void VideoInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& infoFull)
     ui->labelPublishDate->setText(QString::fromStdString(infoFull->videoView->PublishDate));
     ui->labelDescription->setText(QString::fromStdString(infoFull->videoView->Description));
 
-    const std::unordered_map<std::string, std::string> rules{
-        {"title",  infoFull->videoView->Title      },
-        {"date",   infoFull->videoView->PublishDate},
-        {"author", infoFull->videoView->Publisher  }
-    };
-
-    ui->fileNameRule->init(rules);
+    ui->fileNameRule->init(infoFull->nameRules());
     ui->fileNameRule->updateLineEdit(infoFull->downloadConfig->nameRule);
 
     const auto isConfigDownloadDirValid = infoFull->downloadConfig->downloadDir.isEmpty();
@@ -49,5 +43,4 @@ void VideoInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& infoFull)
 void VideoInfoWidget::signalsAndSlots()
 {
     connect(ui->btnClose, &QPushButton::clicked, this, &VideoInfoWidget::hide);
-    connect(ui->fileNameRule, &NameRuleWidget::editingFinished, this, &VideoInfoWidget::fileNameEditingFinished);
 }

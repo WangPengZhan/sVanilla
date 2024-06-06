@@ -8,6 +8,7 @@ struct SearchHistory
     std::string url;
     int pluginType;
     int64_t timestamp;
+    int searchTimes{};
 
     // move to sqlite
     int bind(sqlite::SQLiteStatement& stmt) const;
@@ -19,6 +20,7 @@ TABLESTRUCTINFO_BEGIN(SearchHistory)
     TABLESTRUCTINFO_COMLUNM(url, url, false, true, true)
     TABLESTRUCTINFO_COMLUNM(pluginType)
     TABLESTRUCTINFO_COMLUNM(timestamp)
+    TABLESTRUCTINFO_COMLUNM(searchTimes)
 TABLESTRUCTINFO_END(SearchHistory)
 // clang-format on
 

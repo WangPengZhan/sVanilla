@@ -40,8 +40,6 @@ public:
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const;
 
     void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const;
-    void downloadAll();
-    void downloadSelected();
     void prepareDownloadTaskList();
 
     void clearVideo() const;

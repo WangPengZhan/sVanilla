@@ -20,8 +20,6 @@ public:
     ~VideoInfoWidget();
     void updateUi(const std::shared_ptr<VideoInfoFull>& infoFull);
 
-    Q_SIGNAL void fileNameEditingFinished(const QString& fileName);
-
 private:
     void signalsAndSlots();
 

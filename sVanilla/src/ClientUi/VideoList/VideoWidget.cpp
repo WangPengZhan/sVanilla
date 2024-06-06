@@ -84,8 +84,6 @@ void VideoWidget::signalsAndSlots()
         }
     });
 
-    connect(ui->videoGridInfoWidget, &VideoInfoWidget::fileNameEditingFinished, ui->videoGridWidget, &VideoGridWidget::updateFileName);
-
     connect(ui->videoGridWidget, &VideoGridWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
     connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
 
@@ -250,7 +248,7 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
         videoInfoFull->videoView = views.at(i);
         // download cover
-        downloadCover({views.at(i)->Cover, videoInfoFull->getGuid(), tempPath.toStdString(), i});
+        downloadCover({views.at(i)->Cover, util::FileHelp::removeSpecialChar(videoInfoFull->getGuid()), tempPath.toStdString(), i});
         addVideoItem(videoInfoFull);
     }
 
@@ -285,13 +283,6 @@ void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& info
     emit createBiliDownloadTask(infoFull);
 }
 
-void VideoWidget::downloadAll()
-{
-    if (ui->videoStackedPage->currentIndex() == 0)
-    {
-    }
-}
-
 void VideoWidget::prepareDownloadTaskList()
 {
     for (const auto& item : ui->videoGridWidget->selectedItems())
@@ -306,6 +297,8 @@ void VideoWidget::clearVideo() const
 {
     ui->videoGridWidget->clearVideo();
     ui->videoListWidget->clearVideo();
+    ui->videoGridInfoWidget->hide();
+    ui->videoListInfoWidget->hide();
 }
 
 void VideoWidget::setWebsiteIcon(const QString& iconPath)

@@ -46,8 +46,6 @@ public:
     void updateVideoCard();
     void updateCover();
 
-    void updateInfoFileName(const QString& fileName);
-
     const CardInfo& getCardInfo() const;
     QListWidgetItem* getWidgetItem() const
     {

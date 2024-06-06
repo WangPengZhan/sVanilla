@@ -75,14 +75,21 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage
     auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto& tableStruct = sqlite::TableStructInfo<typename SearchHistoryStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
-    std::string trigger = "CREATE TRIGGER IF NOT EXISTS limit_table_size AFTER INSERT ON " + tableName + " ";
-    trigger += "BEGIN DELETE FROM " + tableName + " WHERE ";
-    trigger += tableStruct.url.colunmName() + " IN ( ";
-    trigger += "SELECT " + tableStruct.url.colunmName() + " FROM " + tableName + " ";
-    trigger += "ORDER BY " + tableStruct.timestamp.colunmName() + " DESC ";
-    trigger += "LIMIT 1 OFFSET " + std::to_string(SearchHistoryStorage::maxNum) + " );";
-    trigger += "END;";
-    writePtr->execute(trigger);
+    std::string limitTrigger = "CREATE TRIGGER IF NOT EXISTS limit_table_size AFTER INSERT ON " + tableName + " ";
+    limitTrigger += "BEGIN DELETE FROM " + tableName + " WHERE ";
+    limitTrigger += tableStruct.url.colunmName() + " IN ( ";
+    limitTrigger += "SELECT " + tableStruct.url.colunmName() + " FROM " + tableName + " ";
+    limitTrigger += "ORDER BY " + tableStruct.timestamp.colunmName() + " DESC ";
+    limitTrigger += "LIMIT 1 OFFSET " + std::to_string(SearchHistoryStorage::maxNum) + " );";
+    limitTrigger += "END;";
+    writePtr->execute(limitTrigger);
+
+    std::string updateTimesTrigger = "CREATE TRIGGER IF NOT EXISTS update_time AFTER UPDATE ON " + tableName + " FOR EACH ROW ";
+    updateTimesTrigger += "BEGIN UPDATE " + tableName + " ";
+    updateTimesTrigger += "SET " + tableStruct.searchTimes.colunmName() + " = " + tableStruct.searchTimes.colunmName() + " + 1 ";
+    updateTimesTrigger += "WHERE " + tableStruct.url.colunmName() + " = OLD." + tableStruct.url.colunmName() + "; ";
+    updateTimesTrigger += "END;";
+    writePtr->execute(updateTimesTrigger);
 
     return std::make_shared<SearchHistoryStorage>(readPtr, tableName, writePtr);
 }

@@ -10,6 +10,7 @@
 #include "ui_DefaultSettings.h"
 #include "ClientUi/Config/SingleConfig.h"
 #include "ClientUi/MainWindow/SApplication.h"
+#include "ClientUi/VideoList/VideoData.h"
 
 DefaultSettings::DefaultSettings(QWidget* parent)
     : QWidget(parent)
@@ -18,6 +19,7 @@ DefaultSettings::DefaultSettings(QWidget* parent)
 {
     ui->setupUi(this);
     setUi();
+    loadConfigToUi();
     signalsAndSlots();
     emit updateTheme(m_themeGroup->checkedId());
 }
@@ -58,31 +60,14 @@ void DefaultSettings::setUi()
     m_themeGroup->addButton(ui->DarkThemeButton, 1);
     m_themeGroup->addButton(ui->AutoThemeButton, 2);
 
-    auto& singleConfig = SingleConfig::instance();
-    auto theme = singleConfig.theme();
-    if (theme == 0)
-    {
-        ui->LightThemeButton->setChecked(true);
-    }
-    else if (theme == 1)
-    {
-        ui->DarkThemeButton->setChecked(true);
-    }
-    else if (theme == 2)
-    {
-        ui->AutoThemeButton->setChecked(true);
-    }
+    ui->widgetNameRule->hidePreviewLabel(true);
 
-    ui->comboBoxLanguge->setCurrentIndex(singleConfig.language());
-    ui->checkBoxEnableTray->setCheckState(Qt::CheckState::Checked);
-    auto systemTrayConfig = singleConfig.systemTrayConfig();
-    ui->checkBoxEnableTray->setCheckState(systemTrayConfig.enable ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->checkBoxMinToTray->setCheckState(systemTrayConfig.minimize ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    auto startConfig = singleConfig.startConfig();
-    ui->checkBoxOpenStartup->setCheckState(startConfig.autoStart ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->checkBoxKeepState->setCheckState(startConfig.keepMainWindow ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->checkBoxResumeTask->setCheckState(startConfig.autoRemuseUnfinishedTask ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->spinBoxThread->setValue(singleConfig.downloadThreadNum());
+    std::unordered_map<std::string, std::string> rules;
+    for (const auto& rule : VideoInfoFull::ruleList)
+    {
+        rules.insert({rule, ""});
+    }
+    ui->widgetNameRule->init(rules);
 }
 
 void DefaultSettings::signalsAndSlots()
@@ -134,6 +119,51 @@ void DefaultSettings::signalsAndSlots()
         startConfig.autoRemuseUnfinishedTask = state;
         SingleConfig::instance().setStartUpConfig(startConfig);
     });
+
+    connect(ui->folderSelectorDownloadPath, &QLineEdit::textChanged, this, [this](const QString& newText) {
+        auto downloadConfig = SingleConfig::instance().downloadConfig();
+        downloadConfig.downloadDir = newText;
+        SingleConfig::instance().setDownloadConfig(downloadConfig);
+    });
+
+    connect(ui->widgetNameRule, &NameRuleWidget::editingFinished, this, [this](const QString& newText) {
+        auto downloadConfig = SingleConfig::instance().downloadConfig();
+        downloadConfig.nameRule = newText;
+        SingleConfig::instance().setDownloadConfig(downloadConfig);
+    });
+}
+
+void DefaultSettings::loadConfigToUi()
+{
+    auto& singleConfig = SingleConfig::instance();
+    auto theme = singleConfig.theme();
+    if (theme == 0)
+    {
+        ui->LightThemeButton->setChecked(true);
+    }
+    else if (theme == 1)
+    {
+        ui->DarkThemeButton->setChecked(true);
+    }
+    else if (theme == 2)
+    {
+        ui->AutoThemeButton->setChecked(true);
+    }
+
+    ui->comboBoxLanguge->setCurrentIndex(singleConfig.language());
+    ui->checkBoxEnableTray->setCheckState(Qt::CheckState::Checked);
+    auto systemTrayConfig = singleConfig.systemTrayConfig();
+    ui->checkBoxEnableTray->setCheckState(systemTrayConfig.enable ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->checkBoxMinToTray->setCheckState(systemTrayConfig.minimize ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    auto startConfig = singleConfig.startConfig();
+    ui->checkBoxOpenStartup->setCheckState(startConfig.autoStart ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->checkBoxKeepState->setCheckState(startConfig.keepMainWindow ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->checkBoxResumeTask->setCheckState(startConfig.autoRemuseUnfinishedTask ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui->spinBoxThread->setValue(singleConfig.downloadThreadNum());
+
+    auto downloadConfig = singleConfig.downloadConfig();
+    ui->folderSelectorDownloadPath->setText(downloadConfig.downloadDir);
+    ui->widgetNameRule->updateLineEdit(downloadConfig.nameRule);
 }
 
 void DefaultSettings::updateStatus(const std::string& status)

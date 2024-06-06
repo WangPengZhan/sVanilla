@@ -186,7 +186,7 @@ void SingleConfig::iniConfig()
         if (!groups.contains("Download"))
         {
             DownloadConfig downloadConfig;
-            // downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+            downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
             setDownloadConfig(downloadConfig);
         }
     }
@@ -215,7 +215,7 @@ void SingleConfig::iniConfig()
         setStartUpConfig(StartUpConfig());
 
         DownloadConfig downloadConfig;
-        // downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+        downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
         setDownloadConfig(downloadConfig);
     }
 

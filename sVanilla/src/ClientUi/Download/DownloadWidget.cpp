@@ -38,7 +38,7 @@ void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder, std::shared_ptr<VideoInfoFull>());
     uiDownloader->setStatus(UiDownloader::Ready);
 
-    addTaskITem(biliDownlaoder, uiDownloader);
+    addTaskItem(biliDownlaoder, uiDownloader);
 }
 
 void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info)
@@ -47,7 +47,7 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, d
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder, videoInfo);
     uiDownloader->setStatus(UiDownloader::Ready);
 
-    addTaskITem(biliDownlaoder, uiDownloader);
+    addTaskItem(biliDownlaoder, uiDownloader);
 }
 
 void DownloadWidget::addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo)
@@ -63,6 +63,8 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
         return;
     }
 
+    auto copyedVideoInfo = videoInfo;
+    copyedVideoInfo->downloadConfig = std::make_shared<DownloadConfig>(*(videoInfo->downloadConfig));
     auto taskFunc = [this, videoInfo]() {
         return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(videoInfo->videoView->VideoId), 32, videoInfo->videoView->Identifier);
     };
@@ -88,11 +90,11 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     download::ResourseInfo info;
     info.videoUris = video_urls;
     info.audioUris = audio_urls;
-    const auto fileName = videoInfo->fileName.empty() ? util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) : videoInfo->fileName;
+    auto fileName = videoInfo->fileName().empty() ? videoInfo->videoView->Title : videoInfo->fileName();
+    fileName = util::FileHelp::removeSpecialChar(fileName);
     info.option.out = fileName + ".mp4";
-    info.option.dir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString();
-    videoInfo->downloadConfig->downloadDir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-    videoInfo->downloadConfig->nameRule = QString::fromStdString(util::FileHelp::removeSpecialChar(videoInfo->videoView->Title) + ".mp4");
+    info.option.dir = videoInfo->downloadConfig->downloadDir.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString() :
+                                                                         videoInfo->downloadConfig->downloadDir.toStdString();
     const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
     info.option.header = h;
 
@@ -154,7 +156,7 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->downloadedListWidget, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
 }
 
-void DownloadWidget::addTaskITem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)
+void DownloadWidget::addTaskItem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)
 {
     if (biliDownloader->path().empty())
     {

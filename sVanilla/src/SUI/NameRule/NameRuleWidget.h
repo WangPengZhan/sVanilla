@@ -21,6 +21,9 @@ public:
 
     void updateLineEdit(const QString& rule);
 
+    void hidePreviewLabel(bool hide);
+    bool isHidePreviewLabel() const;
+
     Q_SIGNAL void editingFinished(const QString& rule);
 
 private:

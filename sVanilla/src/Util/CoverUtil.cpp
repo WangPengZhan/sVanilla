@@ -11,7 +11,7 @@ bool downloadCoverImage(const CoverInfo& coverInfo)
 
     QFile::remove(fullPath);
 
-    std::string path = fullPath.toStdString();
+    std::string path = fullPath.toLocal8Bit().toStdString();
     FILE* file = fopen(path.c_str(), "wb");
     network::NetWork netWork;
     netWork.get(coverInfo.url, file);

@@ -15,6 +15,7 @@
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "SUI/RoundImageWidget.h"
 #include "ClientUi/VideoList/VideoData.h"
+#include "Util/UrlProcess.h"
 
 void elideText(QLabel* label, const QString& text)
 {
@@ -104,7 +105,7 @@ void VideoGridItemWidget::createContextMenu()
 void VideoGridItemWidget::setCover()
 {
     const QString tempPath = QApplication::applicationDirPath();
-    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->getGuid()) + ".jpg";
+    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(util::FileHelp::removeSpecialChar(m_infoFull->getGuid())) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
         const QPixmap pixmap(fullPath);
@@ -131,11 +132,6 @@ void VideoGridItemWidget::updateCover()
         ui->spinner->deleteLater();
         ui->spinner = nullptr;
     }
-}
-
-void VideoGridItemWidget::updateInfoFileName(const QString& fileName)
-{
-    m_infoFull->fileName = fileName.toStdString();
 }
 
 const VideoGridItemWidget::CardInfo& VideoGridItemWidget::getCardInfo() const
@@ -303,16 +299,6 @@ void VideoGridWidget::showInfo(QListWidgetItem* item)
     previousRow = index;
 }
 
-void VideoGridWidget::updateFileName(const QString& fileName)
-{
-    const auto gridWidget = getItem(previousRow);
-    if (gridWidget == nullptr)
-    {
-        return;
-    }
-    gridWidget->updateInfoFileName(fileName);
-}
-
 void VideoGridWidget::updateCovers()
 {
     for (int i = 0; i < count(); ++i)
@@ -368,4 +354,3 @@ std::vector<std::shared_ptr<VideoInfoFull>> VideoGridWidget::getVideoInfo() cons
     }
     return infos;
 }
-
