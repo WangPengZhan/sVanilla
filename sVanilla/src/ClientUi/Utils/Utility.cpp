@@ -46,40 +46,9 @@ void createMenu(QMenu* menu, int width, const std::vector<std::string>& history,
     }
 }
 
-void moveAnimate(QObject* obj, MoveStartEndValue posChange, const std::function<void()>& finishedCallback)
-{
-    auto* animation = new QPropertyAnimation(obj, "pos");
-    static constexpr int duration = 300;
-    animation->setDuration(duration);
-    animation->setEasingCurve(QEasingCurve::Linear);
-    animation->setStartValue(posChange.startValue);
-    animation->setEndValue(posChange.endValue);
-    if (finishedCallback)
-    {
-        QObject::connect(animation, &QPropertyAnimation::finished, finishedCallback);
-    }
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
-}
-
-void moveAnimate(QObject* obj, LayoutMoveStartEndValue posChange, const std::function<void()>& finishedCallback)
-{
-    auto* animation = new QPropertyAnimation(obj, "maximumWidth");
-    static constexpr int duration = 300;
-    animation->setDuration(duration);
-    animation->setEasingCurve(QEasingCurve::Linear);
-    animation->setStartValue(posChange.startValue);
-    animation->setEndValue(posChange.endValue);
-    if (finishedCallback)
-    {
-        QObject::connect(animation, &QPropertyAnimation::finished, finishedCallback);
-    }
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
-}
-
-void animate(QObject* obj, AnimationStartEnd change, const QByteArray& propertyName, const std::function<void()>& callback)
+void animate(QObject* obj, AnimationStartEnd change, const QByteArray& propertyName, const std::function<void()>& callback, int duration)
 {
     auto* animation = new QPropertyAnimation(obj, propertyName);
-    static constexpr int duration = 300;
     animation->setDuration(duration);
     animation->setEasingCurve(QEasingCurve::Linear);
     animation->setStartValue(change.start);

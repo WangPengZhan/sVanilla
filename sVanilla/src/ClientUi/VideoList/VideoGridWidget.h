@@ -1,5 +1,7 @@
 #pragma once
 
+#include "VideoData.h"
+
 #include <QWidget>
 #include <QListWidget>
 #include <QSplitter>

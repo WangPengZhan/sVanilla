@@ -123,19 +123,10 @@ void SqliteDBManager::dbInit(SqliteWithMutexPtr& db)
 
 void SqliteDBManager::createDir()
 {
-    if (std::filesystem::is_directory(dbPath))
-    {
-        // try
-        // {
-        //     std::filesystem::remove_all(dbPath);
-        // }
-        // catch (const std::exception& e)
-        // {
-        // }
-    }
-    else
+    if (!std::filesystem::is_directory(dbPath))
     {
         std::filesystem::create_directory(dbPath);
     }
 }
+
 }  // namespace sqlite

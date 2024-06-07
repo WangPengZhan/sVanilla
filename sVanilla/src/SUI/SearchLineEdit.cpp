@@ -12,7 +12,7 @@ SearchLineEdit::SearchLineEdit(QWidget* parent)
     signalsAndSlots();
 }
 
-SearchLineEdit::~SearchLineEdit()=default;
+SearchLineEdit::~SearchLineEdit() = default;
 
 void SearchLineEdit::setFocusOutHide()
 {
@@ -33,7 +33,8 @@ void SearchLineEdit::showEvent(QShowEvent* event)
 {
     if (focusOutHide)
     {
-        util::moveAnimate(this, {geometry().topRight(), geometry().topLeft()});
+        const auto maxWidth = width() * 2;
+        util::animate(this, {0, maxWidth}, "maximumWidth", {}, 500);
     }
     QLineEdit::showEvent(event);
 }
@@ -59,10 +60,11 @@ void SearchLineEdit::signalsAndSlots()
 
 void SearchLineEdit::startHideAnimation()
 {
-    util::MoveStartEndValue changeValue = {geometry().topLeft(), geometry().topRight()};
-    const auto animationFinished = [this]() {
+    const auto maxWidth = this->width();
+    const auto finished = [this, maxWidth]() {
+        setMaximumWidth(maxWidth);
         hide();
         emit readyHide();
     };
-    util::moveAnimate(this, changeValue, animationFinished);
+    util::animate(this, {maxWidth, 0}, "maximumWidth", finished, 500);
 }
