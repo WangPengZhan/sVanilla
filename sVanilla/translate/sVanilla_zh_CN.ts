@@ -25,7 +25,7 @@
     </message>
     <message>
         <location filename="../src/ClientUi/Setting/About.ui" line="149"/>
-        <source>&lt;a href=&quot;http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=UMnXJemHdMkKk2Zmz7mmILwl5t1dIWqg&amp;authKey=JjmDKm%2B%2F1T1RvLZQ1tMcrW5AtOTcE5auxQ833Roi8wEA3y6LvuDuC8iqsdXq%2Bi8C&amp;noverify=0&amp;group_code=487580846&quot;&gt;QQ群&lt;/a&gt;</source>
+        <source>&lt;a href=&quot;http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=UMnXJemHdMkKk2Zmz7mmILwl5t1dIWqg&amp;authKey=JjmDKm%2B%2F1T1RvLZQ1tMcrW5AtOTcE5auxQ833Roi8wEA3y6LvuDuC8iqsdXq%2Bi8C&amp;noverify=0&amp;group_code=487580846&quot;&gt;QQ&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -131,6 +131,76 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <source>AdvanceSetting</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="81"/>
+        <source>Default widget</source>
+        <translation>默认进入界面</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="88"/>
+        <source>Order by</source>
+        <translation>排序规则</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="95"/>
+        <source>descend</source>
+        <translation>降序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="102"/>
+        <source>NoParseList</source>
+        <translation>不解析视频列表</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="109"/>
+        <source>Video Widget</source>
+        <translation>视频页面</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="116"/>
+        <source>grid</source>
+        <translation>网格</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="123"/>
+        <source>ascend</source>
+        <translation>升序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="130"/>
+        <source>Video Order</source>
+        <translation>视频排序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="137"/>
+        <source>enble</source>
+        <translation>开启</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="145"/>
+        <source>default</source>
+        <translation>默认</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="150"/>
+        <source>title</source>
+        <translation>标题</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="155"/>
+        <source>time</source>
+        <translation>发布时间</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="160"/>
+        <source>duration</source>
+        <translation>时长</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/AdvanceSettings.ui" line="168"/>
+        <source>list</source>
+        <translation>列表</translation>
+    </message>
 </context>
 <context>
     <name>AuthorsInfo</name>
@@ -148,130 +218,144 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
 <context>
     <name>DefaultSettings</name>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="41"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="229"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="64"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="112"/>
         <source>StartUp</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="71"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="508"/>
         <source>Automatically resume all unfinished tasks</source>
         <translation>自动恢复上次未完成下载</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="103"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="300"/>
         <source>Keep size and position of the window when exit</source>
         <translation>记住退出时软件的大小和位置</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="122"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="248"/>
         <source>Resolution</source>
         <translation>分辨率</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="136"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="546"/>
         <source>1080P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="141"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="551"/>
         <source>720P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="161"/>
         <source>Download Path</source>
-        <translation>下载路径</translation>
+        <translation type="vanished">下载路径</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="175"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="287"/>
         <source>English</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="180"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="292"/>
         <source>中文</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="203"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="176"/>
         <source>Light</source>
         <translation>明亮</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="213"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="186"/>
         <source>Dark</source>
         <translation>黑夜</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="220"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="193"/>
         <source>Auto</source>
         <translation>自适应</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="243"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="522"/>
         <source>Minimize to SystemTray</source>
         <translation>最小化到托盘</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="265"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="134"/>
         <source>Theme</source>
         <translation>主题</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="284"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="86"/>
         <source>Thread</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="291"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="48"/>
         <source>Open at startup</source>
         <translation>开机自启动</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="324"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="216"/>
         <source>Enable SystemTray</source>
         <translation>开启托盘</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="337"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="41"/>
         <source>SystemTray</source>
         <translation>托盘</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="344"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="515"/>
         <source>Aria2 Status:</source>
         <translation>Aria2 信息：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="381"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="337"/>
         <source>Status:</source>
         <translation>状态：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="388"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="67"/>
+        <source> Path</source>
+        <translation>路径</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="141"/>
+        <source>Download</source>
+        <translation>下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="344"/>
         <source>Disconnected</source>
         <translation>已连接</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="441"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="397"/>
         <source>Version:</source>
         <translation>版本：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="463"/>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="520"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="419"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="476"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="504"/>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="460"/>
         <source>Enabled Features:</source>
         <translation>已开启功能：</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Setting/DefaultSettings.ui" line="559"/>
+        <source>NameRule</source>
+        <translation>文件命名规则</translation>
     </message>
 </context>
 <context>
@@ -282,59 +366,84 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="82"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="76"/>
+        <source>filter items</source>
+        <translation>过滤</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="79"/>
         <source>CleanButtonPatch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="167"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="86"/>
+        <source>sort items</source>
+        <translation>排序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="161"/>
         <source>Selected Action</source>
         <translation>选中操作</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="174"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="168"/>
         <source>Stop All</source>
         <translation>全部停止</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="181"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="175"/>
         <source>Start All</source>
         <translation>全部开始</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="188"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="182"/>
         <source>Delete All</source>
         <translation>全部删除</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="238"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="232"/>
         <source>Clear All</source>
         <translation>清除所有</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="245"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="239"/>
         <source>Reloaded All</source>
         <translation>重新下载所有</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="252"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.ui" line="246"/>
         <source>Scan</source>
         <translation>扫描状态</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="126"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="128"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="126"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="128"/>
         <source>Completed</source>
         <translation>已下载</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="126"/>
+        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="128"/>
         <source>Error</source>
         <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="190"/>
+        <source>Start Selected</source>
+        <translation>开启选中</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="194"/>
+        <source>Pause Selected</source>
+        <translation>暂停选中</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="197"/>
+        <source>Delete Selected</source>
+        <translation>删除选中</translation>
     </message>
 </context>
 <context>
@@ -461,6 +570,31 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <source>Waitting</source>
         <translation>等待中</translation>
     </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingListWidget.cpp" line="281"/>
+        <source>Start Download</source>
+        <translation>开始下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingListWidget.cpp" line="287"/>
+        <source>Pause Download</source>
+        <translation>暂停下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingListWidget.cpp" line="303"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingListWidget.cpp" line="309"/>
+        <source>Open Folder</source>
+        <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingListWidget.cpp" line="313"/>
+        <source>Show Infomation</source>
+        <translation>详情</translation>
+    </message>
 </context>
 <context>
     <name>FileSelector</name>
@@ -498,37 +632,62 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="164"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="161"/>
+        <source>sVanilla homepage</source>
+        <translation>sVanilla主页</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="167"/>
         <source>Learn about sVanilla </source>
         <translation>了解sVanilla</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="170"/>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="186"/>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="208"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="173"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="192"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="217"/>
         <source>ButtonWithBorderPatch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="183"/>
-        <location filename="../src/ClientUi/Home/HomePage.cpp" line="64"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="186"/>
+        <source>import plugin for download</source>
+        <translation>导入下载插件</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="189"/>
+        <location filename="../src/ClientUi/Home/HomePage.cpp" line="61"/>
         <source>Import Plugin</source>
         <translation>导入插件</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="202"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="205"/>
+        <source>log website you want to download</source>
+        <translation>登录你的账号到要下载的网站</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="211"/>
         <source>Login Download Website</source>
         <translation>登录下载网站</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="259"/>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="262"/>
-        <source>Add From Clipboard</source>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="268"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="271"/>
+        <source>clipboard</source>
         <translation>粘贴板</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="271"/>
-        <location filename="../src/ClientUi/Home/HomePage.ui" line="284"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="287"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="290"/>
+        <source>history</source>
+        <translation>历史记录</translation>
+    </message>
+    <message>
+        <source>Add From Clipboard</source>
+        <translation type="vanished">粘贴板</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="280"/>
+        <location filename="../src/ClientUi/Home/HomePage.ui" line="299"/>
         <source>CleanButtonPatch</source>
         <translation type="unfinished"></translation>
     </message>
@@ -571,17 +730,17 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/MainWindow/MainWindow.cpp" line="224"/>
+        <location filename="../src/ClientUi/MainWindow/MainWindow.cpp" line="218"/>
         <source>&amp;Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/MainWindow/MainWindow.cpp" line="228"/>
+        <location filename="../src/ClientUi/MainWindow/MainWindow.cpp" line="222"/>
         <source>Mi&amp;nimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/MainWindow/MainWindow.cpp" line="234"/>
+        <location filename="../src/ClientUi/MainWindow/MainWindow.cpp" line="228"/>
         <source>&amp;Quit</source>
         <translation>退出</translation>
     </message>
@@ -636,7 +795,7 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/SUI/SearchLineEdit.cpp" line="46"/>
+        <location filename="../src/SUI/SearchLineEdit.cpp" line="47"/>
         <source>Try to Search</source>
         <translation>请输入搜索</translation>
     </message>
@@ -708,6 +867,21 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <source>CleanButtonPatch</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoGridWidget.cpp" line="87"/>
+        <source>Download	CTRL D</source>
+        <translation>下载\tCTRL D</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoGridWidget.cpp" line="88"/>
+        <source>Show Infomation	CTRL I</source>
+        <translation>详情\tCTRL I</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoGridWidget.cpp" line="89"/>
+        <source>Find Similar</source>
+        <translation>查找近似</translation>
+    </message>
 </context>
 <context>
     <name>VideoInfoWidget</name>
@@ -765,31 +939,66 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
         <source>CleanButtonPatch</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoListWidget.cpp" line="60"/>
+        <source>Download</source>
+        <translation>下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoListWidget.cpp" line="63"/>
+        <source>Show Infomation</source>
+        <translation>详情</translation>
+    </message>
 </context>
 <context>
     <name>VideoPage</name>
     <message>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="64"/>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="78"/>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="151"/>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="165"/>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="189"/>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="203"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="57"/>
+        <source>history</source>
+        <translation>历史记录</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="67"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="84"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="160"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="177"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="201"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="218"/>
         <source>CleanButtonPatch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="263"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="74"/>
+        <source>clipboard</source>
+        <translation>粘贴板</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="150"/>
+        <source>filter</source>
+        <translation>过滤</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="167"/>
+        <source>sort</source>
+        <translation>排序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="208"/>
+        <source>search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="278"/>
         <source>WhiteBackgroundListWidgetPatch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="312"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="327"/>
         <source>Download Selected</source>
         <translation>下载选中</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="319"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.ui" line="334"/>
         <source>Download All</source>
         <translation>下载全部</translation>
     </message>
@@ -797,12 +1006,42 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
 <context>
     <name>VideoWidget</name>
     <message>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="148"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="135"/>
+        <source>Original Order</source>
+        <translation>默认</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="136"/>
+        <source>Title</source>
+        <translation>标题</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="137"/>
+        <source>Pushlish Date</source>
+        <translation>发布日期</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="138"/>
+        <source>Duration</source>
+        <translation>时长</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="153"/>
+        <source>Ascending order</source>
+        <translation>升序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="154"/>
+        <source>Descending order</source>
+        <translation>降序</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="181"/>
         <source>Grid</source>
         <translation>网格</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="148"/>
+        <location filename="../src/ClientUi/VideoList/VideoWidget.cpp" line="181"/>
         <source>List</source>
         <translation>列表</translation>
     </message>
