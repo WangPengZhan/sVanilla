@@ -72,11 +72,8 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnFilter">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-            <iconset theme=":/icon/filter.svg"/>
+        <property name="toolTip">
+         <string>filter items</string>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -85,14 +82,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnSort">
+        <property name="toolTip">
+         <string>sort items</string>
+        </property>
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-            <iconset theme=":/icon/sort.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string notr="true">CleanButtonPatch</string>
@@ -298,5 +292,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <resources/>
  <connections/>
 </ui>

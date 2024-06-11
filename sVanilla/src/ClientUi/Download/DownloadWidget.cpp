@@ -98,6 +98,8 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
     info.option.header = h;
 
+    videoInfo->downloadConfig->nameRule = QString::fromStdString(info.option.out);
+
     emit sigDownloadTask(videoInfo, info);
 }
 
@@ -187,14 +189,14 @@ void DownloadWidget::createSelectedActionMenu()
         menu->exec(pos);
     });
 
-    auto* startAction = new QAction("Start Selected", menu);
+    auto* startAction = new QAction(tr("Start Selected"), menu);
     menu->addAction(startAction);
     connect(startAction, &QAction::triggered, ui->downloadingListWidget, &DownloadingListWidget::startSelectedItem);
 
-    auto* pauseAction = new QAction("Pause Selected", menu);
+    auto* pauseAction = new QAction(tr("Pause Selected"), menu);
     menu->addAction(pauseAction);
 
-    auto* deleteAction = new QAction("Delete Selected", menu);
+    auto* deleteAction = new QAction(tr("Delete Selected"), menu);
     menu->addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, ui->downloadingListWidget, &DownloadingListWidget::deleteSelectedItem);
 }

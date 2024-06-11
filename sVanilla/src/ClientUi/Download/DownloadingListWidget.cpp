@@ -278,13 +278,13 @@ void DownloadingItemWidget::showInfoPanel() const
 
 void DownloadingItemWidget::createContextMenu()
 {
-    auto* downloadAction = new QAction("Start Download", this);
+    auto* downloadAction = new QAction(tr("Start Download"), this);
     m_contextMenu->addAction(downloadAction);
     connect(downloadAction, &QAction::triggered, this, [this]() {
         pauseItem(false);
     });
 
-    auto* pauseAction = new QAction("Pause Download", this);
+    auto* pauseAction = new QAction(tr("Pause Download"), this);
     m_contextMenu->addAction(pauseAction);
     connect(pauseAction, &QAction::triggered, this, [this]() {
         pauseItem(true);
@@ -300,17 +300,17 @@ void DownloadingItemWidget::createContextMenu()
         pauseAction->setDisabled(true);
     }
 
-    auto* deleteAction = new QAction("Delete", this);
+    auto* deleteAction = new QAction(tr("Delete"), this);
     m_contextMenu->addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, this, &DownloadingItemWidget::deleteItem);
 
     m_contextMenu->addSeparator();
 
-    auto* openFolderAction = new QAction("Open Folder", this);
+    auto* openFolderAction = new QAction(tr("Open Folder"), this);
     m_contextMenu->addAction(openFolderAction);
     connect(openFolderAction, &QAction::triggered, this, &DownloadingItemWidget::openItemFolder);
 
-    auto* infoAction = new QAction("Show Infomation", this);
+    auto* infoAction = new QAction(tr("Show Infomation"), this);
     m_contextMenu->addAction(infoAction);
     connect(infoAction, &QAction::triggered, this, &DownloadingItemWidget::showInfoPanel);
 }

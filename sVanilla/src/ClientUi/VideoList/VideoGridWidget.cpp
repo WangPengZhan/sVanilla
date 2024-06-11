@@ -84,9 +84,9 @@ void VideoGridItemWidget::updateCard()
 void VideoGridItemWidget::createContextMenu()
 {
 #ifdef _WIN32
-    auto* downloadAction = new QAction(QIcon(":icon/download.svg"), "Download\tCTRL D", this);
-    auto* infoAction = new QAction(QIcon(":icon/info.svg"), "Show Infomation\tCTRL I", this);
-    auto* similarAction = new QAction("Find Similar", this);
+    auto* downloadAction = new QAction(QIcon(":icon/download.svg"), tr("Download\tCTRL D"), this);
+    auto* infoAction = new QAction(QIcon(":icon/info.svg"), tr("Show Infomation\tCTRL I"), this);
+    auto* similarAction = new QAction(tr("Find Similar"), this);
 #else
     auto* downloadAction = new QAction(QIcon(":icon/download.svg"), "Download\t⌘ D", this);
     auto* infoAction = new QAction(QIcon(":icon/info.svg"), "Show Infomation\t⌘ I", this);

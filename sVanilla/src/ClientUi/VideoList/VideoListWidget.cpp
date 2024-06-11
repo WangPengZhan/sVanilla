@@ -57,10 +57,10 @@ void VideoListItemWidget::showInfoPanel() const
 
 void VideoListItemWidget::createContextMenu()
 {
-    auto* downloadAction = new QAction("Download", this);
+    auto* downloadAction = new QAction(tr("Download"), this);
     m_menu->addAction(downloadAction);
     connect(downloadAction, &QAction::triggered, this, &VideoListItemWidget::downloadItem);
-    auto* infoAction = new QAction("Show Infomation", this);
+    auto* infoAction = new QAction(tr("Show Infomation"), this);
     m_menu->addAction(infoAction);
     connect(infoAction, &QAction::triggered, this, &VideoListItemWidget::showInfoPanel);
 }

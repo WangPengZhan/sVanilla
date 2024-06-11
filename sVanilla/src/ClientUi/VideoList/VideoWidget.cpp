@@ -132,10 +132,10 @@ void VideoWidget::createSortMenu()
     sortCategoryGroup->setExclusive(true);
 
     const std::array sortCategory{
-        m_originalOrder = new QAction(QIcon(":/icon/originalOrder.svg"), "Original Order"),
-        m_titleOrder = new QAction(QIcon(":/icon/title.svg"), "Title"),
-        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), "Pushlish Date"),
-        m_durationOrder = new QAction(QIcon(":/icon/duration.svg"), "Duration"),
+        m_originalOrder = new QAction(QIcon(":/icon/originalOrder.svg"), tr("Original Order")),
+        m_titleOrder = new QAction(QIcon(":/icon/title.svg"), tr("Title")),
+        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), tr("Pushlish Date")),
+        m_durationOrder = new QAction(QIcon(":/icon/duration.svg"), tr("Duration")),
     };
     for (const auto& category : sortCategory)
     {
@@ -150,8 +150,8 @@ void VideoWidget::createSortMenu()
     sortByGroup->setExclusive(true);
 
     const std::array sortByCategory{
-        m_ascendingOrder = new QAction("Ascending order"),
-        m_descendingOrder = new QAction("Descending order"),
+        m_ascendingOrder = new QAction(tr("Ascending order")),
+        m_descendingOrder = new QAction(tr("Descending order")),
     };
     for (const auto& category : sortByCategory)
     {
