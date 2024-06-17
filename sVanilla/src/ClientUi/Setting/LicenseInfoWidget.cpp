@@ -39,7 +39,7 @@ void LicenseInfoWidget::signalsAndSlots()
 
 void LicenseInfoWidget::loadFile()
 {
-    std::string jsonPath = QApplication::applicationDirPath().toStdString() + "/licenses.json";
+    std::string jsonPath = QApplication::applicationDirPath().toLocal8Bit().toStdString() + "/licenses.json";
     std::ifstream f(jsonPath);
     auto json = nlohmann::json::parse(f);
 

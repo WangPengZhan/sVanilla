@@ -13,6 +13,8 @@
 #include "Plugin/PluginManager.h"
 #include "ClientUi/Storage/SearchHistoryStorage.h"
 #include "ClientUi//Storage/StorageManager.h"
+#include "ClientUi/Login/LoginDialog.h"
+#include "Login/BiliLogin.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 
@@ -78,7 +80,9 @@ void HomePage::signalsAndSlots()
         QFile::copy(fileName, newPlugin);
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
-
+        std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
+        LoginDialog login(loginer);
+        login.exec();
     });
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
