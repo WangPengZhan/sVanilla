@@ -24,7 +24,7 @@ void DividingLine::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing, true);
     painter.save();
-    const QColor color = QColor::fromString("#B4B4B8");
+    const QColor color("#B4B4B8");
     painter.setPen(color);
     painter.setBrush(color);
     painter.drawRoundedRect(rect().x(), rect().y(), rect().width(), lineWidth, lineWidth, lineWidth);

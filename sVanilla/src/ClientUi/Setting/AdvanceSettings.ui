@@ -39,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>567</width>
-        <height>770</height>
+        <width>607</width>
+        <height>711</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -149,7 +149,7 @@
              <item>
               <spacer name="horizontalSpacer_3">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -208,7 +208,7 @@
             <property name="font">
              <font>
               <pointsize>10</pointsize>
-              <fontweight>Light</fontweight>
+              <weight>Light</weight>
              </font>
             </property>
             <property name="text">
@@ -242,7 +242,7 @@ where &quot;default&quot; here refers to each new search starting.</string>
              <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -304,7 +304,7 @@ where &quot;default&quot; here refers to each new search starting.</string>
              <item>
               <spacer name="horizontalSpacer_2">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -374,7 +374,7 @@ where &quot;default&quot; here refers to each new search starting.</string>
              <item>
               <spacer name="horizontalSpacer_7">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -426,7 +426,7 @@ where &quot;default&quot; here refers to each new search starting.</string>
             <property name="font">
              <font>
               <pointsize>10</pointsize>
-              <fontweight>Light</fontweight>
+              <weight>Light</weight>
              </font>
             </property>
             <property name="text">
@@ -545,7 +545,7 @@ And by default, the playlist is parsed. Only download the single video correspon
             <property name="font">
              <font>
               <pointsize>10</pointsize>
-              <fontweight>Light</fontweight>
+              <weight>Light</weight>
              </font>
             </property>
             <property name="text">
@@ -578,7 +578,7 @@ And by default, the playlist is parsed. Only download the single video correspon
              <item>
               <spacer name="horizontalSpacer_4">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -619,7 +619,7 @@ And by default, the playlist is parsed. Only download the single video correspon
              <item>
               <spacer name="horizontalSpacer_5">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -660,7 +660,7 @@ And by default, the playlist is parsed. Only download the single video correspon
              <item>
               <spacer name="horizontalSpacer_6">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -715,7 +715,7 @@ And by default, the playlist is parsed. Only download the single video correspon
             <property name="font">
              <font>
               <pointsize>10</pointsize>
-              <fontweight>Light</fontweight>
+              <weight>Light</weight>
              </font>
             </property>
             <property name="text">
@@ -737,7 +737,7 @@ Only for advanced users who need to customize settings.</string>
           <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
+             <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>

@@ -116,7 +116,7 @@
      <property name="font">
       <font>
        <pointsize>10</pointsize>
-       <fontweight>Light</fontweight>
+       <weight>Light</weight>
       </font>
      </property>
      <property name="text">
