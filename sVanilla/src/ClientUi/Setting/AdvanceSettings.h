@@ -20,6 +20,7 @@ public:
 private:
     void setUi();
     void signalsAndSlots();
+    void setAria2SettingVisiable(bool visiable) const;
 
 private:
     Ui::AdvanceSettings* ui;

@@ -21,6 +21,7 @@ void SingleConfig::setAriaConfig(const Aria2Config& config)
     m_appSettings->setValue("Token", config.token);
     m_appSettings->setValue("Port", config.port);
     m_appSettings->setValue("Remote", config.isRemote);
+    m_appSettings->setValue("EnableAdvancedSetting", config.enableAdvancedSetting);
     m_appSettings->endGroup();
 }
 
@@ -32,8 +33,14 @@ Aria2Config SingleConfig::ariaConfig() const
     config.token = m_appSettings->value("Token").toString();
     config.port = m_appSettings->value("Port").toInt();
     config.isRemote = m_appSettings->value("Remote").toBool();
+    config.enableAdvancedSetting = m_appSettings->value("EnableAdvancedSetting").toBool();
     m_appSettings->endGroup();
     return config;
+}
+
+const std::shared_ptr<QSettings>& SingleConfig::aria2AdvanceConfig() const
+{
+    return m_aria2CustomSettings;
 }
 
 void SingleConfig::setDownloadConfig(const DownloadConfig& config)
@@ -219,16 +226,26 @@ void SingleConfig::iniConfig()
         setDownloadConfig(downloadConfig);
     }
 
-    const QString aria2ConfigPath = QApplication::applicationDirPath() + "/config/aria2conf.conf";
+    const QString aria2ConfigPath = QApplication::applicationDirPath() + "/config/aria2.conf";
     if (QFile::exists(aria2ConfigPath))
     {
         m_aria2Settings = std::make_shared<QSettings>(aria2ConfigPath, CustomSettings::m_confFormat);
 
         // compatibility
     }
-    else
+
+    // default config
+    const QString defaultPath = ":/aria2.conf";
+    m_aria2DefaultSettings = std::make_shared<QSettings>(defaultPath, CustomSettings::m_confFormat);
+    const QString mergeConfig = QApplication::applicationDirPath() + "/config/mergeAria2Config.conf";
+    m_aria2CustomSettings = std::make_shared<QSettings>(mergeConfig, CustomSettings::m_confFormat);
+    if (m_aria2Settings != nullptr)
     {
-        m_aria2Settings = std::make_shared<QSettings>(aria2ConfigPath, CustomSettings::m_confFormat);
-        // default config
+        const auto keys = m_aria2Settings->allKeys();
+        for (const auto& key : keys)
+        {
+            const auto value = m_aria2Settings->value(key);
+            m_aria2CustomSettings->setValue(key, value);
+        }
     }
 }

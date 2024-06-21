@@ -157,6 +157,22 @@
         },
         {
             "enable": true,
+            "widgetType": "QPushButton",
+            "propertyValue": "ButtonIconPatch",
+            "configPatch": {
+                "color": {
+                    "buttonForeground": "#222831",
+                    "buttonBackground": "#00000000",
+                    "buttonHoveredForeground": "#222831",
+                    "buttonHoveredBackground": "#00000000",
+                    "buttonPressedForeground": "#00000000",
+                    "buttonPressedBackground": "#00000000",
+                    "buttonBorderColor": "#00000000"
+                }
+            }
+        },
+        {
+            "enable": true,
             "widgetType": "VideoGridWidget",
             "propertyValue": "WhiteBackgroundListWidgetPatch",
             "configPatch": {

@@ -33,6 +33,16 @@ void AdvanceSettings::setUi()
     ui->comboBoxOrderElem->setCurrentIndex(index);
     ui->cbxNoParseList->setChecked(videoWidgetConfig.isNoParseList);
     videoWidgetConfig.widgetLayout ? ui->cbxList->setChecked(true) : ui->cbxGrid->setChecked(true);
+
+    const auto aria2Config = SingleConfig::instance().ariaConfig();
+    ui->lineEditAria2Url->setText(aria2Config.url);
+    ui->lineEditAria2Token->setText(aria2Config.token);
+    ui->spinBoxAria2Port->setValue(aria2Config.port);
+    ui->checkBoxAria2EnableRemote->setChecked(aria2Config.isRemote);
+
+    setAria2SettingVisiable(ui->checkBoxAria2EnableRemote->isChecked());
+    ui->checkBoxEnableAria2AdvancedSettings->setChecked(aria2Config.enableAdvancedSetting);
+    ui->listWidgetAria2AdvancedSettings->setVisible(aria2Config.enableAdvancedSetting);
 }
 
 void AdvanceSettings::signalsAndSlots()
@@ -67,4 +77,41 @@ void AdvanceSettings::signalsAndSlots()
         videoWidgetConfig.widgetLayout = ui->cbxList->isChecked();
         SingleConfig::instance().setVideoWidgetConfig(videoWidgetConfig);
     });
+    connect(ui->lineEditAria2Url, &QLineEdit::editingFinished, this, [this]() {
+        auto aria2Setting = SingleConfig::instance().ariaConfig();
+        aria2Setting.url = ui->lineEditAria2Url->text();
+        SingleConfig::instance().setAriaConfig(aria2Setting);
+    });
+    connect(ui->lineEditAria2Token, &QLineEdit::editingFinished, this, [this]() {
+        auto aria2Setting = SingleConfig::instance().ariaConfig();
+        aria2Setting.token = ui->lineEditAria2Token->text();
+        SingleConfig::instance().setAriaConfig(aria2Setting);
+    });
+    connect(ui->spinBoxAria2Port, &QSpinBox::textChanged, this, [this](const QString& text) {
+        auto aria2Setting = SingleConfig::instance().ariaConfig();
+        aria2Setting.port = std::stoi(text.toStdString());
+        SingleConfig::instance().setAriaConfig(aria2Setting);
+    });
+    connect(ui->checkBoxAria2EnableRemote, &QCheckBox::clicked, this, [this]() {
+        auto aria2Setting = SingleConfig::instance().ariaConfig();
+        const auto isChecked = ui->checkBoxAria2EnableRemote->isChecked();
+        aria2Setting.isRemote = isChecked;
+        SingleConfig::instance().setAriaConfig(aria2Setting);
+        setAria2SettingVisiable(isChecked);
+    });
+
+    connect(ui->checkBoxEnableAria2AdvancedSettings, &QCheckBox::clicked, this, [this]() {
+        auto aria2Setting = SingleConfig::instance().ariaConfig();
+        const auto isChecked = ui->checkBoxEnableAria2AdvancedSettings->isChecked();
+        aria2Setting.enableAdvancedSetting = isChecked;
+        SingleConfig::instance().setAriaConfig(aria2Setting);
+        ui->listWidgetAria2AdvancedSettings->setVisible(isChecked);
+    });
+}
+
+void AdvanceSettings::setAria2SettingVisiable(const bool visiable) const
+{
+    ui->widgetAria2Port->setVisible(visiable);
+    ui->widgetAria2Token->setVisible(visiable);
+    ui->widgetAria2Url->setVisible(visiable);
 }
