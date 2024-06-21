@@ -12,6 +12,7 @@ struct Aria2Config
     QString token;
     int port = -1;
     bool isRemote = false;
+    bool enableAdvancedSetting = false;
 };
 
 enum class VideQuality
@@ -64,6 +65,8 @@ public:
     void setAriaConfig(const Aria2Config& config);
     Aria2Config ariaConfig() const;
 
+    const std::shared_ptr<QSettings>& aria2AdvanceConfig() const;
+
     void setDownloadConfig(const DownloadConfig& config);
     DownloadConfig downloadConfig() const;
 
@@ -94,4 +97,6 @@ private:
 private:
     std::shared_ptr<QSettings> m_appSettings;
     std::shared_ptr<QSettings> m_aria2Settings;
+    std::shared_ptr<QSettings> m_aria2DefaultSettings;
+    std::shared_ptr<QSettings> m_aria2CustomSettings;
 };

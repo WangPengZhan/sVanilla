@@ -21,6 +21,7 @@
         <file>icon/about.svg</file>
         <file>icon/account.svg</file>
         <file>icon/advanced.svg</file>
+        <file>icon/appearance.svg</file>
         <file>icon/author.svg</file>
         <file>icon/clear.svg</file>
         <file>icon/clipboard.svg</file>
@@ -62,9 +63,11 @@
         <file>icon/selectAll.svg</file>
         <file>icon/sort.svg</file>
         <file>icon/start.svg</file>
+        <file>icon/systemtray.svg</file>
         <file>icon/title.svg</file>
         <file>icon/undo.svg</file>
         <file>icon/up.svg</file>
         <file>icon/waiting.svg</file>
+        <file>aria2.conf</file>
     </qresource>
 </RCC>
