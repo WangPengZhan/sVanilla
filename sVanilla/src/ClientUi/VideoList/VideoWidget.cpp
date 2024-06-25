@@ -360,6 +360,7 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     // 2. add video item
     const QString tempPath = QApplication::applicationDirPath();  // It is now in the temporary area
     const auto views = ConvertVideoView(videoView.data);
+    ui->labelPlayListTitle->clear();
     if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
     {
         const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
