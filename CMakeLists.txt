@@ -205,8 +205,6 @@ if (ENABLE_DEPLOY)
     deployqt(${PROJECT_NAME})
 endif ()
 
-# install
-set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
 install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -248,7 +246,7 @@ if (PLUGINS)
     endforeach ()
 endif ()
 
-include(InstallRequiredSystemLibraries)
+# include(InstallRequiredSystemLibraries)
 
 include(cmake/apptranslate.cmake)
 apptranslate(${QT_COMPONENTS})

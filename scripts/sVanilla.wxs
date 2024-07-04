@@ -9,11 +9,11 @@
 <?ifndef CompressionLevel?>
     <?define CompressionLevel="high"?>
 <?endif?>
-<?define PlatformProgramFilesFolder="ProgramFilesFolder"?>
+<?define PlatformProgramFilesFolder="ProgramFiles64Folder"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*" Name="sVanilla" Language="1033" Version="1.0.0.0" Manufacturer="sVanilla studio"
         UpgradeCode="124623D9-35D6-4D2E-9474-2ADACC8BABBB">
-        <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+        <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Platform="x64" />
 
         <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
         <Upgrade Id="124623D9-35D6-4D2E-9474-2ADACC8BABBB">
@@ -45,10 +45,10 @@
         <ComponentGroup Id="ProductMenuComponents" Directory="APPLICATIONFOLDER"
             Source="$(var.AppPackageDir)">
             <!-- Executable -->
-            <Component>
+            <Component Win64="yes">
                 <File Name="$(var.AppExeName)" Checksum="yes" KeyPath="yes">
                     <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuDir"
-                        Name="$(var.AppName)"
+                        Name="$(var.AppName)" Target="[APPLICATIONFOLDER][$(var.AppExeName)]"
                         WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
                         Advertise="yes" />
                     <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="$(var.AppName)"
@@ -60,7 +60,8 @@
 
         <Component Id="ProgramMenuDir" Directory="ProgramMenuDir">
             <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
-            <RegistryValue Root="HKCU" Key="Software\Zeal\Zeal" Type="string" Value="" KeyPath="yes" />
+            <RegistryValue Root="HKCU" Key="Software\sVanilla\sVanilla" Type="string" Value=""
+                KeyPath="yes" />
         </Component>
 
         <UIRef Id="WixUI_Advanced" />

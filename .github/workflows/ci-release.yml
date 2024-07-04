@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  product_name: sV
+  product_name: sVanilla
 
 jobs:
   build-windows:
