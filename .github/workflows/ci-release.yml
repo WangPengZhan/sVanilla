@@ -1,0 +1,120 @@
+name: ci-release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+# Required for creating GitHub release.
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  product_name: sV
+
+jobs:
+  build-windows:
+    name: ${{ matrix.config.name }}
+    runs-on: windows-2019
+    timeout-minutes: 120
+
+    strategy:
+      matrix:
+        build_type: [Release]
+        install_path: [package/installed]
+        asset_path: [package/asset]
+        c_compiler: [cl]
+        cpp_compiler: [cl]
+        arch: [win64_msvc2019_64]
+        platform: [x64]
+        qt: [6.7.1]
+        qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat]
+
+    steps:
+      - name: Get clone
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Get cmake 
+        uses: lukka/get-cmake@latest
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        id: runvcpkg
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
+
+      - name: Install Qt Official Build
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{matrix.qt}}
+          target: desktop
+          arch: ${{matrix.arch}}
+          modules: ${{matrix.qt_modules}}
+          cache: 'true'
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ github.workspace }}/build
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
+          -S ${{ github.workspace }}
+
+      - name:  Build Project
+        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all_build --
+        
+      - name:  Install Project
+        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
+
+      - name: Zip Package
+        run: |
+          if (-Not (Test-Path ${{ matrix.asset_path }})) {
+              New-Item -Path ${{ matrix.asset_path }} -ItemType Directory
+          }
+          Compress-Archive -Path ${{ matrix.install_path }} -DestinationPath ${{ matrix.asset_path }}/win_${{ env.product_name}}.zip
+
+      - name: Create .msi package
+        run: |
+          pip install -r scripts/requirements.txt
+          python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
+          candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/ui.wxs
+          light.exe -nologo -out ${{ matrix.asset_path }}/win_${{ env.product_name}}.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
+      
+      - name: Calculate SHA256 checksums for each file
+        run: |
+          $Files = Get-ChildItem -File -Path "${{ matrix.asset_path }}/*"
+          foreach ($File in $Files) {
+              $Hash = Get-FileHash $File.FullName -Algorithm SHA256
+              $HashFile = "${{ matrix.asset_path }}/$($File.Name).sha256"
+              "$($Hash.Hash) *$($File.Name)" | Out-File -FilePath $HashFile
+          }
+
+      - name: Update GitHub Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: test
+          path: |
+            ${{ matrix.asset_path }}/*.zip
+            ${{ matrix.asset_path }}/*.sha256
+            ${{ matrix.asset_path }}/*.msi
+
+      - name: Upload Release Assets
+        run: |
+          $files = Get-ChildItem -Path ${{ matrix.asset_path }}/*;
+          foreach ($file in $files) {
+            Write-Output "Uploading $file"
+            gh release upload ${{ github.ref_name }} "$($file.FullName)" --clobber
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

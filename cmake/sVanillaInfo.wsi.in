@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define AppName = "@PROJECT_NAME@"?>
+  <?define AppExeName = "@PROJECT_NAME@.exe"?>
+  <?define AppPackageDir = "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@"?>
+  <?define AppVersion = "@PROJECT_VERSION@"?>
+  <?define Manufacturer = "@PROJECT_COMPANY_NAME@"?>
+  <?define HomePageUrl = "@PROJECT_HOMEPAGE_URL@"?>
+  <?define AppDescription = "@PROJECT_DESCRIPTION@"?>
+  <?define AppCopyright = "@PROJECT_COPYRIGHT@"?>
+</Include>

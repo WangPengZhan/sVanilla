@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?include sVanillaInfo.wsi?>
+<?ifndef AppVersion?>
+    <?error AppVersion must be set?>
+<?endif?>
+<?ifndef AppPackageDir?>
+    <?error AppPackageDir must be set?>
+<?endif?>
+<?ifndef CompressionLevel?>
+    <?define CompressionLevel="high"?>
+<?endif?>
+<?define PlatformProgramFilesFolder="ProgramFilesFolder"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="sVanilla" Language="1033" Version="1.0.0.0" Manufacturer="sVanilla studio"
+        UpgradeCode="124623D9-35D6-4D2E-9474-2ADACC8BABBB">
+        <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <Upgrade Id="124623D9-35D6-4D2E-9474-2ADACC8BABBB">
+            <UpgradeVersion Minimum="$(var.AppVersion)" IncludeMinimum="yes"
+                Maximum="$(var.AppVersion)" IncludeMaximum="yes"
+                OnlyDetect="yes" Property="CURRENTVERSIONDETECTED" />
+        </Upgrade>
+
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+        <Icon Id="$(var.AppExeName)" SourceFile="$(var.AppPackageDir)/$(var.AppExeName)" />
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="$(var.PlatformProgramFilesFolder)">
+                <Directory Id="APPLICATIONFOLDER" Name="$(var.AppName)">
+
+                </Directory>
+            </Directory>
+
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ProgramMenuDir" Name="$(var.AppName)" />
+            </Directory>
+
+            <Directory Id="DesktopFolder" />
+        </Directory>
+
+        <ComponentGroup Id="ProductPackageComponents">
+            <!-- Executable -->
+        </ComponentGroup>
+        <ComponentGroup Id="ProductMenuComponents" Directory="APPLICATIONFOLDER"
+            Source="$(var.AppPackageDir)">
+            <!-- Executable -->
+            <Component>
+                <File Name="$(var.AppExeName)" Checksum="yes" KeyPath="yes">
+                    <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuDir"
+                        Name="$(var.AppName)"
+                        WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
+                        Advertise="yes" />
+                    <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="$(var.AppName)"
+                        WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
+                        Advertise="yes" />
+                </File>
+            </Component>
+        </ComponentGroup>
+
+        <Component Id="ProgramMenuDir" Directory="ProgramMenuDir">
+            <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\Zeal\Zeal" Type="string" Value="" KeyPath="yes" />
+        </Component>
+
+        <UIRef Id="WixUI_Advanced" />
+
+        <Property Id="ApplicationFolderName" Value="$(var.AppName)" />
+        <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+        <WixVariable Id="WixUILicenseRtf" Value="scripts/license.rtf" />
+
+        <!-- Fix for https://github.com/wixtoolset/issues/issues/2165 -->
+        <CustomAction Id="Overwrite_WixSetDefaultPerMachineFolder" Property="WixPerMachineFolder"
+            Value="[$(var.PlatformProgramFilesFolder)][ApplicationFolderName]" Execute="immediate" />
+
+        <InstallUISequence>
+            <Custom Action="Overwrite_WixSetDefaultPerMachineFolder"
+                After="WixSetDefaultPerMachineFolder" />
+        </InstallUISequence>
+
+        <InstallExecuteSequence>
+            <Custom Action="Overwrite_WixSetDefaultPerMachineFolder"
+                After="WixSetDefaultPerMachineFolder" />
+        </InstallExecuteSequence>
+
+        <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
+
+        <Feature Id="ProductFeature" Title="$(var.AppName)" Level="1"
+            Description="Provides $(var.AppName) executable." Absent="disallow">
+            <ComponentGroupRef Id="ProductPackageComponents" />
+            <ComponentGroupRef Id="ProductMenuComponents" />
+            <ComponentRef Id="ProgramMenuDir" />
+        </Feature>
+    </Product>
+</Wix>
