@@ -1,0 +1,43 @@
+name: ci-clang-format-check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+  push:
+    branches:
+      - '**'
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  format-check:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Install clang-format
+      uses: aminya/setup-cpp@v1
+      with:
+        clangformat: 17.0.5
+
+    - name: Cache clang-format
+      uses: actions/cache@v3
+      with:
+        path: |
+          /usr/bin/clang-format
+        key: ${{ runner.os }}-clang-format-${{ hashFiles('**/*.cpp', '**/*.h') }}
+
+    - name: Run clang-format
+      run: |
+        extensions=("h" "hpp" "c" "cpp")
+        for ext in "${extensions[@]}"; do
+          find src/client -type f -name "*.$ext" | xargs clang-format -i -style=file -fallback-style=none
+          git diff --exit-code
+        done

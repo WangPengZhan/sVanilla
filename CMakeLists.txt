@@ -176,6 +176,9 @@ else ()
     message(FATAL_ERROR "can't find python")
 endif ()
 
+include(cmake/wix.cmake)
+generator_wix()
+
 if (WIN32)
     set(TOOLS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/tools/win)
 elseif (APPLE)
@@ -246,7 +249,6 @@ if (PLUGINS)
 endif ()
 
 include(InstallRequiredSystemLibraries)
-install(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 
 include(cmake/apptranslate.cmake)
 apptranslate(${QT_COMPONENTS})
