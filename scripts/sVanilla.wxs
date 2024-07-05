@@ -24,6 +24,8 @@
 
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
         <Icon Id="$(var.AppExeName)" SourceFile="$(var.AppPackageDir)/$(var.AppExeName)" />
+        <Property Id="ARPPRODUCTICON" Value="$(var.AppExeName)" />
+        <Property Id="ARPURLINFOABOUT" Value="https://svanilla.app/" />
 
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="$(var.PlatformProgramFilesFolder)">
@@ -46,15 +48,18 @@
             Source="$(var.AppPackageDir)">
             <!-- Executable -->
             <Component Win64="yes">
-                <File Name="$(var.AppExeName)" Checksum="yes" KeyPath="yes">
-                    <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuDir"
-                        Name="$(var.AppName)" Target="[APPLICATIONFOLDER][$(var.AppExeName)]"
-                        WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
-                        Advertise="yes" />
-                    <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="$(var.AppName)"
-                        WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
-                        Advertise="yes" />
-                </File>
+
+                <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuDir"
+                    Name="$(var.AppName)" Target="[APPLICATIONFOLDER]$(var.AppExeName)"
+                    WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
+                />
+                <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="$(var.AppName)"
+                    WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
+                    Target="[APPLICATIONFOLDER]$(var.AppExeName)" />
+
+                <RemoveFolder Id="DesktopFolder" On="uninstall" />
+                <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]"
+                    Name="installed" Type="integer" Value="1" KeyPath="yes" />
             </Component>
         </ComponentGroup>
 

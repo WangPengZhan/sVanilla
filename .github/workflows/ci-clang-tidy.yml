@@ -1,0 +1,29 @@
+name: ci-clang-tidy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  clang-tidy-check:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Install clang-tidy
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install pkg-config cmake libfreetype6-dev libnotify-dev libsdl2-dev libsqlite3-dev clang-tidy -y
+
+    - name: Configure cmake with clang-tidy
+      run: >
+        cmake -B ${{ github.workspace }}/build 
+        -G "Unix Makefiles" 
+        -DCMAKE_BUILD_TYPE=Debug 
+        -DENABLE_CLANG_TIDY=ON
+
+    - name: Build with clang-tidy
+      run: |
+        cmake --build ${{ github.workspace }}/build  --config Debug --parallel --target all -- --keep-going

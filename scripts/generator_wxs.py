@@ -2,7 +2,6 @@ import os
 import argparse
 from lxml import etree
 import copy
-import re
 
 def create_wxs(origin_wxs_file, directory, output_file):
     tree = etree.parse(origin_wxs_file)
@@ -29,12 +28,7 @@ def add_directory(parent_element, elementComponentGroup, path):
         if os.path.isdir(item_path):
             add_directory(directory_element, elementComponentGroup, item_path)
         elif os.path.isfile(item_path):
-            global mainFile
-            if os.path.basename(item_path) == mainFile:
-                continue
-
             component_id = "file_" + os.path.basename(item_path)
-            component_id = re.sub(r'[^a-zA-Z0-9\s_.]', '', component_id)
             component = etree.SubElement(elementComponentGroup, "Component", Id=component_id, Guid="*", Directory=directory_id, Win64="yes")
             etree.SubElement(component, "File", Name=os.path.basename(item_path), Source=item_path, 
                              Checksum="yes", KeyPath="yes")
@@ -44,7 +38,7 @@ def add_directory(parent_element, elementComponentGroup, path):
 def main():
     parser = argparse.ArgumentParser(description='Get filePaths, variable names and output_file')
     parser.add_argument('-t','--template', default="scripts\\sVanilla.wxs",help='template wxs path')
-    parser.add_argument('-i','--input', default="install\\bin\\",help='dir you want to package')
+    parser.add_argument('-i','--input', default="installed\\bin\\",help='dir you want to package')
     parser.add_argument('-o','--output', default="build\\sVanilla.wxs",help='generator wxs filePath')
 
     args = parser.parse_args()
