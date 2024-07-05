@@ -5,7 +5,8 @@
 namespace Adapter
 {
 
-struct BaseVideoView {
+struct BaseVideoView
+{
     std::string Identifier;
     std::string AlternateId;
     std::string VideoId;

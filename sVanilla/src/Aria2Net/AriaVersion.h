@@ -1,5 +1,6 @@
 #pragma once
 
+// clang-format off
 #define _STR(A) #A
 #define STR(A) _STR(A)
 
@@ -26,3 +27,4 @@
 #define ARIA_BUILD_TIME ARIA_BUILD_HOUR.#ARIA_BUILD_MINTUE #.ARIA_BUILD_SECOND
 
 #define ARIA_BUILD_STR ARIA_BUILD_DATE.#ARIA_BUILD_TIME
+// clang-format on

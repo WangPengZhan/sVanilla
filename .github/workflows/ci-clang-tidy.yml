@@ -1,19 +1,12 @@
-name: ci-linux
+name: ci-clang-tidy
 
 on:
-  push:
-    branches: [ "dev" ]
   pull_request:
-    branches: [ "dev" ]
-
-  # Allows you to run this workflow manually from the Actions tab.
-  workflow_dispatch:
+    types: [opened, synchronize, reopened]
 
 jobs:
-  build-linux:
-    name: Build On Ubuntu
+  clang-tidy-check:
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
 
     strategy:
       matrix:
@@ -54,23 +47,21 @@ jobs:
           modules: 'qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat'
           cache: 'true'
 
-      - name: Configure CMake
+      - name: Install clang-tidy
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install pkg-config cmake libfreetype6-dev libnotify-dev libsdl2-dev libsqlite3-dev clang-tidy -y
+
+      - name: Configure cmake with clang-tidy
         run: >
-          cmake -B ${{ github.workspace }}/build
+          cmake -B ${{ github.workspace }}/build 
+          -G "Unix Makefiles" 
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
-          -S ${{ github.workspace }}
+          -DENABLE_CLANG_TIDY=ON
 
-      - name:  Build Project
-        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target all --
-        
-      - name:  Install Project
-        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
-
-      # when stable to test
-      # - name: Test
-      #   working-directory: ${{ github.workspace }}/build
-      #   run: ctest --build-config ${{ matrix.build_type }}
-
+      - name: Build with clang-tidy
+        run: |
+          cmake --build ${{ github.workspace }}/build  --config Debug --parallel --target all -- --keep-going

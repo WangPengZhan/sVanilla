@@ -1,5 +1,8 @@
 #ifdef __linux__
+
+// clang-format off
 #include "LinuxInitializer.h"
+// clang-format on
 
 LinuxInitializer::LinuxInitializer()
 {

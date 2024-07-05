@@ -16,8 +16,6 @@ TipDialog::~TipDialog()
     delete ui;
 }
 
-
-
 void TipDialog::setUi()
 {
 }

@@ -18,4 +18,4 @@ CurlGlobal::~CurlGlobal()
 {
     curl_global_cleanup();
 }
-} // namespace network
+}  // namespace network

@@ -32,12 +32,12 @@ private:
     void showMessage(const QString& msg, Level level);
     void showNextMessage();
     void hideMessage();
-    void setText(const QString &msg) const;
+    void setText(const QString& msg) const;
     void setLevel(Level level);
     void movePosition();
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
 public:

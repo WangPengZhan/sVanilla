@@ -35,7 +35,6 @@ public:
 private:
     void signalsAndSlots();
 
-
 private:
     Ui::DownloadingInfoWidget* ui;
 };

@@ -47,6 +47,10 @@ set(CMAKE_CXX_STANDARD 20)
 cmake_policy(SET CMP0087 NEW)
 cmake_policy(SET CMP0079 NEW)
 
+option(ENABLE_DEPLOY "Enable deploy" ON)
+option(ENABLE_TEST "Enable Test" OFF)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
+
 # qt
 set(QT_COMPONENTS
     Core
@@ -93,7 +97,6 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-option(ENABLE_TEST "Enable Test" OFF)
 if (ENABLE_TEST)
     enable_testing()
     add_subdirectory(test)
@@ -121,6 +124,11 @@ target_sources(${PROJECT_NAME}
 
 if (WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
+if (ENABLE_CLANG_TIDY)
+    include(cmake/clangtidy.cmake)
+    clangtidy()
 endif()
 
 # include(cmake/filemarco.cmake)
@@ -199,14 +207,11 @@ add_custom_command(TARGET ${PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-option(ENABLE_DEPLOY "Enable deploy" ON)
 if (ENABLE_DEPLOY)
     include(cmake/qtdeploy.cmake)
     deployqt(${PROJECT_NAME})
 endif ()
 
-# install
-set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
 install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -248,7 +253,7 @@ if (PLUGINS)
     endforeach ()
 endif ()
 
-include(InstallRequiredSystemLibraries)
+# include(InstallRequiredSystemLibraries)
 
 include(cmake/apptranslate.cmake)
 apptranslate(${QT_COMPONENTS})

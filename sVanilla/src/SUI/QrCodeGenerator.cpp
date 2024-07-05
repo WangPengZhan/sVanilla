@@ -4,7 +4,6 @@
 #include <QSvgRenderer>
 #include <QTextStream>
 
-
 QrCodeGenerator::QrCodeGenerator(QObject* parent)
     : QObject(parent)
 {
@@ -21,10 +20,8 @@ QString QrCodeGenerator::toSvgString(const qrcodegen::QrCode& qr, quint16 border
     QString str;
     QTextStream sb(&str);
 
-    sb << R"(<?xml version="1.0" encoding="UTF-8"?>)"
-       << R"(<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">)"
-       << R"(<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 )"
-       << (qr.getSize() + border * 2) << " " << (qr.getSize() + border * 2)
+    sb << R"(<?xml version="1.0" encoding="UTF-8"?>)" << R"(<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">)"
+       << R"(<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 )" << (qr.getSize() + border * 2) << " " << (qr.getSize() + border * 2)
        << R"(" stroke="none"><rect width="100%" height="100%" fill="#FFFFFF"/><path d=")";
 
     for (int y = 0; y < qr.getSize(); y++)
@@ -33,8 +30,7 @@ QString QrCodeGenerator::toSvgString(const qrcodegen::QrCode& qr, quint16 border
         {
             if (qr.getModule(x, y))
             {
-                sb << (x == 0 && y == 0 ? "" : " ") << "M" << (x + border) << "," << (y + border)
-                   << "h1v1h-1z";
+                sb << (x == 0 && y == 0 ? "" : " ") << "M" << (x + border) << "," << (y + border) << "h1v1h-1z";
             }
         }
     }
@@ -42,7 +38,7 @@ QString QrCodeGenerator::toSvgString(const qrcodegen::QrCode& qr, quint16 border
     sb << R"(" fill="#000000"/></svg>)";
     return str;
 }
-QImage QrCodeGenerator::ToImage(const qrcodegen::QrCode &qrCode, quint16 border, const quint16 size) const
+QImage QrCodeGenerator::ToImage(const qrcodegen::QrCode& qrCode, quint16 border, const quint16 size) const
 {
     const QString svg = toSvgString(qrCode, border);
     QSvgRenderer render(svg.toUtf8());

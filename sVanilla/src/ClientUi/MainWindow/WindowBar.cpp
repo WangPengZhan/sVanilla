@@ -49,8 +49,7 @@ bool WindowBar::eventFilter(QObject* obj, QEvent* event)
         QWidget* widget = qobject_cast<QWidget*>(obj);
         if (widget)
         {
-            widget
-                ->isMaximized() ? maxButton()->setIcon(QIcon(":/icon/bar/restore.svg")) : maxButton()->setIcon(QIcon(":/icon/bar/maximize.svg"));
+            widget->isMaximized() ? maxButton()->setIcon(QIcon(":/icon/bar/restore.svg")) : maxButton()->setIcon(QIcon(":/icon/bar/maximize.svg"));
         }
         return true;
     }

@@ -16,4 +16,4 @@ public:
     CurlGlobal& operator=(CurlGlobal&&) = delete;
 };
 
-} // namespace network
+}  // namespace network

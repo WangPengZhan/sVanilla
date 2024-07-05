@@ -42,7 +42,6 @@ private:
     QListWidgetItem* m_listWidgetItem = nullptr;
     Ui::VideoListItemWidget* ui;
     QMenu* m_menu = nullptr;
-
 };
 
 class VideoListWidget : public QListWidget

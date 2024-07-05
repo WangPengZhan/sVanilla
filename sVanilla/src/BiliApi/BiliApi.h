@@ -547,8 +547,7 @@ public:
         return json.dump(4);
     }
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlData, from, result, message, quality, format, timelength, accept_format, accept_description,
-                                                accept_quality,
-                                   video_codecid, seek_param, seek_type, durl, support_formats)
+                                                accept_quality, video_codecid, seek_param, seek_type, durl, support_formats)
 };
 
 class PlayUrlOrigin : public Protocol
