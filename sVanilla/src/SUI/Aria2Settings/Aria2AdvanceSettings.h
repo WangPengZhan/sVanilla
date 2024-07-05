@@ -16,5 +16,4 @@ private:
 
 private:
     std::vector<std::shared_ptr<Aria2SettingItem>> m_settings;
-
 };

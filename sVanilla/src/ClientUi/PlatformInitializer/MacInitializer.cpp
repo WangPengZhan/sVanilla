@@ -1,5 +1,8 @@
 #ifdef __APPLE__
+
+// clang-format off
 #include "MacInitializer.h"
+// clang-format on
 
 MacInitializer::MacInitializer()
 {

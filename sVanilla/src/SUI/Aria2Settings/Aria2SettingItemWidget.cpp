@@ -52,7 +52,6 @@ void Aria2SettingItemWidget::setUi()
         break;
     }
     }
-    layout->setStretch(0,1);
-    layout->setStretch(1,2);
-
+    layout->setStretch(0, 1);
+    layout->setStretch(1, 2);
 }

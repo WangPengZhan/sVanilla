@@ -8,22 +8,60 @@ jobs:
   clang-tidy-check:
     runs-on: ubuntu-22.04
 
+    strategy:
+      matrix:
+        build_type: [Release]
+        install_path: [installed]
+        c_compiler: [gcc]
+        cpp_compiler: [g++]
+
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
-    - name: Install clang-tidy
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install pkg-config cmake libfreetype6-dev libnotify-dev libsdl2-dev libsqlite3-dev clang-tidy -y
+      - uses: lukka/get-cmake@latest
 
-    - name: Configure cmake with clang-tidy
-      run: >
-        cmake -B ${{ github.workspace }}/build 
-        -G "Unix Makefiles" 
-        -DCMAKE_BUILD_TYPE=Debug 
-        -DENABLE_CLANG_TIDY=ON
+      - name: Install linuxdeploy
+        uses: miurahr/install-linuxdeploy-action@v1
+        with:
+          plugins: qt appimage
 
-    - name: Build with clang-tidy
-      run: |
-        cmake --build ${{ github.workspace }}/build  --config Debug --parallel --target all -- --keep-going
+      - name: Install Dependencies
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libfcitx5-qt-dev tree
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        id: runvcpkg
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.5.2
+          target: desktop
+          modules: 'qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat'
+          cache: 'true'
+
+      - name: Install clang-tidy
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install pkg-config cmake libfreetype6-dev libnotify-dev libsdl2-dev libsqlite3-dev clang-tidy -y
+
+      - name: Configure cmake with clang-tidy
+        run: >
+          cmake -B ${{ github.workspace }}/build 
+          -G "Unix Makefiles" 
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
+          -DENABLE_CLANG_TIDY=ON
+
+      - name: Build with clang-tidy
+        run: |
+          cmake --build ${{ github.workspace }}/build  --config Debug --parallel --target all -- --keep-going

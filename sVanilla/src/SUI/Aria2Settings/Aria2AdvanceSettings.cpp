@@ -56,7 +56,7 @@ void Aria2AdvanceSettings::setSettings()
 void Aria2AdvanceSettings::setSize()
 {
     int totalHeight = 0;
-    for (int i =0; i < count(); ++i)
+    for (int i = 0; i < count(); ++i)
     {
         totalHeight += sizeHintForRow(i);
     }

@@ -2,7 +2,6 @@
 
 #include <QString>
 
-
 template <typename T>
 QString formatSize(T bytesPerSec)
 {

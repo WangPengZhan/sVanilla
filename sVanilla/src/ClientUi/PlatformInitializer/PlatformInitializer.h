@@ -4,7 +4,7 @@ class PlatformInitializer
 {
 public:
     virtual ~PlatformInitializer() = default;
-    
+
     virtual void initApplicationBefore() = 0;
     virtual void init() = 0;
     virtual void deinit() = 0;

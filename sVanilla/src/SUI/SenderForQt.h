@@ -43,15 +43,14 @@ public:
 
     bool enable() const;
 
-    template<typename Lambda>
-    void sendTask(Lambda &&lambda) const
+    template <typename Lambda>
+    void sendTask(Lambda&& lambda) const
     {
-        emit m_sender->sendTask(
-            [lambda = std::make_shared<std::remove_reference_t<Lambda>>(std::forward<Lambda>(lambda))]() {
-                (*lambda)();
-            }
-        );
+        emit m_sender->sendTask([lambda = std::make_shared<std::remove_reference_t<Lambda>>(std::forward<Lambda>(lambda))]() {
+            (*lambda)();
+        });
     }
+
 private:
     std::unique_ptr<ActivateQbject> m_sender;
 };
@@ -62,16 +61,14 @@ public:
     TransceiverForQt();
     ~TransceiverForQt() = default;
 
-    template<typename Lambda>
-    void sendTask(Lambda &&lambda) const
+    template <typename Lambda>
+    void sendTask(Lambda&& lambda) const
     {
-        emit m_transceiver->sendTask(
-            [lambda = std::make_shared<std::remove_reference_t<Lambda>>(std::forward<Lambda>(lambda))]() {
-                (*lambda)();
-            }
-        );
+        emit m_transceiver->sendTask([lambda = std::make_shared<std::remove_reference_t<Lambda>>(std::forward<Lambda>(lambda))]() {
+            (*lambda)();
+        });
     }
-    
+
 private:
     std::unique_ptr<TransceiveThread> m_transceiver;
 };

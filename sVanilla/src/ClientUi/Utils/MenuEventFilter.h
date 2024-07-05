@@ -13,5 +13,5 @@ protected:
     bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
-    QMenu* m_menu{ nullptr };
+    QMenu* m_menu{nullptr};
 };

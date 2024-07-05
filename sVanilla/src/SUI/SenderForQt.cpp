@@ -2,7 +2,7 @@
 
 void ActivateQbject::runTask(const std::function<void()>& f) const
 {
-	f();
+    f();
 }
 
 TransceiveThread::TransceiveThread()
@@ -40,7 +40,7 @@ SenderForQt::SenderForQt(ActivateQbject* reciver)
     if (reciver)
     {
         qRegisterMetaType<std::function<void()>>("std::function<void()>");
-        QObject::connect(m_sender.get(), &ActivateQbject::sendTask, reciver, &ActivateQbject::runTask, 
+        QObject::connect(m_sender.get(), &ActivateQbject::sendTask, reciver, &ActivateQbject::runTask,
                          Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
     }
 }

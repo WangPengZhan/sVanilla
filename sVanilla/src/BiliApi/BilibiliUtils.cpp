@@ -96,7 +96,7 @@ std::string filterCharacters(const std::string& input)
 
 std::string urlEncode(const std::string& decoded)
 {
-    auto *const encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
+    auto* const encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
     std::string result(encoded_value);
     curl_free(encoded_value);
     return result;
@@ -105,7 +105,7 @@ std::string urlEncode(const std::string& decoded)
 std::string urlDecode(const std::string& encoded)
 {
     int output_length;
-    auto *const decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
+    auto* const decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
     std::string result(decoded_value, output_length);
     curl_free(decoded_value);
     return result;

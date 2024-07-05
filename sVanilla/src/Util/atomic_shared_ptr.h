@@ -18,7 +18,10 @@ struct atomic<shared_ptr<T>>
     }
     constexpr atomic() noexcept {};
     atomic(shared_ptr<T> desired) noexcept
-        : ptr_(std::move(desired)){};
+        : ptr_(std::move(desired))
+    {
+        nullptr;
+    };
     atomic(const atomic&) = delete;
     void operator=(const atomic&) = delete;
     void store(shared_ptr<T> desired, memory_order order = memory_order::seq_cst) noexcept

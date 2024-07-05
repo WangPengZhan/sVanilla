@@ -15,25 +15,25 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Install clang-format
-      uses: aminya/setup-cpp@v1
-      with:
-        clangformat: 17.0.5
+      - name: Install clang-format
+        uses: aminya/setup-cpp@v1
+        with:
+          clangformat: 18.1.2
 
-    - name: Cache clang-format
-      uses: actions/cache@v3
-      with:
-        path: |
-          /usr/bin/clang-format
-        key: ${{ runner.os }}-clang-format-${{ hashFiles('**/*.cpp', '**/*.h') }}
+      - name: Cache clang-format
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/bin/clang-format
+          key: ${{ runner.os }}-clang-format-${{ hashFiles('**/*.cpp', '**/*.h') }}
 
-    - name: Run clang-format
-      run: |
-        extensions=("h" "hpp" "c" "cpp")
-        for ext in "${extensions[@]}"; do
-          find sVanilla/src -type f -name "*.$ext" | xargs clang-format -i -style=file -fallback-style=none
-          git diff --exit-code
-        done
+      - name: Run clang-format
+        run: |
+          extensions=("h" "hpp" "c" "cpp")
+          for ext in "${extensions[@]}"; do
+            find sVanilla/src -type f -name "*.$ext" | xargs clang-format -i -style=file -fallback-style=none
+            git diff --exit-code
+          done

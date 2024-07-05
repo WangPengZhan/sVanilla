@@ -30,7 +30,7 @@ public:
     void setUris(const std::list<std::string>& uris);
     const std::list<std::string>& uris() const;
     const std::string& gid() const;
-    const std::size_t& fileSize() const; 
+    const std::size_t& fileSize() const;
     const aria2net::AriaTellStatus& nowStatus();
 
 private:

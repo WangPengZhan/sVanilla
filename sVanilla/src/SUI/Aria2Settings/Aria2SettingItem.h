@@ -4,7 +4,6 @@
 #include <QMetaType>
 #include <QPainter>
 
-
 class Aria2SettingItem
 {
 public:
@@ -18,7 +17,10 @@ public:
     explicit Aria2SettingItem(QString key, QString value, Unit unit = String)
         : m_key(std::move(key))
         , m_value(std::move(value))
-        , m_unit(unit){};
+        , m_unit(unit)
+    {
+        nullptr;
+    };
 
     QString key()
     {
@@ -62,4 +64,3 @@ private:
     Unit m_unit = String;
     QWidget* m_widget = nullptr;
 };
-

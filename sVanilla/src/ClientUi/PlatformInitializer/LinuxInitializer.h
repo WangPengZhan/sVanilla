@@ -1,7 +1,9 @@
 #pragma once
 #ifdef __linux__
 
+// clang-format off
 #include "PlatformInitializer.h"
+// clang-format on
 
 class LinuxInitializer : public PlatformInitializer
 {

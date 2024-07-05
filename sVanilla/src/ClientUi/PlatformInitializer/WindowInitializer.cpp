@@ -1,5 +1,8 @@
 #ifdef _WIN32
+
+// clang-format off
 #include "WindowInitializer.h"
+// clang-format on
 
 WindowInitializer::WindowInitializer()
 {

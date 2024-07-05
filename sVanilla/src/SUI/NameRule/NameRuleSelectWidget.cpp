@@ -63,7 +63,6 @@ void NameRuleSelectWidget::setNameRules(const std::vector<QString>& rules)
     adjustSize();
     constexpr int maxHeight = 30;
     setMaximumHeight(maxHeight);
-
 }
 
 void NameRuleSelectWidget::mousePressEvent(QMouseEvent* event)
@@ -94,12 +93,11 @@ void NameRuleSelectWidget::mouseMoveEvent(QMouseEvent* event)
     QListWidget::mouseMoveEvent(event);
 }
 
-
 void NameRuleSelectWidget::makeItem(const QString& name)
 {
     auto* item = new QListWidgetItem(this);
     item->setData(Qt::UserRole + 1, name);
-    auto *const nameRule = new NameRule(this);
+    auto* const nameRule = new NameRule(this);
     nameRule->setRule(name);
     item->setSizeHint(nameRule->sizeHint());
 
@@ -110,7 +108,7 @@ void NameRuleSelectWidget::makeItem(const QString& name)
 void NameRuleSelectWidget::removeItem(const QListWidgetItem* item)
 {
     const auto row = indexFromItem(item).row();
-    auto *const widgetItem = takeItem(row);
+    auto* const widgetItem = takeItem(row);
     removeItemWidget(widgetItem);
     delete widgetItem;
 }
