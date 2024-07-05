@@ -2,6 +2,7 @@ import os
 import argparse
 from lxml import etree
 import copy
+import re
 
 def create_wxs(origin_wxs_file, directory, output_file):
     tree = etree.parse(origin_wxs_file)
