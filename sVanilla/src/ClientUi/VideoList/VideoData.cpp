@@ -1,6 +1,7 @@
 #include "VideoData.h"
 #include "Adapter/BaseVideoView.h"
 #include "ClientUi/Config/SingleConfig.h"
+#include "Util/UrlProcess.h"
 
 std::string VideoInfoFull::getGuid() const
 {
@@ -44,6 +45,12 @@ std::string VideoInfoFull::fileName() const
     temp = downloadConfig->nameRule.replace(subRule, QString::fromStdString(videoView->Publisher));
     subRule = "$" + QString::fromStdString(ruleList[3]) + "$";
     temp = downloadConfig->nameRule.replace(subRule, QString::fromStdString(videoView->PublishDate));
+
+    if (temp.isEmpty())
+    {
+        temp = QString::fromStdString(videoView->Title);
+    }
+    temp = util::FileHelp::removeSpecialChar(temp);
 
     return temp.toStdString();
 }

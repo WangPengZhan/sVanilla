@@ -109,15 +109,16 @@ void DownloadedItemWidget::restartItem()
 void DownloadedItemWidget::openItemFolder()
 {
     QString filePath = m_videoInfoFull->downloadConfig->downloadDir;
-    if (filePath.endsWith("/") && filePath.endsWith("\\"))
+    if (filePath.endsWith("/") || filePath.endsWith("\\"))
     {
-        filePath += m_videoInfoFull->downloadConfig->nameRule;
+        filePath += m_videoInfoFull->fileName();
     }
     else
     {
         filePath += "/";
-        filePath += m_videoInfoFull->downloadConfig->nameRule;
+        filePath += m_videoInfoFull->fileName();
     }
+    filePath += ".mp4";
 
     if (std::filesystem::u8path(filePath.toStdString()).is_relative())
     {
