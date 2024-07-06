@@ -32,7 +32,7 @@ jobs:
 
       - name: Run clang-format
         run: |
-          extensions=("h" "hpp" "c" "cpp")
+          extensions=("h" "hpp" "hxx" "hh" ".inl" "c" "cpp" "cxx" "cc" "c++")
           for ext in "${extensions[@]}"; do
             find sVanilla/src -type f -name "*.$ext" | xargs clang-format -i -style=file -fallback-style=none
             git diff --exit-code
