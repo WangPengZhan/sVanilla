@@ -177,7 +177,7 @@ void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoVi
     auto* const videoItem = new VideoGridItemWidget(this);
     auto* const item = new QListWidgetItem(this);
     videoItem->saveWidgetItem(item);
-    item->setSizeHint(videoItem->sizeHint());
+    item->setSizeHint(calculateItemSize());
     setItemWidget(item, videoItem);
     videoItem->setVideoInfo(videoView);
     connect(videoItem, &VideoGridItemWidget::downloadTrigger, this, [this, item]() {
@@ -207,16 +207,11 @@ void VideoGridWidget::coverReady(const int id) const
 void VideoGridWidget::resizeEvent(QResizeEvent* event)
 {
     QListWidget::resizeEvent(event);
-    if (count() == 0)
-    {
-        return;
-    }
     adjustItemSize();
 }
 
 void VideoGridWidget::setUi()
 {
-    constexpr int itemSpacing = 5;
     setSpacing(itemSpacing);
     setSelectionMode(ExtendedSelection);
     constexpr int scrollStep = 5;
@@ -246,11 +241,8 @@ void VideoGridWidget::setItemShortCuts()
 
 void VideoGridWidget::adjustItemSize() const
 {
-    const int n = width() / itemBaseWidth;
-    constexpr int itemPadding = 22;
-    const int itemWidth = (width() - n * itemPadding) / n;
-    const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
-    setItemSize(QSize(itemWidth, itemHeight));
+    auto size = calculateItemSize();
+    setItemSize(size);
 }
 
 void VideoGridWidget::setItemSize(const QSize& size) const
@@ -297,6 +289,14 @@ void VideoGridWidget::showInfo(QListWidgetItem* item)
     const auto index = row(item);
     emit infoBtnClick({previousRow, index, gridWidget->getVideoInfo()});
     previousRow = index;
+}
+
+QSize VideoGridWidget::calculateItemSize() const
+{
+    const int n = (width() - verticalScrollBar()->width() - 5) / (itemBaseWidth + itemWidthSpacing);
+    const int itemWidth = (width() - verticalScrollBar()->width() - 5 - (n - 1) * itemWidthSpacing) / n;
+    const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
+    return QSize(itemWidth, itemHeight);
 }
 
 void VideoGridWidget::updateCovers()

@@ -14,6 +14,8 @@ class VideoGridWidget;
 class Spiner;
 constexpr int itemBaseWidth = 240;
 constexpr int itemBaseHeight = 200;
+constexpr int itemSpacing = 5;
+constexpr int itemWidthSpacing = 5 + 8 + 8;
 constexpr float aspectRatio = static_cast<float>(itemBaseWidth) / static_cast<float>(itemBaseHeight);
 
 class VideoInfoWidget;
@@ -116,6 +118,8 @@ private:
     void downloadSelectedItem();
     void downloadItem(QListWidgetItem* item);
     void showInfo(QListWidgetItem* widget);
+
+    [[nodiscard]] QSize calculateItemSize() const;
 
 private:
     int previousRow = -1;
