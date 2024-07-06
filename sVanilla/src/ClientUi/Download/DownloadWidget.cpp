@@ -90,15 +90,12 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     download::ResourseInfo info;
     info.videoUris = video_urls;
     info.audioUris = audio_urls;
-    auto fileName = videoInfo->fileName().empty() ? videoInfo->videoView->Title : videoInfo->fileName();
-    fileName = util::FileHelp::removeSpecialChar(fileName);
+    auto fileName = videoInfo->fileName();
     info.option.out = fileName + ".mp4";
     info.option.dir = videoInfo->downloadConfig->downloadDir.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString() :
                                                                          videoInfo->downloadConfig->downloadDir.toStdString();
     const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
     info.option.header = h;
-
-    videoInfo->downloadConfig->nameRule = QString::fromStdString(info.option.out);
 
     emit sigDownloadTask(videoInfo, info);
 }
