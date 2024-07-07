@@ -15,6 +15,7 @@
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "SUI/RoundImageWidget.h"
 #include "ClientUi/VideoList/VideoData.h"
+#include "ClientUi/MainWindow/SApplication.h"
 #include "Util/UrlProcess.h"
 
 void elideText(QLabel* label, const QString& text)
@@ -104,7 +105,7 @@ void VideoGridItemWidget::createContextMenu()
 
 void VideoGridItemWidget::setCover()
 {
-    const QString tempPath = QApplication::applicationDirPath();
+    const QString tempPath = SApplication::appDir();
     const auto filePath = tempPath + QDir::separator() + QString::fromStdString(util::FileHelp::removeSpecialChar(m_infoFull->getGuid())) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {

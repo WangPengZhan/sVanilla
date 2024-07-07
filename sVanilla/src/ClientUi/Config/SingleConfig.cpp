@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QStandardPaths>
+#include "ClientUi/MainWindow/SApplication.h"
 
 #include "Util/Setting.h"
 #include "SingleConfig.h"
@@ -183,7 +184,7 @@ SingleConfig::~SingleConfig()
 
 void SingleConfig::iniConfig()
 {
-    const QString appConfigPath = QApplication::applicationDirPath() + "/config/config.ini";
+    const QString appConfigPath = SApplication::appDir() + "/config/config.ini";
     if (QFile::exists(appConfigPath))
     {
         m_appSettings = std::make_shared<QSettings>(appConfigPath, QSettings::IniFormat);
@@ -226,7 +227,7 @@ void SingleConfig::iniConfig()
         setDownloadConfig(downloadConfig);
     }
 
-    const QString aria2ConfigPath = QApplication::applicationDirPath() + "/config/aria2.conf";
+    const QString aria2ConfigPath = SApplication::appDir() + "/config/aria2.conf";
     if (QFile::exists(aria2ConfigPath))
     {
         m_aria2Settings = std::make_shared<QSettings>(aria2ConfigPath, CustomSettings::m_confFormat);
@@ -237,7 +238,7 @@ void SingleConfig::iniConfig()
     // default config
     const QString defaultPath = ":/aria2.conf";
     m_aria2DefaultSettings = std::make_shared<QSettings>(defaultPath, CustomSettings::m_confFormat);
-    const QString mergeConfig = QApplication::applicationDirPath() + "/config/mergeAria2Config.conf";
+    const QString mergeConfig = SApplication::appDir() + "/config/mergeAria2Config.conf";
     m_aria2CustomSettings = std::make_shared<QSettings>(mergeConfig, CustomSettings::m_confFormat);
     if (m_aria2Settings != nullptr)
     {

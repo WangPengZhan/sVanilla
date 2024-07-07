@@ -7,11 +7,12 @@
 
 namespace sqlite
 {
-static const std::string dbPath = ".db";
+extern std::string dbPath;
 
 class SqliteDBManager
 {
 public:
+    static void setDbPath(const std::string& path);
     static SqliteDBPtr createDBPtr(const std::string& path, bool createNew = true);
     static SqliteDBPtr writeDBPtr(const std::string& path);
 

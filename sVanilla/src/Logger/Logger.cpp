@@ -9,11 +9,17 @@ namespace
 constexpr int logFileMaxSize = 100 * 1024 * 1024;  // 20M
 }
 
-Logger Logger::m_logger;
+std::string Logger::m_dir;
 
 Logger& Logger::getInstance()
 {
+    static Logger m_logger;
     return m_logger;
+}
+
+void Logger::setLogDir(const std::string& dir)
+{
+    m_dir = dir;
 }
 
 void Logger::initLog()
@@ -39,7 +45,7 @@ Logger::~Logger()
 
 void Logger::registerLogger(const std::string& logName)
 {
-    spdlog::rotating_logger_mt<spdlog::async_factory>(logName, "log/" + logName + ".log", logFileMaxSize, 100);
+    spdlog::rotating_logger_mt<spdlog::async_factory>(logName, m_dir + "log/" + logName + ".log", logFileMaxSize, 100);
     // spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(logName, "log/" + logName + ".log", logFileMaxSize, 100);
 }
 

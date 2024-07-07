@@ -16,6 +16,7 @@
 #include "ClientUi/Config/SingleConfig.h"
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "ClientUi/Utils/Utility.h"
+#include "ClientUi/MainWindow/SApplication.h"
 
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
@@ -111,18 +112,18 @@ void DownloadedItemWidget::openItemFolder()
     QString filePath = m_videoInfoFull->downloadConfig->downloadDir;
     if (filePath.endsWith("/") || filePath.endsWith("\\"))
     {
-        filePath += m_videoInfoFull->fileName();
+        filePath += QString::fromStdString(m_videoInfoFull->fileName());
     }
     else
     {
         filePath += "/";
-        filePath += m_videoInfoFull->fileName();
+        filePath += QString::fromStdString(m_videoInfoFull->fileName());
     }
     filePath += ".mp4";
 
     if (std::filesystem::u8path(filePath.toStdString()).is_relative())
     {
-        filePath = QApplication::applicationDirPath() + "/" + filePath;
+        filePath = SApplication::appDir() + "/" + filePath;
     }
 
     util::showInFileExplorer(filePath);

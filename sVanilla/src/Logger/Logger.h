@@ -6,6 +6,7 @@ class Logger
 {
 public:
     static Logger& getInstance();
+    static void setLogDir(const std::string& dir);
     void initLog();
 
 private:
@@ -22,5 +23,5 @@ private:
     void registerLogger(const std::string& logName);
     void setLog();
 
-    static Logger m_logger;
+    static std::string m_dir;
 };

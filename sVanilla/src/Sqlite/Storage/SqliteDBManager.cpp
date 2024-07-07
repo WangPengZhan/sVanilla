@@ -6,11 +6,16 @@
 
 namespace sqlite
 {
-
+std::string dbPath = ".db";
 std::once_flag SqliteDBManager::m_createFlag;
 std::mutex SqliteDBManager::m_mutex;
 std::unordered_map<std::string, SqliteWithMutexPtr> SqliteDBManager::m_defaultWriteDbWtihMutexs;
 std::unordered_map<std::string, SqliteDBPtr> SqliteDBManager::m_defaultWriteDbs;
+
+void SqliteDBManager::setDbPath(const std::string& path)
+{
+    dbPath = path;
+}
 
 SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew)
 {

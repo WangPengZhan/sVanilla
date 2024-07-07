@@ -1,10 +1,14 @@
-
 #include "SApplication.h"
 #include "ClientUi/Config/SingleConfig.h"
+#include "ClientUi/Config/GlobalData.h"
+
+#include <QDir>
+#include <QStandardPaths>
 
 SApplication::SApplication(int& argc, char** argv)
     : QApplication(argc, argv)
 {
+    m_ariaServer.setLogDir(appDir());
     m_translater.setTranslatesDir(QApplication::applicationDirPath() + "/translations");
     m_translater.setLanguage(static_cast<Translater::Language>(SingleConfig::instance().language()));
 }
@@ -33,6 +37,25 @@ plugin::PluginManager& SApplication::pluginManager()
 Translater& SApplication::translater()
 {
     return m_translater;
+}
+
+QString SApplication::appDir()
+{
+    QString dir;
+    if (QFile::exists(QString(constant::installedFile)))
+    {
+        dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/" + QString(constant::softwareName);
+        if (!QDir(dir).exists(dir))
+        {
+            QDir(dir).mkpath(dir);
+        }
+    }
+    else
+    {
+        dir = QApplication::applicationDirPath();
+    }
+
+    return dir;
 }
 
 void SApplication::startServer()

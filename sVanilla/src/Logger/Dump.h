@@ -1,7 +1,10 @@
 #pragma once
+#include <string>
 
-class DumpColletor
+namespace DumpColletor
 {
-public:
-    static void registerDumpHandle();
-};
+void registerDumpHandle();
+void setDumpDir(const std::string& strDumpDir);
+
+static std::string dumpDir = "./dump";
+}  // namespace DumpColletor

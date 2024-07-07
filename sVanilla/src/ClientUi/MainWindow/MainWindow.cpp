@@ -17,6 +17,7 @@
 
 #include "ClientUi/Setting/SettingsPage.h"
 #include "ClientUi/VideoList/VideoWidget.h"
+#include "ClientUi/MainWindow/SApplication.h"
 #include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"
@@ -69,7 +70,7 @@ void MainWindow::setUi()
 
     if (ui->settingPage->isSaveMainWindow() == Qt::Checked)
     {
-        QString projectPath = QApplication::applicationDirPath() + "/.sVanilla";
+        QString projectPath = SApplication::appDir() + "/.sVanilla";
         QFile projectFile(projectPath + "/MainWindow");
         if (projectFile.open(QIODevice::ReadOnly))
         {
@@ -112,7 +113,7 @@ void MainWindow::signalsAndSlots()
             return;
         }
 
-        QString projectPath = QApplication::applicationDirPath() + "/.sVanilla";
+        QString projectPath = SApplication::appDir() + "/.sVanilla";
         QDir projectDir(projectPath);
         if (!projectDir.exists())
         {
