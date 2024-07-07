@@ -19,6 +19,8 @@ public:
     plugin::PluginManager& pluginManager();
     Translater& translater();
 
+    static QString appDir();
+
 private:
     void startServer();
     void signalsAndSlots();

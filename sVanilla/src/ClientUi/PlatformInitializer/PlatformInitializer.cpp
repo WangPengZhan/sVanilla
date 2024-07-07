@@ -1,6 +1,8 @@
 #include <QApplication>
 
 #include "PlatformInitializer.h"
+#include "version.h"
+#include "ClientUi/Config/GlobalData.h"
 
 void PlatformInitializer::allApplicationBefore()
 {
@@ -14,10 +16,10 @@ void PlatformInitializer::allApplicationBefore()
 
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
-    QApplication::setApplicationName("sVanilla");
-    QApplication::setApplicationVersion("1.0.0");
-    QApplication::setOrganizationDomain("sVanilla.app");
-    QApplication::setOrganizationName("sVanilla Studio");
+    QApplication::setApplicationName(constant::softwareName);
+    QApplication::setApplicationVersion(SVNLA_VERSION_STR);
+    QApplication::setOrganizationDomain(constant::company);
+    QApplication::setOrganizationName(constant::homePage);
 }
 
 void PlatformInitializer::allInit()

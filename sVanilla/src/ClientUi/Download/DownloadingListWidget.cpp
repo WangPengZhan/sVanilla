@@ -17,6 +17,7 @@
 #include "ClientUi/Storage/DownloadingItemStorage.h"
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "ClientUi/Utils/Utility.h"
+#include "ClientUi/MainWindow/SApplication.h"
 #include "Util/SpeedUtil.h"
 #include "Util/TimerUtil.h"
 
@@ -169,7 +170,7 @@ void DownloadingItemWidget::openItemFolder()
     QString filePath = QString::fromStdString(m_downloader->filename());
     if (std::filesystem::u8path(m_downloader->filename()).is_relative())
     {
-        filePath = QApplication::applicationDirPath() + "/" + filePath;
+        filePath = SApplication::appDir() + "/" + filePath;
     }
 
     util::showInFileExplorer(filePath);

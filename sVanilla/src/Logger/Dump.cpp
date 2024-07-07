@@ -3,17 +3,27 @@
 #    include <DbgHelp.h>
 #    include <client/windows/handler/exception_handler.h>
 #elif __linux__  //
-#    include "client/linux/handler/exception_handler.h"
+#    include <client/linux/handler/exception_handler.h>
 #elif __APPLE__
-#    include "client/mac/handler/exception_handler.h"
+#    include <client/mac/handler/exception_handler.h>
 #endif
 
 #include "Dump.h"
 
-#include <QApplication>
-#include <QDir>
-
 #ifdef _WIN32
+
+namespace
+{
+
+std::wstring stringToWideString(const std::string& str)
+{
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+    std::wstring wstrTo(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wstrTo[0], size_needed);
+    return wstrTo;
+}
+
+}  // namespace
 
 int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 {
@@ -36,20 +46,19 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
     }
 
     // 创建 dump 文件夹
-    wchar_t szFileName[MAX_PATH] = {0};
-    QString dirPath = QApplication::applicationDirPath() + "/dump/";
-    QDir dir;
-    if (!dir.exists(dirPath))
+    auto dumpDir = stringToWideString(DumpColletor::dumpDir);
+    bool success = ::CreateDirectoryW(dumpDir.c_str(), NULL) || GetLastError() == ERROR_ALREADY_EXISTS;
+    if (!success)
     {
-        dir.mkpath(dirPath);
+        return EXCEPTION_CONTINUE_EXECUTION;
     }
 
     // 创建 dump 文件
-    std::wstring appName = QApplication::applicationName().toStdWString();
+    wchar_t szFileName[MAX_PATH] = {0};
     SYSTEMTIME stLocalTime;
     ::GetLocalTime(&stLocalTime);
-    ::wsprintf(LPWSTR(szFileName), LPCWSTR(L"%s%s-%04d%02d%02d-%02d%02d%02d.dmp"), dirPath.toStdWString().c_str(), appName.c_str(), stLocalTime.wYear,
-               stLocalTime.wMonth, stLocalTime.wDay, stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
+    ::wsprintf(LPWSTR(szFileName), LPCWSTR(L"%s/%04d%02d%02d-%02d%02d%02d.dmp"), dumpDir.c_str(), stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
+               stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
     HANDLE hDumpFile = ::CreateFile(LPCWSTR(szFileName), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
     if (INVALID_HANDLE_VALUE == hDumpFile)
     {
@@ -97,9 +106,9 @@ bool dumpCallback(const google_breakpad::MinidumpDescriptor& descriptor, void* c
 #elif __APPLE__
 bool dumpCallback(const char* dump_path, const char* id, void* context, bool succeeded)
 {
-    Q_UNUSED(dump_path)
-    Q_UNUSED(id)
-    Q_UNUSED(context)
+    (void)(dump_path);
+    (void)(id);
+    (void)(context);
     return succeeded;
 }
 #endif
@@ -112,11 +121,14 @@ void DumpColletor::registerDumpHandle()
     //     L"./dump", NULL, dumpCallback, NULL,
     //     google_breakpad::ExceptionHandler::HANDLER_ALL);
 #elif __linux__
-    google_breakpad::MinidumpDescriptor descriptor("./dump");
+    google_breakpad::MinidumpDescriptor descriptor(dumpDir);
     google_breakpad::ExceptionHandler eh(descriptor, NULL, dumpCallback, NULL, true, -1);
 #elif __APPLE__
-    QString dumpDir("./dump");
-    std::string pathAsStr = dumpDir.toStdString();
-    google_breakpad::ExceptionHandler eh(pathAsStr, nullptr, dumpCallback, nullptr, true, nullptr);
+    google_breakpad::ExceptionHandler eh(dumpDir, nullptr, dumpCallback, nullptr, true, nullptr);
 #endif
+}
+
+void DumpColletor::setDumpDir(const std::string& strDumpDir)
+{
+    dumpDir = strDumpDir;
 }

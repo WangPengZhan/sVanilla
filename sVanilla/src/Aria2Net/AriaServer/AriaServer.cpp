@@ -39,8 +39,9 @@ void AriaServer::startLocalServerAsync()
         m_aria2Process = std::make_unique<QProcess>();
         QString ariaPath = QApplication::applicationDirPath() + "/aria/";
         QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
-        QString sessionFile = ariaPath + "aira.session";
-        QString logFile = ariaPath + "aira.log";
+
+        QString sessionFile = m_dir + "/aira.session";
+        QString logFile = m_dir + "/aira.log";
 
         if (!QFile::exists(sessionFile))
         {
@@ -60,30 +61,15 @@ void AriaServer::startLocalServerAsync()
 
         // 设置启动的程序名和命令行参数
         m_aria2Process->setProgram(ariaExecutable);
-        m_aria2Process->setArguments(QStringList() << "--enable-rpc"
-                                                   << "--rpc-listen-all=true"
-                                                   << "--rpc-allow-origin-all=true"
-                                                   << "--rpc-listen-port=6800"
-                                                   << "--rpc-secret=sVanilla"
-                                                   << "--input-file=" + sessionFile << "--save-session=" + sessionFile << "--save-session-interval=30"
-                                                   << "--log=" + logFile << "--log-level=debug"
-                                                   << "--max-concurrent-downloads=3"
-                                                   << "--max-connection-per-server=16"
-                                                   << "--split=5"
-                                                   << "--min-split-size=10M"
-                                                   << "--max-overall-download-limit=0"
-                                                   << "--max-download-limit=0"
-                                                   << "--max-overall-upload-limit=0"
-                                                   << "--max-upload-limit=0"
-                                                   << "--continue=true"
-                                                   << "--allow-overwrite=true"
-                                                   << "--auto-file-renaming=false"
-                                                   << "--file-allocation=none"
-                                                   << "--header=\"Cookie: \""
-                                                   << "--header=\"Origin: https://www.bilibili.com\""
-                                                   << "--header=\"Referer: https://www.bilibili.com\""
-                                                   << "--header=\"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-                                                      "like Gecko) Chrome/97.0.4692.99 Safari/537.36\"");
+        m_aria2Process->setArguments(
+            QStringList() << "--enable-rpc" << "--rpc-listen-all=true" << "--rpc-allow-origin-all=true" << "--rpc-listen-port=6800" << "--rpc-secret=sVanilla"
+                          << "--input-file=" + sessionFile << "--save-session=" + sessionFile << "--save-session-interval=30" << "--log=" + logFile
+                          << "--log-level=debug" << "--max-concurrent-downloads=3" << "--max-connection-per-server=16" << "--split=5" << "--min-split-size=10M"
+                          << "--max-overall-download-limit=0" << "--max-download-limit=0" << "--max-overall-upload-limit=0" << "--max-upload-limit=0"
+                          << "--continue=true" << "--allow-overwrite=true" << "--auto-file-renaming=false" << "--file-allocation=none"
+                          << "--header=\"Cookie: \"" << "--header=\"Origin: https://www.bilibili.com\"" << "--header=\"Referer: https://www.bilibili.com\""
+                          << "--header=\"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+                             "like Gecko) Chrome/97.0.4692.99 Safari/537.36\"");
 
         if (m_aria2Process->state() != QProcess::Running)
         {
@@ -145,6 +131,12 @@ void AriaServer::setErrorFunc(std::function<void()> func)
 void AriaServer::setCloseFunc(std::function<void()> func)
 {
     m_closeFunc = std::move(func);
+}
+
+void AriaServer::setLogDir(const QString& dir)
+{
+    m_dir = dir + "/aria";
+    QDir(m_dir).mkpath(m_dir);
 }
 
 }  // namespace aria2net

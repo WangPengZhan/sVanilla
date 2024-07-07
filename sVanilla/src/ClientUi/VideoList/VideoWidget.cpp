@@ -26,7 +26,8 @@
 #include "ClientUi/Utils/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
 #include "ClientUi/Storage/SearchHistoryStorage.h"
-#include "ClientUi//Storage/StorageManager.h"
+#include "ClientUi/Storage/StorageManager.h"
+#include "ClientUi/MainWindow/SApplication.h"
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -358,7 +359,7 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
     // after get video view:
     // 1. add 'download cover image' task
     // 2. add video item
-    const QString tempPath = QApplication::applicationDirPath();  // It is now in the temporary area
+    const QString tempPath = SApplication::appDir();  // It is now in the temporary area
     const auto views = ConvertVideoView(videoView.data);
     ui->labelPlayListTitle->clear();
     if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
