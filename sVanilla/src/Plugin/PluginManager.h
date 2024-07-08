@@ -41,6 +41,7 @@ public:
     ~PluginManager();
 
     static std::string pluginDir();
+    static void setPluginConfigDir(const std::string& dir);
     void loadPlugins();
     void unloadPlugins();
 
@@ -63,6 +64,7 @@ private:
     void initPluginPaths();
     void createPluginDir();
     static std::vector<std::string> pluginDirHaving();
+    static std::string configFilePath();
 
 private:
     std::unordered_map<std::string, std::shared_ptr<DynamicLibLoader>> m_libHandles;
@@ -71,6 +73,7 @@ private:
     mutable std::recursive_mutex m_pluginsMutex;
 
     static const std::string m_configPath;
+    static std::string m_dir;
 
     mutable std::atomic_bool m_configChanged;
     std::vector<PluginConfig> m_pluginConfig;

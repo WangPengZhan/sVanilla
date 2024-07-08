@@ -21,7 +21,7 @@ public:
 signals:
     void HasAdded(bool hasAdded);
     void updateWebsiteIcon(const std::string& uri);
-    void parseUri(const std::string& uri);
+    void parseUri(const QString& uri);
 
 private:
     void signalsAndSlots();

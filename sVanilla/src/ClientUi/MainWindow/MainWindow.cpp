@@ -96,7 +96,7 @@ void MainWindow::signalsAndSlots()
     connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->homePage, &HomePage::setWebsiteIcon);
     connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->videoPage, &VideoWidget::setWebsiteIcon);
 
-    connect(ui->homePage, &HomePage::parseUri, m_uriProcess, &UriProcess::parseUri);
+    connect(ui->homePage, &HomePage::parseUri, ui->videoPage, &VideoWidget::searchUrl);
     connect(ui->videoPage, &VideoWidget::parseUri, m_uriProcess, &UriProcess::parseUri);
     connect(m_uriProcess, &UriProcess::uriProcessComplete, this, &MainWindow::startLoading);
 

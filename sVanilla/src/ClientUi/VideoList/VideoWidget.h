@@ -44,6 +44,7 @@ public:
     void prepareDownloadTaskList();
 
     void clearVideo() const;
+    void searchUrl(const QString& url);
 
     void setWebsiteIcon(const QString& iconPath);
     void setDownloadingNumber(int number) const;

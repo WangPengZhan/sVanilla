@@ -20,6 +20,7 @@ public:
     Translater& translater();
 
     static QString appDir();
+    static bool isInstalled();
 
 private:
     void startServer();

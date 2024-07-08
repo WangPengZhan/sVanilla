@@ -245,7 +245,7 @@ bool Unzipper::unzip()
         return false;
     }
     resource.addFn([unzfile]() {
-        unzCloseCurrentFile(unzfile);
+        unzClose(unzfile);
     });
 
     // 获取zip文件的信息
@@ -308,6 +308,10 @@ bool Unzipper::unzip()
             {
                 return false;
             }
+
+            resource.addFn([unzfile]() {
+                unzCloseCurrentFile(unzfile);
+            });
 
             // 读取文件
             uLong uFilesize = pFileInfo->uncompressed_size;
