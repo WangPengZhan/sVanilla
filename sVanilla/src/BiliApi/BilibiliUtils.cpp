@@ -13,6 +13,8 @@
 
 namespace biliapi
 {
+std::string cookieDataDir;
+
 // 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
 void replaceCharacter(std::string& source, const std::string& from, const std::string& to)
 {
@@ -73,7 +75,7 @@ nlohmann::json readJson(const std::string& filename)
 
 void updateData(const std::string& key, const nlohmann::json& value)
 {
-    const std::string filename = "sVanilla.data";
+    const std::string filename = cookieDataFilePath();
     nlohmann::json j = readJson(filename);
     j[key] = value;
     saveJson(filename, j);
@@ -149,6 +151,27 @@ std::string MD5Hash(const std::string& str)
 bool isExpired(const std::time_t& expires)
 {
     return expires < std::time(nullptr) / 86400;
+}
+
+void setCookieDataDir(const std::string& dir)
+{
+    cookieDataDir = dir;
+}
+
+std::string cookieDataFilePath()
+{
+    std::string filePath;
+    if (cookieDataDir.empty())
+    {
+        filePath = cookieDataFileName;
+    }
+    else
+    {
+        filePath =
+            (cookieDataDir.back() == '/' || cookieDataDir.back() == '\\') ? cookieDataDir + cookieDataFileName : cookieDataDir + "/" + cookieDataFileName;
+    }
+
+    return filePath;
 }
 
 }  // namespace biliapi

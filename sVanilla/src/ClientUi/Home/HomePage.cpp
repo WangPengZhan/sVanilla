@@ -5,6 +5,8 @@
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QProcess>
+#include <QMessageBox>
 
 #include "HomePage.h"
 #include "ui_HomePage.h"
@@ -15,8 +17,43 @@
 #include "ClientUi//Storage/StorageManager.h"
 #include "ClientUi/Login/LoginDialog.h"
 #include "Login/BiliLogin.h"
+#include "ClientUi/MainWindow/SApplication.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
+
+bool copyWithAdminPrivileges(const QString& source, const QString& destination)
+{
+    QStringList arguments;
+    QString program;
+
+#ifdef _WIN32
+    program = "powershell";
+    QString command = QString("Copy-Item -Path '%1' -Destination '%2' -Force").arg(source).arg(destination);
+    arguments << QString("Start-Process powershell -ArgumentList '-NoProfile', '-ExecutionPolicy Bypass', '-Command', \"%1\" -Verb RunAs").arg(command);
+#elif __linux__
+    program = "sudo";
+    arguments << "-S" << QString("cp \"%1\" \"%2\"").arg(source).arg(destination);
+#elif __APPLE__
+    program = "osascript";
+    arguments << "-e" << QString("do shell script \"cp '%1' '%2'\" with administrator privileges").arg(source).arg(destination);
+#endif
+
+    QProcess process;
+    process.setProgram(program);
+    process.setArguments(arguments);
+    process.start();
+    process.waitForFinished();
+
+    if (process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0)
+    {
+        return true;
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, "Error", "Failed to copy file with administrator privileges.");
+        return false;
+    }
+}
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
@@ -44,7 +81,8 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
-        emit parseUri({ui->lineEditHome->text().toStdString()});
+        emit parseUri(ui->lineEditHome->text());
+        ui->lineEditHome->clear();
     });
 
     connect(ui->lineEditHome, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
@@ -76,8 +114,14 @@ void HomePage::signalsAndSlots()
                 return;
             }
         }
-
-        QFile::copy(fileName, newPlugin);
+        if (sApp->isInstalled())
+        {
+            copyWithAdminPrivileges(fileName, newPlugin);
+        }
+        else
+        {
+            QFile::copy(fileName, newPlugin);
+        }
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
         std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
@@ -87,7 +131,9 @@ void HomePage::signalsAndSlots()
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
-        emit parseUri({clipboard->text().toStdString()});
+        ui->lineEditHome->setText(clipboard->text());
+        emit parseUri(clipboard->text());
+        ui->lineEditHome->clear();
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
         createHistoryMenu();
@@ -117,6 +163,7 @@ void HomePage::createHistoryMenu()
 
     const auto actionCallback = [this](const QString& text) {
         ui->lineEditHome->setText(text);
+        ui->lineEditHome->setFocus();
     };
     auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
     auto history = historyStorage->allItems();

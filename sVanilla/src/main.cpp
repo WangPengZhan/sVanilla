@@ -5,15 +5,16 @@
 #include "ClientUi/MainWindow/SApplication.h"
 #include "ClientUi/MainWindow/MainWindow.h"
 #include "ClientUi/PlatformInitializer/AppInitializer.h"
-#include "Plugin/PluginManager.h"
 #include "NetWork/CurlCpp/CurlGlobal.h"
 #include "Sqlite/Storage/SqliteDBManager.h"
+#include "BiliApi/BilibiliUtils.h"
 
 int main(int argc, char* argv[])
 {
-    Logger::setLogDir(SApplication::appDir().toStdString() + "/");
+    Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + "/");
     Logger::getInstance();
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + "/.db");
+    biliapi::setCookieDataDir(SApplication::appDir().toLocal8Bit().toStdString());
     network::CurlGlobal curlGlobal;
     DumpColletor::registerDumpHandle();
 
@@ -23,7 +24,7 @@ int main(int argc, char* argv[])
     sVanilla.initApplicationBefore();
 
     SApplication application(argc, argv);
-    DumpColletor::setDumpDir(SApplication::appDir().toStdString() + "/dump");
+    DumpColletor::setDumpDir(SApplication::appDir().toLocal8Bit().toStdString() + "/dump");
     SingleAppHelper singleAppHelper;
     if (singleAppHelper.isHaveInstance())
     {
@@ -32,8 +33,6 @@ int main(int argc, char* argv[])
 
     sVanilla.init();
     application.init();
-
-    application.pluginManager().loadPlugins();
 
     MainWindow maimWindow;
     singleAppHelper.setMainWidget(&maimWindow);

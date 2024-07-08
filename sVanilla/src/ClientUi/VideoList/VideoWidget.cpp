@@ -119,6 +119,7 @@ void VideoWidget::createHistoryMenu()
 
     auto actionCallback = [this](const QString& text) {
         ui->lineEdit->setText(text);
+        ui->lineEdit->setFocus();
     };
     auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
     auto history = historyStorage->allItems();
@@ -424,6 +425,12 @@ void VideoWidget::clearVideo() const
     ui->videoListWidget->clearVideo();
     ui->videoGridInfoWidget->hide();
     ui->videoListInfoWidget->hide();
+}
+
+void VideoWidget::searchUrl(const QString& url)
+{
+    ui->lineEdit->setText(url);
+    ui->lineEdit->Complete();
 }
 
 void VideoWidget::setWebsiteIcon(const QString& iconPath)

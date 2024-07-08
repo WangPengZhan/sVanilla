@@ -10,6 +10,7 @@ namespace plugin
 
 std::string const PluginManager::m_pluginDir = "plugin/";
 std::string const PluginManager::m_configPath = "config/plugin_config.json";
+std::string PluginManager::m_dir;
 
 #ifdef _WIN32
 std::string const PluginManager::m_dynamicExtension = ".dll";
@@ -34,6 +35,11 @@ PluginManager::~PluginManager()
 std::string PluginManager::pluginDir()
 {
     return m_pluginDir;
+}
+
+void PluginManager::setPluginConfigDir(const std::string& dir)
+{
+    m_dir = dir;
 }
 
 void PluginManager::loadPlugins()
@@ -133,7 +139,7 @@ void PluginManager::loadConfig()
 {
     try
     {
-        std::ifstream f("example.json");
+        std::ifstream f(configFilePath());
         nlohmann::json data = nlohmann::json::parse(f);
         m_pluginConfig = data;
     }
@@ -158,7 +164,7 @@ void PluginManager::saveConfig() const
         return;
     }
 
-    std::ofstream o("config/plugin_config.json");
+    std::ofstream o(configFilePath());
     nlohmann::json json = m_pluginConfig;
     o << json.dump(4);
     m_configChanged = false;
@@ -193,6 +199,20 @@ std::vector<std::string> PluginManager::pluginDirHaving()
     }
 
     return res;
+}
+
+std::string PluginManager::configFilePath()
+{
+    if (m_dir.empty())
+    {
+        return m_configPath;
+    }
+    else
+    {
+        return (m_dir.back() == '/' || m_dir.back() == '\\') ? m_dir + m_configPath : m_dir + "/" + m_configPath;
+    }
+
+    return {};
 }
 
 }  // namespace plugin
