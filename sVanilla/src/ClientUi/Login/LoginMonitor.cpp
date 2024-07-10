@@ -1,5 +1,7 @@
 #include "LoginMonitor.h"
 
+#include <chrono>
+
 LoginMonitor::LoginMonitor(QObject* parent)
     : QObject(parent)
     , m_stop(false)

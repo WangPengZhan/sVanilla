@@ -145,7 +145,7 @@ void DownloadedItemWidget::showInfoPanel() const
     {
         return;
     }
-    m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
+    m_listWidget->showInfoPanel(m_videoInfoFull, m_listWidget->row(m_listWidgetItem));
 }
 
 DownloadedListWidget::DownloadedListWidget(QWidget* parent)
@@ -225,9 +225,10 @@ void DownloadedListWidget::setInfoPanelSignal(DownloadedInfoWidget* infoWidget)
     m_infoWidget = infoWidget;
 }
 
-void DownloadedListWidget::showInfoPanel(int index)
+void DownloadedListWidget::showInfoPanel(const std::shared_ptr<VideoInfoFull>& videoInfo, int index)
 {
     setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
+    m_infoWidget->updateUi(videoInfo);
 }
 
 void DownloadedListWidget::hideInfoPanel() const

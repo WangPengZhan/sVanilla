@@ -21,9 +21,6 @@ struct VideoInfoFull
     std::string fileName() const;
 
     static const std::vector<std::string> ruleList;
-
-private:
-    mutable std::string guid;
 };
 
 struct InfoPanelData

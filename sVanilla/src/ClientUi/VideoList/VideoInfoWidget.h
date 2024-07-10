@@ -18,11 +18,13 @@ class VideoInfoWidget : public QWidget
 public:
     explicit VideoInfoWidget(QWidget* parent = nullptr);
     ~VideoInfoWidget();
-    void updateUi(const std::shared_ptr<VideoInfoFull>& infoFull);
+    void setVidoInfo(std::shared_ptr<VideoInfoFull> infoFull);
+    void updateUi();
 
 private:
     void signalsAndSlots();
 
 private:
     Ui::VideoInfoWidget* ui;
+    std::shared_ptr<VideoInfoFull> m_infoFull;
 };

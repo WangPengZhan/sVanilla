@@ -1,5 +1,7 @@
 #include "DownloadManager.h"
 
+#include <memory>
+
 DownloadManager::DownloadManager(QObject* parent)
     : QObject(parent)
 {

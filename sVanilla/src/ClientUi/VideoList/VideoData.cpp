@@ -5,11 +5,8 @@
 
 std::string VideoInfoFull::getGuid() const
 {
-    if (guid.empty())
-    {
-        guid = videoView->Identifier + videoView->AlternateId + videoView->VideoId + downloadConfig->downloadDir.toStdString() +
-               std::to_string(static_cast<int>(downloadConfig->videoQuality)) + downloadConfig->nameRule.toStdString();
-    }
+    auto guid = videoView->Identifier + videoView->AlternateId + videoView->VideoId + downloadConfig->downloadDir.toStdString() +
+                std::to_string(static_cast<int>(downloadConfig->videoQuality)) + downloadConfig->nameRule.toStdString();
 
     return guid;
 }
@@ -37,14 +34,15 @@ std::string VideoInfoFull::fileName() const
         return result;
     }
 
+    QString temp = downloadConfig->nameRule;
     QString subRule = "$" + QString::fromStdString(ruleList[0]) + "$";
-    auto temp = downloadConfig->nameRule.replace(subRule, QString::fromStdString(videoView->Identifier));
+    temp.replace(subRule, QString::fromStdString(videoView->Identifier));
     subRule = "$" + QString::fromStdString(ruleList[1]) + "$";
-    temp = downloadConfig->nameRule.replace(subRule, QString::fromStdString(videoView->Title));
+    temp.replace(subRule, QString::fromStdString(videoView->Title));
     subRule = "$" + QString::fromStdString(ruleList[2]) + "$";
-    temp = downloadConfig->nameRule.replace(subRule, QString::fromStdString(videoView->Publisher));
+    temp.replace(subRule, QString::fromStdString(videoView->Publisher));
     subRule = "$" + QString::fromStdString(ruleList[3]) + "$";
-    temp = downloadConfig->nameRule.replace(subRule, QString::fromStdString(videoView->PublishDate));
+    temp.replace(subRule, QString::fromStdString(videoView->PublishDate));
 
     if (temp.isEmpty())
     {

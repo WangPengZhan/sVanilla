@@ -11,6 +11,8 @@ class DownloadedInfoWidget;
 }
 QT_END_NAMESPACE
 
+struct VideoInfoFull;
+
 class DownloadedInfoWidget : public QWidget
 {
     Q_OBJECT
@@ -18,6 +20,8 @@ class DownloadedInfoWidget : public QWidget
 public:
     explicit DownloadedInfoWidget(QWidget* parent = nullptr);
     ~DownloadedInfoWidget() override;
+
+    void updateUi(const std::shared_ptr<VideoInfoFull>& videoInfo);
 
 private:
     void signalsAndSlots();

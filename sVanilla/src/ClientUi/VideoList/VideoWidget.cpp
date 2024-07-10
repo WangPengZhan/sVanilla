@@ -91,7 +91,7 @@ void VideoWidget::signalsAndSlots()
         showInfo(ui->videoGridInfoWidget, ui->videoGrid, data.currentRow, data.previousRow);
         if (ui->videoGridInfoWidget->isVisible())
         {
-            ui->videoGridInfoWidget->updateUi(data.info);
+            ui->videoGridInfoWidget->setVidoInfo(data.info);
         }
     });
 
