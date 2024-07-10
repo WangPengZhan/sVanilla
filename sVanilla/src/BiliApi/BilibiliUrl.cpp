@@ -1,5 +1,7 @@
 #include "BilibiliUrl.h"
 
+#include <regex>
+
 bool isValidUrl(const std::string& url)
 {
     std::regex bilibiliPattern(R"((http|https):\/\/((www|m|space)\.)?(bilibili\.com|b23\.tv))");

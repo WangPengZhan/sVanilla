@@ -6,46 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>405</width>
+    <height>363</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DownloadedInfoWidget</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelFilePathIdentifier">
-     <property name="text">
-      <string>FilePath:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QPushButton" name="btnClose">
-     <property name="icon">
-         <iconset theme=":/icon/close.svg"/>
-     </property>
-     <property name="_vanillaStyle_Patch" stdset="0">
-      <string>CleanButtonPatch</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="labelTotalSizeIdentifier">
-     <property name="text">
-      <string>TotalSize:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelStatusIdentifier">
-     <property name="text">
-      <string>Status:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -58,51 +27,135 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelSpeedIdentifier">
-     <property name="text">
-      <string>DownloadingSpeed:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="btnStatus">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>Downloaded</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btnClose">
+     <property name="icon">
+      <iconset theme=":/icon/close.svg"/>
      </property>
      <property name="_vanillaStyle_Patch" stdset="0">
       <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="3">
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelTitleIdentifier">
+     <property name="text">
+      <string>Title：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelPublisherIdentifier">
+     <property name="text">
+      <string>Publisher：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelDurationIdentifier">
+     <property name="text">
+      <string>Duration：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelPublishIdentifier">
+     <property name="text">
+      <string>PublishDate:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelDescriptionIdentifier">
+     <property name="text">
+      <string>Description：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelTotalSizeIdentifier">
+     <property name="text">
+      <string>TotalSize:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="labelFilePathIdentifier">
+     <property name="text">
+      <string>FilePath:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="labelFolderPathIdentifier">
+     <property name="text">
+      <string>FoloderPath:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QLabel" name="labelPublisher">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QLabel" name="labelTitle">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLabel" name="labelDuration">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QLabel" name="labelPublishDate">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QLabel" name="labelDescription">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QLabel" name="labelTotalSize">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
     <widget class="QLabel" name="labelFilePath">
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QLabel" name="labelSpeed">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="3">
-    <widget class="QLabel" name="labelTotalSize">
+   <item row="8" column="1" colspan="2">
+    <widget class="QLabel" name="labelFolderPath">
      <property name="text">
       <string/>
      </property>

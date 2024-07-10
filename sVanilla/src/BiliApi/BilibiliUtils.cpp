@@ -98,18 +98,18 @@ std::string filterCharacters(const std::string& input)
 
 std::string urlEncode(const std::string& decoded)
 {
-    auto* const encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
-    std::string result(encoded_value);
-    curl_free(encoded_value);
+    auto* const encodedValue = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
+    std::string result(encodedValue);
+    curl_free(encodedValue);
     return result;
 }
 
 std::string urlDecode(const std::string& encoded)
 {
-    int output_length;
-    auto* const decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
-    std::string result(decoded_value, output_length);
-    curl_free(decoded_value);
+    int outputLength;
+    auto* const decodedValue = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &outputLength);
+    std::string result(decodedValue, outputLength);
+    curl_free(decodedValue);
     return result;
 }
 
@@ -125,8 +125,8 @@ std::string GetMixinKey(const std::string& orig)
 
 std::string MD5Hash(const std::string& str)
 {
-    unsigned char md_value[EVP_MAX_MD_SIZE];
-    unsigned int md_len;
+    unsigned char mdValue[EVP_MAX_MD_SIZE];
+    unsigned int mdLen;
     // 创建和初始化摘要上下文
     EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
     const EVP_MD* md = EVP_md5();
@@ -135,14 +135,14 @@ std::string MD5Hash(const std::string& str)
     // 提供要进行摘要计算的数据
     EVP_DigestUpdate(mdctx, str.c_str(), str.length());
     // 获取摘要结果
-    EVP_DigestFinal_ex(mdctx, md_value, &md_len);
+    EVP_DigestFinal_ex(mdctx, mdValue, &mdLen);
     // 清理上下文
     EVP_MD_CTX_free(mdctx);
     // 将摘要结果转换为字符串形式
     std::ostringstream oss;
-    for (unsigned int i = 0; i < md_len; i++)
+    for (unsigned int i = 0; i < mdLen; i++)
     {
-        oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
+        oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(mdValue[i]);
     }
 
     return oss.str();

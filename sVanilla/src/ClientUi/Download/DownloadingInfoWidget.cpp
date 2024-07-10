@@ -19,16 +19,10 @@ DownloadingInfoWidget::~DownloadingInfoWidget()
 
 void DownloadingInfoWidget::updateInfoPanel(const DownloadingItemWidget* itemWidget)
 {
-    auto setOnce = [](QLabel* label, const QString& value) {
-        if (label->text().isEmpty())
-        {
-            label->setText(value);
-        }
-    };
-    setOnce(ui->labelFolderPath, itemWidget->status().folderPath);
-    setOnce(ui->labelFileName, itemWidget->status().fileName);
-    setOnce(ui->labelTotalSize, itemWidget->status().totalSize);
-    setOnce(ui->labelURI, itemWidget->status().uri);
+    ui->labelFolderPath->setText(itemWidget->status().folderPath);
+    ui->labelFileName->setText(itemWidget->status().fileName);
+    ui->labelTotalSize->setText(itemWidget->status().totalSize);
+    ui->labelURI->setText(itemWidget->status().uri);
 
     ui->labelSpeed->setText(itemWidget->status().speed);
     const auto percentage = QString::number(itemWidget->status().progress, 'f', 1);

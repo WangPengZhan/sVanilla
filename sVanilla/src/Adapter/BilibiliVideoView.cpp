@@ -28,6 +28,7 @@ Adapter::Views ConvertVideoView(const biliapi::VideoView& data)
         }
         return videoListView;
     }
+
     videoListView.push_back(ConvertSingleVideo(data));
     return videoListView;
 }

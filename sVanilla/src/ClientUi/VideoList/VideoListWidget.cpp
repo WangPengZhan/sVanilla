@@ -132,7 +132,7 @@ void VideoListWidget::showInfoPanel(int row)
 
 void VideoListWidget::updateInfoPanel(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
-    m_infoWidget->updateUi(infoFull);
+    m_infoWidget->setVidoInfo(infoFull);
 }
 
 void VideoListWidget::downloadAllItem() const

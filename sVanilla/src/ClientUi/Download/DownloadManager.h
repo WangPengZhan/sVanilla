@@ -2,6 +2,7 @@
 #include <QObject>
 
 #include "Download/DownloadStatusThread.h"
+
 class DownloadManager final : public QObject
 {
     Q_OBJECT

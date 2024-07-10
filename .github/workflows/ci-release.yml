@@ -77,12 +77,22 @@ jobs:
       - name:  Install Project
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
 
+      - name: Get current date
+        id: date
+        run: |
+          $branchName = "${{ github.ref }}" -replace '^refs/heads/', ''
+          if ($branchName -match '^v\d+\.\d+\.\d+$') {
+            echo "ref_id=$branchName" >> $env:GITHUB_ENV
+          } else {
+            echo "ref_id=$(Get-Date -Format 'yyyy-MM-dd')" >> $env:GITHUB_ENV
+          }
+
       - name: Zip Package
         run: |
           if (-Not (Test-Path ${{ matrix.asset_path }})) {
               New-Item -Path ${{ matrix.asset_path }} -ItemType Directory
           }
-          Compress-Archive -Path ${{ matrix.install_path }} -DestinationPath ${{ matrix.asset_path }}/win_${{ env.product_name}}.zip
+          Compress-Archive -Path ${{ matrix.install_path }} -DestinationPath ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_protable.zip
 
       - name: Create .msi package
         run: |
@@ -90,7 +100,7 @@ jobs:
           python.exe scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
           candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/ui.wxs
-          light.exe -nologo -out ${{ matrix.asset_path }}/win_${{ env.product_name}}.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
+          light.exe -nologo -out ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
       
       - name: Calculate SHA256 checksums for each file
         run: |

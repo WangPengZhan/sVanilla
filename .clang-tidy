@@ -1,5 +1,5 @@
-Checks: '-*,clang-diagnostic-*,llvm-*,misc-*,-misc-unused-parameters,-misc-non-private-member-variables-in-classes,-misc-no-recursion,readability-identifier-naming'
-WarningsAsErrors: 'llvm-*,misc-*,-misc-no-recursion,-misc-unused-parameters,readability-identifier-naming,-llvm-header-guard'
+Checks: '-*,llvm-*,misc-*,clang-diagnostic-error,clang-analyzer-*,-misc-unused-parameters,-misc-non-private-member-variables-in-classes,-misc-no-recursion,readability-identifier-naming,-misc-const-correctness,-llvm-include-order,-misc-include-cleaner,-llvm-else-after-return,-llvm-qualified-auto,-clang-diagnostic-error,-misc-use-anonymous-namespace'
+WarningsAsErrors: 'llvm-*,misc-*,-misc-no-recursion,-misc-unused-parameters,readability-identifier-naming,-llvm-header-guard,-misc-const-correctness,-llvm-include-order,-misc-include-cleaner,-llvm-else-after-return,-llvm-qualified-auto,-clang-diagnostic-error,-misc-use-anonymous-namespace'
 CheckOptions:
   - key:             readability-identifier-naming.ClassCase
     value:           CamelCase
@@ -12,13 +12,13 @@ CheckOptions:
   - key:             readability-identifier-naming.FunctionIgnoredRegexp
     value:           "LLVMFuzzerTestOneInput"
   - key:             readability-identifier-naming.MemberCase
-    value:           CamelCase
+    value:           camelBack
+  - key: readability-identifier-naming.ClassMemberPrefix
+    value: 'm_'
   - key:             readability-identifier-naming.ParameterCase
-    value:           CamelCase
+    value:           camelBack
   - key:             readability-identifier-naming.UnionCase
-    value:           CamelCase
-  - key:             readability-identifier-naming.VariableCase
-    value:           CamelCase
+    value:           camelBack
   - key:             readability-identifier-naming.IgnoreMainLikeFunctions
     value:           1
   - key:             readability-redundant-member-init.IgnoreBaseInCopyConstructors

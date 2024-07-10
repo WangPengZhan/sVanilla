@@ -18,10 +18,10 @@
 
 namespace biliapi
 {
-static constexpr int Seconds = 60;
-static constexpr int Minutes = 60;
-static constexpr int Hours = 24;
-static constexpr int DaySeconds = Hours * Minutes * Seconds;  // 24*60*60
+static constexpr int seconds = 60;
+static constexpr int minutes = 60;
+static constexpr int hours = 24;
+static constexpr int daySeconds = hours * minutes * seconds;  // 24*60*60
 
 BilibiliClient::BilibiliClient()
     : m_logined(false)
@@ -79,10 +79,10 @@ LoginUrlOrigin BilibiliClient::getLoginUrl()
     return LoginUrlOrigin(getDataFromRespones(response));
 }
 
-LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcode_key)
+LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
 {
     ParamType param;
-    param["qrcode_key"] = qrcode_key;
+    param["qrcode_key"] = qrcodeKey;
 
     std::string response;
     get(PassportURL::LoginStatus, response, param, passPortHeaders());
@@ -112,7 +112,7 @@ void BilibiliClient::resetWbi()
         const auto sub_url = util::u8ToString(std::filesystem::u8path(key.sub_url).stem().u8string());
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
-        j.emplace("Expires", (std::time(nullptr) + DaySeconds) / DaySeconds);  // 有效期一天
+        j.emplace("Expires", (std::time(nullptr) + daySeconds) / daySeconds);  // 有效期一天
         updateData("mixinKey", j);
     }
 }
@@ -162,7 +162,7 @@ void BilibiliClient::parseCookie(const std::string& url)
         {
             // 将 Expires 时间戳字符串转换为天数, 以便与 mixinKey 日更同步
             auto expires = static_cast<std::time_t>(std::stoll(value));
-            result.emplace("Expires", expires / DaySeconds);
+            result.emplace("Expires", expires / daySeconds);
         }
         else if (key == "SESSDATA" || key == "bili_jct")
         {
