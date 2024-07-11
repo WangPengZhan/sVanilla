@@ -5,6 +5,7 @@
 #include <QSplitter>
 
 #include "Adapter/BaseVideoView.h"
+#include "VideoData.h"
 
 class VideoListWidget;
 class VideoInfoWidget;
@@ -23,6 +24,7 @@ public:
 
     void setListWidget(VideoListWidget* listWidget, QListWidgetItem* widgetItem);
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
+    const std::shared_ptr<VideoInfoFull>& videoInfo() const;
 
     void updateVideoItem();
     void downloadItem() const;
@@ -51,6 +53,7 @@ public:
     explicit VideoListWidget(QWidget* parent = nullptr);
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& infoFull);
     void clearVideo();
+    void setOrderType(OrderType orderType);
 
     void setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter);
     void showInfoPanel(int row);

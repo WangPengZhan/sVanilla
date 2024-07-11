@@ -111,6 +111,8 @@ void VideoWidget::setUi()
     ui->lineEditSearch->setFocusOutHide();
 
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
+    ui->videoListWidget->setSortingEnabled(true);
+    ui->videoGridWidget->setSortingEnabled(true);
 }
 
 void VideoWidget::createHistoryMenu()
@@ -165,6 +167,18 @@ void VideoWidget::createSortMenu()
     m_ascendingOrder->setChecked(true);
     m_originalOrder->setChecked(true);
 
+    connect(m_ascendingOrder, &QAction::triggered, this, [this]() {
+        ui->videoListWidget->sortItems(Qt::AscendingOrder);
+        ui->videoGridWidget->sortItems(Qt::AscendingOrder);
+    });
+    connect(m_descendingOrder, &QAction::triggered, this, [this]() {
+        ui->videoListWidget->sortItems(Qt::DescendingOrder);
+        ui->videoGridWidget->sortItems(Qt::DescendingOrder);
+    });
+
+    connect(m_originalOrder, &QAction::triggered, this, [this]() {
+        sortItem(OrderType::Origin);
+    });
     connect(m_titleOrder, &QAction::triggered, this, [this]() {
         sortItem(OrderType::Title);
     });
@@ -201,6 +215,7 @@ void VideoWidget::showMenu(QPushButton* btn, QMenu* menu, std::function<void()> 
 
 void VideoWidget::sortItem(OrderType orderType)
 {
+#if 0
     const auto& grid = ui->videoGridWidget;
 
     auto items = grid->getVideoInfo();
@@ -216,20 +231,24 @@ void VideoWidget::sortItem(OrderType orderType)
         getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
             return info->videoView->Title;
         };
+        break;
     }
     case OrderType::Date:
     {
         getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
             return info->videoView->PublishDate;
         };
+        break;
     }
     case OrderType::Duration:
+    {
         getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
             return info->videoView->Duration;
         };
+        break;
+    }
     }
     const auto sordOrder = m_ascendingOrder->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder;
-
     sortInitialsItems(items, getItem, sordOrder);
     m_sortedList = items;
     grid->clear();
@@ -238,6 +257,21 @@ void VideoWidget::sortItem(OrderType orderType)
         addVideoItem(info);
     }
     grid->updateCovers();
+#else
+    ui->videoListWidget->setOrderType(orderType);
+    ui->videoGridWidget->setOrderType(orderType);
+    if (orderType == OrderType::Origin)
+    {
+        ui->videoListWidget->sortItems(Qt::AscendingOrder);
+        ui->videoGridWidget->sortItems(Qt::AscendingOrder);
+    }
+    else
+    {
+        const auto sordOrder = m_ascendingOrder->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder;
+        ui->videoListWidget->sortItems(sordOrder);
+        ui->videoGridWidget->sortItems(sordOrder);
+    }
+#endif
 }
 
 void VideoWidget::searchItem(const QString& text)
@@ -271,6 +305,7 @@ void VideoWidget::searchItem(const QString& text)
 
 void VideoWidget::resetList()
 {
+#if 0
     const auto& grid = ui->videoGridWidget;
     grid->clear();
     for (const auto& item : m_originalList)
@@ -278,6 +313,8 @@ void VideoWidget::resetList()
         addVideoItem(item);
     }
     grid->updateCovers();
+#else
+#endif
     hideBtnReset();
 }
 
@@ -419,12 +456,14 @@ void VideoWidget::prepareDownloadTaskList()
     }
 }
 
-void VideoWidget::clearVideo() const
+void VideoWidget::clearVideo()
 {
     ui->videoGridWidget->clearVideo();
     ui->videoListWidget->clearVideo();
     ui->videoGridInfoWidget->hide();
     ui->videoListInfoWidget->hide();
+    m_originalList.clear();
+    m_sortedList.clear();
 }
 
 void VideoWidget::searchUrl(const QString& url)

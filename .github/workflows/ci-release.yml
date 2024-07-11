@@ -92,7 +92,7 @@ jobs:
           if (-Not (Test-Path ${{ matrix.asset_path }})) {
               New-Item -Path ${{ matrix.asset_path }} -ItemType Directory
           }
-          Compress-Archive -Path ${{ matrix.install_path }} -DestinationPath ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_protable.zip
+          Compress-Archive -Path ${{ matrix.install_path }}/bin/* -DestinationPath ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_protable.zip
 
       - name: Create .msi package
         run: |
@@ -101,6 +101,7 @@ jobs:
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
           candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/ui.wxs
           light.exe -nologo -out ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
+          Remove-Item -Path "${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.wixpdb" -Force
       
       - name: Calculate SHA256 checksums for each file
         run: |

@@ -6,6 +6,7 @@
 
 #include "Adapter/BaseVideoView.h"
 #include "ClientUi/Utils/SortItems.h"
+#include "VideoData.h"
 
 namespace download
 {
@@ -43,7 +44,7 @@ public:
     void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const;
     void prepareDownloadTaskList();
 
-    void clearVideo() const;
+    void clearVideo();
     void searchUrl(const QString& url);
 
     void setWebsiteIcon(const QString& iconPath);
