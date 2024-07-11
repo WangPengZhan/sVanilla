@@ -253,7 +253,7 @@ if (PLUGINS)
     endforeach ()
 endif ()
 
-# include(InstallRequiredSystemLibraries)
+include(InstallRequiredSystemLibraries)
 
 include(cmake/apptranslate.cmake)
 apptranslate(${QT_COMPONENTS})

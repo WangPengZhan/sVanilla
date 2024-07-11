@@ -89,9 +89,9 @@ public:
 
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView);
     void clearVideo();
+    void setOrderType(OrderType orderType);
 
     void coverReady(int id) const;
-    void updateFileName(const QString& fileName);
     void updateCovers();
 
     VideoGridItemWidget* getItem(QListWidgetItem* item) const;

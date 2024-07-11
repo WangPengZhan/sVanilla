@@ -176,7 +176,8 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
 void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
 {
     auto* const videoItem = new VideoGridItemWidget(this);
-    auto* const item = new QListWidgetItem(this);
+    auto* const item = new VideoListWidgetItem(videoView, count());
+    addItem(item);
     videoItem->saveWidgetItem(item);
     item->setSizeHint(calculateItemSize());
     setItemWidget(item, videoItem);
@@ -195,9 +196,19 @@ void VideoGridWidget::clearVideo()
     update();
 }
 
+void VideoGridWidget::setOrderType(OrderType orderType)
+{
+    int num = count();
+    for (int i = 0; i < num; ++i)
+    {
+        auto widgetItem = dynamic_cast<VideoListWidgetItem*>(item(i));
+        widgetItem->setOrderType(orderType);
+    }
+}
+
 void VideoGridWidget::coverReady(const int id) const
 {
-    if (id > count())
+    if (id >= count())
     {
         return;
     }

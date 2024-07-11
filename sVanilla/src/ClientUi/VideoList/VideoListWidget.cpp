@@ -33,6 +33,11 @@ void VideoListItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& inf
     updateVideoItem();
 }
 
+const std::shared_ptr<VideoInfoFull>& VideoListItemWidget::videoInfo() const
+{
+    return m_infoFull;
+}
+
 void VideoListItemWidget::updateVideoItem()
 {
     ui->labelTitle->setText(QString::fromStdString(m_infoFull->videoView->Title));
@@ -89,10 +94,11 @@ VideoListWidget::VideoListWidget(QWidget* parent)
 void VideoListWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& infoFull)
 {
     auto* const videoItem = new VideoListItemWidget(this);
-    auto* const item = new QListWidgetItem(this);
+    auto* const item = new VideoListWidgetItem(infoFull, count());
+    addItem(item);
     videoItem->setListWidget(this, item);
     item->setSizeHint(videoItem->sizeHint());
-    this->setItemWidget(item, videoItem);
+    setItemWidget(item, videoItem);
     videoItem->setVideoInfo(infoFull);
 }
 
@@ -117,6 +123,16 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
 void VideoListWidget::clearVideo()
 {
     clear();
+}
+
+void VideoListWidget::setOrderType(OrderType orderType)
+{
+    int num = count();
+    for (int i = 0; i < num; ++i)
+    {
+        auto widgetItem = dynamic_cast<VideoListWidgetItem*>(item(i));
+        widgetItem->setOrderType(orderType);
+    }
 }
 
 void VideoListWidget::setInfoPanelSignalPointer(VideoInfoWidget* infoWidget, QSplitter* splitter)

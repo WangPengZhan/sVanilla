@@ -5,15 +5,6 @@
 #include <vector>
 #include <QString>
 
-#include "ClientUi/VideoList/VideoGridWidget.h"
-
-enum class OrderType
-{
-    Title,
-    Date,
-    Duration
-};
-
 template <typename Iterable, typename QueryType, typename Sentence = typename Iterable::value_type>
 void sortInitialsItems(Iterable& items, const std::function<QueryType(Sentence)>& dataExtractor, Qt::SortOrder order)
 {
