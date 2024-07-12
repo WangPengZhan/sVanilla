@@ -20,7 +20,7 @@ void SqliteDBManager::setDbPath(const std::string& path)
 SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew)
 {
     init();
-    std::string fullPath = std::filesystem::absolute(path).string();
+    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
     SqliteDBPtr db;
     if (createNew)
     {
@@ -42,7 +42,7 @@ SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew
 
 SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
 {
-    std::string fullPath = std::filesystem::absolute(path).string();
+    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
     {
         std::lock_guard lk(m_mutex);
         if (m_defaultWriteDbs.find(fullPath) == m_defaultWriteDbs.end())
@@ -59,7 +59,7 @@ SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
 SqliteWithMutexPtr SqliteDBManager::createDBWithMutexPtr(const std::string& path, bool createNew)
 {
     init();
-    std::string fullPath = std::filesystem::absolute(path).string();
+    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
     SqliteWithMutexPtr db;
     if (createNew)
     {
@@ -81,7 +81,7 @@ SqliteWithMutexPtr SqliteDBManager::createDBWithMutexPtr(const std::string& path
 
 SqliteWithMutexPtr SqliteDBManager::writeDBWithMutexPtr(const std::string& path)
 {
-    std::string fullPath = std::filesystem::absolute(path).string();
+    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
     {
         std::lock_guard lk(m_mutex);
         if (m_defaultWriteDbWtihMutexs.find(fullPath) == m_defaultWriteDbWtihMutexs.end())
@@ -128,9 +128,10 @@ void SqliteDBManager::dbInit(SqliteWithMutexPtr& db)
 
 void SqliteDBManager::createDir()
 {
-    if (!std::filesystem::is_directory(dbPath))
+    auto dbDir = std::filesystem::u8path(dbPath);
+    if (!std::filesystem::is_directory(dbDir))
     {
-        std::filesystem::create_directory(dbPath);
+        std::filesystem::create_directory(dbDir);
     }
 }
 

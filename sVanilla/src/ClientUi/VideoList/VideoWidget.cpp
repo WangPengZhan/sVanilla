@@ -138,7 +138,7 @@ void VideoWidget::createSortMenu()
     const std::array sortCategory{
         m_originalOrder = new QAction(QIcon(":/icon/originalOrder.svg"), tr("Original Order")),
         m_titleOrder = new QAction(QIcon(":/icon/title.svg"), tr("Title")),
-        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), tr("Pushlish Date")),
+        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), tr("Publish Date")),
         m_durationOrder = new QAction(QIcon(":/icon/duration.svg"), tr("Duration")),
     };
     for (const auto& category : sortCategory)

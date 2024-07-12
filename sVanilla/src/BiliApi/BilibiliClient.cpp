@@ -108,8 +108,8 @@ void BilibiliClient::resetWbi()
     const auto key = navData.data.wbi_img;
     if (!key.img_url.empty() && !key.sub_url.empty())
     {
-        const auto img_url = util::u8ToString(std::filesystem::u8path(key.img_url).stem().u8string());
-        const auto sub_url = util::u8ToString(std::filesystem::u8path(key.sub_url).stem().u8string());
+        const auto img_url = std::filesystem::u8path(key.img_url).stem().string();
+        const auto sub_url = std::filesystem::u8path(key.sub_url).stem().string();
         nlohmann::json j;
         j.emplace("mixin_key", GetMixinKey(img_url + sub_url));
         j.emplace("Expires", (std::time(nullptr) + daySeconds) / daySeconds);  // 有效期一天

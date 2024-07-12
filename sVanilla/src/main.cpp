@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
 {
     Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + "/");
     Logger::getInstance();
+    DumpColletor::setDumpDir(SApplication::appDir().toLocal8Bit().toStdString() + "/dump");
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + "/.db");
     biliapi::setCookieDataDir(SApplication::appDir().toLocal8Bit().toStdString());
     network::CurlGlobal curlGlobal;
@@ -24,7 +25,6 @@ int main(int argc, char* argv[])
     sVanilla.initApplicationBefore();
 
     SApplication application(argc, argv);
-    DumpColletor::setDumpDir(SApplication::appDir().toLocal8Bit().toStdString() + "/dump");
     SingleAppHelper singleAppHelper;
     if (singleAppHelper.isHaveInstance())
     {
