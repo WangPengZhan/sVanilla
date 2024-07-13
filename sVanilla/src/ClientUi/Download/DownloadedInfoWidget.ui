@@ -82,7 +82,7 @@
    <item row="7" column="0">
     <widget class="QLabel" name="labelFilePathIdentifier">
      <property name="text">
-      <string>FilePath:</string>
+      <string>FileName:</string>
      </property>
     </widget>
    </item>

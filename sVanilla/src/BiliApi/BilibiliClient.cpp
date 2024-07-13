@@ -1,5 +1,3 @@
-#include <curl/curl.h>
-
 #include <regex>
 #include <filesystem>
 #include <sstream>
@@ -180,7 +178,7 @@ nlohmann::json BilibiliClient::getDataFromRespones(const std::string& respones)
     }
     catch (std::exception& e)
     {
-        // BILIBILI_LOG_ERROR("Error parsing response: ", e.what());
+        // BILIBILI_LOG_ERROR("Error parsing response: {}", e.what());
     }
 
     return json;

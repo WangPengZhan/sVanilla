@@ -377,7 +377,6 @@ void VideoWidget::hideBtnSearch()
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
 {
-    // 1. get video view
     auto taskFunc = [this, uri]() {
         return biliapi::BilibiliClient::globalClient().getVideoView(uri);
     };
@@ -394,9 +393,6 @@ void VideoWidget::prepareBiliVideoView(const std::string& uri)
 
 void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
 {
-    // after get video view:
-    // 1. add 'download cover image' task
-    // 2. add video item
     const QString tempPath = SApplication::appDir();  // It is now in the temporary area
     const auto views = ConvertVideoView(videoView.data);
     ui->labelPlayListTitle->clear();
@@ -410,14 +406,9 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
         auto videoInfoFull = std::make_shared<VideoInfoFull>();
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
         videoInfoFull->videoView = views.at(i);
-        // download cover
-        downloadCover({views.at(i)->Cover, util::FileHelp::removeSpecialChar(videoInfoFull->getGuid()), tempPath.toStdString(), i});
         addVideoItem(videoInfoFull);
+        downloadCover({views.at(i)->Cover, util::FileHelp::removeSpecialChar(videoInfoFull->getGuid()), tempPath.toStdString(), i});
     }
-
-    // after cover ready:
-    // 1. stop spinner
-    // 2. update cover
 }
 
 void VideoWidget::downloadCover(const CoverInfo& coverInfo)

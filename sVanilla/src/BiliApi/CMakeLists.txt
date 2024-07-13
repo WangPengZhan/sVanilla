@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(BiliApi 
     VERSION 1.0.0 
-    DESCRIPTION "Aria2 cpp wrapper"
     LANGUAGES CXX)
 
 find_package(nlohmann_json CONFIG REQUIRED)

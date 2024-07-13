@@ -96,7 +96,6 @@ jobs:
 
       - name: Create .msi package
         run: |
-          pip install -r scripts/requirements.txt
           python.exe scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
           candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/ui.wxs

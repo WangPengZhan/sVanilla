@@ -503,9 +503,8 @@ Only for advanced users who need to customize settings.</source>
         <translation>已下载</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="127"/>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="vanished">错误</translation>
     </message>
     <message>
         <location filename="../src/ClientUi/Download/DownloadWidget.cpp" line="189"/>
@@ -557,8 +556,12 @@ Only for advanced users who need to customize settings.</source>
     </message>
     <message>
         <location filename="../src/ClientUi/Download/DownloadedInfoWidget.ui" line="85"/>
+        <source>FileName:</source>
+        <translation>文件名：</translation>
+    </message>
+    <message>
         <source>FilePath:</source>
-        <translation>文件路径：</translation>
+        <translation type="vanished">文件路径：</translation>
     </message>
     <message>
         <location filename="../src/ClientUi/Download/DownloadedInfoWidget.ui" line="92"/>
@@ -738,14 +741,6 @@ Only for advanced users who need to customize settings.</source>
     </message>
 </context>
 <context>
-    <name>FileSelector</name>
-    <message>
-        <location filename="../src/SUI/FileSelector.ui" line="14"/>
-        <source>FileSelector</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>HomePage</name>
     <message>
         <location filename="../src/ClientUi/Home/HomePage.ui" line="45"/>
@@ -901,14 +896,6 @@ Only for advanced users who need to customize settings.</source>
     </message>
 </context>
 <context>
-    <name>NameRuleWidget</name>
-    <message>
-        <location filename="../src/SUI/NameRule/NameRuleWidget.ui" line="14"/>
-        <source>NameRuleWidget</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PluginsInfo</name>
     <message>
         <location filename="../src/ClientUi/Setting/PluginsInfo.ui" line="85"/>
@@ -939,20 +926,8 @@ Only for advanced users who need to customize settings.</source>
 <context>
     <name>SearchLineEdit</name>
     <message>
-        <location filename="../src/SUI/SearchLineEdit.ui" line="14"/>
-        <source>SearchLineEdit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/SUI/SearchLineEdit.ui" line="33"/>
-        <location filename="../src/SUI/SearchLineEdit.ui" line="53"/>
-        <source>OnlyIconButtonPatch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/SUI/SearchLineEdit.cpp" line="47"/>
         <source>Try to Search</source>
-        <translation>请输入搜索</translation>
+        <translation type="vanished">请输入搜索</translation>
     </message>
 </context>
 <context>
@@ -986,27 +961,6 @@ Only for advanced users who need to customize settings.</source>
         <location filename="../src/ClientUi/Setting/SettingsPage.cpp" line="48"/>
         <source>About</source>
         <translation>关于</translation>
-    </message>
-</context>
-<context>
-    <name>TipDialog</name>
-    <message>
-        <location filename="../src/SUI/Tips/TipDialog.ui" line="14"/>
-        <source>TipDialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Toast</name>
-    <message>
-        <location filename="../src/SUI/Tips/Toast.ui" line="14"/>
-        <source>Toast</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/SUI/Tips/Toast.ui" line="20"/>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
