@@ -1,6 +1,6 @@
 #include "PluginsInfo.h"
 #include "ui_PluginsInfo.h"
-#include "ClientUi//MainWindow/SApplication.h"
+#include "MainWindow/SApplication.h"
 #include "Plugin/PluginManager.h"
 
 PluginsInfo::PluginsInfo(QWidget* parent)

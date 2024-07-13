@@ -1,4 +1,4 @@
-#include "ClientUi/Storage/SearchHistoryStorage.h"
+#include "Storage/SearchHistoryStorage.h"
 
 int SearchHistory::bind(sqlite::SQLiteStatement& stmt) const
 {

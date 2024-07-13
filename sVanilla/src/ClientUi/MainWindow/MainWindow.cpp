@@ -15,9 +15,9 @@
 #include <QWKCore/styleagent.h>
 #include <QWKWidgets/widgetwindowagent.h>
 
-#include "ClientUi/Setting/SettingsPage.h"
-#include "ClientUi/VideoList/VideoWidget.h"
-#include "ClientUi/MainWindow/SApplication.h"
+#include "Setting/SettingsPage.h"
+#include "VideoList/VideoWidget.h"
+#include "MainWindow/SApplication.h"
 #include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
 #include "MainWindowlog.h"

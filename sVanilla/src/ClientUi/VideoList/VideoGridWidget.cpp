@@ -16,7 +16,7 @@
 #include "SUI/RoundImageWidget.h"
 #include "ClientUi/VideoList/VideoData.h"
 #include "ClientUi/MainWindow/SApplication.h"
-#include "Util/UrlProcess.h"
+#include "Utils/UrlProcess.h"
 
 void elideText(QLabel* label, const QString& text)
 {

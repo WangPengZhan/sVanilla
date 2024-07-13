@@ -1,6 +1,5 @@
-#include <QApplication>
-
 #include <curl/curl.h>
+
 #include <regex>
 #include <filesystem>
 #include <sstream>
@@ -14,7 +13,6 @@
 #include "BilibiliLog.h"
 #include "BilibiliUtils.h"
 #include "NetWork/NetworkLog.h"
-#include "Util/UrlProcess.h"
 
 namespace biliapi
 {

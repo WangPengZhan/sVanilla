@@ -1,7 +1,7 @@
 #include "Sqlite/Storage/SqliteDBManager.h"
-#include "ClientUi/Storage/FinishedItemStorage.h"
-#include "ClientUi/Storage/DownloadingItemStorage.h"
-#include "ClientUi/Storage/SearchHistoryStorage.h"
+#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadingItemStorage.h"
+#include "Storage/SearchHistoryStorage.h"
 #include "StorageManager.h"
 
 namespace sqlite

@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #include "Translater.h"
-#include "ClientUi/Config/SingleConfig.h"
+#include "Config/SingleConfig.h"
 
 Translater::Translater(QString translatesDir, QObject* parent)
     : QObject(parent)

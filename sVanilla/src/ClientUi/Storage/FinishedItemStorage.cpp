@@ -1,6 +1,6 @@
 #include <filesystem>
 
-#include "ClientUi/Storage/FinishedItemStorage.h"
+#include "Storage/FinishedItemStorage.h"
 
 int FinishedItem::bind(sqlite::SQLiteStatement& stmt) const
 {

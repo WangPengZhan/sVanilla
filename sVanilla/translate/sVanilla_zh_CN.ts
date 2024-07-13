@@ -620,42 +620,52 @@ Only for advanced users who need to customize settings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="20"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="46"/>
+        <source>Title：</source>
+        <translation type="unfinished">标题：</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="53"/>
+        <source>Publisher：</source>
+        <translation type="unfinished">作者：</translation>
+    </message>
+    <message>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="74"/>
         <source>Speed:</source>
         <translation>速度：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="55"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="95"/>
         <source>FileName:</source>
         <translation>文件名：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="75"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="81"/>
         <source>Downloaded:</source>
         <translation>下载：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="82"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="67"/>
         <source>TotalSize:</source>
         <translation>大小：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="89"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="60"/>
         <source>URI:</source>
         <translation>原始链接：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="103"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="102"/>
         <source>FoloderPath:</source>
         <translation>文件夹路径：</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="124"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="88"/>
         <source>RemainingTime</source>
         <translation>剩余时间</translation>
     </message>
     <message>
-        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="137"/>
+        <location filename="../src/ClientUi/Download/DownloadingInfoWidget.ui" line="39"/>
         <source>CleanButtonPatch</source>
         <translation type="unfinished"></translation>
     </message>

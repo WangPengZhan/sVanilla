@@ -2,7 +2,7 @@
 
 #include "AdvanceSettings.h"
 #include "ui_AdvanceSettings.h"
-#include "ClientUi/Config/SingleConfig.h"
+#include "Config/SingleConfig.h"
 
 AdvanceSettings::AdvanceSettings(QWidget* parent)
     : QWidget(parent)

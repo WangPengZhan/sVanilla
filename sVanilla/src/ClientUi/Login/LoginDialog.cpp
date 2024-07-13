@@ -14,13 +14,13 @@
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
 #include "BiliApi/BilibiliUrl.h"
-#include "ClientUi/Utils/Utility.h"
+#include "Utils/Utility.h"
 #include "Plugin/PluginManager.h"
-#include "ClientUi/Storage/SearchHistoryStorage.h"
-#include "ClientUi//Storage/StorageManager.h"
-#include "ClientUi/Login/LoginMonitor.h"
+#include "Storage/SearchHistoryStorage.h"
+#include "Storage/StorageManager.h"
+#include "Login/LoginMonitor.h"
 #include "SUI/QrCodeGenerator.h"
-#include "ClientUi/Utils/RunTask.h"
+#include "Utils/RunTask.h"
 
 LoginDialog::LoginDialog(std::shared_ptr<AbstractLogin> loginer, QDialog* parent)
     : QDialog(parent)

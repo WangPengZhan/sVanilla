@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QMenu>
 
-#include "ClientUi/Utils/Utility.h"
+#include "Utility.h"
 
 namespace util
 {

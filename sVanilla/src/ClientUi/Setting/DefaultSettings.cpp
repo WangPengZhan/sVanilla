@@ -8,9 +8,9 @@
 
 #include "DefaultSettings.h"
 #include "ui_DefaultSettings.h"
-#include "ClientUi/Config/SingleConfig.h"
-#include "ClientUi/MainWindow/SApplication.h"
-#include "ClientUi/VideoList/VideoData.h"
+#include "Config/SingleConfig.h"
+#include "MainWindow/SApplication.h"
+#include "VideoList/VideoData.h"
 
 DefaultSettings::DefaultSettings(QWidget* parent)
     : QWidget(parent)

@@ -4,7 +4,7 @@
 #include <QStandardPaths>
 #include "ClientUi/MainWindow/SApplication.h"
 
-#include "Util/Setting.h"
+#include "Utils/Setting.h"
 #include "SingleConfig.h"
 
 #define CONFIG_REMOTE 0

@@ -14,11 +14,11 @@
 #include "DownloadingListWidget.h"
 #include "ui_DownloadingListWidget.h"
 #include "DownloadingInfoWidget.h"
-#include "ClientUi/Storage/DownloadingItemStorage.h"
-#include "ClientUi/Utils/InfoPanelVisibleHelper.h"
-#include "ClientUi/Utils/Utility.h"
-#include "ClientUi/MainWindow/SApplication.h"
-#include "Util/SpeedUtil.h"
+#include "Storage/DownloadingItemStorage.h"
+#include "Utils/InfoPanelVisibleHelper.h"
+#include "Utils/Utility.h"
+#include "MainWindow/SApplication.h"
+#include "Utils/SpeedUtil.h"
 #include "Util/TimerUtil.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)

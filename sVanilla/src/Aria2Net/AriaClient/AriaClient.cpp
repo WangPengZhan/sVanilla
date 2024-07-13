@@ -158,14 +158,10 @@ std::string AriaClient::Request(const std::string& url, const std::string& param
 std::string AriaClient::ConstructURL() const
 {
     return GetRpcUri(6800);
-    std::string const url = m_settings->readString("App", "RPCAddress");
-    std::string const port = m_settings->readString("App", "RPCPort");
-    return url + ":" + port + "/jsonrpc";
 }
 std::string AriaClient::GetToken() const
 {
     return TOKEN;
-    return m_settings->readString("App", "TOKEN");
 }
 
 std::string AriaClient::ConstructSendData(std::string methodName, nlohmann::json::array_t params)

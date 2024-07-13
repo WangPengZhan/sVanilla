@@ -4,10 +4,10 @@
 #include <QFileInfo>
 
 #include "ui_DownloadedInfoWidget.h"
-#include "ClientUi/VideoList/VideoData.h"
-#include "ClientUi/Config/SingleConfig.h"
+#include "VideoList/VideoData.h"
+#include "Config/SingleConfig.h"
 #include "Adapter/BaseVideoView.h"
-#include "Util/SpeedUtil.h"
+#include "Utils/SpeedUtil.h"
 
 DownloadedInfoWidget::DownloadedInfoWidget(QWidget* parent)
     : QWidget(parent)

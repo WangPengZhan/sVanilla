@@ -2,7 +2,6 @@
 
 #include "BiliDownloader.h"
 #include "FFmpeg/FFmpegHelper.h"
-#include "Util/UrlProcess.h"
 
 namespace download
 {

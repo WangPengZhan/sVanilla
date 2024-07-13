@@ -6,60 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>508</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DownloadingInfoWidget</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelSpeedIdentifier">
-     <property name="text">
-      <string>Speed:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="3">
-    <widget class="QLabel" name="labelTotalSize">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="QLabel" name="labelSpeed">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="3">
-    <widget class="QLabel" name="labelFileName">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1" colspan="3">
-    <widget class="QLabel" name="labelFolderPath">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="labelFileNameIdentifier">
-     <property name="text">
-      <string>FileName:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
     <spacer name="horizontalSpacer">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -69,72 +27,148 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelDownloadedIdentifier">
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btnClose">
      <property name="text">
-      <string>Downloaded:</string>
+      <string/>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="totalSizeLabel">
-     <property name="text">
-      <string>TotalSize:</string>
+     <property name="icon">
+      <iconset theme=":/icon/close.svg"/>
+     </property>
+     <property name="_vanillaStyle_Patch" stdset="0">
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QLabel" name="labelTitleIdentifier">
+     <property name="text">
+      <string>Title：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelPublisherIdentifier">
+     <property name="text">
+      <string>Publisher：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="labelURIIdentifier">
      <property name="text">
       <string>URI:</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="3">
-    <widget class="QLabel" name="labelRemainingTime">
+   <item row="4" column="0">
+    <widget class="QLabel" name="totalSizeLabel">
      <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="labelFolderPathIdentifier">
-     <property name="text">
-      <string>FoloderPath:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="QLabel" name="labelURI">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QLabel" name="labelDownloaded">
-     <property name="text">
-      <string/>
+      <string>TotalSize:</string>
      </property>
     </widget>
    </item>
    <item row="5" column="0">
+    <widget class="QLabel" name="labelSpeedIdentifier">
+     <property name="text">
+      <string>Speed:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelDownloadedIdentifier">
+     <property name="text">
+      <string>Downloaded:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
     <widget class="QLabel" name="labelRemainingTimeIdentifier">
      <property name="text">
       <string>RemainingTime</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QPushButton" name="btnClose">
+   <item row="8" column="0">
+    <widget class="QLabel" name="labelFileNameIdentifier">
+     <property name="text">
+      <string>FileName:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="labelFolderPathIdentifier">
+     <property name="text">
+      <string>FoloderPath:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QLabel" name="labelTitle">
      <property name="text">
       <string/>
      </property>
-     <property name="icon">
-         <iconset theme=":/icon/close.svg"/>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
-     <property name="_vanillaStyle_Patch" stdset="0">
-      <string>CleanButtonPatch</string>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QLabel" name="labelPublisher">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLabel" name="labelURI">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QLabel" name="labelTotalSize">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QLabel" name="labelSpeed">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QLabel" name="labelDownloaded">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QLabel" name="labelRemainingTime">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1" colspan="2">
+    <widget class="QLabel" name="labelFileName">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1" colspan="2">
+    <widget class="QLabel" name="labelFolderPath">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>
