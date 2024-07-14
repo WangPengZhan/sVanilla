@@ -25,7 +25,6 @@ function(appicon TARGET_NAME RESOURCE_FILES)
         set(DESKTOP_FILE ${ICON_ROOT}/applications/${TARGET_NAME}.desktop)
         message("DESKTOP_FILE: ${DESKTOP_FILE}")
         configure_file(${CMAKE_SOURCE_DIR}/cmake/${TARGET_NAME}.desktop.in ${DESKTOP_FILE})
-        file(GENERATE OUTPUT ${DESKTOP_FILE} CONTENT "${DESKTOP_CONTENT}")
         set(ICON_DIR "${ICON_ROOT}/icon/")
         add_custom_command(TARGET ${TARGET_NAME}
             POST_BUILD
