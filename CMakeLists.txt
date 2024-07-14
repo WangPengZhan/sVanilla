@@ -69,6 +69,9 @@ else ()
     message(FATAL_ERROR "can't find python")
 endif ()
 
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core LinguistTools)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core LinguistTools)
+
 add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
 add_subdirectory(sVanilla/src)
 

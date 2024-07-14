@@ -50,9 +50,9 @@ void NameRuleWidget::initListWidget(const std::vector<QString>& nameRules) const
 
 void NameRuleWidget::signalsAndSlots()
 {
-    connect(ui->lineEdit, &NameRuleEditWidget::textChanged, this, &NameRuleWidget::updatePreview);
-    connect(ui->lineEdit, &NameRuleEditWidget::editingFinished, this, [this]() {
-        emit editingFinished(ui->lineEdit->text());
+    connect(ui->lineEdit, &NameRuleEditWidget::textChanged, this, [this](const QString& newText) {
+        updatePreview(newText);
+        emit editingFinished(newText);
     });
 }
 

@@ -11,7 +11,7 @@
 
 int main(int argc, char* argv[])
 {
-    Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + "/");
+    Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/"));
     Logger::getInstance();
     DumpColletor::setDumpDir(SApplication::appDir().toStdString() + "/dump");
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + "/.db");

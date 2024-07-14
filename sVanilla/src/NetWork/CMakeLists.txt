@@ -5,6 +5,7 @@ project(NetWork
     LANGUAGES CXX)
 
 find_package(spdlog REQUIRED)
+find_package(CURL REQUIRED)
 
 file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
 
@@ -18,4 +19,5 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         spdlog::spdlog
+        CURL::libcurl
 )
