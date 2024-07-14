@@ -1,6 +1,6 @@
 #include "SApplication.h"
-#include "ClientUi/Config/SingleConfig.h"
-#include "ClientUi/Config/GlobalData.h"
+#include "Config/SingleConfig.h"
+#include "Config/GlobalData.h"
 
 #include <QDir>
 #include <QStandardPaths>

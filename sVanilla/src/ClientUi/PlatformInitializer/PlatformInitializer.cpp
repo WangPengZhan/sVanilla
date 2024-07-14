@@ -2,7 +2,7 @@
 
 #include "PlatformInitializer.h"
 #include "version.h"
-#include "ClientUi/Config/GlobalData.h"
+#include "Config/GlobalData.h"
 
 void PlatformInitializer::allApplicationBefore()
 {

@@ -4,7 +4,7 @@
 
 #include <QWidget>
 
-#include "ClientUi/VideoList/VideoData.h"
+#include "VideoList/VideoData.h"
 #include "Download/AbstractDownloader.h"
 
 class DownloadingItemWidget;

@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(Util 
+    VERSION 1.0.0 
+    DESCRIPTION "Aria2 cpp wrapper"
+    LANGUAGES CXX)
+
+
+
+find_package(nlohmann_json CONFIG REQUIRED)
+set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
+
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        ${QT_LIBS}
+        nlohmann_json::nlohmann_json
+)

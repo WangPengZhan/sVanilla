@@ -64,7 +64,7 @@
       <item>
        <spacer name="Spacer">
         <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -83,11 +83,14 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnDelete">
+        <property name="toolTip">
+         <string>delete</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-            <iconset theme=":/icon/delete.svg"/>
+         <iconset theme=":/icon/delete.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -156,7 +159,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -168,14 +171,16 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnPause">
+        <property name="toolTip">
+         <string>pause</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-            <iconset>
-                <normaloff>:/icon/pause.svg</normaloff>
-                <normalon>:/icon/start.svg</normalon>:/icon/pause.svg
-            </iconset>
+         <iconset>
+          <normaloff>:/icon/pause.svg</normaloff>
+          <normalon>:/icon/start.svg</normalon>:/icon/pause.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -187,11 +192,14 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnFolder">
+        <property name="toolTip">
+         <string>open folder in files explorer</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-            <iconset theme=":/icon/folder.svg"/>
+         <iconset theme=":/icon/folder.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -206,11 +214,14 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>detail</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
-            <iconset theme=":/icon/details.svg"/>
+         <iconset theme=":/icon/details.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -223,5 +234,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <resources/>
  <connections/>
 </ui>

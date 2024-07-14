@@ -1,7 +1,7 @@
 #include "VideoData.h"
 #include "Adapter/BaseVideoView.h"
 #include "ClientUi/Config/SingleConfig.h"
-#include "Util/UrlProcess.h"
+#include "Utils/UrlProcess.h"
 
 std::string VideoInfoFull::getGuid() const
 {

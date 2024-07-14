@@ -30,6 +30,7 @@ public:
     void updateStatus();
 
 private:
+    void setUi();
     void signalsAndSlots();
     void deleteItem();
     void restartItem();

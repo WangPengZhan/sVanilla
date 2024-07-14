@@ -1,7 +1,9 @@
 #include "DownloadingInfoWidget.h"
 #include "DownloadingListWidget.h"
 #include "ui_DownloadingInfoWidget.h"
-#include "Util/SpeedUtil.h"
+#include "Utils/SpeedUtil.h"
+#include "UiDownloader.h"
+#include "Adapter/BaseVideoView.h"
 
 DownloadingInfoWidget::DownloadingInfoWidget(QWidget* parent)
     : QWidget(parent)
@@ -19,6 +21,9 @@ DownloadingInfoWidget::~DownloadingInfoWidget()
 
 void DownloadingInfoWidget::updateInfoPanel(const DownloadingItemWidget* itemWidget)
 {
+    auto videoInfo = itemWidget->downloaoder()->videoInfoFull();
+    ui->labelTitle->setText(QString::fromStdString(videoInfo->videoView->Title));
+    ui->labelPublisher->setText(QString::fromStdString(videoInfo->videoView->Publisher));
     ui->labelFolderPath->setText(itemWidget->status().folderPath);
     ui->labelFileName->setText(itemWidget->status().fileName);
     ui->labelTotalSize->setText(itemWidget->status().totalSize);

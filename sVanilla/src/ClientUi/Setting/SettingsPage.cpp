@@ -2,7 +2,7 @@
 #include "ThreadPool/ThreadPool.h"
 #include "SettingsPage.h"
 #include "ui_SettingsPage.h"
-#include "ClientUi/Utils/RunTask.h"
+#include "Utils/RunTask.h"
 
 SettingsPage::SettingsPage(QWidget* parent)
     : QWidget(parent)

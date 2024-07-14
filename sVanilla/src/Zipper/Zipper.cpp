@@ -94,7 +94,6 @@ bool Zipper::zip()
     zipFile zFile = zipOpen(m_strOutputFileName.c_str(), APPEND_STATUS_CREATE);
     if (nullptr == zFile)
     {
-        std::cout << "create zip file failed." << std::endl;
         return false;
     }
 
@@ -139,7 +138,6 @@ bool Zipper::addFileToZip(zipFile zfile, const std::string& fileNameinZip, const
         std::ifstream stream(srcfile, std::ios::binary);
         if (!stream.is_open() || stream.bad())
         {
-            std::cout << "Open source file failed." << std::endl;
             return false;
         }
 
@@ -278,7 +276,6 @@ bool Unzipper::unzip()
             return false;
         }
 
-        std::cout << "ZipName: " << szZipFName << "; Extra: " << szExtraName << "; Comm: " << szCommName << std::endl;
         std::string strZipFileName = szZipFName;
         if (strZipFileName.empty())
         {
@@ -339,6 +336,5 @@ bool Unzipper::unzip()
         unzGoToNextFile(unzfile);
     }
 
-    std::cout << "End unpacking the package... " << std::endl;
     return true;
 }

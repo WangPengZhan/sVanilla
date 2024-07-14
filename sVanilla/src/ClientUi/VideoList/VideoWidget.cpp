@@ -13,12 +13,12 @@
 #include "BiliApi/BilibiliClient.h"
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
-#include "Util/CoverUtil.h"
+#include "Utils/CoverUtil.h"
 #include "VideoGridWidget.h"
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
 #include "ClientUi/Utils/RunTask.h"
-#include "Util/UrlProcess.h"
+#include "Utils/UrlProcess.h"
 #include "ClientUi/Config//SingleConfig.h"
 #include "ClientUi/Setting/About.h"
 #include "ClientUi/Utils/MenuEventFilter.h"
@@ -138,7 +138,7 @@ void VideoWidget::createSortMenu()
     const std::array sortCategory{
         m_originalOrder = new QAction(QIcon(":/icon/originalOrder.svg"), tr("Original Order")),
         m_titleOrder = new QAction(QIcon(":/icon/title.svg"), tr("Title")),
-        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), tr("Pushlish Date")),
+        m_dateOrder = new QAction(QIcon(":/icon/date.svg"), tr("Publish Date")),
         m_durationOrder = new QAction(QIcon(":/icon/duration.svg"), tr("Duration")),
     };
     for (const auto& category : sortCategory)

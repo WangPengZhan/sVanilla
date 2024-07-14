@@ -1,10 +1,10 @@
 #include <QUuid>
 
 #include "UiDownloader.h"
-#include "ClientUi/Storage/StorageManager.h"
-#include "ClientUi/Storage/FinishedItemStorage.h"
-#include "ClientUi/Storage/DownloadingItemStorage.h"
-#include "ClientUi/VideoList/VideoData.h"
+#include "Storage/StorageManager.h"
+#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadingItemStorage.h"
+#include "VideoList/VideoData.h"
 #include "Adapter/BaseVideoView.h"
 
 UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, std::shared_ptr<VideoInfoFull> videoInfoFull, QObject* parent)

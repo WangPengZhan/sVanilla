@@ -34,23 +34,23 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="leftMargin">
-                <number>0</number>
-            </property>
-            <property name="topMargin">
-                <number>0</number>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-            <property name="rightMargin">
-                <number>0</number>
-            </property>
-            <property name="bottomMargin">
-                <number>0</number>
-            </property>
-            <item>
-                <widget class="Vanilla::Spinner" name="spinner" native="true"/>
-            </item>
-        </layout>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="Vanilla::Spinner" name="spinner" native="true"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -134,13 +134,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>details</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset>
-             <normaloff>:/icon/info.svg</normaloff>:/icon/info.svg
-         </iconset>
+          <normaloff>:/icon/info.svg</normaloff>:/icon/info.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>
@@ -155,13 +157,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>download</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset>
-             <normaloff>:/icon/download.svg</normaloff>:/icon/download.svg
-         </iconset>
+          <normaloff>:/icon/download.svg</normaloff>:/icon/download.svg</iconset>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string>CleanButtonPatch</string>

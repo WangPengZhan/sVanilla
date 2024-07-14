@@ -24,6 +24,7 @@ std::wstring stringToWideString(const std::string& str)
 }
 #endif
 }  // namespace
+
 namespace plugin
 {
 

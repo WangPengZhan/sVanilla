@@ -7,16 +7,17 @@
 
 #include "DownloadedListWidget.h"
 #include "ui_DownloadedListWidget.h"
-#include "ClientUi/VideoList/VideoData.h"
+#include "VideoList/VideoData.h"
 #include "Adapter/BaseVideoView.h"
-#include "ClientUi/Storage/FinishedItemStorage.h"
-#include "ClientUi/Storage/StorageManager.h"
+#include "Storage/FinishedItemStorage.h"
+#include "Storage/StorageManager.h"
 #include "Sqlite/SqlComposer/BaseInfo.h"
 #include "Sqlite/SqlComposer/ConditionWrapper.h"
-#include "ClientUi/Config/SingleConfig.h"
-#include "ClientUi/Utils/InfoPanelVisibleHelper.h"
-#include "ClientUi/Utils/Utility.h"
-#include "ClientUi/MainWindow/SApplication.h"
+#include "Config/SingleConfig.h"
+#include "Utils/InfoPanelVisibleHelper.h"
+#include "Utils/Utility.h"
+#include "MainWindow/SApplication.h"
+#include "Utils/SpeedUtil.h"
 
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
@@ -25,8 +26,8 @@ DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoI
     , m_videoInfoFull(std::move(videoInfoFull))
 {
     ui->setupUi(this);
+    setUi();
     signalsAndSlots();
-    ui->labelTitle->setText(QString::fromStdString(m_videoInfoFull->videoView->Title));
     setBackgroundRole(QPalette::NoRole);
 }
 
@@ -63,6 +64,18 @@ void DownloadedItemWidget::reloadItem()
 
 void DownloadedItemWidget::updateStatus()
 {
+}
+
+void DownloadedItemWidget::setUi()
+{
+    ui->labelTitle->setText(QString::fromStdString(m_videoInfoFull->videoView->Title));
+    ui->labelPublisher->setText(QString::fromStdString(m_videoInfoFull->videoView->Publisher));
+    ui->labelDuration->setText(QString::fromStdString(m_videoInfoFull->videoView->Duration));
+    ui->labelPublishDate->setText(QString::fromStdString(m_videoInfoFull->videoView->PublishDate));
+    QString fileName = QString::fromStdString(m_videoInfoFull->fileName()) + ".mp4";
+    QString filePath = m_videoInfoFull->downloadConfig->downloadDir + "/" + fileName;
+    QFileInfo fileInfo(filePath);
+    ui->labelSize->setText(formatSize(fileInfo.size()));
 }
 
 void DownloadedItemWidget::signalsAndSlots()

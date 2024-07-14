@@ -6,15 +6,15 @@
 #include "UiDownloader.h"
 #include "Download/BiliDownloader.h"
 #include "SUI/Tips/Toast.h"
-#include "ClientUi/VideoList/VideoData.h"
+#include "VideoList/VideoData.h"
 #include "BiliApi/BilibiliClient.h"
-#include "Util/UrlProcess.h"
-#include "ClientUi/Utils/RunTask.h"
+#include "Utils/UrlProcess.h"
+#include "Utils/RunTask.h"
 #include "Adapter/BaseVideoView.h"
-#include "ClientUi/Storage/StorageManager.h"
-#include "ClientUi/Config/SingleConfig.h"
-#include "ClientUi/Download/DownloadedListWidget.h"
-#include "ClientUi/Storage/FinishedItemStorage.h"
+#include "Storage/StorageManager.h"
+#include "Config/SingleConfig.h"
+#include "Download/DownloadedListWidget.h"
+#include "Storage/FinishedItemStorage.h"
 
 DownloadWidget::DownloadWidget(QWidget* parent)
     : QWidget(parent)

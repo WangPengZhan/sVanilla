@@ -58,7 +58,6 @@ void AriaDownloader::resume()
 void AriaDownloader::downloadStatus()
 {
     m_downloadTellStatus = aria2net::AriaClient::globalClient().TellStatus(m_gid);
-    qDebug() << "Aria2Client tellStatus response: " << m_downloadTellStatus.toString().c_str();
     if (m_downloadTellStatus.error.code != 0 || (!m_downloadTellStatus.result.errorCode.empty() && m_downloadTellStatus.result.errorCode != "0"))
     {
         m_status = Error;

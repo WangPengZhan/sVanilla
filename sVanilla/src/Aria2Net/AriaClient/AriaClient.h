@@ -1,12 +1,9 @@
 #pragma once
 
-#include <QDebug>
-
 #include <nlohmann/json.hpp>
 
 #include <utility>
 
-#include "Util/Setting.h"
 #include "NetWork/CNetWork.h"
 #include "Aria2Net/Protocol/Protocol.h"
 
@@ -14,6 +11,10 @@ namespace aria2net
 {
 std::string GetRpcUri(int listenPort = 6800);
 std::string GetGuid();
+
+struct Aria2Config
+{
+};
 
 class AriaClient : public network::NetWork
 {
@@ -68,8 +69,7 @@ private:
     template <typename Result>
     Result GetResult(const AriaSendData& sendData);
 
-public:
-    std::shared_ptr<Settings> m_settings;
+private:
     template <typename Result>
     Result Call(std::string methodName, nlohmann::json::array_t params);
 };

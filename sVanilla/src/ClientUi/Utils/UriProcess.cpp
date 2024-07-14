@@ -2,8 +2,8 @@
 
 #include "UriProcess.h"
 #include "BiliApi/BilibiliUrl.h"
-#include "ClientUi/Storage/StorageManager.h"
-#include "ClientUi/Storage/SearchHistoryStorage.h"
+#include "Storage/StorageManager.h"
+#include "Storage/SearchHistoryStorage.h"
 
 UriProcess::UriProcess(QObject* parent)
     : QObject(parent)

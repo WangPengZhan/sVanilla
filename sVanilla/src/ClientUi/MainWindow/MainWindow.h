@@ -4,9 +4,9 @@
 #include <QMainWindow>
 
 #include "WindowBar.h"
-#include "Util/Setting.h"
+#include "Utils/Setting.h"
 #include "Aria2Net/Protocol/Protocol.h"
-#include "ClientUi/Utils/UriProcess.h"
+#include "Utils/UriProcess.h"
 
 namespace Adapter
 {

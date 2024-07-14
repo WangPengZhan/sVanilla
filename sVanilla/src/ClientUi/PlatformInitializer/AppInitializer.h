@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "ClientUi/MainWindow/MainWindow.h"
-#include "ClientUi/Download/DownloadManager.h"
-#include <Aria2Net/AriaClient/AriaClient.h>
+#include "MainWindow/MainWindow.h"
+#include "Download/DownloadManager.h"
+#include "Aria2Net/AriaClient/AriaClient.h"
 
 // for platform
 

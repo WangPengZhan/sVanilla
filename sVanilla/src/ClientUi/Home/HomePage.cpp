@@ -11,13 +11,13 @@
 #include "HomePage.h"
 #include "ui_HomePage.h"
 #include "BiliApi/BilibiliUrl.h"
-#include "ClientUi/Utils/Utility.h"
+#include "Utils/Utility.h"
 #include "Plugin/PluginManager.h"
-#include "ClientUi/Storage/SearchHistoryStorage.h"
-#include "ClientUi//Storage/StorageManager.h"
-#include "ClientUi/Login/LoginDialog.h"
+#include "Storage/SearchHistoryStorage.h"
+#include "Storage/StorageManager.h"
+#include "Login/LoginDialog.h"
 #include "Login/BiliLogin.h"
-#include "ClientUi/MainWindow/SApplication.h"
+#include "MainWindow/SApplication.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 

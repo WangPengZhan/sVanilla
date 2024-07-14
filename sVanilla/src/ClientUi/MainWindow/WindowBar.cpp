@@ -76,7 +76,9 @@ void WindowBar::setUi() const
 {
     const QStringList horizonNavigation({QStringLiteral(":/icon/bar/home.svg"), QStringLiteral(":/icon/bar/video.svg"),
                                          QStringLiteral(":/icon/bar/download.svg"), QStringLiteral(":/icon/bar/setting.svg")});
+    const QStringList toolTips{tr("home"), tr("video"), tr("download"), tr("settings")};
     ui->Hit->setIconList(horizonNavigation);
+    ui->Hit->setToolTips(toolTips);
     ui->Hit->setColumnWidth(columnWidth);
     ui->Hit->setEnableBackground(false);
     ui->systemBtnLayout->setSpacing(columnSpacing);
