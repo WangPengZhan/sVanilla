@@ -456,6 +456,7 @@ void DownloadingListWidget::showInfoPanel(int index)
 {
     setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
     updateInfoPanel(indexOfItem(index));
+    scrollToItem(item(index));
 }
 
 void DownloadingListWidget::hideInfoPanel() const

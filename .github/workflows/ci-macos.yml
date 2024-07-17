@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: Build On Macos
     runs-on: macos-13
     timeout-minutes: 120
 
