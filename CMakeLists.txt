@@ -13,11 +13,8 @@ project(sVanilla
 set(PROJECT_COMPANY_NAME "sVanilla Studio")
 set(PROJECT_COPYRIGHT "Copyright © iveswang and other contributors")
 
-# if(CMAKE_VERSION VERSION_LESS "3.7.0")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# endif()
 
-# set(CMAKE_CXX_FLAGS "-U__FILE__ -D__FILE__='\"$(subst $(dir $<),,$<)\"'")
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-Wno-builtin-macro-redefined SUPPORT_CXX_WNO_BUILTIN_MACRO_REDEFINED)
 if (SUPPORT_CXX_WNO_BUILTIN_MACRO_REDEFINED)

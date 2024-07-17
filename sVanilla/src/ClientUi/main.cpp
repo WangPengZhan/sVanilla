@@ -8,9 +8,14 @@
 #include "NetWork/CurlCpp/CurlGlobal.h"
 #include "Sqlite/Storage/SqliteDBManager.h"
 #include "BiliApi/BilibiliUtils.h"
+#include "Util/TimerUtil.h"
+
+#include <QDir>
 
 int main(int argc, char* argv[])
 {
+    auto exePath = getModulePath();
+    QDir::setCurrent(QString::fromStdString(exePath));
     Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/"));
     Logger::getInstance();
     DumpColletor::setDumpDir(SApplication::appDir().toStdString() + "/dump");

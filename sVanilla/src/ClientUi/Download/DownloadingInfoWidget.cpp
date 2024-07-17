@@ -33,6 +33,10 @@ void DownloadingInfoWidget::updateInfoPanel(const DownloadingItemWidget* itemWid
     const auto percentage = QString::number(itemWidget->status().progress, 'f', 1);
     ui->labelDownloaded->setText(itemWidget->status().downloadedSize + "(" + percentage + "%)");
     ui->labelRemainingTime->setText(itemWidget->status().remainingTime);
+    if (itemWidget->status().progress == 100)
+    {
+        hide();
+    }
 }
 
 void DownloadingInfoWidget::signalsAndSlots()

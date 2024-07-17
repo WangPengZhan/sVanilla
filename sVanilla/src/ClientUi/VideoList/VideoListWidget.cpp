@@ -57,6 +57,7 @@ void VideoListItemWidget::showInfoPanel() const
     {
         m_listWidget->showInfoPanel(m_listWidget->row(m_listWidgetItem));
         m_listWidget->updateInfoPanel(m_infoFull);
+        m_listWidget->scrollToItem(m_listWidgetItem);
     }
 }
 

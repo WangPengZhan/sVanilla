@@ -242,6 +242,7 @@ void DownloadedListWidget::showInfoPanel(const std::shared_ptr<VideoInfoFull>& v
 {
     setInfoPanelVisible(m_infoWidget, m_splitter, index, previousRow);
     m_infoWidget->updateUi(videoInfo);
+    scrollToItem(item(index));
 }
 
 void DownloadedListWidget::hideInfoPanel() const

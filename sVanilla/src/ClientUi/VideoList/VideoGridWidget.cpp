@@ -300,6 +300,7 @@ void VideoGridWidget::showInfo(QListWidgetItem* item)
     }
     const auto index = row(item);
     emit infoBtnClick({previousRow, index, gridWidget->getVideoInfo()});
+    scrollToItem(item);
     previousRow = index;
 }
 
