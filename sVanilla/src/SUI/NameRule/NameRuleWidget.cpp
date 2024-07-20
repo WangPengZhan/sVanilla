@@ -29,13 +29,22 @@ void NameRuleWidget::init(const std::unordered_map<std::string, std::string>& ru
 
 void NameRuleWidget::updateLineEdit(const QString& rule)
 {
-    ui->lineEdit->setText(rule);
-    emit ui->lineEdit->textChanged(rule);
+    ui->lineEditInput->setText(rule);
+    emit ui->lineEditInput->textChanged(rule);
 }
 
 void NameRuleWidget::hidePreviewLabel(bool hide)
 {
-    hide ? ui->labelPreview->hide() : ui->labelPreview->show();
+    if (hide)
+    {
+        ui->labelPreview->hide();
+        ui->pushButton->hide();
+    }
+    else
+    {
+        ui->labelPreview->show();
+        ui->pushButton->show();
+    }
 }
 
 bool NameRuleWidget::isHidePreviewLabel() const
@@ -50,7 +59,7 @@ void NameRuleWidget::initListWidget(const std::vector<QString>& nameRules) const
 
 void NameRuleWidget::signalsAndSlots()
 {
-    connect(ui->lineEdit, &NameRuleEditWidget::textChanged, this, [this](const QString& newText) {
+    connect(ui->lineEditInput, &NameRuleEditWidget::textChanged, this, [this](const QString& newText) {
         updatePreview(newText);
         emit editingFinished(newText);
     });

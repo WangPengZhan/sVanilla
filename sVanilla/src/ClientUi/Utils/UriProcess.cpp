@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QTimer>
 
 #include "UriProcess.h"
 #include "BiliApi/BilibiliUrl.h"
@@ -32,6 +33,17 @@ void UriProcess::parseUri(const std::string& uri)
     {
         return;
     }
+
+    if ((uri == m_lastUri) && (!m_isTimeOut))
+    {
+        return;
+    }
+
+    m_isTimeOut = false;
+    m_lastUri = uri;
+    QTimer::singleShot(2000, [this]() {
+        m_isTimeOut = true;
+    });
 
     auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
 

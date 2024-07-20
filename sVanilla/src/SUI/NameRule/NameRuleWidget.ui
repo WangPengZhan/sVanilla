@@ -45,7 +45,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="NameRuleEditWidget" name="lineEdit"/>
+       <widget class="NameRuleEditWidget" name="lineEditInput"/>
       </item>
       <item>
        <widget class="QLabel" name="labelPreview">
@@ -56,11 +56,8 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string/>
-        </property>
         <property name="icon">
-            <iconset theme=":/icon/reset.svg"/>
+         <iconset theme=":/icon/reset.svg"/>
         </property>
         <property name="_vanillaStyle_Patch" stdset="0">
          <string notr="true">CleanButtonPatch</string>
