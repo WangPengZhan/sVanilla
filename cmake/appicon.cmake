@@ -23,7 +23,6 @@ function(appicon TARGET_NAME RESOURCE_FILES)
         include(GNUInstallDirs)
         set(ICON_ROOT ${CMAKE_CURRENT_BINARY_DIR}/share)
         set(DESKTOP_FILE ${ICON_ROOT}/applications/${TARGET_NAME}.desktop)
-        message("DESKTOP_FILE: ${DESKTOP_FILE}")
         configure_file(${CMAKE_SOURCE_DIR}/cmake/${TARGET_NAME}.desktop.in ${DESKTOP_FILE})
         set(ICON_DIR "${ICON_ROOT}/icon/")
         add_custom_command(TARGET ${TARGET_NAME}
@@ -31,5 +30,7 @@ function(appicon TARGET_NAME RESOURCE_FILES)
                 COMMAND ${CMAKE_COMMAND} -E make_directory ${ICON_DIR}
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/sVanilla/resource/appIcon/${TARGET_NAME}.svg ${ICON_DIR}
         )
+
+        install(DIRECTORY ${ICON_ROOT} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
     endif()
 endfunction()

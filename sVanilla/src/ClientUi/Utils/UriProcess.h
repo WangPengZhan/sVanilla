@@ -21,4 +21,8 @@ public:
 signals:
     void uriProcessComplete(const UriProcess::UriInfo& uriInfo);
     void setWebsiteIcon(const QString& iconPath);
+
+private:
+    std::string m_lastUri;
+    bool m_isTimeOut = true;
 };
