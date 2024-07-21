@@ -45,23 +45,6 @@ private:
     Context* m_context;
 };
 
-template <typename Response>
-class CurlResponseWrapper
-{
-public:
-    CurlResponseWrapper(Response& response);
-
-    void setToCurl(CURL* handle);
-    void setToCurl(CurlEasy& easy);
-
-    void readAfter(CURL* handle);
-    void readAfter(CurlEasy& easy);
-
-private:
-    Response& m_response;
-    CurlWriter<Response> m_writer;
-};
-
 }  // namespace network
 
 #include "CurlWriter.inl"

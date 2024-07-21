@@ -67,6 +67,7 @@ public:
 };
 
 // for curl option type
+class CurlCookies;
 using Verbose = CurlOption<bool, CURLOPT_VERBOSE>;
 using Header = CurlOption<bool, CURLOPT_HEADER>;
 using NoProgress = CurlOption<bool, CURLOPT_NOPROGRESS>;
@@ -75,6 +76,7 @@ using AcceptEncoding = CurlOption<const char*, CURLOPT_ACCEPT_ENCODING>;
 using SSLVerifyPeer = CurlOption<bool, CURLOPT_SSL_VERIFYPEER>;
 using SSLVerifyHost = CurlOption<bool, CURLOPT_SSL_VERIFYHOST>;
 using PostFields = CurlOption<std::string, CURLOPT_POSTFIELDS>;
+using CookieFileds = CurlOption<CurlCookies, CURLOPT_COOKIE>;
 
 }  // namespace network
 

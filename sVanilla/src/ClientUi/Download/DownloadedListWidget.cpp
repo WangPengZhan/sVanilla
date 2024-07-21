@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QScrollBar>
 
 #include <utility>
 
@@ -165,6 +166,8 @@ DownloadedListWidget::DownloadedListWidget(QWidget* parent)
     : QListWidget(parent)
 {
     setObjectName(QStringLiteral("DownloadedListWidget"));
+    verticalScrollBar()->setSingleStep(1);
+    verticalScrollBar()->setPageStep(5);
     signalsAndSlots();
     setBackgroundRole(QPalette::NoRole);
     m_splitter = qobject_cast<QSplitter*>(parent);

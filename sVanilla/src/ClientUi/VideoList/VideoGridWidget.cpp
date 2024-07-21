@@ -222,12 +222,19 @@ void VideoGridWidget::resizeEvent(QResizeEvent* event)
     adjustItemSize();
 }
 
+void VideoGridWidget::wheelEvent(QWheelEvent* event)
+{
+    int sensitivity = 3;
+    int delta = event->angleDelta().y() / sensitivity;
+    verticalScrollBar()->setValue(verticalScrollBar()->value() - delta);
+}
+
 void VideoGridWidget::setUi()
 {
     setSpacing(itemSpacing);
     setSelectionMode(ExtendedSelection);
-    constexpr int scrollStep = 5;
-    verticalScrollBar()->setSingleStep(scrollStep);
+    verticalScrollBar()->setSingleStep(1);
+    verticalScrollBar()->setPageStep(5);
     setItemShortCuts();
 }
 

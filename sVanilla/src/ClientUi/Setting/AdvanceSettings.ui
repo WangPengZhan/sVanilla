@@ -49,7 +49,7 @@
        </rect>
       </property>
       <property name="autoFillBackground">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -680,7 +680,11 @@ where &quot;default&quot; here refers to each new search starting.</string>
               </spacer>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBoxAria2Port"/>
+              <widget class="QSpinBox" name="spinBoxAria2Port">
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

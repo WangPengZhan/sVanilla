@@ -67,6 +67,7 @@ private:
     void downloadItem(QListWidgetItem* item) const;
 
 protected:
+    void resizeEvent(QResizeEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
 private:
