@@ -1,5 +1,6 @@
 #pragma once
 #include "CNetWork.h"
+#include "CurlCpp/CurlResponseWrapper.h"
 
 namespace network
 {

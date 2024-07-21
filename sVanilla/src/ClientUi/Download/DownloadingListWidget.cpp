@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QFileInfo>
 #include <QDir>
+#include <QScrollBar>
 
 #include <utility>
 #include <limits>
@@ -446,6 +447,8 @@ void DownloadingListWidget::setUi()
 {
     setBackgroundRole(QPalette::NoRole);
     setSelectionMode(ExtendedSelection);
+    verticalScrollBar()->setSingleStep(1);
+    verticalScrollBar()->setPageStep(5);
 }
 
 void DownloadingListWidget::signalsAndSlots() const

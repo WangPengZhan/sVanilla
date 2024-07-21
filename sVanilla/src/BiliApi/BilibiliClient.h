@@ -3,6 +3,7 @@
 
 #include "BiliApi.h"
 #include "NetWork/CNetWork.h"
+#include "NetWork/CurlCpp/CurlCookieJar.h"
 
 namespace biliapi
 {
@@ -37,6 +38,7 @@ protected:
 
 private:
     bool m_logined;
+    network::CurlCookies m_cookies;  // we sellect this mode for debug
 };
 
 }  // namespace biliapi

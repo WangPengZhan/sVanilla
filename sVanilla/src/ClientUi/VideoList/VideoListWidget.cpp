@@ -1,6 +1,7 @@
 #include <QPushButton>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QScrollBar>
 
 #include "VideoListWidget.h"
 #include "VideoInfoWidget.h"
@@ -101,6 +102,19 @@ void VideoListWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& infoFul
     item->setSizeHint(videoItem->sizeHint());
     setItemWidget(item, videoItem);
     videoItem->setVideoInfo(infoFull);
+}
+
+void VideoListWidget::resizeEvent(QResizeEvent* event)
+{
+    QListWidget::resizeEvent(event);
+    for (int i = 0; i < count(); ++i)
+    {
+        if (itemWidget(item(i)))
+        {
+            int maxWidth = width() - (verticalScrollBar()->isVisible() ? verticalScrollBar()->width() : 0);
+            itemWidget(item(i))->setMaximumWidth(maxWidth);
+        }
+    }
 }
 
 void VideoListWidget::mousePressEvent(QMouseEvent* event)
