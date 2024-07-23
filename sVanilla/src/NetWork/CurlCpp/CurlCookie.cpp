@@ -3,14 +3,6 @@
 namespace network
 {
 
-constexpr char domain_key[] = "CurlCookie";
-constexpr char expires_key[] = "Expires";
-constexpr char path_key[] = "Path";
-constexpr char secure_value[] = "Secure";
-constexpr char httpOnly_value[] = "HttpOnly";
-constexpr char set_cookie[] = "Set-Cookie: ";
-constexpr char same_site[] = "SameSite";
-
 std::string CurlCookie::toString(SameSiteSend send)
 {
     switch (send)
@@ -249,7 +241,7 @@ std::string CurlCookie::content(bool isContainSetCookie) const
 
     if (isContainSetCookie)
     {
-        cookieString.append(set_cookie);
+        cookieString.append(set_cookie_header);
     }
 
     if (!m_name.empty() && m_cookieValue.find(m_name) != m_cookieValue.end())
@@ -324,9 +316,9 @@ CurlCookie CurlCookie::parseCookie(const std::string& content)
 {
     CurlCookie curlCookie;
     std::string_view content_view(content);
-    if (content_view.starts_with(set_cookie))
+    if (content_view.starts_with(set_cookie_header))
     {
-        content_view = std::string_view(content.data() + std::size(set_cookie) - 1);
+        content_view = std::string_view(content.data() + std::size(set_cookie_header) - 1);
     }
 
     bool hasName = false;

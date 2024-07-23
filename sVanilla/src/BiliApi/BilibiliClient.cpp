@@ -11,6 +11,8 @@
 #include "BilibiliLog.h"
 #include "BilibiliUtils.h"
 #include "NetWork/NetworkLog.h"
+#include "NetWork/HeaderBodyResponseWrapper.h"
+#include "NetWork/CurlCpp/CurlCookie.h"
 
 namespace biliapi
 {
@@ -80,9 +82,16 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
     ParamType param;
     param["qrcode_key"] = qrcodeKey;
 
-    std::string response;
+    network::ResponseHeaderAndBody response;
     get(PassportURL::LoginStatus, response, param, passPortHeaders());
-    return LoginStatusScanning(getDataFromRespones(response));
+    auto header = parseHeader(response.header);
+    if (header.end() != header.find(network::set_cookies))
+    {
+        m_cookies.setContent(header.at(network::set_cookies));
+        m_commonOptions[network::CookieFileds::opt] = std::make_shared<network::CookieFileds>(m_cookies);
+    }
+
+    return LoginStatusScanning(getDataFromRespones(response.body));
 }
 
 void BilibiliClient::setLogined(bool logined)

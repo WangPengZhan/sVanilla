@@ -79,4 +79,13 @@ inline void CurlResponseWrapper<ResponseHeaderAndBody>::setToCurl(CurlEasy& easy
     setToCurl(easy.handle());
 }
 
+inline void CurlResponseWrapper<ResponseHeaderAndBody>::readAfter(CURL* handle)
+{
+}
+
+inline void CurlResponseWrapper<ResponseHeaderAndBody>::readAfter(CurlEasy& easy)
+{
+    readAfter(easy.handle());
+}
+
 }  // namespace network

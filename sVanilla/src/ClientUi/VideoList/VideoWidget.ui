@@ -231,7 +231,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QSplitter" name="videoGrid">
       <property name="sizePolicy">
@@ -239,6 +239,16 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">.QSplitter::handle:horizontal {
+    background-color: #828282;
+    height: 2px;
+}
+.QSplitter::handle:vertical {
+    background-color: #828282;
+    width: 2px;
+}</string>
       </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -287,8 +297,21 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="styleSheet">
+       <string notr="true">.QSplitter::handle:horizontal {
+    background-color: #828282;
+    height: 2px;
+}
+.QSplitter::handle:vertical {
+    background-color: #828282;
+    width: 2px;
+}</string>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
+      </property>
+      <property name="handleWidth">
+       <number>2</number>
       </property>
       <widget class="::VideoListWidget" name="videoListWidget">
        <property name="sizePolicy">

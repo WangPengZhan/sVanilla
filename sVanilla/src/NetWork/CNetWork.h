@@ -118,6 +118,7 @@ public:
 
     // util
     static std::string paramsString(const ParamType& params);
+    static ParamType parseHeader(const std::string& header);
 
 private:
     CurlHeader setToCurl(CurlEasy& easy, const CurlHeader& headers, bool headersAdd = false);

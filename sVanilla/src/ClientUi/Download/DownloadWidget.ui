@@ -145,8 +145,21 @@
        </property>
        <item>
         <widget class="QSplitter" name="downloadSplitter">
+         <property name="styleSheet">
+          <string notr="true">.QSplitter::handle:horizontal {
+    background-color:  #828282;
+    height: 2px;
+}
+.QSplitter::handle:vertical {
+    background-color:  #828282;
+    width: 2px;
+}</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
+         </property>
+         <property name="handleWidth">
+          <number>2</number>
          </property>
          <widget class="::DownloadingListWidget" name="downloadingListWidget"/>
          <widget class="::DownloadingInfoWidget" name="downloadingInfoWidget" native="true"/>
@@ -204,8 +217,21 @@
        </property>
        <item>
         <widget class="QSplitter" name="downloadedSplitter">
+         <property name="styleSheet">
+          <string notr="true">.QSplitter::handle:horizontal {
+    background-color: #828282;
+    height: 2px;
+}
+.QSplitter::handle:vertical {
+    background-color:  #828282;
+    width: 2px;
+}</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
+         </property>
+         <property name="handleWidth">
+          <number>2</number>
          </property>
          <widget class="::DownloadedListWidget" name="downloadedListWidget"/>
          <widget class="::DownloadedInfoWidget" name="downloadedInfoWidget" native="true"/>

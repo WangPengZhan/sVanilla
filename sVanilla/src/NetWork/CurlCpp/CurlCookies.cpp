@@ -109,7 +109,7 @@ std::vector<std::string> CurlCookies::keys() const
     return ret;
 }
 
-void CurlCookies::setToCurl(CURL* handle)
+void CurlCookies::setToCurl(CURL* handle) const
 {
     auto strCookies = content();
     if (!handle && !strCookies.empty())
@@ -118,7 +118,7 @@ void CurlCookies::setToCurl(CURL* handle)
     }
 }
 
-void CurlCookies::setToCurl(CurlEasy& easy)
+void CurlCookies::setToCurl(CurlEasy& easy) const
 {
     setToCurl(easy.handle());
 }
@@ -140,13 +140,8 @@ CurlCookies CurlCookies::parseCookie(const std::string& content)
             int pos = parseContent.find("=");
             key = parseContent.substr(0, pos);
             value = parseContent.substr(pos + 1);
+            CurlCookies.m_cookieValue.insert(std::make_pair(key, value));
         }
-        else
-        {
-            key = parseContent;
-        }
-
-        CurlCookies.m_cookieValue.insert(std::make_pair(key, value));
     }
 
     return CurlCookies;
