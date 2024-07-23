@@ -8,7 +8,7 @@
 
 namespace network
 {
-struct CURL;
+
 class CurlEasy;
 
 class CurlCookieJar

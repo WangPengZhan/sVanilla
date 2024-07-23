@@ -3,6 +3,8 @@
 
 #include <curl/curl.h>
 
+#include "CurlCookies.h"
+
 namespace network
 {
 
@@ -47,7 +49,7 @@ protected:
     CurlValueOption(CURLoption option);
 
 protected:
-    ValueType m_value;
+    ValueType m_value{};
 };
 
 template <typename COValueType, CURLoption op>
@@ -55,6 +57,7 @@ class CurlOption : public CurlValueOption<COValueType>
 {
 public:
     static constexpr CURLoption opt = op;
+    CurlOption();
     CurlOption(typename CurlValueOption<COValueType>::ValueType value);
 };
 
@@ -67,7 +70,6 @@ public:
 };
 
 // for curl option type
-class CurlCookies;
 using Verbose = CurlOption<bool, CURLOPT_VERBOSE>;
 using Header = CurlOption<bool, CURLOPT_HEADER>;
 using NoProgress = CurlOption<bool, CURLOPT_NOPROGRESS>;

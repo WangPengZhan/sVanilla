@@ -7,6 +7,15 @@
 namespace network
 {
 
+constexpr char domain_key[] = "Domain";
+constexpr char expires_key[] = "Expires";
+constexpr char path_key[] = "Path";
+constexpr char secure_value[] = "Secure";
+constexpr char httpOnly_value[] = "HttpOnly";
+constexpr char set_cookie_header[] = "Set-Cookie: ";
+constexpr char set_cookies[] = "Set-Cookie";
+constexpr char same_site[] = "SameSite";
+
 class CurlCookie
 {
 public:

@@ -87,6 +87,7 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         m_configChanged = true;
         m_pluginConfig.emplace_back(pluginConfig);
     }
+    pluginConfig.isValid = true;
 
     if (pluginConfig.enabled)
     {
@@ -131,6 +132,12 @@ std::set<PluginConfig> PluginManager::getPluginConfig() const
 {
     std::lock_guard lk(m_pluginsMutex);
     return std::set<PluginConfig>(m_pluginConfig.begin(), m_pluginConfig.end());
+}
+
+void PluginManager::setPluginConfig(std::vector<PluginConfig> configs)
+{
+    std::lock_guard lk(m_pluginsMutex);
+    m_pluginConfig = std::move(configs);
 }
 
 void PluginManager::loadConfig()

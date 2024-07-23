@@ -24,8 +24,10 @@ private:
     void signalsAndSlots();
 
     void initPluginInfos();
+    void setPluginConfig();
 
 private:
     Ui::PluginsInfo* ui;
     bool m_showFirst = true;
+    bool m_isTip = true;
 };

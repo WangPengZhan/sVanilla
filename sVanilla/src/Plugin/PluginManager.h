@@ -25,7 +25,8 @@ struct PluginConfig
     int id;
     std::string description;
     std::string libFile;
-    bool enabled;
+    bool enabled{false};
+    bool isValid{false};
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PluginConfig, name, version, libName, id, description, libFile, enabled)
 
     std::strong_ordering operator<=>(const PluginConfig& other) const
@@ -52,6 +53,7 @@ public:
     void pluginDirFileAdded();
 
     std::set<PluginConfig> getPluginConfig() const;
+    void setPluginConfig(std::vector<PluginConfig> configs);
 
     void loadConfig();
     void saveConfig() const;

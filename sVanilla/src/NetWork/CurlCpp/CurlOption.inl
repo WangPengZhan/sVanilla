@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include "CurlOption.h"
 
 namespace network
 {
@@ -84,6 +85,12 @@ inline CurlValueOption<COValueType>::CurlValueOption(CURLoption option)
 }
 
 template <typename COValueType, CURLoption op>
+inline CurlOption<COValueType, op>::CurlOption()
+    : CurlValueOption<COValueType>(opt)
+{
+}
+
+template <typename COValueType, CURLoption op>
 inline CurlOption<COValueType, op>::CurlOption(typename CurlValueOption<COValueType>::ValueType value)
     : CurlValueOption<COValueType>(value, opt)
 {
@@ -99,6 +106,12 @@ template <CURLoption op>
 inline NoValueCurlOption<op>* NoValueCurlOption<op>::clone() const
 {
     return new NoValueCurlOption<op>();
+}
+
+template <>
+inline void CurlValueOption<CurlCookies>::setToCurl(CURL* handle) const
+{
+    m_value.setToCurl(handle);
 }
 
 }  // namespace network

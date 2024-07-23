@@ -30,6 +30,7 @@ void AdvanceSettings::setUi()
     auto videoWidgetConfig = SingleConfig::instance().videoWidgetConfig();
     videoWidgetConfig.order ? ui->cbxDes->setChecked(true) : ui->cbxAsc->setChecked(true);
     int index = ui->comboBoxOrderElem->findText(videoWidgetConfig.orderBy);
+    index = (index == -1 ? 0 : index);
     ui->comboBoxOrderElem->setCurrentIndex(index);
     ui->cbxNoParseList->setChecked(videoWidgetConfig.isNoParseList);
     videoWidgetConfig.widgetLayout ? ui->cbxList->setChecked(true) : ui->cbxGrid->setChecked(true);

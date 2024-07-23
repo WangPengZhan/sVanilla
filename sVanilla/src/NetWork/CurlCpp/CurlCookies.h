@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 
+#include <curl/curl.h>
+
 namespace network
 {
 class CurlCookie;
-struct CURL;
+
 class CurlEasy;
 
 class CurlCookies
@@ -31,8 +33,8 @@ public:
     const std::string& value(const std::string& key) const;
     std::vector<std::string> keys() const;
 
-    void setToCurl(CURL* handle);
-    void setToCurl(CurlEasy& easy);
+    void setToCurl(CURL* handle) const;
+    void setToCurl(CurlEasy& easy) const;
 
     static CurlCookies parseCookie(const std::string& content);
 
