@@ -53,7 +53,12 @@ std::string VideoInfoFull::fileName() const
     return temp.toStdString();
 }
 
-const std::vector<std::string> VideoInfoFull::ruleList = {"id", "title", "auther", "data"};
+std::string VideoInfoFull::coverPath() const
+{
+    return util::FileHelp::removeSpecialChar(getGuid());
+}
+
+const std::vector<std::string> VideoInfoFull::ruleList = {"id", "title", "publisher", "data"};
 
 VideoListWidgetItem::VideoListWidgetItem(std::shared_ptr<VideoInfoFull> videoInfo, int index)
     : QListWidgetItem()

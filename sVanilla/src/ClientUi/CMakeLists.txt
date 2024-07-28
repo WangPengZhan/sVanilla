@@ -21,7 +21,6 @@ find_package(spdlog REQUIRED)
 find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)
-find_package(rapidfuzz REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 
@@ -91,7 +90,6 @@ target_link_libraries(${PROJECT_NAME}
     OpenSSL::SSL
     OpenSSL::Crypto
     VanillaStyle::VanillaStyle
-    rapidfuzz::rapidfuzz
     Aria2Net
     BiliApi
     Download

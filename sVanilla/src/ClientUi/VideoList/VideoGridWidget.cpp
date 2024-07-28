@@ -106,7 +106,7 @@ void VideoGridItemWidget::createContextMenu()
 void VideoGridItemWidget::setCover()
 {
     const QString tempPath = SApplication::appDir();
-    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(util::FileHelp::removeSpecialChar(m_infoFull->getGuid())) + ".jpg";
+    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->coverPath()) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
         const QPixmap pixmap(fullPath);
@@ -138,6 +138,11 @@ void VideoGridItemWidget::updateCover()
 const VideoGridItemWidget::CardInfo& VideoGridItemWidget::getCardInfo() const
 {
     return m_cardInfo;
+}
+
+std::string VideoGridItemWidget::getCoverPath() const
+{
+    return m_infoFull->coverPath();
 }
 
 QSize VideoGridItemWidget::sizeHint() const
@@ -206,13 +211,9 @@ void VideoGridWidget::setOrderType(OrderType orderType)
     }
 }
 
-void VideoGridWidget::coverReady(const int id) const
+void VideoGridWidget::coverReady(const std::string& fileName) const
 {
-    if (id >= count())
-    {
-        return;
-    }
-    auto* const itemWidget = getItem(id);
+    auto* const itemWidget = getItem(fileName);
     itemWidget->updateCover();
 }
 
@@ -323,8 +324,25 @@ void VideoGridWidget::updateCovers()
 {
     for (int i = 0; i < count(); ++i)
     {
-        coverReady(i);
+        const auto coverPath = getItem(i)->getCoverPath();
+        if (coverPath.empty())
+        {
+            return;
+        }
+        coverReady(coverPath);
     }
+}
+
+VideoGridItemWidget* VideoGridWidget::getItem(const std::string& fileName) const
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        if (const auto item = getItem(i); item->getCoverPath() == fileName)
+        {
+            return item;
+        }
+    }
+    return nullptr;
 }
 
 VideoGridItemWidget* VideoGridWidget::getItem(QListWidgetItem* item) const

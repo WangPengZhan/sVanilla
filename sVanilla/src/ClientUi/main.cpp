@@ -18,12 +18,11 @@ int main(int argc, char* argv[])
     QDir::setCurrent(QString::fromStdString(exePath));
     Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/"));
     Logger::getInstance();
-    DumpColletor::setDumpDir(SApplication::appDir().toStdString() + "/dump");
-    sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + "/.db");
+    DumpColletor::setDumpDir(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string("dump"));
+    sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string(".db"));
     biliapi::setCookieDataDir(SApplication::appDir().toLocal8Bit().toStdString());
     network::CurlGlobal curlGlobal;
     DumpColletor::registerDumpHandle();
-
     Restarter restarter(argc, argv);
 
     AppInitializer sVanilla;

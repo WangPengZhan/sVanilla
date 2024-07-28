@@ -21,6 +21,7 @@ struct VideoInfoFull
     std::string getGuid() const;
     std::unordered_map<std::string, std::string> nameRules() const;
     std::string fileName() const;
+    std::string coverPath() const;
 
     static const std::vector<std::string> ruleList;
 };

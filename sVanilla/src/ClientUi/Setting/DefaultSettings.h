@@ -45,4 +45,5 @@ private:
 private:
     Ui::DefaultSettings* ui;
     QButtonGroup* m_themeGroup;
+    bool m_isTip = true;
 };

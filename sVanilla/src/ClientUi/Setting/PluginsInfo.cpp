@@ -97,13 +97,14 @@ void PluginsInfo::setPluginConfig()
     {
         plugin::PluginConfig pluginInfo;
         int col = 0;
+        int colMax = ui->tableWidget->colorCount() - 1;
         pluginInfo.name = ui->tableWidget->item(i, col++)->text().toStdString();
         pluginInfo.enabled = ui->tableWidget->item(i, col++)->checkState() == Qt::Unchecked;
         pluginInfo.version = ui->tableWidget->item(i, col++)->text().toStdString();
         pluginInfo.id = ui->tableWidget->item(i, col++)->text().toInt();
         pluginInfo.libFile = ui->tableWidget->item(i, col++)->text().toStdString();
         pluginInfo.description = ui->tableWidget->item(i, col++)->text().toStdString();
-        pluginInfo.isValid = ui->tableWidget->item(i, col)->flags() & Qt::ItemIsEnabled;
+        pluginInfo.isValid = ui->tableWidget->item(i, colMax)->flags() & Qt::ItemIsEnabled;
         pluginConfig.emplace_back(std::move(pluginInfo));
     }
 
