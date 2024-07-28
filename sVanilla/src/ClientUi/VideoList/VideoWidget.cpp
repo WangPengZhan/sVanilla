@@ -278,6 +278,7 @@ void VideoWidget::searchItem(const QString& text)
 {
     if (text.isEmpty())
     {
+        resetList();
         return;
     }
     if (!ui->btnReset->isVisible())
@@ -285,36 +286,29 @@ void VideoWidget::searchItem(const QString& text)
         showBtnReset();
     }
     const auto& grid = ui->videoGridWidget;
+    const auto& list = ui->videoListWidget;
 
     const auto items = grid->getVideoInfo();
-    if (m_originalList.empty())
+    for (int i = 0; i < items.size(); ++i)
     {
-        m_originalList = items;
+        const auto title = items.at(i)->videoView->Title;
+        const auto isFind = title.find(text.toStdString()) != std::string::npos;
+        grid->item(i)->setHidden(!isFind);
+        list->item(i)->setHidden(!isFind);
     }
-    const std::function getData = [](const std::shared_ptr<VideoInfoFull>& info) {
-        return info->videoView->Title;
-    };
-    const auto sortedItems = sortSimilarItems(items, text.toStdString(), getData, 0.0);
-    grid->clear();
-    for (const auto& info : sortedItems)
-    {
-        addVideoItem(info);
-    }
-    grid->updateCovers();
 }
 
 void VideoWidget::resetList()
 {
-#if 0
     const auto& grid = ui->videoGridWidget;
-    grid->clear();
-    for (const auto& item : m_originalList)
+    const auto& list = ui->videoListWidget;
+    const int rows = grid->count();
+    for (int i = 0; i < rows; ++i)
     {
-        addVideoItem(item);
+        grid->item(i)->setHidden(false);
+        list->item(i)->setHidden(false);
     }
-    grid->updateCovers();
-#else
-#endif
+
     hideBtnReset();
 }
 
@@ -401,13 +395,13 @@ void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
         const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
         ui->labelPlayListTitle->setText(title);
     }
-    for (int i = 0; i < views.size(); ++i)
+    for (const auto& view : views)
     {
         auto videoInfoFull = std::make_shared<VideoInfoFull>();
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
-        videoInfoFull->videoView = views.at(i);
+        videoInfoFull->videoView = view;
         addVideoItem(videoInfoFull);
-        downloadCover({views.at(i)->Cover, util::FileHelp::removeSpecialChar(videoInfoFull->getGuid()), tempPath.toStdString(), i});
+        downloadCover({view->Cover, videoInfoFull->coverPath(), tempPath.toStdString()});
     }
 }
 
@@ -421,7 +415,7 @@ void VideoWidget::downloadCover(const CoverInfo& coverInfo)
         {
             return;
         }
-        emit coverReady(coverInfo.index);
+        emit coverReady(coverInfo.fileName);
     };
     runTask(taskFunc, callback, this);
 }

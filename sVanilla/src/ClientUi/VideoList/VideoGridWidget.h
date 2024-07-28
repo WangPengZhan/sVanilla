@@ -31,6 +31,7 @@ void elideText(QLabel* label, const QString& text);
 class VideoGridItemWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     struct CardInfo
     {
@@ -46,11 +47,14 @@ public:
     void saveWidgetItem(QListWidgetItem* widgetItem);
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
     std::shared_ptr<VideoInfoFull> getVideoInfo();
+
     void setCover();
     void updateVideoCard();
     void updateCover();
 
     const CardInfo& getCardInfo() const;
+    std::string getCoverPath() const;
+
     QListWidgetItem* getWidgetItem() const
     {
         return m_listWidgetItem;
@@ -84,6 +88,7 @@ private:
 class VideoGridWidget : public QListWidget
 {
     Q_OBJECT
+
 public:
     explicit VideoGridWidget(QWidget* parent = nullptr);
 
@@ -91,9 +96,10 @@ public:
     void clearVideo();
     void setOrderType(OrderType orderType);
 
-    void coverReady(int id) const;
+    void coverReady(const std::string& fileName) const;
     void updateCovers();
 
+    VideoGridItemWidget* getItem(const std::string& fileName) const;
     VideoGridItemWidget* getItem(QListWidgetItem* item) const;
     [[nodiscard]] VideoGridItemWidget* getItem(int index) const;
     std::vector<VideoGridItemWidget*> getItems() const;

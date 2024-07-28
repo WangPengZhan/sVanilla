@@ -57,7 +57,7 @@ signals:
     void parseUri(const std::string& uri);
 
     void allReady() const;
-    void coverReady(int id) const;
+    void coverReady(const std::string&) const;
 
 private:
     void setUi();
