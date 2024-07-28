@@ -4,6 +4,7 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
+#include <shared_mutex>
 
 #include "NetWork/CurlCpp/CurlHeader.h"
 #include "NetWork/CurlCpp/CurlOption.h"
@@ -51,15 +52,14 @@ public:
     virtual ~NetWork() = default;
 
     // headers
-    const CurlHeader& commonHeaders() const;
+    CurlHeader commonHeaders() const;
     void setCommonHeaders(const CurlHeader& commonsHeaders);
 
     // options
-    const CurlOptions& commonOptions() const;
+    CurlOptions commonOptions() const;
     void setCommonOptions(const CurlOptions& options);
     void addCommonOption(std::shared_ptr<AbstractOption> option);
     void addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>& options);
-    std::shared_ptr<AbstractOption> getOption(CURLoption opt) const;
 
     // request for all
     template <typename Response>
@@ -125,6 +125,7 @@ private:
     void setToCurl(CurlEasy& easy, const CurlOptions& options, bool optionsAdd = false);
 
 protected:
+    mutable std::shared_mutex m_mutexRequest;
     CurlHeader m_commonHeaders;
     CurlOptions m_commonOptions;
 };

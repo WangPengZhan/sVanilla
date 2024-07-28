@@ -23,28 +23,33 @@ std::string to_string(HttpMethod method)
     return methodMap[method];
 }
 
-const CurlHeader& NetWork::commonHeaders() const
+CurlHeader NetWork::commonHeaders() const
 {
+    std::shared_lock lk(m_mutexRequest);
     return m_commonHeaders;
 }
 
 void NetWork::setCommonHeaders(const CurlHeader& commonsHeaders)
 {
+    std::lock_guard lk(m_mutexRequest);
     m_commonHeaders = commonsHeaders;
 }
 
-const NetWork::CurlOptions& NetWork::commonOptions() const
+NetWork::CurlOptions NetWork::commonOptions() const
 {
+    std::shared_lock lk(m_mutexRequest);
     return m_commonOptions;
 }
 
 void NetWork::setCommonOptions(const CurlOptions& options)
 {
+    std::lock_guard lk(m_mutexRequest);
     m_commonOptions = options;
 }
 
 void NetWork::addCommonOption(std::shared_ptr<AbstractOption> option)
 {
+    std::lock_guard lk(m_mutexRequest);
     m_commonOptions[option->getOption()] = option;
 }
 
@@ -53,18 +58,6 @@ void NetWork::addCommonOption(const std::vector<std::shared_ptr<AbstractOption>>
     for (const auto& option : options)
     {
         addCommonOption(option);
-    }
-}
-
-std::shared_ptr<AbstractOption> NetWork::getOption(CURLoption opt) const
-{
-    if (m_commonOptions.find(opt) != m_commonOptions.end())
-    {
-        return m_commonOptions.at(opt);
-    }
-    else
-    {
-        return std::shared_ptr<AbstractOption>();
     }
 }
 
@@ -147,8 +140,13 @@ CurlHeader NetWork::setToCurl(CurlEasy& easy, const CurlHeader& headers, bool he
 {
     if (headersAdd)
     {
+        std::vector<std::string> common;
         CurlHeader headersCopy(headers);
-        auto common = std::vector<std::string>(m_commonHeaders);
+        {
+            std::shared_lock lk(m_mutexRequest);
+            common = std::vector<std::string>(m_commonHeaders);
+        }
+
         headersCopy.add(common.begin(), common.end());
         curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headersCopy.get());
         return headersCopy;
@@ -169,6 +167,7 @@ void NetWork::setToCurl(CurlEasy& easy, const CurlOptions& options, bool options
 
     if (optionsAdd)
     {
+        std::shared_lock lk(m_mutexRequest);
         for (const auto& option : m_commonOptions)
         {
             option.second->setToCurl(easy.handle());
