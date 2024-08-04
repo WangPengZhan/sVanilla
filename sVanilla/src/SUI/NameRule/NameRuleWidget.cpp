@@ -7,6 +7,8 @@ NameRuleWidget::NameRuleWidget(QWidget* parent)
 {
     ui->setupUi(this);
     signalsAndSlots();
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    adjustSize();
 }
 
 NameRuleWidget::~NameRuleWidget()

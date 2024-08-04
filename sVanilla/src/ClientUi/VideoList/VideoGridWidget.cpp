@@ -34,7 +34,7 @@ void elideText(QLabel* label, const QString& text)
 
 VideoGridItemWidget::VideoGridItemWidget(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::VideoGridItemWidget)
+      , ui(new Ui::VideoGridItemWidget)
 {
     ui->setupUi(this);
     setUi();
