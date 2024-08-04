@@ -112,7 +112,7 @@ std::vector<std::string> CurlCookies::keys() const
 void CurlCookies::setToCurl(CURL* handle) const
 {
     auto strCookies = content();
-    if (!handle && !strCookies.empty())
+    if (handle && !strCookies.empty())
     {
         curl_easy_setopt(handle, CURLOPT_COOKIE, strCookies.c_str());
     }

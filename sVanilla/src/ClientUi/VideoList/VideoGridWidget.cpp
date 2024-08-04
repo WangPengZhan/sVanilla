@@ -105,7 +105,7 @@ void VideoGridItemWidget::createContextMenu()
 
 void VideoGridItemWidget::setCover()
 {
-    const QString tempPath = SApplication::appDir();
+    const QString tempPath = SApplication::appDir() + QString("/") + QString(coverDir);
     const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->coverPath()) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {

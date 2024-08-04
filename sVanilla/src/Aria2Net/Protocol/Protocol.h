@@ -7,63 +7,33 @@
 namespace aria2net
 {
 
-// 协议基类
-class Protocol
-{
-public:
-    Protocol() = default;
-    virtual ~Protocol() = default;
-    virtual std::string toString() const = 0;
-};
-
-class AriaError : public Protocol
+class AriaError
 {
 public:
     int code{};
     std::string message;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaError, code, message)
 };
 
 // http://aria2.github.io/manual/en/html/aria2c.html
-class AriaUri : public Protocol
+class AriaUri
 {
 public:
     std::string status;
     std::string uri;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaUri, status, uri)
 };
 
 template <typename Result>
-class AriaBasicJson : public Protocol
+class AriaBasicJson
 {
 public:
     std::string id;
     std::string jsonrpc;
     Result result;
     AriaError error;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump(4);
-    }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaBasicJson<Result>, id, jsonrpc, result, error)
 };
@@ -76,7 +46,7 @@ using AriaChangePosition = AriaBasicJson<std::string>;
 using AriaChangeUri = AriaBasicJson<std::list<int>>;
 
 using AriaGetFiles = AriaBasicJson<std::list<AriaUri>>;
-class AriaGetFilesResult : public Protocol
+class AriaGetFilesResult
 {
 public:
     std::string completedLength;
@@ -86,17 +56,10 @@ public:
     std::string selected;
     std::list<AriaUri> uris;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetFilesResult, completedLength, index, length, path, selected, uris)
 };
 
-class AriaGetGlobalStatResult : public Protocol
+class AriaGetGlobalStatResult
 {
 public:
     std::string downloadSpeed;
@@ -106,18 +69,11 @@ public:
     std::string numWaiting;
     std::string uploadSpeed;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetGlobalStatResult, downloadSpeed, numActive, numStopped, numStoppedTotal, numWaiting, uploadSpeed)
 };
 using AriaGetGlobalStat = AriaBasicJson<AriaGetGlobalStatResult>;
 
-class AriaOption : public Protocol
+class AriaOption
 {
 public:
     std::string all_proxy;
@@ -201,13 +157,6 @@ public:
     std::string allow_piece_length_change_set;
     std::string always_resume_set;
     std::string async_dns_set;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
 
     friend void to_json(nlohmann::json& json, const AriaOption& ariaOption)
     {
@@ -549,7 +498,7 @@ public:
 };
 using AriaGetOption = AriaBasicJson<AriaOption>;
 
-class AriaPeer : public Protocol
+class AriaPeer
 {
 public:
     std::string amChoking;
@@ -562,63 +511,35 @@ public:
     std::string seeder;
     std::string uploadSpeed;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaPeer, amChoking, bitfield, downloadSpeed, ip, peerChoking, peerId, port, seeder, uploadSpeed)
 };
 using AriaGetPeers = AriaBasicJson<std::list<AriaPeer>>;
 
-class AriaResultServer : public Protocol
+class AriaResultServer
 {
 public:
     std::string currentUri;
     std::string downloadSpeed;
     std::string uri;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaResultServer, currentUri, downloadSpeed, uri)
 };
 
-class AriaGetServersResult : public Protocol
+class AriaGetServersResult
 {
 public:
     std::string index;
     std::list<AriaResultServer> servers;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetServersResult, index, servers)
 };
 
 using AriaGetServers = AriaBasicJson<std::list<AriaGetServersResult>>;
 
-class AriaGetSessionInfoResult : public Protocol
+class AriaGetSessionInfoResult
 {
 public:
     std::string sessionId;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaGetSessionInfoResult, sessionId)
 };
@@ -629,18 +550,11 @@ using AriaRemove = AriaBasicJson<std::string>;
 using AriaSaveSession = AriaBasicJson<std::string>;
 using AriaShutdown = AriaBasicJson<std::string>;
 
-class AriaVersionResult : public Protocol
+class AriaVersionResult
 {
 public:
     std::list<std::string> enabledFeatures;
     std::string version;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaVersionResult, enabledFeatures, version)
 };
@@ -649,23 +563,16 @@ using AriaVersion = AriaBasicJson<AriaVersionResult>;
 using SystemListMethods = AriaBasicJson<std::list<std::string>>;
 using SystemListNotifications = AriaBasicJson<std::list<std::string>>;
 using SystemMulticall = AriaBasicJson<std::string>;
-class SystemMulticallMathod : public Protocol
+class SystemMulticallMathod
 {
 public:
     std::string method;
     std::list<std::string> params;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SystemMulticallMathod, method, params)
 };
 
-class AriaSendData : public Protocol
+class AriaSendData
 {
 public:
     std::string id;
@@ -673,30 +580,22 @@ public:
     std::string method;
     nlohmann::json::array_t params;
 
-    std::string toString() const override
+    std::string toString() const
     {
         nlohmann::json json;
         to_json(json, *this);
         return json.dump(4);
     }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaSendData, id, jsonrpc, method, params)
 };
 
-class AriaSendOption : public Protocol
+class AriaSendOption
 {
 public:
     std::string all_proxy;
     std::string out;
     std::string dir;
     std::list<std::string> header;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
 
     friend void to_json(nlohmann::json& json, const AriaSendOption& ariaSendOption)
     {
@@ -739,7 +638,7 @@ public:
     }
 };
 
-class AriaTellStatusResultFile : public Protocol
+class AriaTellStatusResultFile
 {
 public:
     std::string completedLength;
@@ -749,17 +648,10 @@ public:
     std::string selected;
     std::list<AriaUri> uris;
 
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump();
-    }
-
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaTellStatusResultFile, completedLength, index, length, path, selected, uris)
 };
 
-class AriaTellStatusResult : public Protocol
+class AriaTellStatusResult
 {
 public:
     std::string bitfield;
@@ -777,13 +669,6 @@ public:
     std::string totalLength;
     std::string uploadLength;
     std::string uploadSpeed;
-
-    std::string toString() const override
-    {
-        nlohmann::json json;
-        to_json(json, *this);
-        return json.dump(4);
-    }
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AriaTellStatusResult, bitfield, completedLength, connections, dir, downloadSpeed, errorCode, errorMessage,
                                                 files, gid, numPieces, pieceLength, status, totalLength, uploadLength, uploadSpeed)

@@ -3,6 +3,7 @@
 #include "SettingsPage.h"
 #include "ui_SettingsPage.h"
 #include "Utils/RunTask.h"
+#include "AccountListWidget.h"
 
 SettingsPage::SettingsPage(QWidget* parent)
     : QWidget(parent)
@@ -43,6 +44,18 @@ Qt::CheckState SettingsPage::isSaveMainWindow() const
     return ui->defaultSettings->isSaveMainWindow();
 }
 
+void SettingsPage::logined(UserInfo userInfo)
+{
+    ui->accountsInfo->addUserInfo(userInfo);
+}
+
+void SettingsPage::loginSucceed(std::shared_ptr<AbstractLogin> loginer)
+{
+    ui->settingStackedPage->setCurrentWidget(ui->accountsInfo);
+    ui->horizonNavigation->setCurrentIndex(ui->settingStackedPage->currentIndex());
+    ui->accountsInfo->addUserInfo(loginer);
+}
+
 void SettingsPage::setUi()
 {
     const QStringList horizonNavigationBtn{tr("Default"), tr("Account"), tr("Advanced"), tr("Plugins"), tr("About")};
@@ -60,6 +73,7 @@ void SettingsPage::signalsAndSlots()
     connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->settingStackedPage, &QStackedWidget::setCurrentIndex);
     connect(ui->defaultSettings, &DefaultSettings::updateTheme, this, &SettingsPage::updateTheme);
     connect(ui->defaultSettings, &DefaultSettings::enableTray, this, &SettingsPage::enableTray);
+    connect(ui->accountsInfo->listWidgetAccount(), &AccountListWidget::signalHistoryInfo, this, &SettingsPage::signalHistoryInfo);
 }
 
 void SettingsPage::updateAria2Version(const std::shared_ptr<aria2net::AriaVersion>& version) const

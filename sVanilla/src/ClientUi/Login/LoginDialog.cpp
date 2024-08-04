@@ -89,7 +89,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     {
         m_loginer->loginSuccess();
         QTimer::singleShot(1000, this, [this] {
-            close();
+            accept();
         });
         break;
     }
@@ -107,7 +107,7 @@ void LoginDialog::slotBtnRefreshClicked()
     }
     else if (m_status == AbstractLogin::Success)
     {
-        close();
+        accept();
     }
 }
 

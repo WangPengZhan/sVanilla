@@ -21,6 +21,82 @@ static constexpr int minutes = 60;
 static constexpr int hours = 24;
 static constexpr int daySeconds = hours * minutes * seconds;  // 24*60*60
 
+constexpr char cookie_dedeUserId[] = "DedeUserID";
+constexpr char cookie_biliJct[] = "bili_jct";
+constexpr char cookie_sessdata[] = "SESSDATA";
+
+std::string to_string(BusinessType businessType)
+{
+    switch (businessType)
+    {
+    case biliapi::BusinessType::Archive:
+        return "archive";
+    case biliapi::BusinessType::Pgc:
+        return "pgc";
+    case biliapi::BusinessType::Live:
+        return "live";
+    case biliapi::BusinessType::Article_list:
+        return "article-list";
+    case biliapi::BusinessType::Article:
+        return "article";
+    case biliapi::BusinessType::Unkown:
+    default:
+        break;
+    }
+
+    return std::string();
+}
+
+std::string to_string(HistoryType historyType)
+{
+    switch (historyType)
+    {
+    case biliapi::All:
+        return "all";
+    case biliapi::Archive:
+        return "archive";
+    case biliapi::Live:
+        return "live";
+    case biliapi::Article:
+        return "article";
+    case biliapi::Unkown:
+    default:
+        break;
+    }
+    return std::string();
+}
+
+network::NetWork::ParamType HistoryQueryParam::toParam() const
+{
+    network::NetWork::ParamType res;
+    if (max != 0)
+    {
+        res.insert({"max", std::to_string(max)});
+    }
+
+    if (business != BusinessType::Unkown)
+    {
+        res.insert({"business", to_string(business)});
+    }
+
+    if (view_at != 0)
+    {
+        res.insert({"view_at", std::to_string(view_at)});
+    }
+
+    if ((type != HistoryType::Unkown && type != HistoryType::All))
+    {
+        res.insert({"type", to_string(type)});
+    }
+
+    if (ps != 0 && ps != 20)
+    {
+        res.insert({"ps", std::to_string(ps)});
+    }
+
+    return res;
+}
+
 BilibiliClient::BilibiliClient()
     : m_logined(false)
 {
@@ -87,11 +163,72 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
     auto header = parseHeader(response.header);
     if (header.end() != header.find(network::set_cookies))
     {
+        std::lock_guard lk(m_mutexRequest);
         m_cookies.setContent(header.at(network::set_cookies));
         m_commonOptions[network::CookieFileds::opt] = std::make_shared<network::CookieFileds>(m_cookies);
     }
 
     return LoginStatusScanning(getDataFromRespones(response.body));
+}
+
+Nav BilibiliClient::getNavInfo()
+{
+    std::string response;
+    get(PassportURL::WebNav, response, network::CurlHeader(), true, CurlOptions(), true);
+
+    return Nav(getDataFromRespones(response));
+}
+
+LogoutExitV2 BilibiliClient::getLogoutExitV2()
+{
+    std::string response;
+
+    auto keys = m_cookies.keys();
+    int haveId = 3;
+
+    for (const auto& key : keys)
+    {
+        if (key == cookie_dedeUserId || key == cookie_biliJct || key == cookie_sessdata)
+        {
+            --haveId;
+        }
+    }
+
+    if (haveId == 0)
+    {
+        std::string cookie = "Cookie: ";
+        cookie += std::string(cookie_dedeUserId) + "=" + m_cookies.value(cookie_dedeUserId);
+        cookie += "; ";
+        cookie += std::string(cookie_biliJct) + "=" + m_cookies.value(cookie_biliJct);
+        cookie += "; ";
+        cookie += std::string(cookie_sessdata) + "=" + m_cookies.value(cookie_sessdata);
+
+        network::CurlHeader header;
+        header.add("Content-Type: application/x-www-form-urlencoded");
+        header.add(cookie);
+
+        std::string param = "biliCSRF=" + m_cookies.value(cookie_biliJct);
+
+        post(PassportURL::Logout, response, param, header, false);
+    }
+
+    auto logout = LogoutExitV2(getDataFromRespones(response));
+    if (logout.code == 0)
+    {
+        std::lock_guard lk(m_mutexRequest);
+        m_cookies = network::CurlCookies();
+        m_commonOptions.erase(network::CookieFileds::opt);
+    }
+}
+
+History BilibiliClient::getHistory(HistoryQueryParam param)
+{
+    std::string response;
+
+    auto params = param.toParam();
+    get(PassportURL::History, response, params);
+    std::cout << response;
+    return History(getDataFromRespones(response));
 }
 
 void BilibiliClient::setLogined(bool logined)
@@ -106,10 +243,7 @@ bool BilibiliClient::isLogined() const
 
 void BilibiliClient::resetWbi()
 {
-    std::string response;
-    get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
-
-    const auto navData = Nav(getDataFromRespones(response));
+    const auto navData = getNavInfo();
     const auto key = navData.data.wbi_img;
     if (!key.img_url.empty() && !key.sub_url.empty())
     {
@@ -169,7 +303,7 @@ void BilibiliClient::parseCookie(const std::string& url)
             auto expires = static_cast<std::time_t>(std::stoll(value));
             result.emplace("Expires", expires / daySeconds);
         }
-        else if (key == "SESSDATA" || key == "bili_jct")
+        else if (key == cookie_sessdata || key == cookie_biliJct)
         {
             result.emplace(key, value);
         }

@@ -16,10 +16,11 @@
 #include "Storage/SearchHistoryStorage.h"
 #include "Storage/StorageManager.h"
 #include "Login/LoginDialog.h"
-#include "Login/BiliLogin.h"
 #include "MainWindow/SApplication.h"
+#include "Login/BiliLogin.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
+constexpr char userfaceDir[] = "userface";
 
 bool copyWithAdminPrivileges(const QString& source, const QString& destination)
 {
@@ -126,7 +127,10 @@ void HomePage::signalsAndSlots()
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
         std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
         LoginDialog login(loginer);
-        login.exec();
+        if (QDialog::Accepted == login.exec())
+        {
+            emit loginSucceed(loginer);
+        }
     });
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {

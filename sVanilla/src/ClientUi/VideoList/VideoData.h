@@ -13,6 +13,8 @@ struct BaseVideoView;
 
 struct DownloadConfig;
 
+constexpr char coverDir[] = "cover";
+
 struct VideoInfoFull
 {
     std::shared_ptr<DownloadConfig> downloadConfig;
