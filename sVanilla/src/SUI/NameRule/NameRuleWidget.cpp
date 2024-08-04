@@ -29,13 +29,13 @@ void NameRuleWidget::init(const std::unordered_map<std::string, std::string>& ru
     initListWidget(nameRules);
 }
 
-void NameRuleWidget::updateLineEdit(const QString& rule)
+void NameRuleWidget::updateLineEdit(const QString& rule) const
 {
     ui->lineEditInput->setText(rule);
     emit ui->lineEditInput->textChanged(rule);
 }
 
-void NameRuleWidget::hidePreviewLabel(bool hide)
+void NameRuleWidget::hidePreviewLabel(bool hide) const
 {
     if (hide)
     {

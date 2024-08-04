@@ -19,9 +19,9 @@ public:
 
     void init(const std::unordered_map<std::string, std::string>& rules);
 
-    void updateLineEdit(const QString& rule);
+    void updateLineEdit(const QString& rule) const;
 
-    void hidePreviewLabel(bool hide);
+    void hidePreviewLabel(bool hide) const;
     bool isHidePreviewLabel() const;
 
     Q_SIGNAL void editingFinished(const QString& rule);
