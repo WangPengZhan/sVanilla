@@ -50,6 +50,7 @@ public:
     void setWebsiteIcon(const QString& iconPath);
     void setDownloadingNumber(int number) const;
     void setDownloadedNumber(int number) const;
+    void showHistoryList(Adapter::Views views);
 
 signals:
     void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
@@ -80,6 +81,10 @@ private:
 
     template <typename Widget>
     void showInfo(Widget* widget, QSplitter* splitter, int currentRow, int previousRow);
+
+    QString getCoverPath() const;
+
+    void showViewList(Adapter::Views views);
 
 private:
     Ui::VideoPage* ui;

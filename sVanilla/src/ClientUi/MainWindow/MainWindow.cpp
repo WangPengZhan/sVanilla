@@ -92,6 +92,11 @@ void MainWindow::signalsAndSlots()
         }
     });
     connect(ui->homePage, &HomePage::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
+    connect(ui->homePage, &HomePage::loginSucceed, this, [this](std::shared_ptr<AbstractLogin> loginer) {
+        ui->stackedWidget->setCurrentWidget(ui->settingPage);
+        emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
+        ui->settingPage->loginSucceed(loginer);
+    });
     connect(ui->videoPage, &VideoWidget::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
     connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->homePage, &HomePage::setWebsiteIcon);
     connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->videoPage, &VideoWidget::setWebsiteIcon);
@@ -107,6 +112,11 @@ void MainWindow::signalsAndSlots()
 
     connect(ui->settingPage, &SettingsPage::updateTheme, this, &MainWindow::setTheme);
     connect(ui->settingPage, &SettingsPage::enableTray, this, &MainWindow::setTrayIconVisible);
+    connect(ui->settingPage, &SettingsPage::signalHistoryInfo, this, [this](Adapter::Views views) {
+        ui->stackedWidget->setCurrentWidget(ui->videoPage);
+        emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
+        ui->videoPage->showHistoryList(views);
+    });
     connect(qApp, &QApplication::aboutToQuit, this, [&]() {
         if (ui->settingPage->isSaveMainWindow() != Qt::Checked)
         {

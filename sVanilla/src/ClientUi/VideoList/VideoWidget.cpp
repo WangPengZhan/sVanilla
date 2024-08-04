@@ -29,6 +29,8 @@
 #include "ClientUi/Storage/StorageManager.h"
 #include "ClientUi/MainWindow/SApplication.h"
 
+constexpr int coverMaxNum = 256;
+
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::VideoPage)
@@ -369,6 +371,31 @@ void VideoWidget::hideBtnSearch()
     util::animate(ui->btnSearch, {maxWidth, 0}, "maximumWidth", finished);
 }
 
+QString VideoWidget::getCoverPath() const
+{
+    QString coverPath = SApplication::appDir() + QString("/") + QString(coverDir);  // It is now in the temporary area
+    QDir dir(coverPath);
+    if (!dir.exists())
+    {
+        dir.mkpath(coverPath);
+    }
+
+    QFileInfoList folderList = dir.entryInfoList(QDir::Files, QDir::Time);
+    if (folderList.size() > coverMaxNum)
+    {
+        int removeNum = folderList.size() - 200;
+
+        for (int i = 0; i < removeNum; ++i)
+        {
+            QFileInfo oldFile = folderList.at(i);
+            QString oldFilePath = oldFile.absoluteFilePath();
+            QFile::remove(oldFilePath);
+        }
+    }
+
+    return coverPath;
+}
+
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
 {
     auto taskFunc = [this, uri]() {
@@ -387,22 +414,9 @@ void VideoWidget::prepareBiliVideoView(const std::string& uri)
 
 void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
 {
-    const QString tempPath = SApplication::appDir();  // It is now in the temporary area
-    const auto views = ConvertVideoView(videoView.data);
+    const auto views = convertVideoView(videoView.data);
     ui->labelPlayListTitle->clear();
-    if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
-    {
-        const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
-        ui->labelPlayListTitle->setText(title);
-    }
-    for (const auto& view : views)
-    {
-        auto videoInfoFull = std::make_shared<VideoInfoFull>();
-        videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
-        videoInfoFull->videoView = view;
-        addVideoItem(videoInfoFull);
-        downloadCover({view->Cover, videoInfoFull->coverPath(), tempPath.toStdString()});
-    }
+    showViewList(views);
 }
 
 void VideoWidget::downloadCover(const CoverInfo& coverInfo)
@@ -468,4 +482,30 @@ void VideoWidget::setDownloadingNumber(int number) const
 
 void VideoWidget::setDownloadedNumber(int number) const
 {
+}
+
+void VideoWidget::showHistoryList(Adapter::Views views)
+{
+    clearVideo();
+    showViewList(views);
+}
+
+void VideoWidget::showViewList(Adapter::Views views)
+{
+    const QString tempPath = getCoverPath();
+    ui->labelPlayListTitle->clear();
+
+    if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
+    {
+        const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
+        ui->labelPlayListTitle->setText(title);
+    }
+    for (const auto& view : views)
+    {
+        auto videoInfoFull = std::make_shared<VideoInfoFull>();
+        videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
+        videoInfoFull->videoView = view;
+        addVideoItem(videoInfoFull);
+        downloadCover({view->Cover, videoInfoFull->coverPath(), tempPath.toStdString()});
+    }
 }

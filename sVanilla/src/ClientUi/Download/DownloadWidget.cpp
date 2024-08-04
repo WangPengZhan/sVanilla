@@ -66,7 +66,7 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
     auto copyedVideoInfo = videoInfo;
     copyedVideoInfo->downloadConfig = std::make_shared<DownloadConfig>(*(videoInfo->downloadConfig));
     auto taskFunc = [this, videoInfo]() {
-        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(videoInfo->videoView->VideoId), 32, videoInfo->videoView->Identifier);
+        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(videoInfo->videoView->VideoId), 80, videoInfo->videoView->Identifier);
     };
     auto callback = [this, videoInfo](const biliapi::PlayUrlOrigin& result) {
         if (result.code != 0)

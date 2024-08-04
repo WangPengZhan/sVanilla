@@ -8,6 +8,8 @@ class HomePage;
 }
 QT_END_NAMESPACE
 
+class AbstractLogin;
+
 class HomePage : public QWidget
 {
     Q_OBJECT
@@ -19,9 +21,10 @@ public:
     void setWebsiteIcon(const QString& iconPath);
 
 signals:
-    void HasAdded(bool hasAdded);
+    void hasAdded(bool hasAdded);
     void updateWebsiteIcon(const std::string& uri);
     void parseUri(const QString& uri);
+    void loginSucceed(std::shared_ptr<AbstractLogin> loginer);
 
 private:
     void signalsAndSlots();

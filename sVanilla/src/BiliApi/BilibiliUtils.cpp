@@ -15,11 +15,10 @@ namespace biliapi
 {
 std::string cookieDataDir;
 
-// 辅助函数，用于替换字符串中的所有目标子串为指定的新子串
 void replaceCharacter(std::string& source, const std::string& from, const std::string& to)
 {
     std::string newString;
-    newString.reserve(source.length());  // 预分配足够空间
+    newString.reserve(source.length());
 
     std::string::size_type lastPos = 0;
     std::string::size_type findPos;
@@ -31,7 +30,6 @@ void replaceCharacter(std::string& source, const std::string& from, const std::s
         lastPos = findPos + from.length();
     }
 
-    // 拼接最后一个分隔符后的所有字符
     newString += source.substr(lastPos);
     source.swap(newString);
 }
@@ -54,10 +52,8 @@ nlohmann::json readJson(const std::string& filename)
     {
         return nlohmann::json::object();
     }
-    // 检查文件是否为空
     if (file.peek() == std::ifstream::traits_type::eof())
     {
-        // 文件为空，返回空的json对象
         return nlohmann::json::object();
     }
 
@@ -86,7 +82,6 @@ std::string filterCharacters(const std::string& input)
     const std::string charsToFilter = "!\'()*";
     std::string result = input;
 
-    // 使用remove_if和lambda表达式来移除需要过滤的字符
     result.erase(std::remove_if(result.begin(), result.end(),
                                 [&charsToFilter](const char& c) {
                                     return charsToFilter.find(c) != std::string::npos;

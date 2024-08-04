@@ -11,6 +11,8 @@ namespace PassportURL
 inline const std::string QRCode = passBase + "x/passport-login/web/qrcode/generate";
 inline const std::string LoginStatus = passBase + "x/passport-login/web/qrcode/poll";
 inline const std::string WebNav = apiBase + "x/web-interface/nav";
+inline const std::string Logout = passBase + "login/exit/v2";
+inline const std::string History = apiBase + "x/web-interface/history/cursor";
 }  // namespace PassportURL
 
 namespace VideoURL

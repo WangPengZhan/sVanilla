@@ -8,6 +8,41 @@
 namespace biliapi
 {
 
+enum class BusinessType
+{
+    Archive,
+    Pgc,
+    Live,
+    Article_list,
+    Article,
+
+    Unkown = 255,
+};
+
+std::string to_string(BusinessType businessType);
+
+enum HistoryType
+{
+    All,
+    Archive,
+    Live,
+    Article,
+    Unkown = 255,
+};
+
+std::string to_string(HistoryType historyType);
+
+struct HistoryQueryParam
+{
+    int max{};
+    BusinessType business{BusinessType::Unkown};
+    uint64_t view_at{};
+    HistoryType type{HistoryType::Unkown};
+    int ps{};
+
+    network::NetWork::ParamType toParam() const;
+};
+
 class BilibiliClient : public network::NetWork
 {
 public:
@@ -20,6 +55,9 @@ public:
     PlayUrlOrigin getPlayUrl(long long cid, long long qn, const std::string& bvid);
     LoginUrlOrigin getLoginUrl();
     LoginStatusScanning getLoginStatus(const std::string& qrcodeKey);
+    Nav getNavInfo();
+    LogoutExitV2 getLogoutExitV2();
+    History getHistory(HistoryQueryParam param);
 
     void setLogined(bool logined);
     [[nodiscard]] bool isLogined() const;

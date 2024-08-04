@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QListWidget>
+#include <QWidget>
 
 struct LicenseInfo;
 namespace Ui
