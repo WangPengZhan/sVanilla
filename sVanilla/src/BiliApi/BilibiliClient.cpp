@@ -219,6 +219,8 @@ LogoutExitV2 BilibiliClient::getLogoutExitV2()
         m_cookies = network::CurlCookies();
         m_commonOptions.erase(network::CookieFileds::opt);
     }
+
+    return logout;
 }
 
 History BilibiliClient::getHistory(HistoryQueryParam param)
