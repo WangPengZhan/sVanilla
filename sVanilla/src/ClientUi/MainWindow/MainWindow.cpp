@@ -20,7 +20,6 @@
 #include "MainWindow/SApplication.h"
 #include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
-#include "MainWindowlog.h"
 #include "ui_MainWindow.h"
 
 static constexpr int systemButtonSize = 14;
