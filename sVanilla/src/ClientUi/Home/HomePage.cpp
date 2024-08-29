@@ -20,6 +20,7 @@
 #include "Login/BiliLogin.h"
 #include "ClientLog.h"
 #include "const_string.h"
+#include "Login/LoginBubble.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 constexpr char userfaceDir[] = "userface";
@@ -66,7 +67,7 @@ bool copyWithAdminPrivileges(const QString& source, const QString& destination)
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::HomePage)
+      , ui(new Ui::HomePage)
 {
     ui->setupUi(this);
     signalsAndSlots();
@@ -86,7 +87,6 @@ void HomePage::setWebsiteIcon(const QString& iconPath)
 void HomePage::signalsAndSlots()
 {
     connect(ui->btnIcon, &QPushButton::clicked, this, [this] {
-
     });
 
     connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
@@ -140,12 +140,15 @@ void HomePage::signalsAndSlots()
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
         MLogI(svanilla::cHomeModule, " LoginWebsite ");
         std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
-        LoginDialog login(loginer);
-        if (QDialog::Accepted == login.exec())
-        {
-            MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
-            emit loginSucceed(loginer);
-        }
+        // LoginDialog login(loginer);
+        // if (QDialog::Accepted == login.exec())
+        //{
+        //    MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
+        //   emit loginSucceed(loginer);
+        //}
+        const auto loginBubble = new LoginBubble(loginer);
+        const auto globalPos = mapToGlobal(QPoint(0, 0));
+        loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
     });
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {

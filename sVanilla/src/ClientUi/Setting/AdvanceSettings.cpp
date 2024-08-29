@@ -44,6 +44,7 @@ void AdvanceSettings::setUi()
     setAria2SettingVisiable(ui->checkBoxAria2EnableRemote->isChecked());
     ui->checkBoxEnableAria2AdvancedSettings->setChecked(aria2Config.enableAdvancedSetting);
     ui->listWidgetAria2AdvancedSettings->setVisible(aria2Config.enableAdvancedSetting);
+    ui->scrollArea->adjustSize();
 }
 
 void AdvanceSettings::signalsAndSlots()
@@ -112,7 +113,10 @@ void AdvanceSettings::signalsAndSlots()
 
 void AdvanceSettings::setAria2SettingVisiable(const bool visiable) const
 {
-    ui->widgetAria2Port->setVisible(visiable);
-    ui->widgetAria2Token->setVisible(visiable);
-    ui->widgetAria2Url->setVisible(visiable);
+    ui->labelAria2Url->setVisible(visiable);
+    ui->lineEditAria2Url->setVisible(visiable);
+    ui->labelAria2Port->setVisible(visiable);
+    ui->spinBoxAria2Port->setVisible(visiable);
+    ui->labelAria2Token->setVisible(visiable);
+    ui->lineEditAria2Token->setVisible(visiable);
 }
