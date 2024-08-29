@@ -14,6 +14,7 @@
 #include "version.h"
 
 #include <QDir>
+#include <QDateTime>
 
 void startLog()
 {

@@ -11,7 +11,7 @@
 
 namespace
 {
-constexpr std::string concatenate_strings(const std::string& first, const std::string& second)
+std::string concatenate_strings(const std::string& first, const std::string& second)
 {
     return "[" + first + "] " + second;
 }
