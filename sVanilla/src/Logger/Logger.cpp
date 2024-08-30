@@ -24,7 +24,8 @@ void Logger::setLogDir(const std::string& dir)
 
 void Logger::initLog()
 {
-    registerLogger("MainWindow");
+    registerLogger(defaultName);
+    registerLogger("Client");
     registerLogger("Network");
     registerLogger("Aria2Net");
     registerLogger("FFmpeg");

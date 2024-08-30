@@ -8,6 +8,7 @@ public:
     static Logger& getInstance();
     static void setLogDir(const std::string& dir);
     void initLog();
+    static constexpr char defaultName[] = "log";
 
 private:
     Logger();

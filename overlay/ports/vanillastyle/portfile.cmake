@@ -11,7 +11,7 @@ vcpkg_download_distfile(
     HEADER_FILE
     URLS "https://raw.githubusercontent.com/bfraboni/FastGaussianBlur/main/fast_gaussian_blur_template.h"
     FILENAME "fast_gaussian_blur_template.h"
-    SHA512 6c95bfdecdc5c55c3e4c467ea97c90c4a0a8c903257e8e5c76853195282c74b3f4029745e3631d319ac6fe314d9f2a471b01b6f640f634799ba98f927b4ab1f0
+        SHA512 9e92c67de2e8dedbdd080176cf60148b3bc8bf749ef4410438cf1901a27991bd98522eb9b472b6ae73f62d2781e09cca9a880a6563f9c68526d57326b88e31c5
 )
 file(COPY
     ${HEADER_FILE}
