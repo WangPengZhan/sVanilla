@@ -19,20 +19,19 @@
 void startLog()
 {
     auto exePath = getModulePath();
-    CLINET_LOG_INFO("-----------------------------");
-    CLINET_LOG_INFO("start run svanilla, time: {} ", QDateTime::currentDateTime().toString().toStdString());
-    CLINET_LOG_INFO("Version: {}", SVNLA_VERSION_STR);
-    CLINET_LOG_INFO("GitBranch: {}", GIT_BRANCH);
-    CLINET_LOG_INFO("GitHash: {}", GIT_HASH);
-    CLINET_LOG_INFO("BuildTime: {}", SVNLA_BUILD_STR);
-    CLINET_LOG_INFO("WorkDir: {}", exePath);
-    CLINET_LOG_INFO("AppDir: {}", (SApplication::appDir().isEmpty() ? exePath : SApplication::appDir().toStdString()));
-    CLINET_LOG_INFO("-----------------------------");
+    MLogI(svanilla::cMainModule, "-----------------------------");
+    MLogI(svanilla::cMainModule, "start run svanilla, time: {} ", QDateTime::currentDateTime().toString().toStdString());
+    MLogI(svanilla::cMainModule, "Version: {}", SVNLA_VERSION_STR);
+    MLogI(svanilla::cMainModule, "GitBranch: {}", GIT_BRANCH);
+    MLogI(svanilla::cMainModule, "GitHash: {}", GIT_HASH);
+    MLogI(svanilla::cMainModule, "BuildTime: {}", SVNLA_BUILD_STR);
+    MLogI(svanilla::cMainModule, "WorkDir: {}", exePath);
+    MLogI(svanilla::cMainModule, "AppDir: {}", (SApplication::appDir().isEmpty() ? exePath : SApplication::appDir().toStdString()));
+    MLogI(svanilla::cMainModule, "-----------------------------");
 }
 
 int main(int argc, char* argv[])
 {
-    // MLogI(svanilla::cMainModule, "start run svanilla, time: {}", QDateTime::currentDateTime().toString().toStdString());
     auto exePath = getModulePath();
     QDir::setCurrent(QString::fromStdString(exePath));
     Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/"));
@@ -44,7 +43,7 @@ int main(int argc, char* argv[])
     DumpColletor::registerDumpHandle();
     startLog();
 
-    CLog_Unique_Timer();
+    CLog_Unique_TimerK(MainWindow_firstShow);
     Restarter restarter(argc, argv);
 
     AppInitializer sVanilla;
@@ -54,7 +53,8 @@ int main(int argc, char* argv[])
     SingleAppHelper singleAppHelper;
     if (singleAppHelper.isHaveInstance())
     {
-        CLINET_LOG_WARN("==== second exit ====");
+        MLogW(svanilla::cMainModule, "sVanilla has opened, please check it");
+        MLogW(svanilla::cMainModule, "==== second exit ====");
         return 0;
     }
 
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     MainWindow maimWindow;
     singleAppHelper.setMainWidget(&maimWindow);
     maimWindow.show();
-    CLog_Unique_Timer_END();
+    CLog_Unique_TimerK_END(MainWindow_firstShow);
 
     return restarter.restartOrExit(SApplication::exec());
 }

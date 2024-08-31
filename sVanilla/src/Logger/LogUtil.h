@@ -57,7 +57,7 @@ scope_guard(Lambda&&) -> scope_guard<std::remove_reference_t<Lambda>>;
 #define LogLimitTime(...) EXPAND(CAT(LogLimitTime_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
 #define LogLimitTimeI() LogLimitTime(LogI)
 
-#define LogTimer_1(LOG)                                                                                             \
+#define LogTimer_1(LOG)                                                                                           \
     scope_guard CAT(scope_, __COUNTER__) = [func_name = __FUNCTION__,                                             \
                                                       start = std::chrono::high_resolution_clock::now()]() {      \
         auto duration = std::chrono::high_resolution_clock::now() - start;                                        \
@@ -68,11 +68,16 @@ scope_guard(Lambda&&) -> scope_guard<std::remove_reference_t<Lambda>>;
 #define LogTimerI() LogTimer(LogI)
 
 #define Log_Unique_Timer_2(KEY, LOG)                                                                              \
-    scope_guard  CAT(KEY, _Unique_Log) = [func_name = __FUNCTION__,                                               \
-                                                      start = std::chrono::high_resolution_clock::now()]() {      \
+    scope_guard CAT(KEY, _Unique_Log) = [func_name = __FUNCTION__,                                                \
+                                         start = std::chrono::high_resolution_clock::now()]() {                   \
         auto duration = std::chrono::high_resolution_clock::now() - start;                                        \
-        LOG("exit function: {}, cost: {} ms", func_name,                                                          \
-             std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());                            \
+        if (STR(KEY) == std::string("KEY_Start")) {                                                               \
+            LOG("exit function: {}, cost: {} ms", func_name,                                                      \
+                std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());                         \
+        } else {                                                                                                  \
+            LOG("{}, cost: {} ms", STR(KEY),                                                                      \
+                std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());                         \
+        }                                                                                                         \
     }
 #define Log_Unique_Timer_1(KEY) Log_Unique_Timer_2(KEY, LogI)
 #define Log_Unique_Timer(...) EXPAND(CAT(Log_Unique_Timer_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
