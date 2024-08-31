@@ -53,7 +53,7 @@ void Logger::registerLogger(const std::string& logName)
 void Logger::setLog()
 {
     spdlog::init_thread_pool(32768, 1);
-    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][thread %t][%g:%#,%!][%l] : %v");
+    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][thread %t][%g:%#,%!][%l] %v");
 #ifdef _DEBUG
     spdlog::set_level(spdlog::level::trace);
 #else

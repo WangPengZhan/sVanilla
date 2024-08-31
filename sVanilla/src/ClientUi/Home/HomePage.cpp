@@ -18,6 +18,8 @@
 #include "Login/LoginDialog.h"
 #include "MainWindow/SApplication.h"
 #include "Login/BiliLogin.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 constexpr char userfaceDir[] = "userface";
@@ -39,11 +41,15 @@ bool copyWithAdminPrivileges(const QString& source, const QString& destination)
     arguments << "-e" << QString("do shell script \"cp '%1' '%2'\" with administrator privileges").arg(source).arg(destination);
 #endif
 
+    MLogI(svanilla::cHomeModule, "copyWithAdmin started! command: {}, arguments: {}", program.toStdString(), arguments.join(" ").toStdString());
+
+    CLog_Unique_TimerK(copyWithAdmin_process_start);
     QProcess process;
     process.setProgram(program);
     process.setArguments(arguments);
     process.start();
     process.waitForFinished();
+    CLog_Unique_TimerK_END(copyWithAdmin_process_start);
 
     if (process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0)
     {
@@ -51,6 +57,8 @@ bool copyWithAdminPrivileges(const QString& source, const QString& destination)
     }
     else
     {
+        MLogE(svanilla::cHomeModule, "Failed to copy file with administrator privileges, source: {}, destination: {}", source.toStdString(),
+              destination.toStdString());
         QMessageBox::critical(nullptr, "Error", "Failed to copy file with administrator privileges.");
         return false;
     }
@@ -94,6 +102,7 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
+        MLogI(svanilla::cHomeModule, "btnLearn clicked");
         QDesktopServices::openUrl(QUrl(QString::fromStdString(mainPage)));
     });
     connect(ui->btnLoadPlugin, &QPushButton::clicked, this, [this] {
@@ -104,6 +113,7 @@ void HomePage::signalsAndSlots()
         {
             if (QFile::exists(newPlugin))
             {
+                MLogW(svanilla::cHomeModule, "import existed plugin, filename: {}", fileName.toStdString());
                 return;
             }
 
@@ -112,9 +122,12 @@ void HomePage::signalsAndSlots()
             auto plugin = dynamicLibLoader.loadPluginSymbol();
             if (!plugin)
             {
+                MLogW(svanilla::cHomeModule, "load plugin filed, filename: {}", fileName.toStdString());
                 return;
             }
         }
+
+        MLogI(svanilla::cHomeModule, " import plugin, source: {},destination: {} ", fileName.toStdString(), newPlugin.toStdString());
         if (sApp->isInstalled())
         {
             copyWithAdminPrivileges(fileName, newPlugin);
@@ -125,10 +138,12 @@ void HomePage::signalsAndSlots()
         }
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
+        MLogI(svanilla::cHomeModule, " LoginWebsite ");
         std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
         LoginDialog login(loginer);
         if (QDialog::Accepted == login.exec())
         {
+            MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
             emit loginSucceed(loginer);
         }
     });
@@ -136,10 +151,12 @@ void HomePage::signalsAndSlots()
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
         ui->lineEditHome->setText(clipboard->text());
+        MLogI(svanilla::cHomeModule, " btnClipBoard, search: {}", clipboard->text().toStdString());
         emit parseUri(clipboard->text());
         ui->lineEditHome->clear();
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
+        MLogI(svanilla::cHomeModule, " btnHistory clicked");
         createHistoryMenu();
         const QPoint pos = ui->btnHistory->mapToGlobal(QPoint(0, -m_historyMenu->sizeHint().height()));
         m_historyMenu->exec(pos);
