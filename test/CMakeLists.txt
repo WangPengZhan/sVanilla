@@ -3,7 +3,7 @@ enable_testing()
 include(GoogleTest)
 
 add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
-add_subdirectory(../ThirdParty/googletest test_binary_dir)
+find_package(GTest CONFIG REQUIRED)
 
 option(SQLite_test "ENABLE SQLite test" ON)
 if(SQLite_test)

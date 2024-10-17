@@ -18,6 +18,9 @@ set(QT_COMPONENTS
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
+find_package(spdlog REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(CURL REQUIRED)
 
 add_executable(${Example} ${SOURCES})
 add_test(NAME ${Example} COMMAND ${Example})

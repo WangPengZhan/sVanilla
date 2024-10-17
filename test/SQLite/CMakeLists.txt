@@ -8,7 +8,7 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 add_executable(${SQLite_test} ${SOURCES})
 add_test(NAME ${SQLite_test} COMMAND ${SQLite_test})
 add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
-add_dependencies(${SQLite_test} GTest::gtest_main)
+
 target_link_libraries(${SQLite_test}
     PRIVATE
         GTest::gtest_main

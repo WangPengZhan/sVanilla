@@ -74,35 +74,33 @@ foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
 
-add_dependencies(${PROJECT_NAME} sVanillaPlugins)
-
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-    ${QT_LIBS}
-    nlohmann_json::nlohmann_json
-    CURL::libcurl
-    unofficial::breakpad::libbreakpad
-    unofficial::breakpad::libbreakpad_client
-    unofficial::sqlite3::sqlite3
-    QWindowKit::Widgets
-    unofficial::minizip::minizip
-    spdlog::spdlog
-    OpenSSL::SSL
-    OpenSSL::Crypto
-    VanillaStyle::VanillaStyle
-    Aria2Net
-    BiliApi
-    Download
-    FFmpeg
-    Logger
-    Login
-    NetWork
-    Plugin
-    Sqlite
-    SUI
-    ThreadPool
-    Util
-    Zipper
+        ${QT_LIBS}
+        nlohmann_json::nlohmann_json
+        CURL::libcurl
+        unofficial::breakpad::libbreakpad
+        unofficial::breakpad::libbreakpad_client
+        unofficial::sqlite3::sqlite3
+        QWindowKit::Widgets
+        unofficial::minizip::minizip
+        spdlog::spdlog
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        VanillaStyle::VanillaStyle
+        Aria2Net
+        BiliApi
+        Download
+        FFmpeg
+        Logger
+        Login
+        NetWork
+        Plugin
+        Sqlite
+        SUI
+        ThreadPool
+        Util
+        Zipper
 )
 
 include(${CMAKE_SOURCE_DIR}/cmake/wix.cmake)
@@ -173,7 +171,11 @@ if (VCPAKG_DEP_DIRS)
     endforeach ()
 endif ()
 
-get_target_property(PLUGINS sVanillaPlugins _PLUGINS_)
+if (ENABLE_BUILD_PLUGINS)
+    add_dependencies(${PROJECT_NAME} sVanillaPlugins)
+    get_target_property(PLUGINS sVanillaPlugins _PLUGINS_)
+endif()
+
 if (PLUGINS)
     foreach (PLUGIN ${PLUGINS})
         add_custom_command(TARGET ${PROJECT_NAME}
