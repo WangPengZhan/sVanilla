@@ -69,11 +69,23 @@ endif ()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core LinguistTools)
 
-add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
-add_subdirectory(sVanilla/src)
-
 option(ENABLE_TEST "Enable Test" OFF)
 option(ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
+option(ENABLE_BUILD_PLUGINS "Enable build plugins" OFF)
+
+if (ENABLE_BUILD_PLUGINS)
+    set(INSTALL_DEPENDENCIES_COMMAND "${PYTHON_EXECUTABLE}"  ${CMAKE_CURRENT_SOURCE_DIR}/scripts/merge_plugins_vcpkg.py)
+    execute_process(COMMAND ${INSTALL_DEPENDENCIES_COMMAND}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        RESULT_VARIABLE INSTALL_RESULT
+        OUTPUT_VARIABLE INSTALL_OUTPUT
+        ERROR_VARIABLE INSTALL_ERROR)
+    if (NOT INSTALL_RESULT EQUAL 0)
+        message(FATAL_ERROR "merge_plugins_vcpkg_error: ${INSTALL_ERROR}")
+    endif ()
+    add_subdirectory(ThirdParty/sVanillaPlugins)
+endif()
+add_subdirectory(sVanilla/src)
 
 if (ENABLE_TEST)
     enable_testing()

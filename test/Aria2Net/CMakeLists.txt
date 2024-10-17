@@ -18,6 +18,9 @@ set(QT_COMPONENTS
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
+find_package(spdlog REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(CURL REQUIRED)
 
 add_executable(${Aria2Net_test} ${SOURCES})
 #add_test(NAME ${Aria2Net_test} COMMAND ${Aria2Net_test})
@@ -35,7 +38,10 @@ foreach (COMPONENTS ${QT_COMPONENTS})
 endforeach ()
 target_link_libraries(${Aria2Net_test}
     PRIVATE
-        gtest gmock gtest_main gmock_main
+        GTest::gtest 
+        GTest::gmock 
+        GTest::gtest_main 
+        GTest::gmock_main
         spdlog::spdlog
         nlohmann_json::nlohmann_json
         CURL::libcurl
