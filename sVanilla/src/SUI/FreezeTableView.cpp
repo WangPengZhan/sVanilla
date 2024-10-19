@@ -9,15 +9,8 @@ FreezeTreeView::FreezeTreeView(QWidget* parent)
     : QTableView(parent)
     , m_frozenTableView(new QTableView(this))
 {
-    horizontalHeader()->installEventFilter(this);
-    viewport()->stackUnder(m_frozenTableView);
-
-    m_frozenTableView->setFocusPolicy(Qt::NoFocus);
-    m_frozenTableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    m_frozenTableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_frozenTableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    setSelectionBehavior(QAbstractItemView::SelectItems);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setUi();
+    signalsAndSlots();
 }
 
 FreezeTreeView::~FreezeTreeView()
@@ -28,6 +21,7 @@ void FreezeTreeView::setModel(QAbstractItemModel* model)
 {
     QTableView::setModel(model);
     m_frozenTableView->setModel(model);
+    m_frozenTableView->setSelectionMode(selectionMode());
 }
 
 void FreezeTreeView::setItemDelegate(QAbstractItemDelegate* delegate)
@@ -36,24 +30,33 @@ void FreezeTreeView::setItemDelegate(QAbstractItemDelegate* delegate)
     m_frozenTableView->setItemDelegate(delegate);
 }
 
-void FreezeTreeView::init()
+void FreezeTreeView::setUi()
 {
-    m_frozenTableView->setSelectionModel(selectionModel());
-    m_frozenTableView->setShowGrid(this->showGrid());
-    m_frozenTableView->setFrameStyle(QFrame::NoFrame);
+    horizontalHeader()->installEventFilter(this);
+    viewport()->stackUnder(m_frozenTableView);
+
+    setHorizontalScrollMode(ScrollPerPixel);
+    setVerticalScrollMode(ScrollPerPixel);
+    setSelectionBehavior(QAbstractItemView::SelectItems);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    m_frozenTableView->setFocusPolicy(Qt::NoFocus);
+    m_frozenTableView->setFrameStyle(NoFrame);
+    m_frozenTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_frozenTableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    m_frozenTableView->setHorizontalScrollMode(horizontalScrollMode());
+    m_frozenTableView->setVerticalScrollMode(verticalScrollMode());
+    m_frozenTableView->setSelectionMode(selectionMode());
+    m_frozenTableView->setShowGrid(showGrid());
     m_frozenTableView->setSelectionBehavior(selectionBehavior());
     m_frozenTableView->verticalHeader()->setVisible(verticalHeader()->isVisible());
     m_frozenTableView->horizontalHeader()->setMinimumSectionSize(horizontalHeader()->minimumSectionSize());
     m_frozenTableView->verticalHeader()->setMinimumSectionSize(verticalHeader()->minimumSectionSize());
     m_frozenTableView->verticalHeader()->setDefaultSectionSize(verticalHeader()->defaultSectionSize());
-    m_frozenTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_frozenTableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     resetFrozenTableView();
     m_frozenTableView->show();
     updateFrozenTableGeometry();
-    setHorizontalScrollMode(ScrollPerPixel);
-    setVerticalScrollMode(ScrollPerPixel);
-    m_frozenTableView->setVerticalScrollMode(ScrollPerPixel);
 }
 
 void FreezeTreeView::signalsAndSlots()
@@ -61,6 +64,7 @@ void FreezeTreeView::signalsAndSlots()
     connect(horizontalHeader(), &QHeaderView::sectionResized, this, &FreezeTreeView::updateSectionWidth);
     connect(m_frozenTableView->horizontalHeader(), &QHeaderView::sectionResized, this, &FreezeTreeView::updateselfGeometry);
     connect(verticalScrollBar(), &QAbstractSlider::valueChanged, m_frozenTableView->verticalScrollBar(), &QAbstractSlider::setValue);
+    connect(m_frozenTableView->verticalScrollBar(), &QAbstractSlider::valueChanged, verticalScrollBar(), &QAbstractSlider::setValue);
     connect(m_frozenTableView, &QTableView::clicked, [this](const QModelIndex& index) {
         emit clicked(index);
     });
@@ -125,15 +129,14 @@ void FreezeTreeView::setFrozenColumnCount(int count)
     m_frozenColCount = count;
     resetFrozenTableView();
     updateFrozenTableGeometry();
-    init();
 }
 
-int FreezeTreeView::getFrozenColumnCount() const
+int FreezeTreeView::frozenColumnCount() const
 {
     return m_frozenColCount;
 }
 
-QTableView* FreezeTreeView::getFrozenTableView()
+QTableView* FreezeTreeView::frozenTableView()
 {
     return m_frozenTableView;
 }

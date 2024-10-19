@@ -16,7 +16,7 @@
 #include "Sqlite/SqlComposer/ConditionWrapper.h"
 #include "Config/SingleConfig.h"
 #include "Utils/InfoPanelVisibleHelper.h"
-#include "Utils/Utility.h"
+#include "BaseQt/Utility.h"
 #include "MainWindow/SApplication.h"
 #include "Utils/SpeedUtil.h"
 

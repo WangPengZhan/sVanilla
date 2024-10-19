@@ -16,7 +16,7 @@ TEST(Network_Test, HttpGet)
 {
     spdlog::rotating_logger_mt<spdlog::async_factory>("Aria2Net", "log/Aria2Net.log", 1024 * 1024 * 10, 100);
 
-    NetWork netWork;
+    network::NetWork netWork;
     std::string response;
     netWork.get("https://www.baidu.com", response);
 

@@ -17,7 +17,7 @@
 #include "DownloadingInfoWidget.h"
 #include "Storage/DownloadingItemStorage.h"
 #include "Utils/InfoPanelVisibleHelper.h"
-#include "Utils/Utility.h"
+#include "BaseQt/Utility.h"
 #include "MainWindow/SApplication.h"
 #include "Utils/SpeedUtil.h"
 #include "Util/TimerUtil.h"

@@ -14,7 +14,7 @@
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
 #include "BiliApi/BilibiliUrl.h"
-#include "Utils/Utility.h"
+#include "BaseQt/Utility.h"
 #include "Plugin/PluginManager.h"
 #include "Storage/SearchHistoryStorage.h"
 #include "Storage/StorageManager.h"

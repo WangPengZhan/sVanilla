@@ -1,12 +1,18 @@
-set(FFmpeg_test FFmpeg_test)
-file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
-file(GLOB_RECURSE TESTED_SOURCES LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Aria2Net/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Aria2Net/*.cpp)
-file(GLOB_RECURSE TESTED_DEPANDED_SOURCES LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/NetWork/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/NetWork/*.cpp
-                                                                 ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Util/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Util/*.cpp)
-set(SOURCES ${TEST_SOURCES} ${TESTED_SOURCES} ${TESTED_DEPANDED_SOURCES})
+set(TESTED_LIB FFmpeg)
+set(TEST_NAME ${TESTED_LIB}_test)
 
-set(CMAKE_AUTOMOC ON)
-# qt
+file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
+set(SOURCES ${TEST_SOURCES})
+
+add_executable(${TEST_NAME} ${SOURCES})
+add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+
+add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
+
+include_directories(
+    ${CMAKE_SOURCE_DIR}/sVanilla/src
+)
+
 set(QT_COMPONENTS
     Core
     Gui
@@ -20,15 +26,15 @@ find_package(spdlog REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 
-add_executable(${FFmpeg_test} ${SOURCES})
-add_test(NAME ${FFmpeg_test} COMMAND ${FFmpeg_test})
-add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
+
 
 foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
-target_link_libraries(${FFmpeg_test}
+
+target_link_libraries(${TEST_NAME}
     PRIVATE
+        ${TESTED_LIB}
         GTest::gtest_main
         spdlog::spdlog
         nlohmann_json::nlohmann_json

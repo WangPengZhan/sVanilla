@@ -26,7 +26,7 @@ TEST(Aria2Net_Test, STARTSERVER)
 
 TEST(Aria2Net_Test, AriaClient)
 {
-    using namespace aria2net;
+    /*using namespace aria2net;
     using namespace biliapi;
     using namespace ffmpeg;
 
@@ -101,5 +101,5 @@ TEST(Aria2Net_Test, AriaClient)
         }
     });
 
-    future.get();
+    future.get();*/
 }

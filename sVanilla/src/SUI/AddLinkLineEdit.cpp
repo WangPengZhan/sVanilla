@@ -7,7 +7,6 @@
 #include <QTimer>
 
 #include "AddLinkLineEdit.h"
-#include "ClientUi/Utils/Utility.h"
 
 static constexpr int iconMargin = 26;
 static constexpr int padding = 5;

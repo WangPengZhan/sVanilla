@@ -150,43 +150,6 @@ bool EditableLabel::eventFilter(QObject* obj, QEvent* ev)
 
 void EditableLabel::slotEditfinished()
 {
-    auto characterValidCheck = [this]() {
-        auto txt = m_pEdit->text();
-        bool containPunct = false;
-        for (const auto& c : txt)
-        {
-            if (c == '_')
-            {
-                continue;
-            }
-            else if (c.isPunct() || c.isSymbol())
-            {
-                containPunct = true;
-                break;
-            }
-        }
-
-        if (containPunct || txt.isEmpty() || txt.size() > m_maxLength)
-        {
-            m_pEdit->setText(m_pLabel->text().left((m_pLabel->text().length() - m_suffix.length())));
-            QMessageBox::information(nullptr, tr("Group rename failed"),
-                                     tr("The name is a string of %1 characters including Chinese "
-                                        "and "
-                                        "English characters, digits, and underscores")
-                                         .arg(m_maxLength));
-        }
-        else
-        {
-            auto preText = m_pLabel->text();
-            auto newText = m_prefix + txt + m_suffix;
-            m_pLabel->setText(newText);
-            if (preText != newText)
-            {
-                emit sigRenamed(newText);
-            }
-        }
-    };
-
     if (m_checkFunc)
     {
         if (m_checkFunc(m_pEdit))
@@ -199,10 +162,6 @@ void EditableLabel::slotEditfinished()
                 emit sigRenamed(newText);
             }
         }
-    }
-    else
-    {
-        characterValidCheck();
     }
 
     setCurrentIndex(0);

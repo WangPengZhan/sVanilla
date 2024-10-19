@@ -20,13 +20,11 @@ Aria2AdvanceSettings::Aria2AdvanceSettings(QWidget* parent)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setSettings();
     setSize();
 }
 
-void Aria2AdvanceSettings::setSettings()
+void Aria2AdvanceSettings::setSettings(std::shared_ptr<QSettings> aria2Config)
 {
-    const auto aria2Config = SingleConfig::instance().aria2AdvanceConfig();
     const auto allKeys = aria2Config->childKeys();
     std::vector<Aria2SettingItem> ariaSettings;
     for (const auto& key : allKeys)

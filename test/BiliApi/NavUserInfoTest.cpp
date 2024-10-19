@@ -5,8 +5,6 @@
 #include "spdlog/async.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 
-#include <QDebug>
-
 using namespace testing;
 using namespace biliapi;
 
@@ -25,7 +23,5 @@ public:
 TEST_F(NavUserInfoTesting, GetUserInfo)
 {
     std::string response;
-    client.Rquest(CNetWork::GET, PassportURL::WebNav, {}, response, client.getDefalutHeaders(), true);
-    qDebug() << QString::fromStdString(response);
     ASSERT_THAT(response, Not(IsEmpty()));
 }
