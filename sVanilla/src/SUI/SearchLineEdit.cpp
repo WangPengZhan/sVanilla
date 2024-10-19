@@ -3,7 +3,7 @@
 #include <QAction>
 
 #include "SearchLineEdit.h"
-#include "ClientUi/Utils/Utility.h"
+#include "BaseQt/Utility.h"
 
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent)

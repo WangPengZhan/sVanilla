@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(SUI 
+project(BaseQt 
     VERSION 1.0.0 
     LANGUAGES CXX)
 
@@ -36,5 +36,4 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
         spdlog::spdlog
-        BaseQt
 )

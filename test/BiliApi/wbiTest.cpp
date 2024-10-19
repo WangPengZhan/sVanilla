@@ -4,11 +4,12 @@
 
 using namespace testing;
 using namespace biliapi;
+using namespace network;
 
 class BiliApiTest : public Test
 {
 public:
-    CNetWork::ParamType params;
+    NetWork::ParamType params;
 
     std::vector<std::string> sortedParams;
 

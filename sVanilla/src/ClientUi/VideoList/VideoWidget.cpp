@@ -23,7 +23,7 @@
 #include "ClientUi/Setting/About.h"
 #include "ClientUi/Utils/MenuEventFilter.h"
 #include "ClientUi/Utils/SortItems.h"
-#include "ClientUi/Utils/Utility.h"
+#include "BaseQt/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
 #include "ClientUi/Storage/SearchHistoryStorage.h"
 #include "ClientUi/Storage/StorageManager.h"

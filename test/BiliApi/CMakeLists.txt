@@ -1,15 +1,18 @@
-set(BiliApi_test BiliApi_test)
+set(TESTED_LIB BiliApi)
+set(TEST_NAME ${TESTED_LIB}_test)
+
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
-file(GLOB_RECURSE TESTED_SOURCES LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Aria2Net/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Aria2Net/*.cpp)
-file(GLOB_RECURSE TESTED_DEPANDED_SOURCES LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/NetWork/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/NetWork/*.cpp
-                                                                 ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Util/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/Util/*.cpp)
+set(SOURCES ${TEST_SOURCES})
 
-file(GLOB_RECURSE WBI LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/BiliApi/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src/BiliApi/*.cpp)
+add_executable(${TEST_NAME} ${SOURCES})
+add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
-set(SOURCES ${TEST_SOURCES} ${TESTED_SOURCES} ${TESTED_DEPANDED_SOURCES} ${WBI})
+add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
 
-set(CMAKE_AUTOMOC ON)
-# qt
+include_directories(
+    ${CMAKE_SOURCE_DIR}/sVanilla/src
+)
+
 set(QT_COMPONENTS
     Core
     Gui
@@ -22,24 +25,18 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} Linguist
 find_package(spdlog REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(CURL REQUIRED)
-
-# 寻找OpenSSL库
 find_package(OpenSSL REQUIRED)
-
-# 如果OpenSSL被找到，包含OpenSSL的头文件目录
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
 endif()
 
-add_executable(${BiliApi_test} ${SOURCES})
-add_test(NAME ${BiliApi_test} COMMAND ${BiliApi_test})
-add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
 
 foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
-target_link_libraries(${BiliApi_test}
+target_link_libraries(${TEST_NAME}
     PRIVATE
+        ${TESTED_LIB}
         GTest::gtest 
         GTest::gmock 
         GTest::gtest_main 
@@ -47,6 +44,9 @@ target_link_libraries(${BiliApi_test}
         spdlog::spdlog
         nlohmann_json::nlohmann_json
         CURL::libcurl
+        NetWork
+        Aria2Net
+        BaseQt
         ${QT_LIBS}
         ${OPENSSL_LIBRARIES}
 )

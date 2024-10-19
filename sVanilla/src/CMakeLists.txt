@@ -1,4 +1,5 @@
 add_subdirectory(Aria2Net)
+add_subdirectory(BaseQt)
 add_subdirectory(BiliApi)
 add_subdirectory(ClientUi)
 add_subdirectory(Download)

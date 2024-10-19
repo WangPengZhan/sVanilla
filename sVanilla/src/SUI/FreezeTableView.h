@@ -12,20 +12,19 @@ public:
     virtual void setModel(QAbstractItemModel* model) override;
     void setItemDelegate(QAbstractItemDelegate* delegate);
 
-    void setFrozenHeader(QHeaderView* header);
-    QTableView* getFrozenTableView();
+    QTableView* frozenTableView();
     void setFrozenColumnCount(int count);
-    int getFrozenColumnCount() const;
+    int frozenColumnCount() const;
 
-    void init();
     void setFrozenSectionResizeMode(int logicalIndex, QHeaderView::ResizeMode mode);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible) override;
-    virtual bool eventFilter(QObject* obj, QEvent* event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
+    void setUi();
     void signalsAndSlots();
 
     void updateSectionWidth(int logicalIndex, int oldSize, int newSize);

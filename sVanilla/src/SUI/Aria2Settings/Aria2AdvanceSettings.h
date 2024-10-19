@@ -10,8 +10,9 @@ class Aria2AdvanceSettings : public QListWidget
 public:
     explicit Aria2AdvanceSettings(QWidget* parent = nullptr);
 
+    void setSettings(std::shared_ptr<QSettings> aria2Config);
+
 private:
-    void setSettings();
     void setSize();
 
 private:

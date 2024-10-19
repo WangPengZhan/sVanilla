@@ -7,18 +7,6 @@ namespace util
 void showInFileExplorer(const QString& filePath);
 void createMenu(QMenu* menu, int width, const std::vector<std::string>& history, const std::function<void(const QString&)>&);
 
-struct MoveStartEndValue
-{
-    QPoint startValue;
-    QPoint endValue;
-};
-
-struct LayoutMoveStartEndValue
-{
-    int startValue;
-    int endValue;
-};
-
 struct AnimationStartEnd
 {
     QVariant start;

@@ -1,6 +1,8 @@
 #pragma once
 #include <future>
 
+#include <QString>
+
 class TransceiverForQt;
 class QProcess;
 
