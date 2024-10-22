@@ -344,6 +344,71 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(SupportFormats, quality, format, new_description, display_desc, superscript)
 };
 
+class DashSegmentBase
+{
+public:
+    std::string initialization;
+    std::string index_range;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(DashSegmentBase, initialization, index_range)
+};
+
+class DashInfo
+{
+public:
+    int id;
+    std::string baseUrl;
+    std::string base_url;
+    std::list<std::string> backupUrl;
+    std::list<std::string> backup_url;
+    int bandwidth;
+    std::string mimeType;
+    std::string mime_type;
+    std::string codecs;
+    int width;
+    int height;
+    std::string frameRate;
+    std::string frame_rate;
+    std::string sar;
+    int startWithSap;
+    int start_with_sap;
+    DashSegmentBase SegmentBase;
+    DashSegmentBase segment_base;
+    int codecid;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(DashInfo, id, baseUrl, base_url, backupUrl, backup_url, bandwidth, mimeType, mime_type, codecs, width, height,
+                                                frameRate, frame_rate, startWithSap, start_with_sap, SegmentBase, segment_base)
+};
+
+class DashDobly
+{
+public:
+    int type;
+    std::list<DashInfo> audio;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(DashDobly, type, audio)
+};
+
+class DashFlac
+{
+public:
+    bool display;
+    std::list<DashInfo> audio;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(DashFlac, display, audio)
+};
+
+class PlayDash
+{
+public:
+    int duration;
+    int minBufferTime;
+    int min_buffer_time;
+    std::list<DashInfo> video;
+    std::list<DashInfo> audio;
+    DashDobly dolby;
+    DashFlac flac;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayDash, duration, minBufferTime, min_buffer_time, video, audio)
+};
+
 class PlayUrlData
 {
 public:
@@ -361,9 +426,10 @@ public:
     std::string seek_type;
     std::list<Durl> durl;
     std::list<SupportFormats> support_formats;
+    PlayDash dash;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(PlayUrlData, from, result, message, quality, format, timelength, accept_format, accept_description,
-                                                accept_quality, video_codecid, seek_param, seek_type, durl, support_formats)
+                                                accept_quality, video_codecid, seek_param, seek_type, durl, support_formats, dash)
 };
 
 class PlayUrlOrigin

@@ -16,6 +16,8 @@
 #include "Download/DownloadedListWidget.h"
 #include "Storage/FinishedItemStorage.h"
 
+constexpr bool isMp4 = false;
+
 DownloadWidget::DownloadWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadWidget)
@@ -65,15 +67,27 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
 
     auto copyedVideoInfo = videoInfo;
     copyedVideoInfo->downloadConfig = std::make_shared<DownloadConfig>(*(videoInfo->downloadConfig));
-    auto taskFunc = [this, videoInfo]() {
-        return biliapi::BilibiliClient::globalClient().getPlayUrl(std::stoll(videoInfo->videoView->VideoId), 80, videoInfo->videoView->Identifier);
+    auto taskFunc = [this, copyedVideoInfo]() {
+        auto& biliClient = biliapi::BilibiliClient::globalClient();
+        long long qn = 64;
+        if (biliClient.isLogined())
+        {
+            qn = 80;
+        }
+        if (false)
+        {
+            qn = 116;
+        }
+
+        long long fnval = isMp4 ? 1 : 16;
+        return biliClient.getPlayUrl(std::stoll(copyedVideoInfo->videoView->VideoId), qn, copyedVideoInfo->videoView->Identifier, fnval);
     };
-    auto callback = [this, videoInfo](const biliapi::PlayUrlOrigin& result) {
+    auto callback = [this, copyedVideoInfo](const biliapi::PlayUrlOrigin& result) {
         if (result.code != 0)
         {
             return;
         }
-        praseBiliDownloadUrl(result, videoInfo);
+        praseBiliDownloadUrl(result, copyedVideoInfo);
     };
     runTask(taskFunc, callback, this);
 }
@@ -82,11 +96,64 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
 {
     std::list<std::string> video_urls;
     std::list<std::string> audio_urls;
-    const auto videos = playUrl.data.durl;
-    for (const auto& video : videos)
+    if (isMp4)
     {
-        video_urls.push_back(video.url);
+        const auto& videos = playUrl.data.durl;
+        for (const auto& video : videos)
+        {
+            video_urls.push_back(video.url);
+        }
     }
+    else
+    {
+        auto& biliClient = biliapi::BilibiliClient::globalClient();
+        long long qn = 64;
+        if (biliClient.isLogined())
+        {
+            qn = 80;
+        }
+        if (false)
+        {
+            qn = 116;
+        }
+
+        int needDownloadVideoId = 16;
+        const auto& videos = playUrl.data.dash.video;
+        for (const auto& video : videos)
+        {
+            if (video.id <= qn && video.id > needDownloadVideoId)
+            {
+                needDownloadVideoId = video.id;
+            }
+        }
+
+        for (const auto& video : videos)
+        {
+            if (video.id == needDownloadVideoId)
+            {
+                video_urls.push_back(video.baseUrl);
+            }
+        }
+
+        int needDownloadAudioId = 30216;
+        const auto& audios = playUrl.data.dash.audio;
+        for (const auto& audio : audios)
+        {
+            if (audio.id > needDownloadAudioId)
+            {
+                needDownloadAudioId = audio.id;
+            }
+        }
+
+        for (const auto& audio : audios)
+        {
+            if (audio.id == needDownloadAudioId)
+            {
+                audio_urls.push_back(audio.baseUrl);
+            }
+        }
+    }
+
     download::ResourseInfo info;
     info.videoUris = video_urls;
     info.audioUris = audio_urls;
