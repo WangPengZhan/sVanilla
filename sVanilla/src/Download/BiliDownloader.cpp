@@ -183,7 +183,8 @@ std::string BiliDownloader::nowDownload() const
 
 void BiliDownloader::setAriaFileName()
 {
-    std::string baseName = std::filesystem::u8path(m_filename).stem().string();
+    std::u8string u8BaseName = std::filesystem::u8path(m_filename).stem().u8string();
+    std::string baseName = std::string(reinterpret_cast<const char*>(u8BaseName.data()), u8BaseName.size());
     m_haveTwoPart ? m_videoDownloader.setFilename(baseName + "_video.mp4") : m_videoDownloader.setFilename(m_filename);
     m_audioDownloader.setFilename(baseName + "_audio.mp3");
 }

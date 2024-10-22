@@ -98,7 +98,6 @@ network::NetWork::ParamType HistoryQueryParam::toParam() const
 }
 
 BilibiliClient::BilibiliClient()
-    : m_logined(false)
 {
     initDefaultHeaders();
     initDefaultOptions();
@@ -120,14 +119,14 @@ VideoViewOrigin BilibiliClient::getVideoView(const std::string& bvid)
     return VideoViewOrigin(getDataFromRespones(response));
 }
 
-PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std::string& bvid)
+PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std::string& bvid, long long fnval)
 {
     ParamType param;
     param.emplace("bvid", bvid);
     param.emplace("cid", std::to_string(cid));
     param.emplace("qn", std::to_string(qn));
     param.emplace("fnver", "0");
-    param.emplace("fnval", "0");
+    param.emplace("fnval", std::to_string(fnval));
     param.emplace("fourk", "1");
 
     encodeWithWbi(param);
@@ -174,7 +173,7 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
 Nav BilibiliClient::getNavInfo()
 {
     std::string response;
-    get(PassportURL::WebNav, response, network::CurlHeader(), true, CurlOptions(), true);
+    get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
 
     return Nav(getDataFromRespones(response));
 }
@@ -233,14 +232,9 @@ History BilibiliClient::getHistory(HistoryQueryParam param)
     return History(getDataFromRespones(response));
 }
 
-void BilibiliClient::setLogined(bool logined)
-{
-    m_logined = logined;
-}
-
 bool BilibiliClient::isLogined() const
 {
-    return m_logined;
+    return !m_cookies.value("SESSDATA").empty();
 }
 
 void BilibiliClient::resetWbi()

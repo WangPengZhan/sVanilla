@@ -52,14 +52,13 @@ public:
     static BilibiliClient& globalClient();
 
     VideoViewOrigin getVideoView(const std::string& bvid);
-    PlayUrlOrigin getPlayUrl(long long cid, long long qn, const std::string& bvid);
+    PlayUrlOrigin getPlayUrl(long long cid, long long qn, const std::string& bvid, long long fnval);
     LoginUrlOrigin getLoginUrl();
     LoginStatusScanning getLoginStatus(const std::string& qrcodeKey);
     Nav getNavInfo();
     LogoutExitV2 getLogoutExitV2();
     History getHistory(HistoryQueryParam param);
 
-    void setLogined(bool logined);
     [[nodiscard]] bool isLogined() const;
 
     void resetWbi();
@@ -75,7 +74,6 @@ protected:
     void initDefaultOptions();
 
 private:
-    bool m_logined;
     network::CurlCookies m_cookies;  // we sellect this mode for debug
 };
 
