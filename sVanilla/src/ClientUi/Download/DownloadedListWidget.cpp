@@ -10,7 +10,7 @@
 #include "ui_DownloadedListWidget.h"
 #include "VideoList/VideoData.h"
 #include "Adapter/BaseVideoView.h"
-#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadedItemStorage.h"
 #include "Storage/StorageManager.h"
 #include "Sqlite/SqlComposer/BaseInfo.h"
 #include "Sqlite/SqlComposer/ConditionWrapper.h"

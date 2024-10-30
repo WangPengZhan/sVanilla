@@ -1,8 +1,8 @@
 #include <filesystem>
 
-#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadedItemStorage.h"
 
-int FinishedItem::bind(sqlite::SQLiteStatement& stmt) const
+int DownloadedItem::bind(sqlite::SQLiteStatement& stmt) const
 {
     int index = 1;
     stmt.bind(index++, uniqueId);
@@ -13,6 +13,7 @@ int FinishedItem::bind(sqlite::SQLiteStatement& stmt) const
     stmt.bind(index++, title);
     stmt.bind(index++, auther);
     stmt.bind(index++, url);
+    stmt.bind(index++, cid);
     stmt.bind(index++, duration);
     stmt.bind(index++, type);
     stmt.bind(index++, fileExist);
@@ -20,7 +21,7 @@ int FinishedItem::bind(sqlite::SQLiteStatement& stmt) const
     return index;
 }
 
-void FinishedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
+void DownloadedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 {
     int index = startIndex;
     uniqueId = stmt.column(index++).getString();
@@ -31,6 +32,7 @@ void FinishedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
     title = stmt.column(index++).getString();
     auther = stmt.column(index++).getString();
     url = stmt.column(index++).getString();
+    cid = stmt.column(index++).getString();
     duration = stmt.column(index++);
     type = stmt.column(index++);
     fileExist = stmt.column(index++).getInt() != 0;

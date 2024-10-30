@@ -25,7 +25,8 @@ class BiliDownloader;
 }
 struct VideoInfoFull;
 class UiDownloader;
-struct FinishedItem;
+struct DownloadedItem;
+struct DownloadingItem;
 
 class DownloadWidget : public QWidget
 {
@@ -38,12 +39,13 @@ public:
     void addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName);
     void addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
 
-    void addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo);
+    void addDownloadedItem(std::shared_ptr<VideoInfoFull> videoInfo);
 
     void getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo);
     void praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl, const std::shared_ptr<VideoInfoFull>& videoInfo);
 
-    static std::shared_ptr<VideoInfoFull> finishItemToVideoInfoFull(const FinishedItem& item);
+    static std::shared_ptr<VideoInfoFull> downloadingItemToVideoInfoFull(const DownloadingItem& item);
+    static std::shared_ptr<VideoInfoFull> finishItemToVideoInfoFull(const DownloadedItem& item);
 
 signals:
     void sigDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
@@ -56,6 +58,7 @@ protected:
 private:
     void setUi();
     void signalsAndSlots();
+    void initHistoryData();
 
     void addTaskItem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader);
 

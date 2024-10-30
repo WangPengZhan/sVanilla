@@ -3,7 +3,7 @@
 #include "Sqlite/Storage/BaseStorage.h"
 #include "Sqlite/Storage/StorageFactory.h"
 
-struct FinishedItem
+struct DownloadedItem
 {
     std::string uniqueId;
     int pluginType;
@@ -13,6 +13,7 @@ struct FinishedItem
     std::string title;
     std::string auther;
     std::string url;
+    std::string cid;
     int duration;
     int type;
     bool fileExist;
@@ -23,7 +24,7 @@ struct FinishedItem
 };
 
 // clang-format off
-TABLESTRUCTINFO_BEGIN(FinishedItem)
+TABLESTRUCTINFO_BEGIN(DownloadedItem)
     TABLESTRUCTINFO_COMLUNM(uniqueId, uniqueId, false, true)
     TABLESTRUCTINFO_COMLUNM(pluginType)
     TABLESTRUCTINFO_COMLUNM(filePath)
@@ -32,6 +33,7 @@ TABLESTRUCTINFO_BEGIN(FinishedItem)
     TABLESTRUCTINFO_COMLUNM(title)
     TABLESTRUCTINFO_COMLUNM(auther)
     TABLESTRUCTINFO_COMLUNM(url)
+    TABLESTRUCTINFO_COMLUNM(cid)
     TABLESTRUCTINFO_COMLUNM(duration)
     TABLESTRUCTINFO_COMLUNM(type)
     TABLESTRUCTINFO_COMLUNM(fileExist)
@@ -41,7 +43,7 @@ TABLESTRUCTINFO_END(FinishedItem)
 class FinishItemStorage : public sqlite::BaseStorage
 {
 public:
-    using Entity = FinishedItem;
+    using Entity = DownloadedItem;
     using BaseStorage::BaseStorage;
 
     bool isDownload(const std::string& guid);

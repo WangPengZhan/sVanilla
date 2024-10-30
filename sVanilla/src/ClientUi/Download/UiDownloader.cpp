@@ -2,7 +2,7 @@
 
 #include "UiDownloader.h"
 #include "Storage/StorageManager.h"
-#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
 #include "VideoList/VideoData.h"
 #include "Adapter/BaseVideoView.h"
@@ -117,6 +117,7 @@ void UiDownloader::createDbDownloadingItem()
     item.title = m_videoInfoFull->videoView->Title;
     item.auther = m_videoInfoFull->videoView->Publisher;
     item.url = "https://www.bilibili.com/video/" + item.bvid;
+    item.cid = m_videoInfoFull->videoView->VideoId;
     item.duration = std::stoi(m_videoInfoFull->videoView->Duration);
     item.progress = 0;
     item.status = static_cast<int>(status());
@@ -145,7 +146,7 @@ void UiDownloader::deleteDbDownloadingItem()
 
 void UiDownloader::ctreateDbFinishedItem()
 {
-    FinishedItem item;
+    DownloadedItem item;
     item.uniqueId = guid();
     item.pluginType = 0;
     item.filePath = filename();
@@ -154,8 +155,9 @@ void UiDownloader::ctreateDbFinishedItem()
     item.title = m_videoInfoFull->videoView->Title;
     item.auther = m_videoInfoFull->videoView->Publisher;
     item.url = "https://www.bilibili.com/video/" + item.bvid;
+    item.cid = m_videoInfoFull->videoView->VideoId;
     item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
     item.type = 0;
     item.fileExist = true;
-    m_storageManager.finishedItemStorage()->insertEntities<FinishedItem>({item});
+    m_storageManager.finishedItemStorage()->insertEntities<DownloadedItem>({item});
 }

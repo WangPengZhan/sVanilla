@@ -1,5 +1,6 @@
 #include <QStandardPaths>
 #include <QMenu>
+#include <QFileInfo>
 
 #include "DownloadWidget.h"
 #include "ui_DownloadWidget.h"
@@ -14,7 +15,8 @@
 #include "Storage/StorageManager.h"
 #include "Config/SingleConfig.h"
 #include "Download/DownloadedListWidget.h"
-#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadedItemStorage.h"
+#include "Storage/DownloadingItemStorage.h"
 
 constexpr bool isMp4 = false;
 
@@ -26,6 +28,7 @@ DownloadWidget::DownloadWidget(QWidget* parent)
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    initHistoryData();
 }
 
 DownloadWidget::~DownloadWidget()
@@ -52,7 +55,7 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, d
     addTaskItem(biliDownlaoder, uiDownloader);
 }
 
-void DownloadWidget::addFinishedItem(std::shared_ptr<VideoInfoFull> videoInfo)
+void DownloadWidget::addDownloadedItem(std::shared_ptr<VideoInfoFull> videoInfo)
 {
     ui->downloadedListWidget->addDownloadedItem(videoInfo);
 }
@@ -167,11 +170,32 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     emit sigDownloadTask(videoInfo, info);
 }
 
-std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const FinishedItem& item)
+std::shared_ptr<VideoInfoFull> DownloadWidget::downloadingItemToVideoInfoFull(const DownloadingItem& item)
 {
     auto res = std::make_shared<VideoInfoFull>();
     res->downloadConfig = std::make_shared<DownloadConfig>();
+    QFileInfo info(QString::fromStdString(item.filePath));
+    res->downloadConfig->downloadDir = info.absolutePath();
+    res->downloadConfig->nameRule = info.completeBaseName();
     res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->videoView->VideoId = item.cid;
+    res->videoView->Cover = item.coverPath;
+    res->videoView->Identifier = item.bvid;
+    res->videoView->Title = item.title;
+    res->videoView->Publisher = item.auther;
+    res->videoView->Duration = std::to_string(item.duration);
+    return res;
+}
+
+std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const DownloadedItem& item)
+{
+    auto res = std::make_shared<VideoInfoFull>();
+    res->downloadConfig = std::make_shared<DownloadConfig>();
+    QFileInfo info(QString::fromStdString(item.filePath));
+    res->downloadConfig->downloadDir = info.absolutePath();
+    res->downloadConfig->nameRule = info.completeBaseName();
+    res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
     res->videoView->Identifier = item.bvid;
     res->videoView->Title = item.title;
@@ -212,7 +236,7 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->btnStartAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::startAll);
     connect(ui->btnStopAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::pauseAll);
     connect(ui->btnDeleteAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::deleteAll);
-    connect(ui->downloadingListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addFinishedItem);
+    connect(ui->downloadingListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addDownloadedItem);
     connect(ui->downloadingListWidget, &DownloadingListWidget::downloadingCountChanged, this, &DownloadWidget::setDownloadingNumber);
     connect(ui->downloadedListWidget, &DownloadedListWidget::downloadedCountChanged, this, &DownloadWidget::setDownloadedNumber);
 
@@ -220,6 +244,28 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->btnRedownload, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::reloadAll);
     connect(ui->btnScaned, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::scan);
     connect(ui->downloadedListWidget, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
+}
+
+void DownloadWidget::initHistoryData()
+{
+    auto taskHistoryDownloading = [this]() {
+        auto downloadingStorage = sqlite::StorageManager::intance().downloadingStorage();
+        auto downloadingItems = downloadingStorage->lastItems();
+        for (const auto& item : downloadingItems)
+        {
+            getBiliUrl(downloadingItemToVideoInfoFull(item));
+        }
+    };
+    ThreadPool::instance().enqueue(taskHistoryDownloading);
+    auto taskHistoryDownloaded = [this]() {
+        auto downloadedStorage = sqlite::StorageManager::intance().finishedItemStorage();
+        auto downloadedItems = downloadedStorage->lastItems();
+        for (const auto& item : downloadedItems)
+        {
+            emit ui->downloadingListWidget->finished(finishItemToVideoInfoFull(item));
+        }
+    };
+    ThreadPool::instance().enqueue(taskHistoryDownloaded);
 }
 
 void DownloadWidget::addTaskItem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)

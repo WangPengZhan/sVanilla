@@ -6,7 +6,7 @@
 std::string VideoInfoFull::getGuid() const
 {
     auto guid = videoView->Identifier + videoView->AlternateId + videoView->VideoId + downloadConfig->downloadDir.toStdString() +
-                std::to_string(static_cast<int>(downloadConfig->videoQuality)) + downloadConfig->nameRule.toStdString();
+                std::to_string(static_cast<int>(downloadConfig->videoQuality)) + fileName();
 
     return guid;
 }

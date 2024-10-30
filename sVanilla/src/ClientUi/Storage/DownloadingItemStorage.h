@@ -13,6 +13,7 @@ struct DownloadingItem
     std::string title;
     std::string auther;
     std::string url;
+    std::string cid;
     double progress;
     int duration;
     int status;
@@ -33,6 +34,7 @@ TABLESTRUCTINFO_BEGIN(DownloadingItem)
     TABLESTRUCTINFO_COMLUNM(title)
     TABLESTRUCTINFO_COMLUNM(auther)
     TABLESTRUCTINFO_COMLUNM(url)
+    TABLESTRUCTINFO_COMLUNM(cid)
     TABLESTRUCTINFO_COMLUNM(progress)
     TABLESTRUCTINFO_COMLUNM(duration)
     TABLESTRUCTINFO_COMLUNM(status)
@@ -49,5 +51,8 @@ public:
     void updateStatus(int status, const sqlite::ConditionWrapper& condition);
     bool isDownload(const std::string& guid) const;
 
+    std::vector<Entity> lastItems();
+
 private:
+    static constexpr int maxQueryNum = 4000;
 };

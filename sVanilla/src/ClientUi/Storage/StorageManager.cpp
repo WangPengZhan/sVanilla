@@ -1,5 +1,5 @@
 #include "Sqlite/Storage/SqliteDBManager.h"
-#include "Storage/FinishedItemStorage.h"
+#include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
 #include "Storage/SearchHistoryStorage.h"
 #include "StorageManager.h"
