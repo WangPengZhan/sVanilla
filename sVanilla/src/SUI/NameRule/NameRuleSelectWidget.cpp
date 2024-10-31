@@ -35,7 +35,11 @@ void NameRuleSelectWidget::setNameRules(const std::vector<QString>& rules)
     adjustSize();
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 QMimeData* NameRuleSelectWidget::mimeData(const QList<QListWidgetItem*>& items) const
+#else
+QMimeData* NameRuleSelectWidget::mimeData(const QList<QListWidgetItem*> items) const
+#endif
 {
     const auto mimeData = new QMimeData();
     QStringList itemTexts;

@@ -10,7 +10,11 @@ public:
 
     void setNameRules(const std::vector<QString>& rules);
 
-    [[nodiscard]] QMimeData* mimeData(const QList<QListWidgetItem*>& items) const override;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    QMimeData* mimeData(const QList<QListWidgetItem*>& items) const override;
+#else
+    QMimeData* mimeData(const QList<QListWidgetItem*> items) const override;
+#endif
 
 private:
     void setUi();
