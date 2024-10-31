@@ -5,7 +5,6 @@
 
 #include "NameRuleSelectWidget.h"
 
-
 NameRuleSelectWidget::NameRuleSelectWidget(QWidget* parent)
     : QListWidget(parent)
 {
@@ -40,7 +39,7 @@ QMimeData* NameRuleSelectWidget::mimeData(const QList<QListWidgetItem*>& items) 
 {
     const auto mimeData = new QMimeData();
     QStringList itemTexts;
-    for (const QListWidgetItem *item : items)
+    for (const QListWidgetItem* item : items)
     {
         itemTexts << item->text();
     }

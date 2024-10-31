@@ -67,7 +67,7 @@ bool copyWithAdminPrivileges(const QString& source, const QString& destination)
 
 HomePage::HomePage(QWidget* parent)
     : QWidget(parent)
-      , ui(new Ui::HomePage)
+    , ui(new Ui::HomePage)
 {
     ui->setupUi(this);
     signalsAndSlots();
@@ -86,8 +86,7 @@ void HomePage::setWebsiteIcon(const QString& iconPath)
 
 void HomePage::signalsAndSlots()
 {
-    connect(ui->btnIcon, &QPushButton::clicked, this, [this] {
-    });
+    connect(ui->btnIcon, &QPushButton::clicked, this, [this] {});
 
     connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
         emit parseUri(ui->lineEditHome->text());
@@ -147,9 +146,9 @@ void HomePage::signalsAndSlots()
             emit loginSucceed(loginer);
         }
 
-        //const auto loginBubble = new LoginBubble(loginer);
-        //const auto globalPos = mapToGlobal(QPoint(0, 0));
-        //loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
+        // const auto loginBubble = new LoginBubble(loginer);
+        // const auto globalPos = mapToGlobal(QPoint(0, 0));
+        // loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
     });
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {

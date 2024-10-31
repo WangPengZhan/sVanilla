@@ -50,12 +50,8 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
         QString executablePath = QApplication::applicationDirPath() + "/ffmpeg";
         QString ffmpegExecutable = QStandardPaths::findExecutable("ffmpeg", QStringList() << executablePath);
         QStringList ffmpegArg;
-        ffmpegArg << "-i" << mergeInfo.audio.c_str() << "-i" << mergeInfo.video.c_str() << "-acodec"
-                  << "copy"
-                  << "-vcodec"
-                  << "copy"
-                  << "-f"
-                  << "mp4" << mergeInfo.targetVideo.c_str();
+        ffmpegArg << "-i" << mergeInfo.audio.c_str() << "-i" << mergeInfo.video.c_str() << "-acodec" << "copy" << "-vcodec" << "copy" << "-f" << "mp4"
+                  << mergeInfo.targetVideo.c_str();
         qDebug() << ffmpegArg;
 
         QProcess ffmpegProcess;

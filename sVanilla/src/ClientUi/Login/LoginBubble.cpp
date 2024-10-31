@@ -14,12 +14,11 @@
 
 LoginBubble::LoginBubble(std::shared_ptr<AbstractLogin> loginer, QWidget* parent)
     : QWidget(parent)
-      , m_loginer(std::move(loginer))
+    , m_loginer(std::move(loginer))
 
 {
     setUi();
 }
-
 
 void LoginBubble::showCenter(const QRect& rect)
 {
@@ -44,7 +43,6 @@ void LoginBubble::paintEvent(QPaintEvent* event)
     bubblePath.addRoundedRect(rect(), 10, 10);
     painter.drawPath(bubblePath);
 }
-
 
 bool LoginBubble::eventFilter(QObject* watched, QEvent* event)
 {
