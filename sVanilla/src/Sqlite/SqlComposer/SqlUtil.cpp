@@ -208,6 +208,7 @@ int64_t SqliteUtil::updateEntities(const SqliteWithMutexPtr& db, const std::stri
     sql += " ";
     sql += condition.prepareConditionString();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*(db.get()), sql);
     int index = 1;
     for (const auto& value : newValues)

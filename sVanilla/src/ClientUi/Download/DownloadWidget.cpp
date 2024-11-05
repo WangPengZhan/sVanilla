@@ -152,7 +152,7 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
         {
             if (audio.id == needDownloadAudioId)
             {
-                audio_urls.push_back(audio.baseUrl);
+                audio_urls.push_back(util::urlDecode(audio.baseUrl));
             }
         }
     }
@@ -164,7 +164,7 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     info.option.out = fileName + ".mp4";
     info.option.dir = videoInfo->downloadConfig->downloadDir.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString() :
                                                                          videoInfo->downloadConfig->downloadDir.toStdString();
-    const std::list<std::string> h = {"Referer: https://www.bilibili.com"};
+    const std::list<std::string> h = {"Referer: https://www.bilibili.com", std::string("User-Agent: ") + network::chrome};
     info.option.header = h;
 
     emit sigDownloadTask(videoInfo, info);
@@ -178,6 +178,7 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::downloadingItemToVideoInfoFull(co
     res->downloadConfig->downloadDir = info.absolutePath();
     res->downloadConfig->nameRule = info.completeBaseName();
     res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->videoView->AlternateId = item.aid;
     res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
     res->videoView->Identifier = item.bvid;
@@ -195,6 +196,7 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const D
     res->downloadConfig->downloadDir = info.absolutePath();
     res->downloadConfig->nameRule = info.completeBaseName();
     res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->videoView->AlternateId = item.aid;
     res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
     res->videoView->Identifier = item.bvid;
@@ -258,7 +260,7 @@ void DownloadWidget::initHistoryData()
     };
     ThreadPool::instance().enqueue(taskHistoryDownloading);
     auto taskHistoryDownloaded = [this]() {
-        auto downloadedStorage = sqlite::StorageManager::intance().finishedItemStorage();
+        auto downloadedStorage = sqlite::StorageManager::intance().downloadedtemStorage();
         auto downloadedItems = downloadedStorage->lastItems();
         for (const auto& item : downloadedItems)
         {

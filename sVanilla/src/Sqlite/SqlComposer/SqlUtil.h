@@ -101,6 +101,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& d
     std::vector<Entity> entities;
     std::string querySql = ss.str();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, querySql);
     condition.bind(stmt);
     querySql = stmt.expandedSQL();
@@ -128,6 +129,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& d
     std::vector<Entity> entities;
     std::string querySql = ss.str();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, querySql);
     while (stmt.executeStep())
     {
@@ -155,6 +157,7 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& d
     std::vector<Entity> entities;
     std::string querySql = ss.str();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, querySql);
     condition.bind(stmt);
     querySql = stmt.expandedSQL();
@@ -176,6 +179,8 @@ inline std::vector<Entity> SqliteUtil::queryEntities(const SqliteWithMutexPtr& d
     }
 
     std::vector<Entity> entities;
+
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, querySql);
     while (stmt.executeStep())
     {
@@ -198,6 +203,7 @@ inline int64_t SqliteUtil::insertEntities(const SqliteWithMutexPtr& db, const st
     std::string insertSql = "INSERT INTO " + tableName + " ";
     insertSql += TableStructInfo<Entity>::self().insertPrepareSql();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, insertSql);
     db->transaction();
     try
@@ -224,6 +230,7 @@ inline int64_t SqliteUtil::insertEntitiesWithOutTrans(const SqliteWithMutexPtr& 
     std::string insertSql = "INSERT INTO " + tableName + " ";
     insertSql += TableStructInfo<Entity>::self().insertPrepareSql();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, insertSql);
     insertEntitiesCore<Entity>(stmt, entities);
 
@@ -249,6 +256,7 @@ inline int64_t SqliteUtil::updateEntities(const SqliteWithMutexPtr& db, const st
     }
     sql += conditionWrapper.prepareConditionString();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, sql);
 
     db->transaction();

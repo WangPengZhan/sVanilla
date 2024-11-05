@@ -28,6 +28,7 @@ public:
 
 private:
     std::list<std::future<bool>> m_futures;
+    std::recursive_mutex m_mutex;
 };
 
 }  // namespace ffmpeg

@@ -45,7 +45,7 @@ public:
 
     void setStart();
     void setPause();
-    void setStop();
+    void setDelete();
 
     [[nodiscard]] DonwloadingStatus status() const;
 

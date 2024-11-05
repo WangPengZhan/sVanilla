@@ -15,9 +15,9 @@ StorageManager& StorageManager::intance()
     return storageManager;
 }
 
-std::shared_ptr<FinishItemStorage> StorageManager::finishedItemStorage() const
+std::shared_ptr<DownloadedItemStorage> StorageManager::downloadedtemStorage() const
 {
-    return m_finishedItemStorage;
+    return m_downloadedItemStorage;
 }
 
 std::shared_ptr<DownloadingItemStorage> StorageManager::downloadingStorage() const
@@ -32,14 +32,14 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::searchHistoryStorage() con
 
 bool StorageManager::isDownloaded(const std::string& guid) const
 {
-    return m_downloadingItemStorage->isDownload(guid) || m_finishedItemStorage->isDownload(guid);
+    return m_downloadingItemStorage->isDownload(guid) || m_downloadedItemStorage->isDownload(guid);
 }
 
-std::shared_ptr<FinishItemStorage> StorageManager::createFinishedItemStorage(const std::string& tableName)
+std::shared_ptr<DownloadedItemStorage> StorageManager::createFinishedItemStorage(const std::string& tableName)
 {
     auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
-    auto& tableStruct = sqlite::TableStructInfo<typename FinishItemStorage::Entity>::self();
+    auto& tableStruct = sqlite::TableStructInfo<typename DownloadedItemStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
     std::vector<std::string> indexColNames = {tableStruct.filePath.colunmName()};
@@ -49,7 +49,7 @@ std::shared_ptr<FinishItemStorage> StorageManager::createFinishedItemStorage(con
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
 
-    return std::make_shared<FinishItemStorage>(readPtr, tableName, writePtr);
+    return std::make_shared<DownloadedItemStorage>(readPtr, tableName, writePtr);
 }
 
 std::shared_ptr<DownloadingItemStorage> StorageManager::createDownloadingItemStorage(const std::string& tableName)
@@ -97,7 +97,7 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage
 StorageManager::StorageManager()
 {
     m_downloadingItemStorage = createDownloadingItemStorage("DownloadingItem");
-    m_finishedItemStorage = createFinishedItemStorage("FinishedItem");
+    m_downloadedItemStorage = createFinishedItemStorage("DownloadedItem");
     m_searchHistoryStorage = createSearchHistoryStorage("SearchHistory");
 }
 

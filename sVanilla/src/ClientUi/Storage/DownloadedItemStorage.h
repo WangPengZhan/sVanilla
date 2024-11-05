@@ -13,6 +13,7 @@ struct DownloadedItem
     std::string title;
     std::string auther;
     std::string url;
+    std::string aid;
     std::string cid;
     int duration;
     int type;
@@ -34,13 +35,14 @@ TABLESTRUCTINFO_BEGIN(DownloadedItem)
     TABLESTRUCTINFO_COMLUNM(auther)
     TABLESTRUCTINFO_COMLUNM(url)
     TABLESTRUCTINFO_COMLUNM(cid)
+    TABLESTRUCTINFO_COMLUNM(aid)
     TABLESTRUCTINFO_COMLUNM(duration)
     TABLESTRUCTINFO_COMLUNM(type)
     TABLESTRUCTINFO_COMLUNM(fileExist)
 TABLESTRUCTINFO_END(FinishedItem)
 // clang-format on
 
-class FinishItemStorage : public sqlite::BaseStorage
+class DownloadedItemStorage : public sqlite::BaseStorage
 {
 public:
     using Entity = DownloadedItem;

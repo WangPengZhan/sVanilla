@@ -87,6 +87,29 @@ std::string u8ToString(const std::u8string& u8Str)
     return std::string(reinterpret_cast<const char*>(u8Str.data()), u8Str.size());
 }
 
+std::string urlDecode(const std::string& encoded)
+{
+    std::string decoded;
+    for (size_t i = 0; i < encoded.length(); ++i)
+    {
+        if (encoded[i] == '%')
+        {
+            if (i + 2 < encoded.length())
+            {
+                std::string hex = encoded.substr(i + 1, 2);
+                char decodedChar = static_cast<char>(std::stoi(hex, nullptr, 16));
+                decoded += decodedChar;
+                i += 2;  // Skip the next two characters
+            }
+        }
+        else
+        {
+            decoded += encoded[i];
+        }
+    }
+    return decoded;
+}
+
 QString FileHelp::removeSpecialChar(const QString& path)
 {
     QString temp = path;

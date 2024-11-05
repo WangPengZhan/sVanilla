@@ -80,7 +80,7 @@ void DownloadingItemWidget::setPause()
     }
 }
 
-void DownloadingItemWidget::setStop()
+void DownloadingItemWidget::setDelete()
 {
     deleteItem();
 }
@@ -366,7 +366,7 @@ void DownloadingListWidget::deleteAll()
     {
         if (indexOfItem(i) != nullptr)
         {
-            indexOfItem(i)->setStop();
+            indexOfItem(i)->setDelete();
         }
     }
     emit downloadingCountChanged(count());

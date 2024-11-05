@@ -118,6 +118,7 @@ void UiDownloader::createDbDownloadingItem()
     item.auther = m_videoInfoFull->videoView->Publisher;
     item.url = "https://www.bilibili.com/video/" + item.bvid;
     item.cid = m_videoInfoFull->videoView->VideoId;
+    item.aid = m_videoInfoFull->videoView->AlternateId;
     item.duration = std::stoi(m_videoInfoFull->videoView->Duration);
     item.progress = 0;
     item.status = static_cast<int>(status());
@@ -156,8 +157,9 @@ void UiDownloader::ctreateDbFinishedItem()
     item.auther = m_videoInfoFull->videoView->Publisher;
     item.url = "https://www.bilibili.com/video/" + item.bvid;
     item.cid = m_videoInfoFull->videoView->VideoId;
+    item.aid = m_videoInfoFull->videoView->AlternateId;
     item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
     item.type = 0;
     item.fileExist = true;
-    m_storageManager.finishedItemStorage()->insertEntities<DownloadedItem>({item});
+    m_storageManager.downloadedtemStorage()->insertEntities<DownloadedItem>({item});
 }

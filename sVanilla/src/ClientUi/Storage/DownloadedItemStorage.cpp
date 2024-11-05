@@ -14,6 +14,7 @@ int DownloadedItem::bind(sqlite::SQLiteStatement& stmt) const
     stmt.bind(index++, auther);
     stmt.bind(index++, url);
     stmt.bind(index++, cid);
+    stmt.bind(index++, aid);
     stmt.bind(index++, duration);
     stmt.bind(index++, type);
     stmt.bind(index++, fileExist);
@@ -33,12 +34,13 @@ void DownloadedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
     auther = stmt.column(index++).getString();
     url = stmt.column(index++).getString();
     cid = stmt.column(index++).getString();
+    aid = stmt.column(index++).getString();
     duration = stmt.column(index++);
     type = stmt.column(index++);
     fileExist = stmt.column(index++).getInt() != 0;
 }
 
-bool FinishItemStorage::isDownload(const std::string& guid)
+bool DownloadedItemStorage::isDownload(const std::string& guid)
 {
     updateFileExist();
 
@@ -60,12 +62,12 @@ bool FinishItemStorage::isDownload(const std::string& guid)
     return (1 == stmt.column(0).getInt());
 }
 
-std::vector<FinishItemStorage::Entity> FinishItemStorage::lastItems()
+std::vector<DownloadedItemStorage::Entity> DownloadedItemStorage::lastItems()
 {
     return queryEntities<Entity>(0, maxQueryNum, {});
 }
 
-void FinishItemStorage::updateFileExist()
+void DownloadedItemStorage::updateFileExist()
 {
     auto finishItems = queryEntities<Entity>(0, maxQueryNum, {});
     for (const auto& finishItem : finishItems)
@@ -76,7 +78,7 @@ void FinishItemStorage::updateFileExist()
     }
 }
 
-void FinishItemStorage::updateFileExist(bool exist, const std::string& guid)
+void DownloadedItemStorage::updateFileExist(bool exist, const std::string& guid)
 {
     auto& table = sqlite::TableStructInfo<Entity>::self();
     sqlite::ConditionWrapper condition;

@@ -146,11 +146,11 @@ void DownloadedItemWidget::openItemFolder()
 void DownloadedItemWidget::deleteDbFinishItem()
 {
     auto& storageManager = sqlite::StorageManager::intance();
-    auto& table = sqlite::TableStructInfo<FinishItemStorage::Entity>::self();
+    auto& table = sqlite::TableStructInfo<DownloadedItemStorage::Entity>::self();
     sqlite::ConditionWrapper condition;
     condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, m_videoInfoFull->getGuid());
 
-    storageManager.finishedItemStorage()->deleteEntities(condition);
+    storageManager.downloadedtemStorage()->deleteEntities(condition);
 }
 
 void DownloadedItemWidget::showInfoPanel() const
@@ -211,7 +211,7 @@ void DownloadedListWidget::reloadAll()
 void DownloadedListWidget::scan()
 {
     auto& storageManager = sqlite::StorageManager::intance();
-    storageManager.finishedItemStorage()->updateFileExist();
+    storageManager.downloadedtemStorage()->updateFileExist();
 
     int nCount = count();
     for (int i = 0; i < nCount; ++i)

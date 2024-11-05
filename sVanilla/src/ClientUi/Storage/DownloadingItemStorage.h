@@ -14,6 +14,7 @@ struct DownloadingItem
     std::string auther;
     std::string url;
     std::string cid;
+    std::string aid;
     double progress;
     int duration;
     int status;
@@ -35,6 +36,7 @@ TABLESTRUCTINFO_BEGIN(DownloadingItem)
     TABLESTRUCTINFO_COMLUNM(auther)
     TABLESTRUCTINFO_COMLUNM(url)
     TABLESTRUCTINFO_COMLUNM(cid)
+    TABLESTRUCTINFO_COMLUNM(aid)
     TABLESTRUCTINFO_COMLUNM(progress)
     TABLESTRUCTINFO_COMLUNM(duration)
     TABLESTRUCTINFO_COMLUNM(status)

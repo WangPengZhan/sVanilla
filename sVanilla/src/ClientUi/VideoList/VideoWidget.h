@@ -17,16 +17,20 @@ namespace biliapi
 class PlayUrlOrigin;
 class VideoViewOrigin;
 }  //  namespace biliapi
-struct CoverInfo;
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
 class VideoPage;
 }  //  namespace Ui
 QT_END_NAMESPACE
-struct DownloadConfig;
 
+struct CoverInfo;
+struct DownloadConfig;
 struct VideoInfoFull;
+
+class QPushButton;
+class DownloadTip;
 
 class VideoWidget : public QWidget
 {
@@ -96,6 +100,7 @@ private:
     QAction* m_durationOrder{nullptr};
     QAction* m_ascendingOrder{nullptr};
     QAction* m_descendingOrder{nullptr};
+    DownloadTip* m_downloadTip{nullptr};
     std::vector<std::shared_ptr<VideoInfoFull>> m_originalList;
     std::vector<std::shared_ptr<VideoInfoFull>> m_sortedList;
 };

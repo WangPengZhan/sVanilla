@@ -28,6 +28,7 @@
 #include "ClientUi/Storage/SearchHistoryStorage.h"
 #include "ClientUi/Storage/StorageManager.h"
 #include "ClientUi/MainWindow/SApplication.h"
+#include "DownloadTip.h"
 
 constexpr int coverMaxNum = 256;
 
@@ -40,6 +41,8 @@ VideoWidget::VideoWidget(QWidget* parent)
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    m_downloadTip = new DownloadTip(this);
+    m_downloadTip->hide();
 }
 
 VideoWidget::~VideoWidget()
@@ -217,49 +220,6 @@ void VideoWidget::showMenu(QPushButton* btn, QMenu* menu, std::function<void()> 
 
 void VideoWidget::sortItem(OrderType orderType)
 {
-#if 0
-    const auto& grid = ui->videoGridWidget;
-
-    auto items = grid->getVideoInfo();
-    if (m_originalList.empty())
-    {
-        m_originalList = items;
-    }
-    std::function<std::string(const std::shared_ptr<VideoInfoFull>&)> getItem;
-    switch (orderType)
-    {
-    case OrderType::Title:
-    {
-        getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
-            return info->videoView->Title;
-        };
-        break;
-    }
-    case OrderType::Date:
-    {
-        getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
-            return info->videoView->PublishDate;
-        };
-        break;
-    }
-    case OrderType::Duration:
-    {
-        getItem = [](const std::shared_ptr<VideoInfoFull>& info) {
-            return info->videoView->Duration;
-        };
-        break;
-    }
-    }
-    const auto sordOrder = m_ascendingOrder->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder;
-    sortInitialsItems(items, getItem, sordOrder);
-    m_sortedList = items;
-    grid->clear();
-    for (const auto& info : items)
-    {
-        addVideoItem(info);
-    }
-    grid->updateCovers();
-#else
     ui->videoListWidget->setOrderType(orderType);
     ui->videoGridWidget->setOrderType(orderType);
     if (orderType == OrderType::Origin)
@@ -273,7 +233,6 @@ void VideoWidget::sortItem(OrderType orderType)
         ui->videoListWidget->sortItems(sordOrder);
         ui->videoGridWidget->sortItems(sordOrder);
     }
-#endif
 }
 
 void VideoWidget::searchItem(const QString& text)
