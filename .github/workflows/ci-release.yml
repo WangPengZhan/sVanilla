@@ -48,11 +48,12 @@ jobs:
         uses: lukka/get-cmake@latest
 
       - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
+        uses: lukka/run-vcpkg@v10.1
         id: runvcpkg
         with:
           vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
           vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
+          appendedCacheKey: 'release_'
 
       - name: Install Qt Official Build
         uses: jurplel/install-qt-action@v3
@@ -164,11 +165,12 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libfcitx5-qt-dev tree
 
       - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
+        uses: lukka/run-vcpkg@v10.1
         id: runvcpkg
         with:
           vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
           vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
+          appendedCacheKey: 'release_'
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -283,11 +285,12 @@ jobs:
         - uses: lukka/get-cmake@latest
 
         - name: Setup vcpkg
-          uses: lukka/run-vcpkg@v11
+          uses: lukka/run-vcpkg@v10.1
           id: runvcpkg
           with:
             vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
             vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
+            appendedCacheKey: 'release_'
 
         - name: Install Qt
           uses: jurplel/install-qt-action@v4
