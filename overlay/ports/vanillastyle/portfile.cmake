@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO AlanusMeminius/VanillaStyle
-        REF fc5acb99e5326e7741c88262a4633194957badf4
-        SHA512 a386d321d68564ba7b7118a6e01f86bf01e934011068b22e9cfa4d8497c1c3097edfe8d8448abf03a4c65fdf44d67732e1fc044d6b7e2253d253f93facc5a8f1
+        REF 4db800cf4c8a7a048832287979d1a53575952b79
+        SHA512 97dc23952590649380cdd3bad375a998d4d71fc190cd8660320750f60b5e5a5e8782580706879c0cb4b7b325700b72c711766512566423a9464207cbb2a26478
     PATCHES
     dependence.patch
 )
@@ -17,26 +17,6 @@ file(COPY
     ${HEADER_FILE}
     DESTINATION "${SOURCE_PATH}/${PORT}/include"
 )
-
-if (WIN32)
-    if (DEFINED ENV{QT_ROOT_DIR})
-        set(QT_PATH "$ENV{Qt_DIR}" ${CMAKE_PREFIX_PATH})
-    elseif (DEFINED ENV{Qt_DIR})
-        set(QT_PATH "$ENV{Qt_DIR}" ${CMAKE_PREFIX_PATH})
-    elseif (DEFINED ENV{Qt6_DIR})
-        set(QT_PATH "$ENV{Qt6_DIR}" ${CMAKE_PREFIX_PATH})
-    elseif (DEFINED ENV{Qt5_DIR})
-        set(QT_PATH "$ENV{Qt5_DIR}" ${CMAKE_PREFIX_PATH})
-    elseif (DEFINED ENV{PATH})
-        foreach (PATH_ITEM $ENV{PATH})
-            string(TOLOWER "${PATH_ITEM}" PATH_ITEM_LOWER)
-            if (PATH_ITEM_LOWER MATCHES "qt")
-                set(CMAKE_PREFIX_PATH "${PATH_ITEM}" ${CMAKE_PREFIX_PATH})
-                break()
-            endif ()
-        endforeach ()
-    endif ()
-endif ()
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
