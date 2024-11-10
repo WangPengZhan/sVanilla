@@ -141,6 +141,7 @@ PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std:
     catch (const std::exception& e)
     {
         std::string str = e.what();
+        BILIBILI_LOG_ERROR("getPlayUrl error! cid: {},  qn: {},  bvid: {}, fnva: {}, error: {}", cid, qn, bvid, fnval, str);
         return PlayUrlOrigin();
     }
 }
@@ -162,6 +163,7 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
     auto header = parseHeader(response.header);
     if (header.end() != header.find(network::set_cookies))
     {
+        BILIBILI_LOG_INFO("Login success!");
         std::lock_guard lk(m_mutexRequest);
         m_cookies.setContent(header.at(network::set_cookies));
         m_commonOptions[network::CookieFileds::opt] = std::make_shared<network::CookieFileds>(m_cookies);
@@ -214,6 +216,7 @@ LogoutExitV2 BilibiliClient::getLogoutExitV2()
     auto logout = LogoutExitV2(getDataFromRespones(response));
     if (logout.code == 0)
     {
+        BILIBILI_LOG_ERROR("getLogoutExitV2");
         std::lock_guard lk(m_mutexRequest);
         m_cookies = network::CurlCookies();
         m_commonOptions.erase(network::CookieFileds::opt);
@@ -317,7 +320,7 @@ nlohmann::json BilibiliClient::getDataFromRespones(const std::string& respones)
     }
     catch (std::exception& e)
     {
-        // BILIBILI_LOG_ERROR("Error parsing response: {}", e.what());
+        BILIBILI_LOG_ERROR("Error parsing response: {}", e.what());
     }
 
     return json;

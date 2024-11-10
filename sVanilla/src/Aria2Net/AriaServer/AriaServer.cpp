@@ -24,6 +24,7 @@ AriaServer::~AriaServer()
     m_transceiver->sendTask([this, &promise]() {
         if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
         {
+            ARIA_LOG_INFO("killed ariaserver");
             m_aria2Process->kill();
             m_aria2Process->waitForFinished();
             m_aria2Process.reset();
@@ -31,6 +32,7 @@ AriaServer::~AriaServer()
         promise.set_value();
     });
     promise.get_future().get();
+    ARIA_LOG_INFO("AriaServer exit");
 }
 
 void AriaServer::startLocalServerAsync()
@@ -99,6 +101,7 @@ void AriaServer::closeServer()
     m_transceiver->sendTask([this]() {
         if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
         {
+            ARIA_LOG_INFO("killed ariaserver");
             m_aria2Process->kill();
             m_aria2Process->waitForFinished();
             m_aria2Process.reset();
@@ -111,6 +114,7 @@ void AriaServer::forceCloseServer()
     m_transceiver->sendTask([this]() {
         if (m_aria2Process && m_aria2Process->state() == QProcess::Running)
         {
+            ARIA_LOG_INFO("killed ariaserver");
             m_aria2Process->kill();
             m_aria2Process->waitForFinished();
             m_aria2Process.reset();

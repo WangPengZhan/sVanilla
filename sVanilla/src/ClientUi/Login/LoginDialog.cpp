@@ -21,6 +21,8 @@
 #include "Login/LoginMonitor.h"
 #include "SUI/QrCodeGenerator.h"
 #include "Utils/RunTask.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 LoginDialog::LoginDialog(std::shared_ptr<AbstractLogin> loginer, QDialog* parent)
     : QDialog(parent)
@@ -46,6 +48,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     {
         return;
     }
+
     m_status = status;
     m_movie.stop();
     ui->btnRefresh->hide();
@@ -54,6 +57,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     {
     case AbstractLogin::Error:
     {
+        MLogI(svanilla::cLoginModule, "LoginSatus Error!");
         auto svgContext = m_loginer->resource(AbstractLogin::Refresh);
         auto pixmap = binToImage(svgContext, ui->btnRefresh->size());
         QIcon icon(pixmap);
@@ -65,6 +69,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     }
     case AbstractLogin::Timeout:
     {
+        MLogI(svanilla::cLoginModule, "LoginSatus Timeout!");
         auto svgContext = m_loginer->resource(AbstractLogin::Refresh);
         auto pixmap = binToImage(svgContext, ui->btnRefresh->iconSize());
         QIcon icon(pixmap);
@@ -76,6 +81,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     }
     case AbstractLogin::ScanedNoAck:
     {
+        MLogI(svanilla::cLoginModule, "LoginSatus ScanedNoAck!");
         auto svgContext = m_loginer->resource(AbstractLogin::WaitConfirm);
         auto pixmap = binToImage(svgContext, ui->btnRefresh->iconSize());
         QIcon icon(pixmap);
@@ -87,6 +93,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     }
     case AbstractLogin::Success:
     {
+        MLogI(svanilla::cLoginModule, "LoginSatus Success!");
         m_loginer->loginSuccess();
         QTimer::singleShot(1000, this, [this] {
             accept();
@@ -101,6 +108,7 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
 
 void LoginDialog::slotBtnRefreshClicked()
 {
+    MLogI(svanilla::cLoginModule, "slotBtnRefreshClicked");
     if (m_status == AbstractLogin::Error || m_status == AbstractLogin::Timeout)
     {
         loadOrc();

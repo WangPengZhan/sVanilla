@@ -4,6 +4,8 @@
 
 #include "Translater.h"
 #include "Config/SingleConfig.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 Translater::Translater(QString translatesDir, QObject* parent)
     : QObject(parent)
@@ -58,6 +60,7 @@ void Translater::setLanguage(Language language)
         auto translator = std::make_shared<QTranslator>();
         if (!translator->load(translateFile, translateDir.absolutePath()))
         {
+            MLogW(svanilla::cMainWindowModule, "translator load error, file: {}", translateFile.toStdString());
             qDebug() << "translator load error, file: " << translateFile;
             continue;
         }
@@ -68,9 +71,12 @@ void Translater::setLanguage(Language language)
     {
         qApp->removeTranslator(translator.get());
     }
+
     m_translators = translators;
+
     if (language != English)
     {
+        MLogW(svanilla::cMainWindowModule, "installTranslator language: {}", static_cast<int>(language));
         for (const auto& translator : m_translators)
         {
             qApp->installTranslator(translator.get());

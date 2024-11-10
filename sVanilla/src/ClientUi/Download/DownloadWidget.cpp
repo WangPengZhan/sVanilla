@@ -17,6 +17,8 @@
 #include "Download/DownloadedListWidget.h"
 #include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 constexpr bool isMp4 = false;
 
@@ -48,6 +50,7 @@ void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std
 
 void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info)
 {
+    MLogI(svanilla::cDownloadModule, "addDownloadTask: {}", videoInfo->getGuid());
     auto biliDownlaoder = std::make_shared<download::BiliDownloader>(info);
     auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder, videoInfo);
     uiDownloader->setStatus(UiDownloader::Ready);
@@ -57,6 +60,7 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, d
 
 void DownloadWidget::addDownloadedItem(std::shared_ptr<VideoInfoFull> videoInfo)
 {
+    MLogI(svanilla::cDownloadModule, "addDownloadedItem: {}", videoInfo->getGuid());
     ui->downloadedListWidget->addDownloadedItem(videoInfo);
 }
 
@@ -65,6 +69,7 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
     bool isDownload = sqlite::StorageManager::intance().isDownloaded(videoInfo->getGuid());
     if (isDownload)
     {
+        MLogW(svanilla::cDownloadModule, "getBiliUrl has exist: {}", videoInfo->getGuid());
         return;
     }
 
@@ -83,11 +88,13 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
         }
 
         long long fnval = isMp4 ? 1 : 16;
+        MLogI(svanilla::cDownloadModule, "getPlayUrl has exist: {}, qn: {}, fnval: {}", copyedVideoInfo->getGuid(), qn, fnval);
         return biliClient.getPlayUrl(std::stoll(copyedVideoInfo->videoView->VideoId), qn, copyedVideoInfo->videoView->Identifier, fnval);
     };
     auto callback = [this, copyedVideoInfo](const biliapi::PlayUrlOrigin& result) {
         if (result.code != 0)
         {
+            MLogW(svanilla::cDownloadModule, "getPlayUrl error {}, error message: {}", result.code, result.message);
             return;
         }
         praseBiliDownloadUrl(result, copyedVideoInfo);
@@ -130,6 +137,7 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
             }
         }
 
+        MLogI(svanilla::cDownloadModule, "needDownloadVideoId: {}", needDownloadVideoId);
         for (const auto& video : videos)
         {
             if (video.id == needDownloadVideoId)
@@ -148,6 +156,7 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
             }
         }
 
+        MLogI(svanilla::cDownloadModule, "needDownloadAudioId: {}", needDownloadAudioId);
         for (const auto& audio : audios)
         {
             if (audio.id == needDownloadAudioId)

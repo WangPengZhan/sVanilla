@@ -1,4 +1,6 @@
 #include "LoginMonitor.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 #include <chrono>
 
@@ -42,12 +44,14 @@ std::shared_ptr<AbstractLogin> LoginMonitor::loginer()
 
 void LoginMonitor::stop()
 {
+    MLogI(svanilla::cLoginModule, "monitorStatus stop!");
     m_stop = true;
     m_cv.notify_all();
 }
 
 void LoginMonitor::monitorStatus()
 {
+    MLogI(svanilla::cLoginModule, "monitorStatus start!");
     while (true)
     {
         std::unique_lock<SNullMutex> lk(m_waitNullMutex);
@@ -79,4 +83,5 @@ void LoginMonitor::monitorStatus()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
+    MLogI(svanilla::cLoginModule, "monitorStatus exit!");
 }

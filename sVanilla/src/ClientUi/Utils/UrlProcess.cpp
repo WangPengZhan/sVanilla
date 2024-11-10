@@ -123,17 +123,8 @@ QString FileHelp::removeSpecialChar(const QString& path)
 
 std::string FileHelp::removeSpecialChar(const std::string& path)
 {
-    std::string result = path;
-    for (const auto& specialChar : specialChars)
-    {
-        result.erase(std::remove_if(result.begin(), result.end(),
-                                    [specialChar](char c) {
-                                        return specialChar == c;
-                                    }),
-                     result.end());
-    }
-
-    return result;
+    QString qPath = QString::fromStdString(path);
+    return removeSpecialChar(qPath).toStdString();
 }
 
 }  // namespace util

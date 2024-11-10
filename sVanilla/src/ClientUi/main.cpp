@@ -16,6 +16,20 @@
 #include <QDir>
 #include <QDateTime>
 
+std::string getOsType()
+{
+#if defined(_WIN32)
+    const std::string osType = "Windows";
+#elif defined(__APPLE__)
+    const std::string osType = "macOS";
+#elif defined(__linux__)
+    const std::string osType = "Linux";
+#else
+    const std::string osType = "Unknown";
+#endif
+    return osType;
+}
+
 void startLog()
 {
     auto exePath = getModulePath();
@@ -27,6 +41,7 @@ void startLog()
     MLogI(svanilla::cMainModule, "BuildTime: {}", SVNLA_BUILD_STR);
     MLogI(svanilla::cMainModule, "WorkDir: {}", exePath);
     MLogI(svanilla::cMainModule, "AppDir: {}", (SApplication::appDir().isEmpty() ? exePath : SApplication::appDir().toStdString()));
+    MLogI(svanilla::cMainModule, "Operating system is: {}", getOsType());
     MLogI(svanilla::cMainModule, "-----------------------------");
 }
 
@@ -54,7 +69,9 @@ int main(int argc, char* argv[])
     if (singleAppHelper.isHaveInstance())
     {
         MLogW(svanilla::cMainModule, "sVanilla has opened, please check it");
-        MLogW(svanilla::cMainModule, "==== second exit ====");
+        MLogI(svanilla::cMainModule, "-----------------------------");
+        MLogI(svanilla::cMainModule, "==== second exit ====");
+        MLogI(svanilla::cMainModule, "-----------------------------");
         return 0;
     }
 
@@ -66,5 +83,11 @@ int main(int argc, char* argv[])
     maimWindow.show();
     CLog_Unique_TimerK_END(MainWindow_firstShow);
 
-    return restarter.restartOrExit(SApplication::exec());
+    int exitCode = restarter.restartOrExit(SApplication::exec());
+
+    MLogI(svanilla::cMainModule, "-----------------------------");
+    MLogI(svanilla::cMainModule, "exit svanilla, time: {} exitCode: {}", QDateTime::currentDateTime().toString().toStdString(), exitCode);
+    MLogI(svanilla::cMainModule, "-----------------------------");
+
+    return exitCode;
 }

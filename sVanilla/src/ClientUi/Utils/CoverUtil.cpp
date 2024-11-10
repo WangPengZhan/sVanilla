@@ -1,5 +1,9 @@
 #include "CoverUtil.h"
+
 #include "NetWork/CNetWork.h"
+#include "ClientLog.h"
+#include "const_string.h"
+
 #include <QString>
 #include <QDir>
 
@@ -13,6 +17,12 @@ bool downloadCoverImage(const CoverInfo& coverInfo)
 
     std::string path = fullPath.toLocal8Bit().toStdString();
     FILE* file = fopen(path.c_str(), "wb");
+    if (!file)
+    {
+        std::string str = strerror(errno);
+        MLogE(svanilla::cDownloadModule, "fopen error: {}", str);
+        return false;
+    }
     network::NetWork netWork;
     netWork.get(coverInfo.url, file);
     fclose(file);

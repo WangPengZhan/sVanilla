@@ -21,6 +21,8 @@
 #include "SUI/Tips/Toast.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 static constexpr int systemButtonSize = 14;
 constexpr char softwareName[] = "sVanilla";
@@ -49,6 +51,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
     if (systemTray->isVisible() && ui->settingPage->isEnableMinimizeTray() == Qt::Checked)
     {
+        MLogI(svanilla::cMainWindowModule, "closeEvent ignore");
         hide();
         event->ignore();
     }
@@ -69,6 +72,7 @@ void MainWindow::setUi()
 
     if (ui->settingPage->isSaveMainWindow() == Qt::Checked)
     {
+        MLogI(svanilla::cMainWindowModule, "restoreGeometry");
         QString projectPath = SApplication::appDir() + "/.sVanilla";
         QFile projectFile(projectPath + "/MainWindow");
         if (projectFile.open(QIODevice::ReadOnly))
@@ -84,7 +88,7 @@ void MainWindow::signalsAndSlots()
     // tab bar btn click event to change stacked page
     connect(windowBar, &WindowBar::barBtnClick, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
-    connect(ui->stackedWidget, &QStackedWidget::currentChanged, [this](const int index) {
+    connect(ui->stackedWidget, &QStackedWidget::currentChanged, this, [this](const int index) {
         if (index == 3)
         {
             ui->settingPage->connectAria2Server();
@@ -122,6 +126,7 @@ void MainWindow::signalsAndSlots()
             return;
         }
 
+        MLogI(svanilla::cMainWindowModule, "saveGeometry");
         QString projectPath = SApplication::appDir() + "/.sVanilla";
         QDir projectDir(projectPath);
         if (!projectDir.exists())
@@ -255,6 +260,7 @@ void MainWindow::createTrayIcon()
     connect(systemTray, &QSystemTrayIcon::activated, this, [&](QSystemTrayIcon::ActivationReason reason) {
         if (reason == QSystemTrayIcon::Trigger)
         {
+            MLogI(svanilla::cMainWindowModule, "QSystemTrayIcon::activated");
             if (isVisible() || QApplication::activeWindow())
             {
                 hide();

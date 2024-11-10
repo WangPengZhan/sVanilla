@@ -3,6 +3,8 @@
 #include <QWidget>
 
 #include "SingleAppHelper.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 QString SingleAppHelper::m_strServerName{"sVanilla"};
 
@@ -52,6 +54,7 @@ void SingleAppHelper::tryConnectLocaled()
             // 此时监听失败，可能是程序崩溃时, 残留进程服务导致的, 移除之
             if (m_pLocalServer->serverError() == QAbstractSocket::AddressInUseError)
             {
+                MLogI(svanilla::cMainWindowModule, "LocalServer AddressInUseError");
                 QLocalServer::removeServer(m_strServerName);
                 m_pLocalServer->listen(m_strServerName);
             }
@@ -66,11 +69,12 @@ void SingleAppHelper::newLocalConnection()
     {
         return;
     }
-
     delete pSocket;
+
     if (m_pMainWidget)
     {
         // active running windows
+        MLogI(svanilla::cMainWindowModule, "LocalServer activateWindow");
         m_pMainWidget->raise();
         m_pMainWidget->activateWindow();
         m_pMainWidget->setWindowState((m_pMainWidget->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);

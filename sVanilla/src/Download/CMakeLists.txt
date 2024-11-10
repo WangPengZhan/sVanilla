@@ -4,6 +4,7 @@ project(Download
     VERSION 1.0.0 
     LANGUAGES CXX)
 
+find_package(spdlog REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 
@@ -19,4 +20,5 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         nlohmann_json::nlohmann_json
+        spdlog::spdlog
 )

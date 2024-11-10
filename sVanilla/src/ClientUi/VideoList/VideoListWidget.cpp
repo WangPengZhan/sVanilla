@@ -8,6 +8,8 @@
 #include "ui_VideoListWidget.h"
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "ClientUi/VideoList/VideoData.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 VideoListItemWidget::VideoListItemWidget(QWidget* parent)
     : QWidget(parent)
@@ -84,6 +86,7 @@ void VideoListItemWidget::contextMenuEvent(QContextMenuEvent* event)
 
 void VideoListItemWidget::downloadItem() const
 {
+    MLogI(svanilla::cVideoList, "downloadItem {}", m_infoFull->getGuid());
     emit m_listWidget->downloandBtnClick(m_infoFull);
 }
 
@@ -137,6 +140,7 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
 
 void VideoListWidget::clearVideo()
 {
+    MLogI(svanilla::cVideoList, "clearVideo");
     clear();
 }
 

@@ -56,6 +56,7 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
         ffmpegArg << "-i" << mergeInfo.audio.c_str() << "-i" << mergeInfo.video.c_str() << "-acodec" << "copy" << "-vcodec" << "copy" << "-f" << "mp4"
                   << mergeInfo.targetVideo.c_str();
         qDebug() << ffmpegArg;
+        FFMPEG_LOG_INFO("starting ffmpeg process, param: {}", ffmpegArg.join(" ").toStdString());
 
         QProcess ffmpegProcess;
         ffmpegProcess.setProgram(ffmpegExecutable);

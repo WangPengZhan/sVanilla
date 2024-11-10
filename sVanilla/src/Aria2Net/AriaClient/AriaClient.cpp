@@ -159,6 +159,7 @@ std::string AriaClient::ConstructURL() const
 {
     return GetRpcUri(6800);
 }
+
 std::string AriaClient::GetToken() const
 {
     return TOKEN;

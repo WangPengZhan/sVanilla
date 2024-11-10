@@ -29,6 +29,8 @@
 #include "ClientUi/Storage/StorageManager.h"
 #include "ClientUi/MainWindow/SApplication.h"
 #include "DownloadTip.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 constexpr int coverMaxNum = 256;
 
@@ -59,6 +61,7 @@ void VideoWidget::signalsAndSlots()
     });
 
     connect(ui->lineEdit, &AddLinkLineEdit::Complete, this, [this]() {
+        MLogI(svanilla::cVideoList, "parseUri {}", ui->lineEdit->text().toStdString());
         emit parseUri(ui->lineEdit->text().toStdString());
     });
 
@@ -70,12 +73,14 @@ void VideoWidget::signalsAndSlots()
     });
 
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
+        MLogI(svanilla::cVideoList, "btnHistory");
         showMenu(ui->btnHistory, m_historyMenu, [this]() {
             createHistoryMenu();
         });
     });
     connect(ui->btnClipboard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
+        MLogI(svanilla::cVideoList, "parseUri {}", clipboard->text().toStdString());
         emit parseUri(clipboard->text().toStdString());
     });
 
@@ -220,6 +225,7 @@ void VideoWidget::showMenu(QPushButton* btn, QMenu* menu, std::function<void()> 
 
 void VideoWidget::sortItem(OrderType orderType)
 {
+    MLogI(svanilla::cVideoList, "sortItem {}", static_cast<int>(orderType));
     ui->videoListWidget->setOrderType(orderType);
     ui->videoGridWidget->setOrderType(orderType);
     if (orderType == OrderType::Origin)
@@ -261,6 +267,7 @@ void VideoWidget::searchItem(const QString& text)
 
 void VideoWidget::resetList()
 {
+    MLogI(svanilla::cVideoList, "resetList");
     const auto& grid = ui->videoGridWidget;
     const auto& list = ui->videoListWidget;
     const int rows = grid->count();
@@ -357,6 +364,7 @@ QString VideoWidget::getCoverPath() const
 
 void VideoWidget::prepareBiliVideoView(const std::string& uri)
 {
+    MLogI(svanilla::cVideoList, "rprepareBiliVideoView uri: {}", uri);
     auto taskFunc = [this, uri]() {
         return biliapi::BilibiliClient::globalClient().getVideoView(uri);
     };

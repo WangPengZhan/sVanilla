@@ -2,6 +2,7 @@
 
 #include "BiliDownloader.h"
 #include "FFmpeg/FFmpegHelper.h"
+#include "DownloadLog.h"
 
 namespace download
 {
@@ -89,6 +90,7 @@ void BiliDownloader::downloadStatus()
 {
     if (m_videoDownloader.status() == Error || (m_haveTwoPart && m_audioDownloader.status() == Error))
     {
+        DOWNLOAD_LOG_ERROR("BiliDownloader downloadStatus error, filename: {}", filename());
         m_status = Error;
         return;
     }

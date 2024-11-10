@@ -1,5 +1,6 @@
 #include "AriaDownloader.h"
 #include "Aria2Net/AriaClient/AriaClient.h"
+#include "DownloadLog.h"
 
 namespace download
 {
@@ -28,7 +29,11 @@ void AriaDownloader::start()
     aria2net::AriaAddUri result = aria2net::AriaClient::globalClient().AddUriAsync(m_uris, m_ariaSendOption);
     if (result.error.code != 0)
     {
-        // to do
+        std::string res;
+        std::for_each(m_uris.begin(), m_uris.end(), [&res](const std::string& url) {
+            res += url;
+        });
+        DOWNLOAD_LOG_ERROR("AriaDownloader start error: {}, uri: {}", result.error.message, res);
         m_status = Error;
         return;
     }
@@ -41,18 +46,21 @@ void AriaDownloader::stop()
 {
     aria2net::AriaClient::globalClient().RemoveAsync(m_gid);
     m_status = Waitting;
+    DOWNLOAD_LOG_INFO("AriaDownloader stop gid: {}", m_gid);
 }
 
 void AriaDownloader::pause()
 {
     aria2net::AriaClient::globalClient().PauseAsync(m_gid);
     m_status = Paused;
+    DOWNLOAD_LOG_INFO("AriaDownloader pause gid: {}", m_gid);
 }
 
 void AriaDownloader::resume()
 {
     aria2net::AriaClient::globalClient().UnpauseAsync(m_gid);
     m_status = Downloading;
+    DOWNLOAD_LOG_INFO("AriaDownloader resume gid: {}", m_gid);
 }
 
 void AriaDownloader::downloadStatus()
@@ -60,6 +68,11 @@ void AriaDownloader::downloadStatus()
     m_downloadTellStatus = aria2net::AriaClient::globalClient().TellStatus(m_gid);
     if (m_downloadTellStatus.error.code != 0 || (!m_downloadTellStatus.result.errorCode.empty() && m_downloadTellStatus.result.errorCode != "0"))
     {
+        std::string res;
+        std::for_each(m_uris.begin(), m_uris.end(), [&res](const std::string& url) {
+            res += url;
+        });
+        DOWNLOAD_LOG_ERROR("AriaDownloader start error: {}, uri: {}", m_downloadTellStatus.error.message, res);
         m_status = Error;
         return;
     }

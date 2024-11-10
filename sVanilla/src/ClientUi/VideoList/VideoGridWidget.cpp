@@ -17,6 +17,8 @@
 #include "ClientUi/VideoList/VideoData.h"
 #include "ClientUi/MainWindow/SApplication.h"
 #include "Utils/UrlProcess.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 void elideText(QLabel* label, const QString& text)
 {
@@ -109,6 +111,7 @@ void VideoGridItemWidget::setCover()
     const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->coverPath()) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
+        MLogI(svanilla::cVideoList, "setCover, paath: {}", filePath.toStdString());
         const QPixmap pixmap(fullPath);
         ui->cover->setPixmap(pixmap);
         update();
@@ -180,6 +183,7 @@ VideoGridWidget::VideoGridWidget(QWidget* parent)
 
 void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoView)
 {
+    MLogI(svanilla::cVideoList, "addVideoItem {}", videoView->videoView->Title);
     auto* const videoItem = new VideoGridItemWidget(this);
     auto* const item = new VideoListWidgetItem(videoView, count());
     addItem(item);
@@ -296,6 +300,7 @@ void VideoGridWidget::downloadItem(QListWidgetItem* item)
     {
         return;
     }
+    MLogI(svanilla::cVideoList, "downloadItem {}", gridWidget->getVideoInfo()->getGuid());
     emit downloandBtnClick(gridWidget->getVideoInfo());
 }
 

@@ -3,6 +3,8 @@
 #include <QApplication>
 
 #include "Restarter.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 Restarter::Restarter(int argc, char* argv[])
 {
@@ -38,6 +40,7 @@ int Restarter::restartOrExit(int exitCode)
 
 int Restarter::restart(int exitCode)
 {
+    MLogI(svanilla::cMainWindowModule, "restart, exit code {}", exitCode);
     QProcess::startDetached(m_executable, m_args, m_workingPath);
     return exitCode;
 }

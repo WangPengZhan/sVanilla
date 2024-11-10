@@ -31,6 +31,7 @@ void Logger::initLog()
     registerLogger("FFmpeg");
     registerLogger("SQLite");
     registerLogger("ThreadPool");
+    registerLogger("Download");
 }
 
 Logger::Logger()

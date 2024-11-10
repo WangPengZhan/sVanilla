@@ -3,6 +3,8 @@
 
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 template <typename Func>
 struct CallableTraits : CallableTraits<decltype(&Func::operator())>
@@ -27,9 +29,9 @@ void runTask(TaskFunc taskFunc, Callback callback, QObject* object = nullptr)
             const auto& result = std::any_cast<ResultType>(res);
             callback(result);
         }
-        catch (const std::bad_any_cast& e)
+        catch (const std::exception& e)
         {
-            // 这里可以添加错误处理代码
+            CLINET_LOG_ERROR("exception ocurred, message: {}", e.what());
         }
     });
     ThreadPool::instance().enqueue(task);

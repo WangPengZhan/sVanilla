@@ -43,7 +43,7 @@ public:
     static QString EnableHttps(const QString& url);
 };
 
-static constexpr char specialChars[] = "?/\"\\<>*|:";
+static constexpr char specialChars[] = "?/\"\\<>*|:•";
 
 std::string u8ToString(const std::u8string& u8Str);
 

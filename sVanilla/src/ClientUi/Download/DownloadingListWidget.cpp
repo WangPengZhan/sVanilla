@@ -21,6 +21,8 @@
 #include "MainWindow/SApplication.h"
 #include "Utils/SpeedUtil.h"
 #include "Util/TimerUtil.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
     : QWidget(parent)
@@ -56,6 +58,8 @@ std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder() const
 void DownloadingItemWidget::setStart()
 {
     const auto status = m_downloader->status();
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget setStart, status: {} | fileName: {} | guid: {}", static_cast<int>(status),
+          m_downloader->videoInfoFull()->fileName(), m_downloader->videoInfoFull()->getGuid());
     if (status == download::AbstractDownloader::Waitting)
     {
         m_downloader->setStatus(download::AbstractDownloader::Ready);
@@ -69,12 +73,15 @@ void DownloadingItemWidget::setStart()
 
 void DownloadingItemWidget::setPause()
 {
-    if (m_downloader->status() == download::AbstractDownloader::Downloading)
+    const auto status = m_downloader->status();
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget setPause, status: {} | fileName: {} | guid: {}", static_cast<int>(status),
+          m_downloader->videoInfoFull()->fileName(), m_downloader->videoInfoFull()->getGuid());
+    if (status == download::AbstractDownloader::Downloading)
     {
         m_downloader->setStatus(download::AbstractDownloader::Paused);
         ui->btnPause->setChecked(true);
     }
-    else if (m_downloader->status() == download::AbstractDownloader::Ready)
+    else if (status == download::AbstractDownloader::Ready)
     {
         m_downloader->setStatus(download::AbstractDownloader::Waitting);
     }
@@ -82,6 +89,8 @@ void DownloadingItemWidget::setPause()
 
 void DownloadingItemWidget::setDelete()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget setDelete,  fileName: {} | guid: {}", m_downloader->videoInfoFull()->fileName(),
+          m_downloader->videoInfoFull()->getGuid());
     deleteItem();
 }
 
@@ -123,6 +132,8 @@ void DownloadingItemWidget::signalsAndSlots()
 
 void DownloadingItemWidget::deleteItem()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget deleteItem, fileName: {} | guid: {}", m_downloader->videoInfoFull()->fileName(),
+          m_downloader->videoInfoFull()->getGuid());
     m_downloader->setStatus(download::AbstractDownloader::Stopped);
     if (m_listWidget == nullptr)
     {
@@ -140,6 +151,8 @@ void DownloadingItemWidget::deleteItem()
 
 void DownloadingItemWidget::pauseItem(bool isResume)
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget pauseItem{}, fileName: {} | guid: {}", isResume, m_downloader->videoInfoFull()->fileName(),
+          m_downloader->videoInfoFull()->getGuid());
     auto status = m_downloader->status();
     auto setStatus = [&](auto newStatus) {
         if (status != newStatus)
@@ -174,6 +187,7 @@ void DownloadingItemWidget::openItemFolder()
         filePath = SApplication::appDir() + "/" + filePath;
     }
 
+    MLogI(svanilla::cDownloadModule, "showInFileExplorer fileName: {}", filePath.toStdString());
     util::showInFileExplorer(filePath);
 }
 
@@ -209,6 +223,8 @@ void DownloadingItemWidget::updateDownloadingItem(const download::DownloadInfo& 
 
 void DownloadingItemWidget::finishedItem()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget finished! fileName: {} | guid: {} ", m_downloader->videoInfoFull()->fileName(),
+          m_downloader->videoInfoFull()->getGuid());
     constexpr auto maxProgress = 100;
     ui->progressBar->setValue(maxProgress);
     ui->labelStatus->setText("finished");
@@ -327,6 +343,8 @@ DownloadingListWidget::DownloadingListWidget(QWidget* parent)
 
 void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>& downloader)
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget finished! fileName: {} | guid: {} ", downloader->videoInfoFull()->fileName(),
+          downloader->videoInfoFull()->getGuid());
     auto* pWidget = new DownloadingItemWidget(downloader, this);
     auto* pItem = new QListWidgetItem(this);
     pWidget->setListWidget(this, pItem);
@@ -337,6 +355,7 @@ void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>&
 
 void DownloadingListWidget::startAll()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget startAll!");
     const int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
@@ -349,6 +368,7 @@ void DownloadingListWidget::startAll()
 
 void DownloadingListWidget::pauseAll()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget pauseAll!");
     const int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
@@ -361,6 +381,7 @@ void DownloadingListWidget::pauseAll()
 
 void DownloadingListWidget::deleteAll()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget deleteAll!");
     const int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
@@ -393,6 +414,7 @@ QListWidgetItem* DownloadingListWidget::itemFromWidget(DownloadingItemWidget* ta
 
 void DownloadingListWidget::startSelectedItem()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget startSelectedItem!");
     for (auto* widgetItem : selectedItems())
     {
         auto* const downloadingItemWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(widgetItem));
@@ -405,6 +427,7 @@ void DownloadingListWidget::startSelectedItem()
 
 void DownloadingListWidget::deleteSelectedItem()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadingItemWidget deleteSelectedItem!");
     for (auto* widgetItem : selectedItems())
     {
         auto* const downloadingItemWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(widgetItem));

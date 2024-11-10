@@ -19,6 +19,8 @@
 #include "BaseQt/Utility.h"
 #include "MainWindow/SApplication.h"
 #include "Utils/SpeedUtil.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
@@ -89,10 +91,10 @@ void DownloadedItemWidget::signalsAndSlots()
 
 void DownloadedItemWidget::deleteItem()
 {
-    deleteDbFinishItem();
-
     if (const auto* item = m_listWidget->itemFromWidget(this))
     {
+        MLogI(svanilla::cDownloadModule, "downloadItem delete! name: {}, guid: {}", m_videoInfoFull->videoView->Title, m_videoInfoFull->getGuid());
+        deleteDbFinishItem();
         delete item;
         deleteLater();
         return;
@@ -110,6 +112,7 @@ void DownloadedItemWidget::restartItem()
 
     deleteDbFinishItem();
 
+    MLogI(svanilla::cDownloadModule, "downloadItem restart! name: {}, guid: {}", m_videoInfoFull->videoView->Title, m_videoInfoFull->getGuid());
     emit m_listWidget->reloadItem(m_videoInfoFull);
 
     if (const auto* item = m_listWidget->itemFromWidget(this))
@@ -140,6 +143,7 @@ void DownloadedItemWidget::openItemFolder()
         filePath = SApplication::appDir() + "/" + filePath;
     }
 
+    MLogI(svanilla::cDownloadModule, "showInFileExplorer fileName: {}", filePath.toStdString());
     util::showInFileExplorer(filePath);
 }
 
@@ -165,7 +169,7 @@ void DownloadedItemWidget::showInfoPanel() const
 DownloadedListWidget::DownloadedListWidget(QWidget* parent)
     : QListWidget(parent)
 {
-    setObjectName(QStringLiteral("DownloadedListWidget"));
+    setObjectName("DownloadedListWidget");
     verticalScrollBar()->setSingleStep(1);
     verticalScrollBar()->setPageStep(5);
     signalsAndSlots();
@@ -185,6 +189,7 @@ void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull
 
 void DownloadedListWidget::clearAll()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadedListWidget clearAll");
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
@@ -198,6 +203,7 @@ void DownloadedListWidget::clearAll()
 
 void DownloadedListWidget::reloadAll()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadedListWidget reloadAll");
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
@@ -210,6 +216,7 @@ void DownloadedListWidget::reloadAll()
 
 void DownloadedListWidget::scan()
 {
+    MLogI(svanilla::cDownloadModule, "DownloadedListWidget scan");
     auto& storageManager = sqlite::StorageManager::intance();
     storageManager.downloadedtemStorage()->updateFileExist();
 
