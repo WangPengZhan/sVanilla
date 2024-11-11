@@ -7,6 +7,7 @@
 #include "UiDownloader.h"
 #include "Download/BiliDownloader.h"
 #include "SUI/Tips/Toast.h"
+#include "SUI/Tips/ToastTip.h"
 #include "VideoList/VideoData.h"
 #include "BiliApi/BilibiliClient.h"
 #include "Utils/UrlProcess.h"
@@ -69,6 +70,7 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
     bool isDownload = sqlite::StorageManager::intance().isDownloaded(videoInfo->getGuid());
     if (isDownload)
     {
+        ToastTip::showTip(tr("video has exist"), ToastTip::Warn);
         MLogW(svanilla::cDownloadModule, "getBiliUrl has exist: {}", videoInfo->getGuid());
         return;
     }
@@ -176,6 +178,7 @@ void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl,
     const std::list<std::string> h = {"Referer: https://www.bilibili.com", std::string("User-Agent: ") + network::chrome};
     info.option.header = h;
 
+    ToastTip::showTip(tr("video add to download!"), ToastTip::Success);
     emit sigDownloadTask(videoInfo, info);
 }
 
@@ -255,6 +258,7 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->btnRedownload, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::reloadAll);
     connect(ui->btnScaned, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::scan);
     connect(ui->downloadedListWidget, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
+    connect(ui->downloadingListWidget, &DownloadingListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
 }
 
 void DownloadWidget::initHistoryData()

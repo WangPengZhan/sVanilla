@@ -23,6 +23,8 @@
 #include "Util/TimerUtil.h"
 #include "ClientLog.h"
 #include "const_string.h"
+#include "Storage/StorageManager.h"
+#include "Adapter/BaseVideoView.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
     : QWidget(parent)
@@ -32,6 +34,7 @@ DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downl
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    m_status.Status = download::AbstractDownloader::Ready;
 }
 
 DownloadingItemWidget::~DownloadingItemWidget()
@@ -121,7 +124,15 @@ void DownloadingItemWidget::signalsAndSlots()
 {
     connect(ui->btnDelete, &QPushButton::clicked, this, &DownloadingItemWidget::deleteItem);
     connect(ui->btnPause, &QPushButton::clicked, this, &DownloadingItemWidget::pauseItem);
-    connect(ui->btnFolder, &QPushButton::clicked, this, &DownloadingItemWidget::openItemFolder);
+    connect(ui->btnFolder, &QPushButton::clicked, this, [&]() {
+        if (ui->btnFolder->isCheckable())
+        {
+        }
+        else
+        {
+            openItemFolder();
+        }
+    });
     connect(ui->btnDetail, &QPushButton::clicked, this, &DownloadingItemWidget::showInfoPanel);
 
     connect(m_downloader.get(), &UiDownloader::finished, this, &DownloadingItemWidget::finishedItem);
@@ -188,7 +199,15 @@ void DownloadingItemWidget::openItemFolder()
     }
 
     MLogI(svanilla::cDownloadModule, "showInFileExplorer fileName: {}", filePath.toStdString());
-    util::showInFileExplorer(filePath);
+    QFileInfo fileInfo(filePath);
+    if (fileInfo.exists())
+    {
+        util::showInFileExplorer(filePath);
+    }
+    else
+    {
+        util::showInFileExplorer(fileInfo.absoluteDir().absolutePath());
+    }
 }
 
 void DownloadingItemWidget::updateDownloadingItem(const download::DownloadInfo& info)
@@ -240,38 +259,56 @@ void DownloadingItemWidget::finishedItem()
 
 void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Status status)
 {
+    if (m_status.Status == status)
+    {
+        return;
+    }
+
     m_status.Status = status;
     switch (status)
     {
     case download::AbstractDownloader::Downloading:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/downloading.svg")));
+        ui->btnStatus->setIcon(QIcon(":icon/downloading.svg"));
         break;
     }
     case download::AbstractDownloader::Paused:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/pause.svg")));
+        ui->btnStatus->setIcon(QIcon(":icon/pause.svg"));
         break;
     }
     case download::AbstractDownloader::Waitting:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/waiting.svg")));
+        ui->btnStatus->setIcon(QIcon(":icon/waiting.svg"));
         break;
     }
     case download::AbstractDownloader::Finished:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/completed.svg")));
+        ui->btnStatus->setIcon(QIcon(":icon/completed.svg"));
         break;
     }
     case download::AbstractDownloader::Error:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/error.svg")));
+        ui->btnStatus->setIcon(QIcon(":icon/error.svg"));
         break;
     }
     default:
     {
-        ui->btnStatus->setIcon(QIcon(QStringLiteral(":icon/downloading.svg")));
+        ui->btnStatus->setIcon(QIcon(":icon/downloading.svg"));
     }
+    }
+
+    if (download::AbstractDownloader::Error == status)
+    {
+        ui->btnFolder->setIcon(QIcon(":/icon/restart.svg"));
+        ui->btnFolder->setToolTip(tr("restart"));
+        ui->btnFolder->setCheckable(true);
+    }
+    else
+    {
+        ui->btnFolder->setIcon(QIcon(":/icon/folder.svg"));
+        ui->btnFolder->setToolTip(tr("open floder in files explorer"));
+        ui->btnFolder->setCheckable(false);
     }
 }
 
@@ -331,6 +368,29 @@ void DownloadingItemWidget::createContextMenu()
     auto* infoAction = new QAction(tr("Show Infomation"), this);
     m_contextMenu->addAction(infoAction);
     connect(infoAction, &QAction::triggered, this, &DownloadingItemWidget::showInfoPanel);
+}
+
+void DownloadingItemWidget::restartItem()
+{
+    auto& storageManager = sqlite::StorageManager::intance();
+    bool isDownloaded = storageManager.isDownloaded(m_downloader->videoInfoFull()->getGuid());
+    if (isDownloaded)
+    {
+        // to do
+    }
+
+    deleteItem();
+
+    MLogI(svanilla::cDownloadModule, "downloadItem restart! name: {}, guid: {}", m_downloader->videoInfoFull()->videoView->Title,
+          m_downloader->videoInfoFull()->getGuid());
+    emit m_listWidget->reloadItem(m_downloader->videoInfoFull());
+
+    if (const auto* item = m_listWidget->itemFromWidget(this))
+    {
+        delete item;
+        deleteLater();
+        return;
+    }
 }
 
 DownloadingListWidget::DownloadingListWidget(QWidget* parent)

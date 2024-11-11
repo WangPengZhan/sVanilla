@@ -19,6 +19,7 @@
 #include "VideoList/VideoWidget.h"
 #include "MainWindow/SApplication.h"
 #include "SUI/Tips/Toast.h"
+#include "SUI/Tips/ToastTip.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "ClientLog.h"
@@ -67,6 +68,7 @@ void MainWindow::setUi()
     constexpr QSize defaultSize(800, 600);
     resize(defaultSize);
     Toast::create(this);
+    ToastTip::create(this);
     setLightTheme();
     createTrayIcon();
 

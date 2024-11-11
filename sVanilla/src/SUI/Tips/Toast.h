@@ -20,7 +20,8 @@ public:
         Warn,
         Error,
     };
-    static void Show(const QString& msg, Level level = Info);
+
+    static void showTip(const QString& msg, Level level = Info);
     static void create(QWidget* parent = nullptr);
 
     Q_SIGNAL void signalShowMessage(const QString& msg, Level level);
@@ -40,7 +41,6 @@ protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
-public:
     static Toast* instance;
 
 private:

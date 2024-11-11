@@ -67,6 +67,7 @@ private:
     void showInfoPanel() const;
 
     void createContextMenu();
+    void restartItem();
 
 private:
     Ui::DownloadingItemWidget* ui;
@@ -102,6 +103,7 @@ public:
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
+    void reloadItem(std::shared_ptr<VideoInfoFull> videoInfoFull);
     void downloadingCountChanged(int count);
 
 protected:

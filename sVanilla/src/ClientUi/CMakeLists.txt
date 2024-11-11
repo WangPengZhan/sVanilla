@@ -116,6 +116,7 @@ endif ()
 
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -DEXECUTABLE_PATH="$<TARGET_FILE_DIR:${PROJECT_NAME}>/aria/aria2c" -P "${CMAKE_SOURCE_DIR}/cmake/terminate_process.cmake"
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}

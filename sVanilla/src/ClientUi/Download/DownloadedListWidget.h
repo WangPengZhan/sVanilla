@@ -66,7 +66,7 @@ public:
     void hideInfoPanel() const;
 
 signals:
-    void reloadItem(std::shared_ptr<VideoInfoFull>& videoInfoFull);
+    void reloadItem(std::shared_ptr<VideoInfoFull> videoInfoFull);
     void downloadedCountChanged(int count);
 
 protected:

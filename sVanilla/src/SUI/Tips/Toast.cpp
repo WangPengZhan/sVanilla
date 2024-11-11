@@ -21,7 +21,7 @@ Toast::Toast(QWidget* parent)
     hide();
 }
 
-void Toast::Show(const QString& msg, const Level level)
+void Toast::showTip(const QString& msg, const Level level)
 {
     instance->signalShowMessage(msg, level);
 }
