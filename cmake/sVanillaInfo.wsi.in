@@ -4,8 +4,10 @@
   <?define AppExeName = "@PROJECT_NAME@.exe"?>
   <?define AppPackageDir = "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@"?>
   <?define AppVersion = "@PROJECT_VERSION@"?>
+  <?define AppVersionNumber = "@PROJECT_VERSION_NUMBER@"?>
   <?define Manufacturer = "@PROJECT_COMPANY_NAME@"?>
   <?define HomePageUrl = "@PROJECT_HOMEPAGE_URL@"?>
   <?define AppDescription = "@PROJECT_DESCRIPTION@"?>
   <?define AppCopyright = "@PROJECT_COPYRIGHT@"?>
+  <?define AppIcon = "@ICON_RESOURCE@"?>
 </Include>

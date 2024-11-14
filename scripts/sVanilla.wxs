@@ -11,21 +11,38 @@
 <?endif?>
 <?define PlatformProgramFilesFolder="ProgramFiles64Folder"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="sVanilla" Language="1033" Version="1.0.0.0" Manufacturer="sVanilla studio"
-        UpgradeCode="124623D9-35D6-4D2E-9474-2ADACC8BABBB">
+    <Product Id="*" Name="sVanilla" Language="1033"
+        Version="$(var.AppVersion)" Manufacturer="sVanilla studio"
+        UpgradeCode="2B30B79C-72E0-4A0D-B82D-AAD3075B2E1C">
         <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Platform="x64" />
 
-        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-        <Upgrade Id="124623D9-35D6-4D2E-9474-2ADACC8BABBB">
-            <UpgradeVersion Minimum="$(var.AppVersion)" IncludeMinimum="yes"
-                Maximum="$(var.AppVersion)" IncludeMaximum="yes"
-                OnlyDetect="yes" Property="CURRENTVERSIONDETECTED" />
-        </Upgrade>
-
+        <MajorUpgrade
+            Schedule="afterInstallInitialize"
+            AllowDowngrades="yes"
+        />
+        <?define ProgramFilesFolder="ProgramFiles64Folder"?>
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
         <Icon Id="$(var.AppExeName)" SourceFile="$(var.AppPackageDir)/$(var.AppExeName)" />
         <Property Id="ARPPRODUCTICON" Value="$(var.AppExeName)" />
         <Property Id="ARPURLINFOABOUT" Value="https://svanilla.app/" />
+        <Property Id="APPVERSIONSTR" Value="$(var.AppVersion)" />
+        <Property Id="PREVIOUS_VERSION">
+            <RegistrySearch Id="SearchInstalledVersion"
+                Root="HKCU"
+                Key="Software\$(var.AppName)\$(var.AppName)\install"
+                Name="Version"
+                Type="raw" />
+        </Property>
+
+        <Component Id="RegistryEntries" Guid="A5D4C2B6-84F9-4D32-B287-9C578F7D7A45"
+            Directory="TARGETDIR">
+            <RegistryKey Root="HKCU" Key="Software\$(var.AppName)\$(var.AppName)\install">
+                <RegistryValue Name="Version" Type="string" Value="$(var.AppVersion)" KeyPath="yes" />
+                <RegistryValue Name="VersionNumber" Type="string" Value="$(var.AppVersionNumber)"
+                />
+                <RegistryValue Name="InstallType" Type="string" Value="msi" />
+            </RegistryKey>
+        </Component>
 
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="$(var.PlatformProgramFilesFolder)">
@@ -56,44 +73,28 @@
                     WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
                     Target="[APPLICATIONFOLDER]$(var.AppExeName)" />
                 <RemoveFolder Id="DesktopFolder" On="uninstall" />
+                <RemoveFolder Id="ProgramMenuDir" Directory="ProgramMenuDir" On="uninstall" />
                 <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]"
                     Name="installed" Type="integer" Value="1" KeyPath="yes" />
             </Component>
         </ComponentGroup>
 
-        <Component Id="ProgramMenuDir" Directory="ProgramMenuDir">
-            <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
-            <RegistryValue Root="HKCU" Key="Software\sVanilla\sVanilla" Type="string" Value=""
-                KeyPath="yes" />
-        </Component>
+        <UI>
+            <UIRef Id="WixUI_FeatureTree" />
+        </UI>
 
-        <UIRef Id="WixUI_Advanced" />
-
+        <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
         <Property Id="ApplicationFolderName" Value="$(var.AppName)" />
         <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
         <WixVariable Id="WixUILicenseRtf" Value="scripts/license.rtf" />
-
-        <!-- Fix for https://github.com/wixtoolset/issues/issues/2165 -->
-        <CustomAction Id="Overwrite_WixSetDefaultPerMachineFolder" Property="WixPerMachineFolder"
-            Value="[$(var.PlatformProgramFilesFolder)][ApplicationFolderName]" Execute="immediate" />
-
-        <InstallUISequence>
-            <Custom Action="Overwrite_WixSetDefaultPerMachineFolder"
-                After="WixSetDefaultPerMachineFolder" />
-        </InstallUISequence>
-
-        <InstallExecuteSequence>
-            <Custom Action="Overwrite_WixSetDefaultPerMachineFolder"
-                After="WixSetDefaultPerMachineFolder" />
-        </InstallExecuteSequence>
-
-        <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
+        <WixVariable Id="WixUIBannerBmp" Value="scripts/banner.bmp" />
 
         <Feature Id="ProductFeature" Title="$(var.AppName)" Level="1"
-            Description="Provides $(var.AppName) executable." Absent="disallow">
+            Description="Provides $(var.AppName) executable." Absent="disallow"
+            ConfigurableDirectory="APPLICATIONFOLDER">
             <ComponentGroupRef Id="ProductPackageComponents" />
             <ComponentGroupRef Id="ProductMenuComponents" />
-            <ComponentRef Id="ProgramMenuDir" />
+            <ComponentRef Id="RegistryEntries" />
         </Feature>
     </Product>
 </Wix>
