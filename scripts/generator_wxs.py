@@ -39,7 +39,7 @@ def add_directory(parent_element, elementComponentGroup, path):
 
 def main():
     parser = argparse.ArgumentParser(description='Get filePaths, variable names and output_file')
-    parser.add_argument('-t','--template', default="scripts\\sVanilla.wxs",help='template wxs path')
+    parser.add_argument('-t','--template', default="scripts\\wix\\sVanilla.wxs",help='template wxs path')
     parser.add_argument('-i','--input', default="installed\\bin\\",help='dir you want to package')
     parser.add_argument('-o','--output', default="build\\sVanilla.wxs",help='generator wxs filePath')
 

@@ -73,6 +73,12 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
           -S ${{ github.workspace }}
 
+      - name: Extract CMake Project Version
+        shell: bash
+        run: |
+          VERSION=$(cmake -L -N . | grep "CMAKE_PROJECT_VERSION:" | cut -d "=" -f 2 | tr -d ' ')
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
       - name:  Build Project
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel --target all_build --
         
@@ -100,9 +106,15 @@ jobs:
         run: |
           python.exe scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
-          candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/ui.wxs
+          candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/wix/ui.wxs
           light.exe -nologo -out ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
           Remove-Item -Path "${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.wixpdb" -Force
+
+      - name: create .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: scripts/inno_setup/installer.iss
+          options: /DRootPath=${{ matrix.install_path }}/bin /DCurrenData=${{ env.ref_id}} /DMyAppVersion=$VERSION
       
       - name: Calculate SHA256 checksums for each file
         run: |
