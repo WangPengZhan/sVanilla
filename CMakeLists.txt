@@ -12,6 +12,7 @@ project(sVanilla
 
 set(PROJECT_COMPANY_NAME "sVanilla Studio")
 set(PROJECT_COPYRIGHT "Copyright © iveswang and other contributors")
+set(CMAKE_PROJECT_VERSION_STR "${PROJECT_VERSION}" CACHE STRING "Project version")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

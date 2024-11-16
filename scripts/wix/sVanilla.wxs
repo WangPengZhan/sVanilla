@@ -38,9 +38,10 @@
             Directory="TARGETDIR">
             <RegistryKey Root="HKCU" Key="Software\$(var.AppName)\$(var.AppName)\install">
                 <RegistryValue Name="Version" Type="string" Value="$(var.AppVersion)" KeyPath="yes" />
-                <RegistryValue Name="VersionNumber" Type="string" Value="$(var.AppVersionNumber)"
+                <RegistryValue Name="VersionNumber" Type="integer" Value="$(var.AppVersionNumber)"
                 />
                 <RegistryValue Name="InstallType" Type="string" Value="msi" />
+                <RegistryValue Name="InstallPath" Type="string" Value="[APPLICATIONFOLDER]" />
             </RegistryKey>
         </Component>
 
@@ -64,7 +65,7 @@
         <ComponentGroup Id="ProductMenuComponents" Directory="APPLICATIONFOLDER"
             Source="$(var.AppPackageDir)">
             <!-- Executable -->
-            <Component Win64="yes">
+            <Component Id="ProductShortcuts" Win64="yes">
                 <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuDir"
                     Name="$(var.AppName)" Target="[APPLICATIONFOLDER]$(var.AppExeName)"
                     WorkingDirectory="APPLICATIONFOLDER" Icon="$(var.AppExeName)" IconIndex="0"
@@ -74,8 +75,8 @@
                     Target="[APPLICATIONFOLDER]$(var.AppExeName)" />
                 <RemoveFolder Id="DesktopFolder" On="uninstall" />
                 <RemoveFolder Id="ProgramMenuDir" Directory="ProgramMenuDir" On="uninstall" />
-                <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]"
-                    Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                <RegistryValue Root="HKCU" Key="Software\$(var.AppName)" Name="installed"
+                    Type="integer" Value="1" KeyPath="yes" />
             </Component>
         </ComponentGroup>
 
@@ -86,8 +87,8 @@
         <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
         <Property Id="ApplicationFolderName" Value="$(var.AppName)" />
         <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
-        <WixVariable Id="WixUILicenseRtf" Value="scripts/license.rtf" />
-        <WixVariable Id="WixUIBannerBmp" Value="scripts/banner.bmp" />
+        <WixVariable Id="WixUILicenseRtf" Value="scripts/wix/license.rtf" />
+        <WixVariable Id="WixUIBannerBmp" Value="scripts/wix/banner.bmp" />
 
         <Feature Id="ProductFeature" Title="$(var.AppName)" Level="1"
             Description="Provides $(var.AppName) executable." Absent="disallow"
@@ -96,5 +97,30 @@
             <ComponentGroupRef Id="ProductMenuComponents" />
             <ComponentRef Id="RegistryEntries" />
         </Feature>
+
+        <Property Id="LASTINSTALLTYPE">
+            <RegistrySearch Id="InstallType" Root="HKCU"
+                Key="Software\$(var.AppName)\$(var.AppName)\install" Win64="no"
+                Type="raw" />
+        </Property>
+
+        <!--
+        <Property Id="INNO_INSTALLDIR">
+            <RegistrySearch Id="InstallPath" Root="HKCU"
+                Key="Software\$(var.AppName)\$(var.AppName)\install" Win64="no"
+                Type="raw" />
+        </Property>
+
+        <SetProperty Id="INNO_UNINSTALLER" Value="[INNO_INSTALLDIR]\uninstall.exe"
+            After="AppSearch">
+            NSIS_INSTALLDIR AND (LASTINSTALLTYPE = "inno") </SetProperty>
+
+        <CustomAction Id="CA_INNO_UNINSTALLER" Property="INNO_UNINSTALLER" ExeCommand="/S"
+            Execute="deferred" Impersonate="no" />
+
+        <InstallExecuteSequence>
+            <Custom Action='CA_INNO_UNINSTALLER' After='RemoveExistingProducts'>INNO_UNINSTALLER</Custom>
+        </InstallExecuteSequence>
+        -->
     </Product>
 </Wix>

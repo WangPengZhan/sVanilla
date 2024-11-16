@@ -10,11 +10,11 @@ function(kill_process_by_path executable_path)
             ERROR_QUIET
         )
     elseif(APPLE OR UNIX)
-        execute_process(
-            COMMAND pkill -f ${executable_path}
-            RESULT_VARIABLE result
-            ERROR_QUIET
-        )
+        # execute_process(
+        #     COMMAND pkill -f ${executable_path}
+        #     RESULT_VARIABLE result
+        #     ERROR_QUIET
+        # )
     endif()
 
     if(result EQUAL 0)

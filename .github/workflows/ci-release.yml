@@ -73,6 +73,17 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
           -S ${{ github.workspace }}
 
+      - name: Extract CMake Project Version
+        run: |
+          $BuildDir = "${{ github.workspace }}\build"
+          $Output = cmake -L -N $BuildDir | Select-String -Pattern "CMAKE_PROJECT_VERSION_STR"
+          if (-not $Output) {
+              Write-Error "Error: Unable to retrieve CMAKE_PROJECT_VERSION_STR."
+              exit 1
+          }
+          $Version = ($Output -split "=")[1].Trim()
+          echo "VERSION=$Version" >> $env:GITHUB_ENV
+
       - name:  Build Project
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel --target all_build --
         
@@ -100,9 +111,15 @@ jobs:
         run: |
           python.exe scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
-          candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/ui.wxs
+          candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/wix/ui.wxs
           light.exe -nologo -out ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
           Remove-Item -Path "${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.wixpdb" -Force
+
+      - name: create .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: scripts/inno_setup/installer.iss
+          options: /DRootPath=${{ github.workspace }}/${{ matrix.install_path }}/bin /DCurrenData=${{ env.ref_id}} /DMyAppVersion=${{ env.VERSION}} /O${{ github.workspace }}/${{ matrix.asset_path }}
       
       - name: Calculate SHA256 checksums for each file
         run: |
@@ -121,6 +138,7 @@ jobs:
             ${{ matrix.asset_path }}/*.zip
             ${{ matrix.asset_path }}/*.sha256
             ${{ matrix.asset_path }}/*.msi
+            ${{ matrix.asset_path }}/*.exe
 
       - name: Upload Release Assets
         run: |
