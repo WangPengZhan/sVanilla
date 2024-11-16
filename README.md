@@ -31,6 +31,12 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
 * **Rich Settings**. Custom theme, style, configuration,download to suit your taste.
 * **Open Source**. You can get the source code to add your own features.
 
+Hearing is not as good as seeing! see the image below:
+![image1](https://github.com/user-attachments/assets/c615af40-a6d6-4f3f-8ff4-be149a922dde)
+![image2](https://github.com/user-attachments/assets/fee91ece-c6e9-4ebc-8679-aeb0febc2a65)
+![image3](https://github.com/user-attachments/assets/87b69c32-20bb-4bcb-a324-6c863b77a20f)
+![image4](https://github.com/user-attachments/assets/754036bf-d3db-4227-9d10-1ceae731edf6)
+![image5](https://github.com/user-attachments/assets/867bfb60-afaf-485c-99a9-e5b62684e589)
 
 # Acknowledgements
 
