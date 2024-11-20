@@ -1,5 +1,7 @@
 #include <QPixmap>
 #include <QDir>
+#include <QPainterPath>
+#include <QPainter>
 
 #include "AccountListWidget.h"
 #include "ui_AccountListWidget.h"
@@ -9,6 +11,23 @@
 #include "ClientUi/Adapter/BaseVideoView.h"
 
 constexpr char userfaceDir[] = "userface";
+
+QPixmap createRoundedPixmap(const QPixmap& src, int radius)
+{
+    QSize size = src.size();
+    QPixmap roundedPixmap(size);
+    roundedPixmap.fill(Qt::transparent);
+
+    QPainter painter(&roundedPixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    QPainterPath path;
+    path.addRoundedRect(0, 0, size.width(), size.height(), radius, radius);
+    painter.setClipPath(path);
+    painter.drawPixmap(0, 0, src);
+    return roundedPixmap;
+}
 
 AccountItemWidget::AccountItemWidget(QWidget* parent)
     : QWidget(parent)
@@ -41,7 +60,10 @@ AccountItemWidget::~AccountItemWidget()
 
 void AccountItemWidget::setUserInfo(UserInfo userInfo)
 {
-    ui->labelFace->setPixmap(QPixmap(QString::fromStdString(userInfo.facePath)));
+    QPixmap pixmap = QPixmap(QString::fromStdString(userInfo.facePath)).scaled(ui->labelFace->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    pixmap = createRoundedPixmap(pixmap, pixmap.width() / 2);
+    ui->labelFace->setPixmap(pixmap);
+    ui->labelFace->setStyleSheet(".QLabel{ border-radius:24px; background: transparent; }");
     ui->labelName->setText(QString::fromStdString(userInfo.uname));
 }
 

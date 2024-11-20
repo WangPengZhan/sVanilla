@@ -16,6 +16,7 @@ class DownloadTip : public QWidget
 
 public:
     explicit DownloadTip(QWidget* parent = nullptr);
+    ~DownloadTip();
 
     void setDragRect(QRect rect = {});
     QRect dragRect() const;

@@ -100,11 +100,12 @@ public:
 
     void startSelectedItem();
     void deleteSelectedItem();
+    void updateDowningCount();
 
 signals:
     void finished(std::shared_ptr<VideoInfoFull> videoInfoFull);
     void reloadItem(std::shared_ptr<VideoInfoFull> videoInfoFull);
-    void downloadingCountChanged(int count);
+    void downloadingCountChanged(int downloading, int downloadError);
 
 protected:
     void mouseMoveEvent(QMouseEvent* event) override;

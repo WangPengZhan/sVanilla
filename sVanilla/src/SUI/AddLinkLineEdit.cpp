@@ -35,12 +35,12 @@ void AddLinkLineEdit::SetEditFinishedSearch(bool enabled)
 {
     if (enabled)
     {
-        disconnect(this, &QLineEdit::editingFinished, this, &AddLinkLineEdit::Complete);
-        connect(this, &QLineEdit::editingFinished, this, &AddLinkLineEdit::Complete);
+        disconnect(this, &QLineEdit::returnPressed, this, &AddLinkLineEdit::Complete);
+        connect(this, &QLineEdit::returnPressed, this, &AddLinkLineEdit::Complete);
     }
     else
     {
-        disconnect(this, &QLineEdit::editingFinished, this, &AddLinkLineEdit::Complete);
+        disconnect(this, &QLineEdit::returnPressed, this, &AddLinkLineEdit::Complete);
     }
 }
 

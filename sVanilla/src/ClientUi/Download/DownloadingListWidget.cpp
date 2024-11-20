@@ -156,7 +156,7 @@ void DownloadingItemWidget::deleteItem()
         delete item;
         deleteLater();
     }
-    emit m_listWidget->downloadingCountChanged(m_listWidget->count());
+    m_listWidget->updateDowningCount();
     m_listWidget->hideInfoPanel();
 }
 
@@ -254,7 +254,7 @@ void DownloadingItemWidget::finishedItem()
         delete item;
         deleteLater();
     }
-    emit m_listWidget->downloadingCountChanged(m_listWidget->count());
+    emit m_listWidget->updateDowningCount();
 }
 
 void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Status status)
@@ -410,7 +410,7 @@ void DownloadingListWidget::addDownloadItem(const std::shared_ptr<UiDownloader>&
     pWidget->setListWidget(this, pItem);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);
-    emit downloadingCountChanged(count());
+    updateDowningCount();
 }
 
 void DownloadingListWidget::startAll()
@@ -450,7 +450,7 @@ void DownloadingListWidget::deleteAll()
             indexOfItem(i)->setDelete();
         }
     }
-    emit downloadingCountChanged(count());
+    updateDowningCount();
     // clear();
 }
 
@@ -500,7 +500,7 @@ void DownloadingListWidget::deleteSelectedItem()
             delete item;
         }
     }
-    emit downloadingCountChanged(count());
+    updateDowningCount();
 }
 
 void DownloadingListWidget::mouseMoveEvent(QMouseEvent* event)
@@ -536,6 +536,22 @@ void DownloadingListWidget::setUi()
 
 void DownloadingListWidget::signalsAndSlots() const
 {
+}
+
+void DownloadingListWidget::updateDowningCount()
+{
+    int downloading = 0;
+    int downloadError = 0;
+
+    for (int i = 0; i < count(); ++i)
+    {
+        if (auto pWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(0)))
+        {
+            pWidget->downloaoder()->status() == download::AbstractDownloader::Error ? downloadError++ : downloading++;
+        }
+    }
+
+    emit downloadingCountChanged(downloading, downloadError);
 }
 
 void DownloadingListWidget::showInfoPanel(int index)

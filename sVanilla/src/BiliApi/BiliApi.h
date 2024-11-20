@@ -600,11 +600,11 @@ public:
 class HistoryDetailInfo
 {
 public:
-    int oid;
-    int epid;
+    long long oid;
+    long long epid;
     std::string bvid;
     int page;
-    int cid;
+    long long cid;
     std::string part;
     std::string business;
     int dt;

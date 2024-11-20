@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>677</width>
-    <height>78</height>
+    <width>678</width>
+    <height>66</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,8 +19,29 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="labelFace">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>48</width>
+       <height>48</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>48</width>
+       <height>48</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>Face</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -33,15 +54,41 @@
    </item>
    <item row="0" column="2">
     <widget class="QPushButton" name="btnHistory">
+     <property name="minimumSize">
+      <size>
+       <width>80</width>
+       <height>32</height>
+      </size>
+     </property>
      <property name="text">
       <string>HistoryLlist</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../resource/sVanilla.qrc">
+       <normaloff>:/icon/watch_history.svg</normaloff>:/icon/watch_history.svg</iconset>
+     </property>
+     <property name="_vanillaStyle_Patch" stdset="0">
+      <string>ButtonWithBorderPatch</string>
      </property>
     </widget>
    </item>
    <item row="0" column="3">
     <widget class="QPushButton" name="btnWork">
+     <property name="minimumSize">
+      <size>
+       <width>80</width>
+       <height>32</height>
+      </size>
+     </property>
      <property name="text">
       <string>My Works</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../resource/sVanilla.qrc">
+       <normaloff>:/icon/my_space.svg</normaloff>:/icon/my_space.svg</iconset>
+     </property>
+     <property name="_vanillaStyle_Patch" stdset="0">
+      <string>ButtonWithBorderPatch</string>
      </property>
     </widget>
    </item>
@@ -60,14 +107,29 @@
    </item>
    <item row="0" column="5">
     <widget class="QPushButton" name="btnLogout">
+     <property name="minimumSize">
+      <size>
+       <width>64</width>
+       <height>32</height>
+      </size>
+     </property>
      <property name="text">
       <string>Logout</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../resource/sVanilla.qrc">
+       <normaloff>:/icon/logout.svg</normaloff>:/icon/logout.svg</iconset>
+     </property>
+     <property name="_vanillaStyle_Patch" stdset="0">
+      <string>ButtonWithBorderPatch</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../../resource/sVanilla.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -17,7 +17,6 @@ Adapter::BaseVideoView convertHistory(const biliapi::HistoryInfo& data)
     item.VideoId = std::to_string(data.history.cid);
     item.Title = data.title;
     item.Cover = data.cover.empty() ? (data.covers.empty() ? "" : data.covers.front()) : data.cover;
-    // item.Cover = data.cover;
     item.Duration = formatDuration(data.duration);
     item.Description = data.new_desc;
     item.PublishDate = convertTimestamp(data.view_at);

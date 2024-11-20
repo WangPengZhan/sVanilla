@@ -41,6 +41,7 @@ struct HistoryQueryParam
     int ps{};
 
     network::NetWork::ParamType toParam() const;
+    std::string toString() const;
 };
 
 class BilibiliClient : public network::NetWork

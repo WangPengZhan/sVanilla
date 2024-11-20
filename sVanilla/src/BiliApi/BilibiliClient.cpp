@@ -97,6 +97,17 @@ network::NetWork::ParamType HistoryQueryParam::toParam() const
     return res;
 }
 
+std::string HistoryQueryParam::toString() const
+{
+    std::string res;
+    auto param = toParam();
+    for (const auto& [key, val] : param)
+    {
+        res += (key + ": " + val + ",");
+    }
+    return res;
+}
+
 BilibiliClient::BilibiliClient()
 {
     initDefaultHeaders();
@@ -116,7 +127,17 @@ VideoViewOrigin BilibiliClient::getVideoView(const std::string& bvid)
 
     std::string response;
     get(VideoURL::View, response, param);
-    return VideoViewOrigin(getDataFromRespones(response));
+    VideoViewOrigin ret;
+    try
+    {
+        ret = getDataFromRespones(response);
+    }
+    catch (const std::exception& e)
+    {
+        BILIBILI_LOG_ERROR("getVideoView error! bvid: {}, error: {}", bvid, e.what());
+        BILIBILI_LOG_ERROR("response is {}", response);
+    }
+    return ret;
 }
 
 PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std::string& bvid, long long fnval)
@@ -134,23 +155,36 @@ PlayUrlOrigin BilibiliClient::getPlayUrl(long long cid, long long qn, const std:
     std::string response;
     get(VideoURL::Playurl, response, param);
 
+    PlayUrlOrigin ret;
     try
     {
-        return PlayUrlOrigin(getDataFromRespones(response));
+        ret = getDataFromRespones(response);
     }
     catch (const std::exception& e)
     {
         std::string str = e.what();
         BILIBILI_LOG_ERROR("getPlayUrl error! cid: {},  qn: {},  bvid: {}, fnva: {}, error: {}", cid, qn, bvid, fnval, str);
-        return PlayUrlOrigin();
+        BILIBILI_LOG_ERROR("response is {}", response);
     }
+    return ret;
 }
 
 LoginUrlOrigin BilibiliClient::getLoginUrl()
 {
     std::string response;
     get(PassportURL::QRCode, response, passPortHeaders());
-    return LoginUrlOrigin(getDataFromRespones(response));
+
+    LoginUrlOrigin ret;
+    try
+    {
+        ret = getDataFromRespones(response);
+    }
+    catch (const std::exception& e)
+    {
+        BILIBILI_LOG_ERROR("getLoginUrl error! error: {}", e.what());
+        BILIBILI_LOG_ERROR("response is {}", response);
+    }
+    return ret;
 }
 
 LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
@@ -169,15 +203,37 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
         m_commonOptions[network::CookieFileds::opt] = std::make_shared<network::CookieFileds>(m_cookies);
     }
 
-    return LoginStatusScanning(getDataFromRespones(response.body));
+    LoginStatusScanning ret;
+    try
+    {
+        ret = getDataFromRespones(response.body);
+    }
+    catch (const std::exception& e)
+    {
+        BILIBILI_LOG_ERROR("getLoginStatus error! qrcodeKey: {}, error: {}", qrcodeKey, e.what());
+        BILIBILI_LOG_ERROR("response is {}", response.body);
+    }
+
+    return ret;
 }
 
 Nav BilibiliClient::getNavInfo()
 {
     std::string response;
-    get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
+    get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), isLogined());
 
-    return Nav(getDataFromRespones(response));
+    Nav nav;
+    try
+    {
+        nav = getDataFromRespones(response);
+    }
+    catch (const std::exception& e)
+    {
+        BILIBILI_LOG_ERROR("getNavInfo error! error: {}", e.what());
+        BILIBILI_LOG_ERROR("response is {}", response);
+    }
+
+    return nav;
 }
 
 LogoutExitV2 BilibiliClient::getLogoutExitV2()
@@ -213,7 +269,17 @@ LogoutExitV2 BilibiliClient::getLogoutExitV2()
         post(PassportURL::Logout, response, param, header, false);
     }
 
-    auto logout = LogoutExitV2(getDataFromRespones(response));
+    LogoutExitV2 logout;
+    try
+    {
+        logout = getDataFromRespones(response);
+    }
+    catch (const std::exception& e)
+    {
+        BILIBILI_LOG_ERROR("getLogoutExitV2 error: {}", e.what());
+        BILIBILI_LOG_ERROR("response is {}", response);
+    }
+
     if (logout.code == 0)
     {
         BILIBILI_LOG_ERROR("getLogoutExitV2");
@@ -231,8 +297,17 @@ History BilibiliClient::getHistory(HistoryQueryParam param)
 
     auto params = param.toParam();
     get(PassportURL::History, response, params);
-    std::cout << response;
-    return History(getDataFromRespones(response));
+    History history;
+    try
+    {
+        history = getDataFromRespones(response);
+    }
+    catch (const std::exception& e)
+    {
+        BILIBILI_LOG_ERROR("getHistory error! param: {} response: {}", param.toString(), e.what());
+        BILIBILI_LOG_ERROR("response is {}", response);
+    }
+    return history;
 }
 
 bool BilibiliClient::isLogined() const
