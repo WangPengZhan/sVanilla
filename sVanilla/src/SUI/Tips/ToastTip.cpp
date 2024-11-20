@@ -119,15 +119,16 @@ void ToastTip::slotShowTip(QString tip, Level level, int showTime, bool isShowCl
 {
     if (m_bShowCloseBtn)
     {
-        setWindowFlags(Qt::FramelessWindowHint | Qt::Sheet);
+        setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     }
     else
     {
         ui->closeBtn->hide();
-        setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-        setWindowFlag(Qt::WindowStaysOnTopHint);
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
     }
-
+    setWindowFlag(Qt::WindowStaysOnTopHint);
+    setWindowModality(Qt::NonModal);
+    setAttribute(Qt::WA_ShowWithoutActivating);
     m_pFadeAnimation->stop();
     m_pFadeAnimation->setDuration(showTime);
     setLevel(level);

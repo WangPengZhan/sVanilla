@@ -175,8 +175,9 @@ LoginStatusScanning BilibiliClient::getLoginStatus(const std::string& qrcodeKey)
 Nav BilibiliClient::getNavInfo()
 {
     std::string response;
-    get(PassportURL::WebNav, response, network::CurlHeader(), false, CurlOptions(), false);
+    get(PassportURL::WebNav, response, network::CurlHeader(), isLogined(), CurlOptions(), false);
 
+    BILIBILI_LOG_ERROR("Error parsing response: {}", response);
     return Nav(getDataFromRespones(response));
 }
 

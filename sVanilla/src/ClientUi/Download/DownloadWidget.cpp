@@ -240,6 +240,9 @@ void DownloadWidget::setUi()
     ui->downloadingListWidget->setInfoPanelSignal(ui->downloadingInfoWidget);
     ui->downloadedListWidget->setInfoPanelSignal(ui->downloadedInfoWidget);
     createSelectedActionMenu();
+
+    // ui->widgetDownNumber->setDownloadingNumber(20);
+    // ui->widgetDownNumber->setDownloadErrorNumber(36);
 }
 
 void DownloadWidget::signalsAndSlots()
@@ -251,8 +254,11 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->btnStopAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::pauseAll);
     connect(ui->btnDeleteAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::deleteAll);
     connect(ui->downloadingListWidget, &DownloadingListWidget::finished, this, &DownloadWidget::addDownloadedItem);
-    connect(ui->downloadingListWidget, &DownloadingListWidget::downloadingCountChanged, this, &DownloadWidget::setDownloadingNumber);
-    connect(ui->downloadedListWidget, &DownloadedListWidget::downloadedCountChanged, this, &DownloadWidget::setDownloadedNumber);
+    connect(ui->downloadingListWidget, &DownloadingListWidget::downloadingCountChanged, this, [&](int downloading, int downloadError) {
+        setDownloadingNumber(downloading);
+        setDownloadedNumber(downloadError);
+    });
+    // connect(ui->downloadedListWidget, &DownloadedListWidget::downloadedCountChanged, this, &DownloadWidget::setDownloadedNumber);
 
     connect(ui->btnClearAll, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::clearAll);
     connect(ui->btnRedownload, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::reloadAll);
@@ -328,10 +334,12 @@ void DownloadWidget::createSelectedActionMenu()
 
 void DownloadWidget::setDownloadingNumber(int number)
 {
+    ui->widgetDownNumber->setDownloadingNumber(number);
     emit downloadingCountChanged(number);
 }
 
 void DownloadWidget::setDownloadedNumber(int number)
 {
+    ui->widgetDownNumber->setDownloadErrorNumber(number);
     emit downloadedCountChanged(number);
 }

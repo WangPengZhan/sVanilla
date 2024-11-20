@@ -21,6 +21,11 @@ DownloadTip::DownloadTip(QWidget* parent)
     signalsAndSlots();
 }
 
+DownloadTip::~DownloadTip()
+{
+    delete ui;
+}
+
 void DownloadTip::setDragRect(QRect rect)
 {
     if (rect == QRect())

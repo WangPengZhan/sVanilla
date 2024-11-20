@@ -58,6 +58,9 @@
        </widget>
       </item>
       <item>
+       <widget class="DownloadNumber" name="widgetDownNumber" native="true"/>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -303,6 +306,12 @@
    <class>::DownloadedInfoWidget</class>
    <extends>QWidget</extends>
    <header>ClientUi/Download/DownloadedInfoWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DownloadNumber</class>
+   <extends>QWidget</extends>
+   <header>ClientUi/Download/DownloadNumber.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

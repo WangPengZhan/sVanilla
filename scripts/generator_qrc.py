@@ -12,6 +12,7 @@ def generate_qrc(directory, excluded_dirs, excluded_extensions, qrc_output_path)
         for file in files:
             file_path = os.path.relpath(os.path.join(root, file), directory)
             if not any(file_path.endswith(ext) for ext in excluded_extensions):
+                file_path = file_path.replace("\\", "/")
                 etree.SubElement(qresource_elem, 'file').text = file_path
 
     xml_str = etree.tostring(qresource, pretty_print=True)
@@ -21,8 +22,8 @@ def generate_qrc(directory, excluded_dirs, excluded_extensions, qrc_output_path)
 
 def main():
     parser = argparse.ArgumentParser(description='Get filePaths, variable names and output_file')
-    parser.add_argument('-d','--dir', default="resource",help='dir will be added to qrc')
-    parser.add_argument('-o','--output', default="resource/test.qrc",help='generator qrc filePath')
+    parser.add_argument('-d','--dir', default="sVanilla/resource",help='dir will be added to qrc')
+    parser.add_argument('-o','--output', default="sVanilla/resource/sVanilla.qrc",help='generator qrc filePath')
 
     args = parser.parse_args()
 
