@@ -32,11 +32,11 @@ hope it accompanies your life like vanilla, bringing a subtle fragrance to your 
 * **Open Source**. You can get the source code to add your own features.
 
 Hearing is not as good as seeing! see the image below:
-![image1](https://github.com/user-attachments/assets/c615af40-a6d6-4f3f-8ff4-be149a922dde)
-![image2](https://github.com/user-attachments/assets/fee91ece-c6e9-4ebc-8679-aeb0febc2a65)
-![image3](https://github.com/user-attachments/assets/87b69c32-20bb-4bcb-a324-6c863b77a20f)
-![image4](https://github.com/user-attachments/assets/754036bf-d3db-4227-9d10-1ceae731edf6)
-![image5](https://github.com/user-attachments/assets/867bfb60-afaf-485c-99a9-e5b62684e589)
+![image1](https://github.com/user-attachments/assets/7ed8aba0-0457-4ad4-9460-72d2508156f4)
+![image2](https://github.com/user-attachments/assets/ed61b979-0f11-4a4b-b360-e0f17ce7a3d7)
+![image3](https://github.com/user-attachments/assets/36b0727e-6da4-4468-9a9d-0e0784a34c39)
+![image4](https://github.com/user-attachments/assets/4cb98dad-08c6-490c-b7ce-9cd59e39d4e2)
+![image5](https://github.com/user-attachments/assets/a06b401e-ba35-46e5-9be3-62e02616a773)
 
 # Acknowledgements
 
