@@ -137,13 +137,22 @@ void HomePage::signalsAndSlots()
         }
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
-        MLogI(svanilla::cHomeModule, " LoginWebsite ");
         std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
-        LoginDialog login(loginer);
-        if (QDialog::Accepted == login.exec())
+        if (loginer->isLogin())
         {
-            MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
-            emit loginSucceed(loginer);
+            emit switchAccoutTab();
+        }
+        else
+        {
+            MLogI(svanilla::cHomeModule, " LoginWebsite ");
+            std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
+            LoginDialog login(loginer);
+            if (QDialog::Accepted == login.exec())
+            {
+                MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
+                emit switchAccoutTab();
+                emit loginSucceed(loginer);
+            }
         }
 
         // const auto loginBubble = new LoginBubble(loginer);

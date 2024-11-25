@@ -180,7 +180,8 @@ DownloadedListWidget::DownloadedListWidget(QWidget* parent)
 void DownloadedListWidget::addDownloadedItem(const std::shared_ptr<VideoInfoFull>& videoInfFull)
 {
     auto* pWidget = new DownloadedItemWidget(videoInfFull, this);
-    auto* pItem = new QListWidgetItem(this);
+    auto* pItem = new QListWidgetItem;
+    insertItem(0, pItem);
     pWidget->setListWidget(this, pItem);
     pItem->setSizeHint(pWidget->sizeHint());
     setItemWidget(pItem, pWidget);

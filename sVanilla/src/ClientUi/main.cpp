@@ -41,7 +41,7 @@ void startLog()
     MLogI(svanilla::cMainModule, "BuildTime: {}", SVNLA_BUILD_STR);
     MLogI(svanilla::cMainModule, "WorkDir: {}", exePath);
     MLogI(svanilla::cMainModule, "AppDir: {}", (SApplication::appDir().isEmpty() ? exePath : SApplication::appDir().toStdString()));
-    MLogI(svanilla::cMainModule, "Operating system is: {}", getOsType());
+    MLogI(svanilla::cMainModule, "Operating system: {}", getOsType());
     MLogI(svanilla::cMainModule, "-----------------------------");
 }
 

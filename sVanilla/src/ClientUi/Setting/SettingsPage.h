@@ -30,6 +30,7 @@ public:
 
     void logined(UserInfo userInfo);
     void loginSucceed(std::shared_ptr<AbstractLogin> loginer);
+    void switchAccountTab();
 
 private:
     void setUi();

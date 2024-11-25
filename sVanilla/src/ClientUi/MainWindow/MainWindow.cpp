@@ -97,9 +97,12 @@ void MainWindow::signalsAndSlots()
         }
     });
     connect(ui->homePage, &HomePage::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
-    connect(ui->homePage, &HomePage::loginSucceed, this, [this](std::shared_ptr<AbstractLogin> loginer) {
+    connect(ui->homePage, &HomePage::switchAccoutTab, this, [this]() {
         ui->stackedWidget->setCurrentWidget(ui->settingPage);
         emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
+        ui->settingPage->switchAccountTab();
+    });
+    connect(ui->homePage, &HomePage::loginSucceed, this, [this](std::shared_ptr<AbstractLogin> loginer) {
         ui->settingPage->loginSucceed(loginer);
     });
     connect(ui->videoPage, &VideoWidget::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);

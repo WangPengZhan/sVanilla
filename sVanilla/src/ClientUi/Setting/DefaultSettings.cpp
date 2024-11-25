@@ -65,6 +65,9 @@ void DefaultSettings::setUi()
 
     ui->widgetNameRule->hidePreviewLabel(true);
 
+    ui->spinBoxThread->hide();
+    ui->labelThread->hide();
+
     std::unordered_map<std::string, std::string> rules;
     for (const auto& rule : VideoInfoFull::ruleList)
     {

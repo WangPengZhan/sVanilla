@@ -53,6 +53,7 @@ public:
     virtual bool getScanContext(std::string& content) = 0;
     virtual void loginSuccess() = 0;
     virtual UserInfo getUserInfo(std::string dir) = 0;
+    virtual bool isLogin() const = 0;
     virtual bool logout() = 0;
     virtual std::vector<Adapter::BaseVideoView> history() = 0;
 

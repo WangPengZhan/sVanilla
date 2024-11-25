@@ -25,6 +25,7 @@ signals:
     void updateWebsiteIcon(const std::string& uri);
     void parseUri(const QString& uri);
     void loginSucceed(std::shared_ptr<AbstractLogin> loginer);
+    void switchAccoutTab();
 
 private:
     void signalsAndSlots();

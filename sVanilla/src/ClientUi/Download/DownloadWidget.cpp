@@ -278,9 +278,9 @@ void DownloadWidget::initHistoryData()
     auto taskHistoryDownloaded = [this]() {
         auto downloadedStorage = sqlite::StorageManager::intance().downloadedtemStorage();
         auto downloadedItems = downloadedStorage->lastItems();
-        for (const auto& item : downloadedItems)
+        for (auto it = downloadedItems.rbegin(); it != downloadedItems.rend(); ++it)
         {
-            emit ui->downloadingListWidget->finished(finishItemToVideoInfoFull(item));
+            emit ui->downloadingListWidget->finished(finishItemToVideoInfoFull(*it));
         }
     };
     ThreadPool::instance().enqueue(taskHistoryDownloaded);

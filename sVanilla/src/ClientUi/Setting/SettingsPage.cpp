@@ -51,9 +51,13 @@ void SettingsPage::logined(UserInfo userInfo)
 
 void SettingsPage::loginSucceed(std::shared_ptr<AbstractLogin> loginer)
 {
+    ui->accountsInfo->addUserInfo(loginer);
+}
+
+void SettingsPage::switchAccountTab()
+{
     ui->settingStackedPage->setCurrentWidget(ui->accountsInfo);
     ui->horizonNavigation->setCurrentIndex(ui->settingStackedPage->currentIndex());
-    ui->accountsInfo->addUserInfo(loginer);
 }
 
 void SettingsPage::setUi()

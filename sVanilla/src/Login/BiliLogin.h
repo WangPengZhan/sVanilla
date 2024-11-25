@@ -10,6 +10,7 @@ public:
     bool getScanContext(std::string& content) override;
     void loginSuccess() override;
     UserInfo getUserInfo(std::string dir) override;
+    bool isLogin() const override;
     bool logout() override;
     std::vector<Adapter::BaseVideoView> history() override;
 

@@ -114,6 +114,11 @@ UserInfo BiliLogin::getUserInfo(std::string dir)
     return userInfo;
 }
 
+bool BiliLogin::isLogin() const
+{
+    return biliapi::BilibiliClient::globalClient().isLogined();
+}
+
 bool BiliLogin::logout()
 {
     const auto logoutInfo = biliapi::BilibiliClient::globalClient().getLogoutExitV2();

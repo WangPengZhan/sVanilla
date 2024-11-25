@@ -1,12 +1,14 @@
 #include <chrono>
 #include <future>
 #include <thread>
+#include <utility>
+#include <filesystem>
+
 #include <QStandardPaths>
 #include <QApplication>
 #include <QDebug>
 #include <QProcess>
 #include <QString>
-#include <utility>
 
 #include "FFmpegHelper.h"
 #include "FFmpegLog.h"
@@ -24,7 +26,21 @@ FFmpegHelper::~FFmpegHelper()
 
 void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo)
 {
-    FFmpegHelper::mergeVideo(mergeInfo, [] {}, [] {});
+    FFmpegHelper::mergeVideo(
+        mergeInfo, [] {},
+        [mergeInfo] {
+            auto path = std::filesystem::u8path(mergeInfo.audio);
+            if (std::filesystem::exists(path))
+            {
+                std::filesystem::remove(path);
+            }
+
+            path = std::filesystem::u8path(mergeInfo.video);
+            if (std::filesystem::exists(path))
+            {
+                std::filesystem::remove(path);
+            }
+        });
 }
 
 void FFmpegHelper::mergeVideo(const MergeInfo& mergeInfo, std::function<void()> errorFunc, std::function<void()> finishedFunc)
@@ -53,8 +69,12 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
         QString executablePath = QApplication::applicationDirPath() + "/ffmpeg";
         QString ffmpegExecutable = QStandardPaths::findExecutable("ffmpeg", QStringList() << executablePath);
         QStringList ffmpegArg;
-        ffmpegArg << "-i" << mergeInfo.audio.c_str() << "-i" << mergeInfo.video.c_str() << "-acodec" << "copy" << "-vcodec" << "copy" << "-f" << "mp4"
-                  << mergeInfo.targetVideo.c_str();
+        ffmpegArg << "-i" << mergeInfo.audio.c_str() << "-i" << mergeInfo.video.c_str() << "-acodec"
+                  << "copy"
+                  << "-vcodec"
+                  << "copy"
+                  << "-f"
+                  << "mp4" << mergeInfo.targetVideo.c_str();
         qDebug() << ffmpegArg;
         FFMPEG_LOG_INFO("starting ffmpeg process, param: {}", ffmpegArg.join(" ").toStdString());
 

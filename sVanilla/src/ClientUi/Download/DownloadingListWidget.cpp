@@ -318,7 +318,10 @@ void DownloadingItemWidget::updateItemText()
     ui->labelSpeed->setText(m_status.speed);
     ui->labelSize->setText(m_status.totalSize);
     ui->labelStatus->setText(m_status.stage);
-    ui->progressBar->setValue(static_cast<int>(m_status.progress));
+    if (ui->progressBar->value() < m_status.progress)
+    {
+        ui->progressBar->setValue(static_cast<int>(m_status.progress));
+    }
     ui->labelRemainingTime->setText(m_status.remainingTime);
 }
 
