@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 
-#include "zipper/Zipper.h"
+#include "Zipper/Zipper.h"
 
 TEST(Zipper_Test, zip)
 {

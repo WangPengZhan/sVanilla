@@ -5,6 +5,7 @@ project(Login
     LANGUAGES CXX)
 
 find_package(spdlog REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
 
@@ -18,4 +19,5 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         spdlog::spdlog
+        nlohmann_json::nlohmann_json
 )

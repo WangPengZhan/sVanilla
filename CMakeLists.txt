@@ -85,7 +85,7 @@ if (ENABLE_BUILD_PLUGINS)
     if (NOT INSTALL_RESULT EQUAL 0)
         message(FATAL_ERROR "merge_plugins_vcpkg_error: ${INSTALL_ERROR}")
     endif ()
-    add_subdirectory(ThirdParty/sVanillaPlugins)
+    add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
 endif()
 add_subdirectory(sVanilla/src)
 

@@ -84,6 +84,18 @@ void FFmpegHelper::startFFpmegAsync(const MergeInfo& mergeInfo, std::function<vo
         ffmpegProcess.start();
         ffmpegProcess.waitForFinished(-1);
 
+        auto data = ffmpegProcess.readAllStandardOutput();
+        if (!data.isEmpty())
+        {
+            FFMPEG_LOG_INFO("ffmpeg process: {}", data.toStdString());
+        }
+
+        data = ffmpegProcess.readAllStandardError();
+        if (!data.isEmpty())
+        {
+            FFMPEG_LOG_ERROR("ffmpeg process: {}", data.toStdString());
+        }
+
         if (ffmpegProcess.exitStatus() == QProcess::NormalExit && ffmpegProcess.exitCode() == 0)
         {
             // ffmpeg正常结束且返回值为0，表示执行成功
