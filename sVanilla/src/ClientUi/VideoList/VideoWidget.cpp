@@ -109,6 +109,16 @@ void VideoWidget::signalsAndSlots()
     connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
 
     connect(ui->btnDownloadSelected, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTaskList);
+    connect(ui->btnDownloadAll, &QPushButton::clicked, this, [&]() {
+        int count = ui->videoGridWidget->count();
+        for (int i = 0; i < count; ++i)
+        {
+            auto item = ui->videoGridWidget->item(i);
+            auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
+            auto* widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
+            prepareDownloadTask(widget->getVideoInfo());
+        }
+    });
 }
 
 void VideoWidget::setUi()

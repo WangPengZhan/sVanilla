@@ -101,8 +101,12 @@ jobs:
             echo "ref_id=$(Get-Date -Format 'yyyy-MM-dd')" >> $env:GITHUB_ENV
           }
 
+      - name:  collect pdb
+        run: python.exe scripts/collection_pdb.py -b ${{ github.workspace }}/build -o ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_pdb.zip
+
       - name: Zip Package
         run: |
+          Get-ChildItem -Path "${{ matrix.install_path }}/bin/*" -Recurse -Filter "*.pdb" | Remove-Item -Force
           if (-Not (Test-Path ${{ matrix.asset_path }})) {
               New-Item -Path ${{ matrix.asset_path }} -ItemType Directory
           }

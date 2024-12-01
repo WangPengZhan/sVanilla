@@ -127,6 +127,7 @@ void DownloadingItemWidget::signalsAndSlots()
     connect(ui->btnFolder, &QPushButton::clicked, this, [&]() {
         if (ui->btnFolder->isCheckable())
         {
+            restartItem();
         }
         else
         {
@@ -448,13 +449,12 @@ void DownloadingListWidget::deleteAll()
     const int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
-        if (indexOfItem(i) != nullptr)
+        if (indexOfItem(0) != nullptr)
         {
-            indexOfItem(i)->setDelete();
+            indexOfItem(0)->setDelete();
         }
     }
     updateDowningCount();
-    // clear();
 }
 
 void DownloadingListWidget::setInfoPanelSignal(DownloadingInfoWidget* infoWidget)
@@ -548,7 +548,7 @@ void DownloadingListWidget::updateDowningCount()
 
     for (int i = 0; i < count(); ++i)
     {
-        if (auto pWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(0)))
+        if (auto pWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(item(i))))
         {
             pWidget->downloaoder()->status() == download::AbstractDownloader::Error ? downloadError++ : downloading++;
         }
