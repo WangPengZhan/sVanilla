@@ -14,7 +14,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/sVanilla/src
 )
 
-find_package(spdlog REQUIRED)
+
 find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(ZLIB)
 

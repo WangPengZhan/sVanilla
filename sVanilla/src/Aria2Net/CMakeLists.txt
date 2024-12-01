@@ -14,7 +14,7 @@ set(QT_COMPONENTS
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(spdlog REQUIRED)
+
 
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 

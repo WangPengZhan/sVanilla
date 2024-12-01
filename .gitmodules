@@ -4,3 +4,6 @@
 [submodule "ThirdParty/sVanillaPlugins"]
 	path = ThirdParty/sVanillaPlugins
 	url = https://github.com/WangPengZhan/sVanillaPlugins.git
+[submodule "ThirdParty/spdlog"]
+	path = ThirdParty/spdlog
+	url = https://github.com/gabime/spdlog.git

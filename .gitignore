@@ -462,3 +462,4 @@ CMakePresets.json
 CMakeSettings.json
 CMakeUserPresets.json
  
+/sVanilla/resource/*.py

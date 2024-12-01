@@ -4,7 +4,7 @@ project(Login
     VERSION 1.0.0 
     LANGUAGES CXX)
 
-find_package(spdlog REQUIRED)
+
 find_package(nlohmann_json CONFIG REQUIRED)
 
 file(GLOB_RECURSE SOURCES "*.cpp" "*.h")

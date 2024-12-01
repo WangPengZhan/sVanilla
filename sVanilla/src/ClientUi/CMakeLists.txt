@@ -17,7 +17,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 find_package(CURL REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
-find_package(spdlog REQUIRED)
+
 find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)

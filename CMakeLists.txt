@@ -87,6 +87,7 @@ if (ENABLE_BUILD_PLUGINS)
     endif ()
     add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
 endif()
+add_subdirectory(ThirdParty/spdlog)
 add_subdirectory(sVanilla/src)
 
 if (ENABLE_TEST)

@@ -20,7 +20,7 @@ include_directories(
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
-find_package(spdlog REQUIRED)
+
 
 add_executable(${TEST_NAME} ${SOURCES})
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})

@@ -13,7 +13,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/sVanilla/src
 )
 
-find_package(spdlog REQUIRED)
+
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 

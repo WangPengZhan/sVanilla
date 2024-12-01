@@ -13,7 +13,7 @@ set(QT_COMPONENTS
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS})
-find_package(spdlog REQUIRED)
+
 
 file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
 

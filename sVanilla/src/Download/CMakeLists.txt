@@ -4,7 +4,7 @@ project(Download
     VERSION 1.0.0 
     LANGUAGES CXX)
 
-find_package(spdlog REQUIRED)
+
 find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 
