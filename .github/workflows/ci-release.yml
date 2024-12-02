@@ -369,9 +369,9 @@ jobs:
           run: |
             cd "${{ matrix.asset_path }}" || exit
             for file in *; do
-                if [ -f "$file" ]; then
-                    shasum -a 256 "$file" > "$file.sha256"
-                fi
+              if [ -f "$file" ]; then
+                  shasum -a 256 "$file" > "$file.sha256"
+              fi
             done
 
         - name: Update GitHub Release
