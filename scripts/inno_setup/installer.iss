@@ -33,7 +33,7 @@ SetupMutex={#AppMutex}setup
 WizardImageFile="resources\inno-big-100.bmp,resources\inno-big-250.bmp"
 WizardSmallImageFile="resources\inno-small-100.bmp,resources\inno-small-250.bmp"
 SetupIconFile={#AppIcon}
-UninstallDisplayIcon={app}\{#MyAppExeName}.exe
+UninstallDisplayIcon={app}\{#MyAppExeName}
 ShowLanguageDialog=true
 WizardStyle=modern
 ;SignTool=mysigntool
@@ -59,7 +59,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#RootPath}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

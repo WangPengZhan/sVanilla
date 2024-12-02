@@ -5,7 +5,6 @@ file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 set(SOURCES ${TEST_SOURCES})
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
 
 add_executable(${TEST_NAME} ${SOURCES})
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
