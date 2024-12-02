@@ -75,6 +75,7 @@ option(ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
 option(ENABLE_BUILD_PLUGINS "Enable build plugins" OFF)
 option(ENABLE_BUILD_EXAMPLE "Enable build example" OFF)
 
+add_subdirectory(ThirdParty/spdlog)
 if (ENABLE_BUILD_PLUGINS)
     set(INSTALL_DEPENDENCIES_COMMAND "${PYTHON_EXECUTABLE}"  ${CMAKE_CURRENT_SOURCE_DIR}/scripts/merge_plugins_vcpkg.py)
     execute_process(COMMAND ${INSTALL_DEPENDENCIES_COMMAND}
@@ -87,7 +88,6 @@ if (ENABLE_BUILD_PLUGINS)
     endif ()
     add_subdirectory(ThirdParty/sVanillaPlugins EXCLUDE_FROM_ALL)
 endif()
-add_subdirectory(ThirdParty/spdlog)
 add_subdirectory(sVanilla/src)
 
 if (ENABLE_TEST)
