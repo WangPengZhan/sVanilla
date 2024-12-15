@@ -45,6 +45,10 @@ void AdvanceSettings::setUi()
     ui->checkBoxEnableAria2AdvancedSettings->setChecked(aria2Config.enableAdvancedSetting);
     ui->listWidgetAria2AdvancedSettings->setVisible(aria2Config.enableAdvancedSetting);
     ui->scrollArea->adjustSize();
+
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, Qt::transparent);
+    ui->scrollAreaWidgetContents->setPalette(palette);
 }
 
 void AdvanceSettings::signalsAndSlots()

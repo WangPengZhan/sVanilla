@@ -74,6 +74,9 @@ void DefaultSettings::setUi()
         rules.insert({rule, ""});
     }
     ui->widgetNameRule->init(rules);
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, Qt::transparent);
+    ui->scrollAreaWidgetContents->setPalette(palette);
 }
 
 void DefaultSettings::signalsAndSlots()

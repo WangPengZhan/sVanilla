@@ -291,6 +291,7 @@ void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Statu
     case download::AbstractDownloader::Error:
     {
         ui->btnStatus->setIcon(QIcon(":icon/error.svg"));
+        ui->btnStatus->setProperty("CustomIconColor", QColor(249, 84, 84));
         break;
     }
     default:

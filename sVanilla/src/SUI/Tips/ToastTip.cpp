@@ -98,6 +98,7 @@ void ToastTip::setUi()
     m_pFadeAnimation->setEasingCurve(QEasingCurve::Linear);
     m_pFadeAnimation->setStartValue(1.0);
     m_pFadeAnimation->setEndValue(0);
+    hide();
 }
 
 void ToastTip::signalsAndSlots()

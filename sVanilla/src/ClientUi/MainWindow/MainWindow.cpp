@@ -24,6 +24,7 @@
 #include "ui_MainWindow.h"
 #include "ClientLog.h"
 #include "const_string.h"
+#include "Config/SingleConfig.h"
 
 static constexpr int systemButtonSize = 14;
 constexpr char softwareName[] = "sVanilla";
@@ -61,6 +62,28 @@ void MainWindow::closeEvent(QCloseEvent* event)
         QMainWindow::closeEvent(event);
     }
 }
+void MainWindow::showEvent(QShowEvent* event)
+{
+    QMainWindow::showEvent(event);
+    switch (SingleConfig::instance().theme())
+    {
+    case 0:
+    {
+        setLightTheme();
+        break;
+    }
+    case 1:
+    {
+        setDarkTheme();
+        break;
+    }
+    default:
+    {
+        setLightTheme();
+        break;
+    }
+    }
+}
 
 void MainWindow::setUi()
 {
@@ -69,7 +92,6 @@ void MainWindow::setUi()
     resize(defaultSize);
     Toast::create(this);
     ToastTip::create(this);
-    setLightTheme();
     createTrayIcon();
 
     if (ui->settingPage->isSaveMainWindow() == Qt::Checked)
