@@ -30,6 +30,11 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::searchHistoryStorage() con
     return m_searchHistoryStorage;
 }
 
+std::shared_ptr<CookiesStorage> StorageManager::searchCookiesStorage() const
+{
+    return m_cookiesStorage;
+}
+
 bool StorageManager::isDownloaded(const std::string& guid) const
 {
     return m_downloadingItemStorage->isDownload(guid) || m_downloadedItemStorage->isDownload(guid);

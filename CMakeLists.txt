@@ -6,7 +6,7 @@ set(VCPKG_APPLOCAL_DEPS ON)
 
 project(sVanilla 
     VERSION 1.0.0 
-    DESCRIPTION "A downloader of stream that may be video, audio or music."
+    DESCRIPTION "sVanilla"
     HOMEPAGE_URL "https://svanilla.app/"
     LANGUAGES CXX)
 

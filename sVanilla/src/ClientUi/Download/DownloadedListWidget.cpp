@@ -194,9 +194,9 @@ void DownloadedListWidget::clearAll()
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
-        if (indexOfItem(i) != nullptr)
+        if (indexOfItem(0) != nullptr)
         {
-            indexOfItem(i)->clearItem();
+            indexOfItem(0)->clearItem();
         }
     }
     emit downloadedCountChanged(count());
@@ -208,9 +208,9 @@ void DownloadedListWidget::reloadAll()
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
     {
-        if (indexOfItem(i) != nullptr)
+        if (indexOfItem(0) != nullptr)
         {
-            indexOfItem(i)->reloadItem();
+            indexOfItem(0)->reloadItem();
         }
     }
 }

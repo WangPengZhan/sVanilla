@@ -33,7 +33,7 @@ public:
     bool insertOrUpdate(const std::string& url, int pluginType);
     std::vector<std::string> allItems();
 
-    static constexpr int maxNum = 10;
+    static constexpr int maxNum = 20;
 
 private:
     bool haveUrl(const std::string& url);

@@ -5,6 +5,7 @@
 class DownloadedItemStorage;
 class DownloadingItemStorage;
 class SearchHistoryStorage;
+class CookiesStorage;
 
 namespace sqlite
 {
@@ -15,6 +16,7 @@ public:
     std::shared_ptr<DownloadedItemStorage> downloadedtemStorage() const;
     std::shared_ptr<DownloadingItemStorage> downloadingStorage() const;
     std::shared_ptr<SearchHistoryStorage> searchHistoryStorage() const;
+    std::shared_ptr<CookiesStorage> searchCookiesStorage() const;
 
     bool isDownloaded(const std::string& guid) const;
 
@@ -31,6 +33,7 @@ private:
     std::shared_ptr<DownloadedItemStorage> m_downloadedItemStorage;
     std::shared_ptr<DownloadingItemStorage> m_downloadingItemStorage;
     std::shared_ptr<SearchHistoryStorage> m_searchHistoryStorage;
+    std::shared_ptr<CookiesStorage> m_cookiesStorage;
 };
 
 }  // namespace sqlite
