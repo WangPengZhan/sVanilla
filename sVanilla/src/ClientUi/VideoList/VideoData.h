@@ -6,27 +6,16 @@
 
 #include <QListWidgetItem>
 
-namespace Adapter
+#include <BaseVideoView.h>
+
+namespace adapter
 {
 struct BaseVideoView;
-}  //  namespace Adapter
+}  // namespace adapter
 
 struct DownloadConfig;
 
 constexpr char coverDir[] = "cover";
-
-struct VideoInfoFull
-{
-    std::shared_ptr<DownloadConfig> downloadConfig;
-    std::shared_ptr<Adapter::BaseVideoView> videoView;
-
-    std::string getGuid() const;
-    std::unordered_map<std::string, std::string> nameRules() const;
-    std::string fileName() const;
-    std::string coverPath() const;
-
-    static const std::vector<std::string> ruleList;
-};
 
 struct InfoPanelData
 {

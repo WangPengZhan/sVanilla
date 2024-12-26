@@ -1,16 +1,16 @@
+#include "LoginBubble.h"
+
 #include <QPainter>
 #include <QPainterPath>
 #include <QEvent>
 #include <QMouseEvent>
-
-#include "LoginBubble.h"
-
 #include <QBuffer>
 #include <QImageReader>
-#include <QtWidgets/QGridLayout>
+#include <QGridLayout>
+
 #include <utility>
 
-#include "Login/login.h"
+#include <Login.h>
 
 LoginBubble::LoginBubble(std::shared_ptr<AbstractLogin> loginer, QWidget* parent)
     : QWidget(parent)

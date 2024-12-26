@@ -14,6 +14,4 @@ add_library(${PROJECT_NAME} STATIC ${SOURCES})
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         spdlog::spdlog
-        unofficial::breakpad::libbreakpad
-        unofficial::breakpad::libbreakpad_client
 )

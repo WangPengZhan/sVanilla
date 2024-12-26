@@ -68,22 +68,23 @@ void PluginManager::addPlugin(const std::string& pluginPath)
     PluginConfig pluginConfig;
     for (const auto& config : m_pluginConfig)
     {
-        if (config.name == plugin->pluginName())
+        if (config.name == plugin->pluginMessage().name)
         {
             pluginConfig = config;
             break;
         }
     }
 
+    const auto& pluginMessage = plugin->pluginMessage();
     if (pluginConfig.name.empty())
     {
         pluginConfig.enabled = true;
-        pluginConfig.name = plugin->pluginName();
+        pluginConfig.name = pluginMessage.name;
         pluginConfig.libName = std::filesystem::path(pluginPath).stem().string();
         pluginConfig.libFile = std::filesystem::path(pluginPath).filename().string();
-        pluginConfig.version = plugin->pluginVersion();
-        pluginConfig.id = plugin->pluginID();
-        pluginConfig.description = plugin->pluginDescription();
+        pluginConfig.version = pluginMessage.version;
+        pluginConfig.id = pluginMessage.pluginId;
+        pluginConfig.description = pluginMessage.description;
         m_configChanged = true;
         m_pluginConfig.emplace_back(pluginConfig);
     }
@@ -92,27 +93,32 @@ void PluginManager::addPlugin(const std::string& pluginPath)
     if (pluginConfig.enabled)
     {
         std::lock_guard lk(m_pluginsMutex);
-        m_libHandles.insert({plugin->pluginName(), pLoader});
-        m_plugins.insert({plugin->pluginName(), plugin});
+        m_libHandles.insert({pluginMessage.pluginId, pLoader});
+        m_plugins.insert({pluginMessage.pluginId, plugin});
     }
 }
 
-std::shared_ptr<IPlugin> PluginManager::getPlugin(const std::string& pluginName)
+std::shared_ptr<IPlugin> PluginManager::getPlugin(int pluginId)
 {
     std::lock_guard lk(m_pluginsMutex);
-    if (m_plugins.find(pluginName) != m_plugins.end())
+    if (m_plugins.find(pluginId) != m_plugins.end())
     {
-        return m_plugins.at(pluginName);
+        return m_plugins.at(pluginId);
     }
 
     return std::shared_ptr<IPlugin>();
 }
 
-void PluginManager::removePlugin(const std::string& pluginName)
+void PluginManager::removePlugin(int pluginId)
 {
     std::lock_guard lk(m_pluginsMutex);
-    m_plugins.erase(pluginName);
-    m_libHandles.erase(pluginName);
+    m_plugins.erase(pluginId);
+    m_libHandles.erase(pluginId);
+}
+
+const std::unordered_map<int, std::shared_ptr<IPlugin>>& PluginManager::plugins() const
+{
+    return m_plugins;
 }
 
 void PluginManager::pluginDirFileAdded()

@@ -13,7 +13,6 @@
 
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
-#include "BiliApi/BilibiliUrl.h"
 #include "BaseQt/Utility.h"
 #include "Plugin/PluginManager.h"
 #include "Storage/SearchHistoryStorage.h"
@@ -21,10 +20,11 @@
 #include "Login/LoginMonitor.h"
 #include "SUI/QrCodeGenerator.h"
 #include "Utils/RunTask.h"
+#include "LoginProxy.h"
 #include "ClientLog.h"
 #include "const_string.h"
 
-LoginDialog::LoginDialog(std::shared_ptr<AbstractLogin> loginer, QDialog* parent)
+LoginDialog::LoginDialog(std::shared_ptr<LoginProxy> loginer, QDialog* parent)
     : QDialog(parent)
     , ui(new Ui::LoginDialog)
     , m_monitor(new LoginMonitor(this))
@@ -186,11 +186,6 @@ void LoginDialog::setUi()
 
 void LoginDialog::loadOrc()
 {
-    if (!m_loginer)
-    {
-        return;
-    }
-
     m_status = AbstractLogin::Unknow;
     auto taskFunc = [this]() {
         return m_loginer->getScanContext(m_context);

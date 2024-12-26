@@ -15,12 +15,7 @@ AccountsInfo::~AccountsInfo()
     delete ui;
 }
 
-void AccountsInfo::addUserInfo(const UserInfo& userInfo)
-{
-    ui->listWidgetAccount->addUserInfo(userInfo);
-}
-
-void AccountsInfo::addUserInfo(std::shared_ptr<AbstractLogin> loginer)
+void AccountsInfo::addUserInfo(std::shared_ptr<LoginProxy> loginer)
 {
     ui->listWidgetAccount->addLoginer(loginer);
 }

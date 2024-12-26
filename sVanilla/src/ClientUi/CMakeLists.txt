@@ -47,6 +47,8 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/..
+        ${CMAKE_SOURCE_DIR}/ThirdParty/sVanillaPluginCommon/PluginCommon
+        ${CMAKE_SOURCE_DIR}/ThirdParty/sVanillaPluginCommon
 )
 
 include(${CMAKE_SOURCE_DIR}/cmake/appicon.cmake)
@@ -89,18 +91,18 @@ target_link_libraries(${PROJECT_NAME}
         OpenSSL::Crypto
         VanillaStyle::VanillaStyle
         Aria2Net
-        BiliApi
-        Download
-        FFmpeg
         Logger
-        Login
-        NetWork
         Plugin
         Sqlite
         SUI
         ThreadPool
-        Util
         Zipper
+        Download
+        PluginCommon
+        PluginDownload
+        NetWork
+        Util
+        AriaClient
 )
 
 include(${CMAKE_SOURCE_DIR}/cmake/wix.cmake)
@@ -119,6 +121,8 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -DEXECUTABLE_PATH="$<TARGET_FILE_DIR:${PROJECT_NAME}>/aria/aria2c" -P "${CMAKE_SOURCE_DIR}/cmake/terminate_process.cmake"
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:FFmpeg> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}
         ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -140,6 +144,8 @@ install(DIRECTORY ${TOOLS_PATH}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INS
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/sVanilla/resource/style/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES "$<TARGET_FILE:FFmpeg>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 if (APPLE)
     install(FILES "$<TARGET_FILE:${PROJECT_NAME}>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 endif()

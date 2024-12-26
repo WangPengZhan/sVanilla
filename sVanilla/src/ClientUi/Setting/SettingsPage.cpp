@@ -44,12 +44,7 @@ Qt::CheckState SettingsPage::isSaveMainWindow() const
     return ui->defaultSettings->isSaveMainWindow();
 }
 
-void SettingsPage::logined(UserInfo userInfo)
-{
-    ui->accountsInfo->addUserInfo(userInfo);
-}
-
-void SettingsPage::loginSucceed(std::shared_ptr<AbstractLogin> loginer)
+void SettingsPage::loginSucceed(std::shared_ptr<LoginProxy> loginer)
 {
     ui->accountsInfo->addUserInfo(loginer);
 }

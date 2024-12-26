@@ -1,4 +1,4 @@
-#include "Logger/Dump.h"
+#include "Dump/Dump.h"
 #include "Logger/Logger.h"
 #include "MainWindow/Restarter.h"
 #include "MainWindow/SingleAppHelper.h"
@@ -7,7 +7,6 @@
 #include "PlatformInitializer/AppInitializer.h"
 #include "NetWork/CurlCpp/CurlGlobal.h"
 #include "Sqlite/Storage/SqliteDBManager.h"
-#include "BiliApi/BilibiliUtils.h"
 #include "Util/TimerUtil.h"
 #include "ClientLog.h"
 #include "const_string.h"
@@ -53,7 +52,6 @@ int main(int argc, char* argv[])
     Logger::getInstance();
     DumpColletor::setDumpDir(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string("dump"));
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string(".db"));
-    biliapi::setCookieDataDir(SApplication::appDir().toLocal8Bit().toStdString());
     network::CurlGlobal curlGlobal;
     DumpColletor::registerDumpHandle();
     startLog();

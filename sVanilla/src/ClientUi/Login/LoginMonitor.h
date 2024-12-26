@@ -6,7 +6,8 @@
 #include <thread>
 #include <memory>
 
-#include "Login/login.h"
+#include <Login.h>
+
 #include "Util/atomic_shared_ptr.h"
 
 struct SNullMutex
@@ -19,6 +20,8 @@ struct SNullMutex
     }
 };
 
+class LoginProxy;
+
 class LoginMonitor : public QObject
 {
     Q_OBJECT
@@ -26,8 +29,8 @@ public:
     LoginMonitor(QObject* parent = nullptr);
     ~LoginMonitor();
 
-    bool setLoginer(std::shared_ptr<AbstractLogin> loginer);
-    std::shared_ptr<AbstractLogin> loginer();
+    bool setLoginer(std::shared_ptr<LoginProxy> loginer);
+    std::shared_ptr<LoginProxy> loginer();
 
     void stop();
 
@@ -38,7 +41,8 @@ protected:
     void monitorStatus();
 
 private:
-    std::atomic<std::shared_ptr<AbstractLogin>> m_loginer;
+    std::mutex m_mutex;
+    std::atomic<std::shared_ptr<LoginProxy>> m_loginer;
     SNullMutex m_waitNullMutex;
     std::atomic<bool> m_stop;
     std::condition_variable_any m_cv;

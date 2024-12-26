@@ -6,10 +6,11 @@
 
 #include <utility>
 
+#include <BaseVideoView.h>
+
 #include "DownloadedListWidget.h"
 #include "ui_DownloadedListWidget.h"
 #include "VideoList/VideoData.h"
-#include "Adapter/BaseVideoView.h"
 #include "Storage/DownloadedItemStorage.h"
 #include "Storage/StorageManager.h"
 #include "Sqlite/SqlComposer/BaseInfo.h"
@@ -76,7 +77,7 @@ void DownloadedItemWidget::setUi()
     ui->labelDuration->setText(QString::fromStdString(m_videoInfoFull->videoView->Duration));
     ui->labelPublishDate->setText(QString::fromStdString(m_videoInfoFull->videoView->PublishDate));
     QString fileName = QString::fromStdString(m_videoInfoFull->fileName()) + ".mp4";
-    QString filePath = m_videoInfoFull->downloadConfig->downloadDir + "/" + fileName;
+    QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir) + "/" + fileName;
     QFileInfo fileInfo(filePath);
     ui->labelSize->setText(formatSize(fileInfo.size()));
 }
@@ -126,7 +127,7 @@ void DownloadedItemWidget::restartItem()
 
 void DownloadedItemWidget::openItemFolder()
 {
-    QString filePath = m_videoInfoFull->downloadConfig->downloadDir;
+    QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir);
     if (filePath.endsWith("/") || filePath.endsWith("\\"))
     {
         filePath += QString::fromStdString(m_videoInfoFull->fileName());

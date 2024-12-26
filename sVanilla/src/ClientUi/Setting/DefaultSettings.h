@@ -3,7 +3,7 @@
 #include <QButtonGroup>
 #include <QWidget>
 
-#include "Aria2Net/Protocol/Protocol.h"
+#include "Aria2Net/AriaClient/AriaApi.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

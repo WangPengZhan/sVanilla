@@ -1,7 +1,8 @@
 
 #include <QPushButton>
 
-#include "Adapter/BaseVideoView.h"
+#include <BaseVideoView.h>
+
 #include "VideoInfoWidget.h"
 #include "ui_VideoInfoWidget.h"
 #include "ClientUi/Config/SingleConfig.h"
@@ -44,11 +45,11 @@ void VideoInfoWidget::updateUi()
 
     QSignalBlocker blockerNameRule(ui->fileNameRule);
     ui->fileNameRule->init(m_infoFull->nameRules());
-    ui->fileNameRule->updateLineEdit(m_infoFull->downloadConfig->nameRule);
+    ui->fileNameRule->updateLineEdit(QString::fromStdString(m_infoFull->downloadConfig->nameRule));
 
-    const auto isConfigDownloadDirValid = m_infoFull->downloadConfig->downloadDir.isEmpty();
-    const auto saveFolder =
-        isConfigDownloadDirValid ? QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) : m_infoFull->downloadConfig->downloadDir;
+    QString downloadDir = QString::fromStdString(m_infoFull->downloadConfig->downloadDir);
+    const auto isConfigDownloadDirValid = downloadDir.isEmpty();
+    const auto saveFolder = isConfigDownloadDirValid ? QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) : downloadDir;
     QSignalBlocker blockerSaveFolder(ui->lineEditSaveFolder);
     ui->lineEditSaveFolder->setText(saveFolder);
 }
@@ -61,13 +62,13 @@ void VideoInfoWidget::signalsAndSlots()
         {
             return;
         }
-        m_infoFull->downloadConfig->downloadDir = ui->lineEditSaveFolder->text();
+        m_infoFull->downloadConfig->downloadDir = ui->lineEditSaveFolder->text().toStdString();
     });
     connect(ui->fileNameRule, &NameRuleWidget::editingFinished, this, [this](const QString& newText) {
         if (!m_infoFull)
         {
             return;
         }
-        m_infoFull->downloadConfig->nameRule = newText;
+        m_infoFull->downloadConfig->nameRule = newText.toStdString();
     });
 }

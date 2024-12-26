@@ -8,7 +8,7 @@ class HomePage;
 }
 QT_END_NAMESPACE
 
-class AbstractLogin;
+class LoginProxy;
 
 class HomePage : public QWidget
 {
@@ -24,13 +24,14 @@ signals:
     void hasAdded(bool hasAdded);
     void updateWebsiteIcon(const std::string& uri);
     void parseUri(const QString& uri);
-    void loginSucceed(std::shared_ptr<AbstractLogin> loginer);
+    void loginSucceed(std::shared_ptr<LoginProxy> loginer);
     void switchAccoutTab();
 
 private:
     void signalsAndSlots();
     void setUi();
     void createHistoryMenu();
+    void showLoginDialog(std::shared_ptr<LoginProxy> loginer);
 
 private:
     Ui::HomePage* ui;

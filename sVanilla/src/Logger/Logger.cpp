@@ -52,6 +52,11 @@ void Logger::registerLogger(const std::string& logName)
     // spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(logName, "log/" + logName + ".log", logFileMaxSize, 100);
 }
 
+std::shared_ptr<spdlog::logger> Logger::get(const std::string& logName)
+{
+    return spdlog::get(logName);
+}
+
 void Logger::setLog()
 {
     spdlog::init_thread_pool(32768, 1);

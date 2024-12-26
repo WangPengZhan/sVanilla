@@ -1,6 +1,8 @@
 #include "SApplication.h"
 #include "Config/SingleConfig.h"
 #include "Config/GlobalData.h"
+#include "Plugin/PluginManager.h"
+#include "Plugin/PluginInterface.h"
 
 #include <QDir>
 #include <QStandardPaths>
@@ -8,7 +10,7 @@
 SApplication::SApplication(int& argc, char** argv)
     : QApplication(argc, argv)
 {
-    m_pluginManager.setPluginConfigDir(appDir().toLocal8Bit().toStdString());
+    pluginManager().setPluginConfigDir(appDir().toLocal8Bit().toStdString());
     m_ariaServer.setLogDir(appDir());
     m_translater.setTranslatesDir(QApplication::applicationDirPath() + "/translations");
     m_translater.setLanguage(static_cast<Translater::Language>(SingleConfig::instance().language()));
@@ -31,9 +33,14 @@ aria2net::AriaServer& SApplication::ariaServer()
     return m_ariaServer;
 }
 
+PluginInterface& SApplication::pluginInterface()
+{
+    return m_pluginInterface;
+}
+
 plugin::PluginManager& SApplication::pluginManager()
 {
-    return m_pluginManager;
+    return m_pluginInterface.pluginManager();
 }
 
 Translater& SApplication::translater()

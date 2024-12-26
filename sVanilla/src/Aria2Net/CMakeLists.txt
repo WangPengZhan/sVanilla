@@ -35,6 +35,5 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
         nlohmann_json::nlohmann_json
-        Util
         spdlog::spdlog
 )

@@ -11,6 +11,8 @@
 #include <utility>
 #include <limits>
 
+#include <BaseVideoView.h>
+
 #include "UiDownloader.h"
 #include "DownloadingListWidget.h"
 #include "ui_DownloadingListWidget.h"
@@ -24,7 +26,6 @@
 #include "ClientLog.h"
 #include "const_string.h"
 #include "Storage/StorageManager.h"
-#include "Adapter/BaseVideoView.h"
 
 DownloadingItemWidget::DownloadingItemWidget(std::shared_ptr<UiDownloader> downloader, QWidget* parent)
     : QWidget(parent)

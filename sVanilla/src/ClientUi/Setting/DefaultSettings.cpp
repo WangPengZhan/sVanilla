@@ -136,13 +136,13 @@ void DefaultSettings::signalsAndSlots()
 
     connect(ui->folderSelectorDownloadPath, &QLineEdit::textChanged, this, [this](const QString& newText) {
         auto downloadConfig = SingleConfig::instance().downloadConfig();
-        downloadConfig.downloadDir = newText;
+        downloadConfig.downloadDir = newText.toStdString();
         SingleConfig::instance().setDownloadConfig(downloadConfig);
     });
 
     connect(ui->widgetNameRule, &NameRuleWidget::editingFinished, this, [this](const QString& newText) {
         auto downloadConfig = SingleConfig::instance().downloadConfig();
-        downloadConfig.nameRule = newText;
+        downloadConfig.nameRule = newText.toStdString();
         SingleConfig::instance().setDownloadConfig(downloadConfig);
     });
 }
@@ -176,8 +176,8 @@ void DefaultSettings::loadConfigToUi()
     ui->spinBoxThread->setValue(singleConfig.downloadThreadNum());
 
     auto downloadConfig = singleConfig.downloadConfig();
-    ui->folderSelectorDownloadPath->setText(downloadConfig.downloadDir);
-    ui->widgetNameRule->updateLineEdit(downloadConfig.nameRule);
+    ui->folderSelectorDownloadPath->setText(QString::fromStdString(downloadConfig.downloadDir));
+    ui->widgetNameRule->updateLineEdit(QString::fromStdString(downloadConfig.nameRule));
 }
 
 void DefaultSettings::updateStatus(const std::string& status)

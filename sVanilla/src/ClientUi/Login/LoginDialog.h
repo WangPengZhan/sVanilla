@@ -6,7 +6,7 @@
 
 #include <memory>
 
-#include "Login/login.h"
+#include <Login.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -16,15 +16,18 @@ class LoginDialog;
 QT_END_NAMESPACE
 
 class LoginMonitor;
+class LoginProxy;
 class LoginDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit LoginDialog(std::shared_ptr<AbstractLogin> loginer, QDialog* parent = nullptr);
+    explicit LoginDialog(std::shared_ptr<LoginProxy> loginer, QDialog* parent = nullptr);
     ~LoginDialog();
 
     void slotStatusChanged(AbstractLogin::LoginSatus status);
     void slotBtnRefreshClicked();
+
+    static QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
@@ -36,12 +39,10 @@ private:
 
     void loadOrc();
 
-    static QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size);
-
 private:
     Ui::LoginDialog* ui;
     LoginMonitor* m_monitor;
-    std::shared_ptr<AbstractLogin> m_loginer;
+    std::shared_ptr<LoginProxy> m_loginer;
     AbstractLogin::LoginSatus m_status;
     std::string m_context;
     QMovie m_movie;

@@ -1,9 +1,10 @@
+#include <BaseVideoView.h>
+
 #include "DownloadingInfoWidget.h"
 #include "DownloadingListWidget.h"
 #include "ui_DownloadingInfoWidget.h"
 #include "Utils/SpeedUtil.h"
 #include "UiDownloader.h"
-#include "Adapter/BaseVideoView.h"
 
 DownloadingInfoWidget::DownloadingInfoWidget(QWidget* parent)
     : QWidget(parent)

@@ -8,21 +8,22 @@
 #include <QLabel>
 #include <QMenu>
 
+#include <BaseVideoView.h>
+
 #include "Download/AbstractDownloader.h"
-#include "Adapter/BilibiliVideoView.h"
-#include "BiliApi/BilibiliClient.h"
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
 #include "Utils/CoverUtil.h"
 #include "VideoGridWidget.h"
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
-#include "ClientUi/Utils/RunTask.h"
 #include "Utils/UrlProcess.h"
-#include "ClientUi/Config//SingleConfig.h"
+#include "ClientUi/Config/SingleConfig.h"
 #include "ClientUi/Setting/About.h"
 #include "ClientUi/Utils/MenuEventFilter.h"
 #include "ClientUi/Utils/SortItems.h"
+#include "ClientUi/Utils/RunTask.h"
+#include "ClientUi/Utils/UrlProcess.h"
 #include "BaseQt/Utility.h"
 #include "ClientUi/VideoList/VideoData.h"
 #include "ClientUi/Storage/SearchHistoryStorage.h"
@@ -81,7 +82,7 @@ void VideoWidget::signalsAndSlots()
     connect(ui->btnClipboard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
         MLogI(svanilla::cVideoList, "parseUri {}", clipboard->text().toStdString());
-        emit parseUri(clipboard->text().toStdString());
+        sApp->pluginInterface().parseUrl(clipboard->text().toStdString());
     });
 
     connect(ui->btnSort, &QPushButton::clicked, this, [this]() {
@@ -372,27 +373,10 @@ QString VideoWidget::getCoverPath() const
     return coverPath;
 }
 
-void VideoWidget::prepareBiliVideoView(const std::string& uri)
+void VideoWidget::searchedVideoItem(adapter::VideoView views)
 {
-    MLogI(svanilla::cVideoList, "rprepareBiliVideoView uri: {}", uri);
-    auto taskFunc = [this, uri]() {
-        return biliapi::BilibiliClient::globalClient().getVideoView(uri);
-    };
-    auto callback = [this](const biliapi::VideoViewOrigin& result) {
-        if (result.code != 0)
-        {
-            return;
-        }
-        clearVideo();
-        prepareVideoItem(result);
-    };
-    runTask(taskFunc, callback, this);
-}
-
-void VideoWidget::prepareVideoItem(const biliapi::VideoViewOrigin& videoView)
-{
-    const auto views = convertVideoView(videoView.data);
     ui->labelPlayListTitle->clear();
+    clearVideo();
     showViewList(views);
 }
 
@@ -461,28 +445,29 @@ void VideoWidget::setDownloadedNumber(int number) const
 {
 }
 
-void VideoWidget::showHistoryList(Adapter::Views views)
+void VideoWidget::showHistoryList(adapter::VideoView views)
 {
     clearVideo();
     showViewList(views);
 }
 
-void VideoWidget::showViewList(Adapter::Views views)
+void VideoWidget::showViewList(const adapter::VideoView& views)
 {
     const QString tempPath = getCoverPath();
     ui->labelPlayListTitle->clear();
 
-    if (const auto playlistTitle = views.front()->PlayListTitle; !playlistTitle.empty())
+    if (const auto playlistTitle = views.front().PlayListTitle; !playlistTitle.empty())
     {
         const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
         ui->labelPlayListTitle->setText(title);
     }
+
     for (const auto& view : views)
     {
         auto videoInfoFull = std::make_shared<VideoInfoFull>();
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
-        videoInfoFull->videoView = view;
+        videoInfoFull->videoView = std::make_shared<adapter::BaseVideoView>(view);
         addVideoItem(videoInfoFull);
-        downloadCover({view->Cover, videoInfoFull->coverPath(), tempPath.toStdString()});
+        downloadCover({view.Cover, util::removeSpecialChar(videoInfoFull->coverPath()), tempPath.toStdString()});
     }
 }

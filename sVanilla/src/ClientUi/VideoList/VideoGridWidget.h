@@ -7,7 +7,7 @@
 #include <QSplitter>
 #include <QLabel>
 
-#include "Adapter/BaseVideoView.h"
+#include <BaseVideoView.h>
 
 struct InfoPanelData;
 class VideoGridWidget;

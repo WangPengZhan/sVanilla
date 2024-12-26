@@ -11,7 +11,6 @@
 #include "VideoGridWidget.h"
 #include "VideoInfoWidget.h"
 #include "ui_VideoGridWidget.h"
-#include "BiliApi/BilibiliClient.h"
 #include "ClientUi/Utils/InfoPanelVisibleHelper.h"
 #include "SUI/RoundImageWidget.h"
 #include "ClientUi/VideoList/VideoData.h"
@@ -108,7 +107,7 @@ void VideoGridItemWidget::createContextMenu()
 void VideoGridItemWidget::setCover()
 {
     const QString tempPath = SApplication::appDir() + QString("/") + QString(coverDir);
-    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->coverPath()) + ".jpg";
+    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(util::removeSpecialChar(m_infoFull->coverPath())) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
         MLogI(svanilla::cVideoList, "setCover, paath: {}", filePath.toStdString());
@@ -145,7 +144,7 @@ const VideoGridItemWidget::CardInfo& VideoGridItemWidget::getCardInfo() const
 
 std::string VideoGridItemWidget::getCoverPath() const
 {
-    return m_infoFull->coverPath();
+    return util::removeSpecialChar(m_infoFull->coverPath());
 }
 
 QSize VideoGridItemWidget::sizeHint() const

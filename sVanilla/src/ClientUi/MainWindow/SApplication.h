@@ -3,7 +3,7 @@
 #include <QFileSystemWatcher>
 
 #include "Aria2Net/AriaServer/AriaServer.h"
-#include "Plugin/PluginManager.h"
+#include "Plugin/PluginInterface.h"
 #include "Translater.h"
 
 class SApplication : public QApplication
@@ -16,6 +16,7 @@ public:
     void init();
 
     aria2net::AriaServer& ariaServer();
+    PluginInterface& pluginInterface();
     plugin::PluginManager& pluginManager();
     Translater& translater();
 
@@ -28,7 +29,7 @@ private:
 
 private:
     aria2net::AriaServer m_ariaServer;
-    plugin::PluginManager m_pluginManager;
+    PluginInterface m_pluginInterface;
     QFileSystemWatcher m_watcher;
     Translater m_translater;
 };

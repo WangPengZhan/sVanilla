@@ -47,9 +47,9 @@ const std::shared_ptr<QSettings>& SingleConfig::aria2AdvanceConfig() const
 void SingleConfig::setDownloadConfig(const DownloadConfig& config)
 {
     m_appSettings->beginGroup("Download");
-    m_appSettings->setValue("DownloadDir", config.downloadDir);
+    m_appSettings->setValue("DownloadDir", QString::fromStdString(config.downloadDir));
     m_appSettings->setValue("VideoQuality", static_cast<int>(config.videoQuality));
-    m_appSettings->setValue("NameRule", config.nameRule);
+    m_appSettings->setValue("NameRule", QString::fromStdString(config.nameRule));
     m_appSettings->endGroup();
 }
 
@@ -57,9 +57,9 @@ DownloadConfig SingleConfig::downloadConfig() const
 {
     DownloadConfig config;
     m_appSettings->beginGroup("Download");
-    config.downloadDir = m_appSettings->value("DownloadDir").toString();
+    config.downloadDir = m_appSettings->value("DownloadDir").toString().toStdString();
     config.videoQuality = static_cast<VideQuality>(m_appSettings->value("VideoQuality").toInt());
-    config.nameRule = m_appSettings->value("NameRule").toString();
+    config.nameRule = m_appSettings->value("NameRule").toString().toStdString();
     m_appSettings->endGroup();
     return config;
 }
@@ -194,7 +194,8 @@ void SingleConfig::iniConfig()
         if (!groups.contains("Download"))
         {
             DownloadConfig downloadConfig;
-            downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+            QString downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+            downloadConfig.downloadDir = downloadDir.toStdString();
             setDownloadConfig(downloadConfig);
         }
     }
@@ -223,7 +224,8 @@ void SingleConfig::iniConfig()
         setStartUpConfig(StartUpConfig());
 
         DownloadConfig downloadConfig;
-        downloadConfig.downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+        QString downloadDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).front();
+        downloadConfig.downloadDir = downloadDir.toStdString();
         setDownloadConfig(downloadConfig);
     }
 

@@ -4,7 +4,6 @@
 #include <QSplitter>
 
 #include "DownloadedInfoWidget.h"
-#include "Aria2Net/Protocol/Protocol.h"
 
 namespace Ui
 {

@@ -3,12 +3,13 @@
 #include <QPainterPath>
 #include <QPainter>
 
+#include <Login.h>
+#include <BaseVideoView.h>
+
 #include "AccountListWidget.h"
 #include "ui_AccountListWidget.h"
 #include "ClientUi/MainWindow/SApplication.h"
-#include "Login/login.h"
 #include "ClientUi/Utils/RunTask.h"
-#include "ClientUi/Adapter/BaseVideoView.h"
 
 constexpr char userfaceDir[] = "userface";
 
@@ -29,28 +30,17 @@ QPixmap createRoundedPixmap(const QPixmap& src, int radius)
     return roundedPixmap;
 }
 
-AccountItemWidget::AccountItemWidget(QWidget* parent)
+AccountItemWidget::AccountItemWidget(std::shared_ptr<LoginProxy> loginer, QListWidgetItem* item, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::AccountItemWidget)
     , m_item(nullptr)
+    , m_loginer(loginer)
 {
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
-}
-
-AccountItemWidget::AccountItemWidget(std::shared_ptr<AbstractLogin> loginer, QListWidgetItem* item, QWidget* parent)
-    : AccountItemWidget(parent)
-{
-    setLoginer(loginer);
     setListWidgetItem(item);
-}
-
-AccountItemWidget::AccountItemWidget(UserInfo userInfo, QListWidgetItem* item, QWidget* parent)
-    : AccountItemWidget(parent)
-{
-    setUserInfo(userInfo);
-    setListWidgetItem(item);
+    requestUserInfo();
 }
 
 AccountItemWidget::~AccountItemWidget()
@@ -65,34 +55,6 @@ void AccountItemWidget::setUserInfo(UserInfo userInfo)
     ui->labelFace->setPixmap(pixmap);
     ui->labelFace->setStyleSheet(".QLabel{ border-radius:24px; background: transparent; }");
     ui->labelName->setText(QString::fromStdString(userInfo.uname));
-}
-
-void AccountItemWidget::setLoginer(std::shared_ptr<AbstractLogin> loginer)
-{
-    if (loginer)
-    {
-        auto taskFunc = [loginer]() {
-            QString dir = SApplication::appDir() + "/" + QString(userfaceDir);
-            QDir dir1(dir);
-            if (!dir1.exists())
-            {
-                dir1.mkpath(dir);
-            }
-
-            return loginer->getUserInfo(dir.toLocal8Bit().toStdString());
-        };
-        auto callback = [this](UserInfo userInfo) {
-            emit signalUserInfo(userInfo);
-        };
-        runTask(taskFunc, callback, this);
-    }
-
-    m_loginer = loginer;
-}
-
-std::shared_ptr<AbstractLogin> AccountItemWidget::loginer() const
-{
-    return m_loginer;
 }
 
 void AccountItemWidget::setListWidgetItem(QListWidgetItem* item)
@@ -114,35 +76,41 @@ void AccountItemWidget::signalsAndSlots()
         }
     });
     connect(ui->btnLogout, &QPushButton::clicked, this, [this]() {
-        if (m_loginer)
-        {
-            auto taskFunc = [this]() {
-                return m_loginer->logout();
-            };
-            auto callback = [this](bool isSucceed) {
-                emit signalLogout(isSucceed);
-            };
-            runTask(taskFunc, callback, this);
-        }
+        auto taskFunc = [this]() {
+            return m_loginer->logout();
+        };
+        auto callback = [this](bool isSucceed) {
+            emit signalLogout(isSucceed);
+        };
+        runTask(taskFunc, callback, this);
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this]() {
-        if (m_loginer)
-        {
-            auto taskFunc = [this]() {
-                return m_loginer->history();
-            };
-            auto callback = [this](std::vector<Adapter::BaseVideoView> historys) {
-                Adapter::Views views;
-                for (const auto& history : historys)
-                {
-                    views.emplace_back(std::make_shared<Adapter::BaseVideoView>(history));
-                }
-
-                emit signalHistoryInfo(views);
-            };
-            runTask(taskFunc, callback, this);
-        }
+        auto taskFunc = [this]() {
+            return m_loginer->history();
+        };
+        auto callback = [this](std::vector<adapter::BaseVideoView> historys) {
+            emit signalHistoryInfo(historys);
+        };
+        runTask(taskFunc, callback, this);
     });
+}
+
+void AccountItemWidget::requestUserInfo()
+{
+    auto taskFunc = [this]() {
+        QString dir = SApplication::appDir() + "/" + QString(userfaceDir);
+        QDir dir1(dir);
+        if (!dir1.exists())
+        {
+            dir1.mkpath(dir);
+        }
+
+        return m_loginer->getUserInfo(dir.toLocal8Bit().toStdString());
+    };
+    auto callback = [this](UserInfo userInfo) {
+        setUserInfo(userInfo);
+    };
+    runTask(taskFunc, callback, this);
 }
 
 AccountListWidget::AccountListWidget(QWidget* parent)
@@ -150,28 +118,11 @@ AccountListWidget::AccountListWidget(QWidget* parent)
 {
 }
 
-void AccountListWidget::addLoginer(std::shared_ptr<AbstractLogin> loginer)
+void AccountListWidget::addLoginer(std::shared_ptr<LoginProxy> loginer)
 {
     auto* pItem = new QListWidgetItem(this);
     auto* pWidget = new AccountItemWidget(loginer, pItem, this);
     pItem->setSizeHint(QSize(0, pWidget->sizeHint().height()));
     setItemWidget(pItem, pWidget);
     connect(pWidget, &AccountItemWidget::signalHistoryInfo, this, &AccountListWidget::signalHistoryInfo);
-}
-
-void AccountListWidget::addUserInfo(const UserInfo& license)
-{
-    auto* pItem = new QListWidgetItem(this);
-    auto* pWidget = new AccountItemWidget(license, pItem, this);
-    pItem->setSizeHint(QSize(0, pWidget->sizeHint().height()));
-    setItemWidget(pItem, pWidget);
-    connect(pWidget, &AccountItemWidget::signalHistoryInfo, this, &AccountListWidget::signalHistoryInfo);
-}
-
-void AccountListWidget::addUserInfos(const std::vector<UserInfo>& licenses)
-{
-    for (const auto& license : licenses)
-    {
-        addUserInfo(license);
-    }
 }

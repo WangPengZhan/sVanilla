@@ -4,6 +4,8 @@
 
 #include <QString>
 
+#include <BaseVideoView.h>
+
 class QSettings;
 
 struct Aria2Config
@@ -13,27 +15,6 @@ struct Aria2Config
     int port = -1;
     bool isRemote = false;
     bool enableAdvancedSetting = false;
-};
-
-enum class VideQuality
-{
-    Best = -1,  // auto
-    R240P,
-    R360P,
-    R480P,
-    R720P,
-    R720P60F,
-    R1080P,
-    R1080PL,
-    R1080R60F,
-    R2160P,
-};
-
-struct DownloadConfig
-{
-    QString downloadDir;
-    VideQuality videoQuality = VideQuality::Best;
-    QString nameRule = "$title$";
 };
 
 struct SystemTrayConfig

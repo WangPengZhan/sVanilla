@@ -7,8 +7,9 @@
 #endif
 #include <locale>
 
+#include <IPlugin.h>
+
 #include "DynamicLibLoader.h"
-#include "IPlugin.h"
 
 namespace
 {
@@ -65,24 +66,13 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
         return res;
     }
 
-#if C_EXPORT_PLUGIN
-    res.reset(new IPlugin);
-    res->pluginName = reinterpret_cast<PluginNameFunc>(loadSymbol(m_libHandle, "pluginName"));
-    res->pluginVersion = reinterpret_cast<PluginVersionFunc>(loadSymbol(m_libHandle, "pluginVersion"));
-    res->pluginDeinit = reinterpret_cast<PluginDeinitFunc>(loadSymbol(m_libHandle, "pluginDeinit"));
-    res->pluginID = reinterpret_cast<PluginIDFunc>(loadSymbol(m_libHandle, "pluginID"));
-    res->pluginDescription = reinterpret_cast<PluginDescriptionFunc>(loadSymbol(m_libHandle, "pluginDescription"));
-    if (!res->pluginName || !res->pluginVersion || !res->pluginDeinit || !res->pluginID || !res->pluginDescription)
+    auto pluginInit = reinterpret_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "pluginInit"));
+    auto pluginDeinit = reinterpret_cast<void (*)(IPlugin*)>(loadSymbol(m_libHandle, "pluginDeinit"));
+    if (pluginInit)
     {
-        res.reset();
+        res.reset(pluginInit(), pluginDeinit);
     }
-#else
-    auto pluginFunc = reinterpret_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "pluginObject"));
-    if (pluginFunc)
-    {
-        res.reset(pluginFunc());
-    }
-#endif
+
     return res;
 }
 

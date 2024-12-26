@@ -4,7 +4,8 @@
 #include <QListWidget>
 #include <QSplitter>
 
-#include "Adapter/BaseVideoView.h"
+#include <BaseVideoView.h>
+
 #include "VideoData.h"
 
 class VideoListWidget;

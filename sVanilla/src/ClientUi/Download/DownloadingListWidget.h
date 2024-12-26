@@ -4,8 +4,6 @@
 #include <QListWidget>
 #include <QSplitter>
 
-#include "Aria2Net/Protocol/Protocol.h"
-
 struct DownloadingInfo;
 namespace Ui
 {

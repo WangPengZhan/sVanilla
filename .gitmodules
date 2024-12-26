@@ -1,9 +1,12 @@
 [submodule "ThirdParty/vcpkg"]
 	path = ThirdParty/vcpkg
 	url = https://github.com/microsoft/vcpkg.git
-[submodule "ThirdParty/sVanillaPlugins"]
-	path = ThirdParty/sVanillaPlugins
-	url = https://github.com/WangPengZhan/sVanillaPlugins.git
 [submodule "ThirdParty/spdlog"]
 	path = ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "ThirdParty/sVanillaPluginCommon"]
+	path = ThirdParty/sVanillaPluginCommon
+	url = https://github.com/WangPengZhan/sVanillaPluginCommon.git
+[submodule "ThirdParty/sVanillaPlugins"]
+	path = ThirdParty/sVanillaPlugins
+	url = https://github.com/WangPengZhan/sVanillaPlugins.git

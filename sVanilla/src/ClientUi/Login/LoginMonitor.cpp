@@ -1,11 +1,15 @@
 #include "LoginMonitor.h"
 #include "ClientLog.h"
 #include "const_string.h"
+#include "LoginProxy.h"
+
+#include <BaseVideoView.h>
 
 #include <chrono>
 
 LoginMonitor::LoginMonitor(QObject* parent)
     : QObject(parent)
+    , m_loginer()
     , m_stop(false)
     , m_thread(&LoginMonitor::monitorStatus, this)
 {
@@ -20,24 +24,19 @@ LoginMonitor::~LoginMonitor()
     }
 }
 
-bool LoginMonitor::setLoginer(std::shared_ptr<AbstractLogin> loginer)
+bool LoginMonitor::setLoginer(std::shared_ptr<LoginProxy> loginer)
 {
-    if (m_loginer.load())
+    if (!loginer)
     {
         return false;
     }
 
-    if (loginer)
-    {
-        m_loginer = loginer;
-        m_cv.notify_one();
-        return true;
-    }
-
-    return false;
+    m_loginer = loginer;
+    m_cv.notify_one();
+    return true;
 }
 
-std::shared_ptr<AbstractLogin> LoginMonitor::loginer()
+std::shared_ptr<LoginProxy> LoginMonitor::loginer()
 {
     return m_loginer;
 }
@@ -58,6 +57,7 @@ void LoginMonitor::monitorStatus()
         m_cv.wait(lk, [&]() {
             return m_loginer.load() || m_stop;
         });
+
         if (m_stop)
         {
             return;
@@ -71,7 +71,7 @@ void LoginMonitor::monitorStatus()
         case AbstractLogin::Timeout:
         {
             emit sigLoginStatus(loginStatus);
-            m_loginer = std::shared_ptr<AbstractLogin>();
+            m_loginer.load().reset();
             break;
         }
         case AbstractLogin::NoScan:

@@ -11,7 +11,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "IPlugin.h"
+#include <IPlugin.h>
+
 #include "DynamicLibLoader.h"
 
 namespace plugin
@@ -47,8 +48,9 @@ public:
     void unloadPlugins();
 
     void addPlugin(const std::string& pluginPath);
-    std::shared_ptr<IPlugin> getPlugin(const std::string& pluginName);
-    void removePlugin(const std::string& pluginName);
+    std::shared_ptr<IPlugin> getPlugin(int pluginId);
+    void removePlugin(int pluginId);
+    const std::unordered_map<int, std::shared_ptr<IPlugin>>& plugins() const;
 
     void pluginDirFileAdded();
 
@@ -69,8 +71,8 @@ private:
     static std::string configFilePath();
 
 private:
-    std::unordered_map<std::string, std::shared_ptr<DynamicLibLoader>> m_libHandles;
-    std::unordered_map<std::string, std::shared_ptr<IPlugin>> m_plugins;
+    std::unordered_map<int, std::shared_ptr<DynamicLibLoader>> m_libHandles;
+    std::unordered_map<int, std::shared_ptr<IPlugin>> m_plugins;
     std::unordered_set<std::string> m_pluginsPaths;
     mutable std::recursive_mutex m_pluginsMutex;
 

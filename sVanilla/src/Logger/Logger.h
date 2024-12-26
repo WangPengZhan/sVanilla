@@ -1,28 +1,35 @@
 #pragma once
-
 #include <string>
+#include <memory>
+
+#include "LoggerConfig.h"
+
+namespace spdlog
+{
+class logger;
+}
 
 class Logger
 {
 public:
     static Logger& getInstance();
     static void setLogDir(const std::string& dir);
-    void initLog();
     static constexpr char defaultName[] = "log";
+    static void registerLogger(const std::string& logName);
+    static std::shared_ptr<spdlog::logger> get(const std::string& logName);
 
 private:
     Logger();
     ~Logger();
 
-public:
     Logger(const Logger& other) = delete;
     Logger& operator=(const Logger& other) = delete;
     Logger(Logger&& other) = delete;
     Logger& operator=(Logger&& other) = delete;
 
-private:
-    void registerLogger(const std::string& logName);
+    void initLog();
     void setLog();
 
+private:
     static std::string m_dir;
 };

@@ -21,10 +21,13 @@
 #include "SUI/Tips/Toast.h"
 #include "SUI/Tips/ToastTip.h"
 #include "MainWindow.h"
+#include "Utils/RunTask.h"
 #include "ui_MainWindow.h"
 #include "ClientLog.h"
 #include "const_string.h"
 #include "Config/SingleConfig.h"
+#include "Storage/StorageManager.h"
+#include "Storage/SearchHistoryStorage.h"
 
 static constexpr int systemButtonSize = 14;
 constexpr char softwareName[] = "sVanilla";
@@ -36,7 +39,6 @@ MainWindow::MainWindow(QWidget* parent)
     , styleAgent(new QWK::StyleAgent(this))
     , windowBar(new WindowBar(this))
     , systemTray(new QSystemTrayIcon(this))
-    , m_uriProcess(new UriProcess(this))
 {
     ui->setupUi(this);
     installWindowAgent();
@@ -118,31 +120,33 @@ void MainWindow::signalsAndSlots()
             ui->settingPage->connectAria2Server();
         }
     });
-    connect(ui->homePage, &HomePage::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
+
     connect(ui->homePage, &HomePage::switchAccoutTab, this, [this]() {
         ui->stackedWidget->setCurrentWidget(ui->settingPage);
         emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
         ui->settingPage->switchAccountTab();
     });
-    connect(ui->homePage, &HomePage::loginSucceed, this, [this](std::shared_ptr<AbstractLogin> loginer) {
+    connect(ui->homePage, &HomePage::loginSucceed, this, [this](std::shared_ptr<LoginProxy> loginer) {
         ui->settingPage->loginSucceed(loginer);
     });
-    connect(ui->videoPage, &VideoWidget::updateWebsiteIcon, m_uriProcess, &UriProcess::updateWebsiteIcon);
-    connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->homePage, &HomePage::setWebsiteIcon);
-    connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->videoPage, &VideoWidget::setWebsiteIcon);
 
-    connect(ui->homePage, &HomePage::parseUri, ui->videoPage, &VideoWidget::searchUrl);
-    connect(ui->videoPage, &VideoWidget::parseUri, m_uriProcess, &UriProcess::parseUri);
-    connect(m_uriProcess, &UriProcess::uriProcessComplete, this, &MainWindow::startLoading);
+    // connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->homePage, &HomePage::setWebsiteIcon);
+    // connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->videoPage, &VideoWidget::setWebsiteIcon);
 
-    connect(ui->videoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::getBiliUrl);
+    connect(ui->homePage, &HomePage::parseUri, this, [&](const QString& url) {
+        ui->stackedWidget->setCurrentWidget(ui->videoPage);
+        emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
+        ui->videoPage->searchUrl(url);
+    });
+    connect(ui->videoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
+    connect(ui->videoPage, &VideoWidget::parseUri, this, &MainWindow::parseUrl);
 
     connect(ui->downloadPage, &DownloadWidget::downloadingCountChanged, ui->videoPage, &VideoWidget::setDownloadingNumber);
     connect(ui->downloadPage, &DownloadWidget::downloadedCountChanged, ui->videoPage, &VideoWidget::setDownloadedNumber);
 
     connect(ui->settingPage, &SettingsPage::updateTheme, this, &MainWindow::setTheme);
     connect(ui->settingPage, &SettingsPage::enableTray, this, &MainWindow::setTrayIconVisible);
-    connect(ui->settingPage, &SettingsPage::signalHistoryInfo, this, [this](Adapter::Views views) {
+    connect(ui->settingPage, &SettingsPage::signalHistoryInfo, this, [this](adapter::VideoView views) {
         ui->stackedWidget->setCurrentWidget(ui->videoPage);
         emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
         ui->videoPage->showHistoryList(views);
@@ -322,20 +326,36 @@ void MainWindow::setTrayIconVisible(int state)
     }
 }
 
-void MainWindow::startLoading(const UriProcess::UriInfo& uriInfo)
+void MainWindow::parseUrl(const std::string& url)
 {
-    if (uriInfo.type == "default")
+    if (!url.empty())
     {
-        ui->stackedWidget->setCurrentIndex(2);
-        emit windowBar->tabChanged(2);
+        MLogW(svanilla::cMainModule, " url is empty");
+        return;
     }
-    else
-    {
-        ui->stackedWidget->setCurrentIndex(1);
-        emit windowBar->tabChanged(1);
 
-        ui->videoPage->prepareBiliVideoView(uriInfo.id);
+    auto plugin = sApp->pluginInterface().parseUrl(url);
+    if (!plugin)
+    {
+        MLogW(svanilla::cMainModule, "url is no support, url: {}", url);
+        return;
     }
+
+    auto taskFunc = [plugin, url]() {
+        auto views = plugin->getVideoView(url);
+        if (!views.empty())
+        {
+            auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
+            historyStorage->insertOrUpdate(url, plugin->pluginMessage().pluginId);
+        }
+        return plugin->getVideoView(url);
+    };
+
+    auto callback = [this](adapter::VideoView views) {
+        ui->videoPage->searchedVideoItem(views);
+    };
+
+    runTask(taskFunc, callback, this);
 }
 
 void MainWindow::setBlurEffect(const BlurEffect effect)

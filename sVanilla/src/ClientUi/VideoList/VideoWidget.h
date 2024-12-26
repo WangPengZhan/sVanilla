@@ -4,7 +4,8 @@
 #include <QStackedWidget>
 #include <QSplitter>
 
-#include "Adapter/BaseVideoView.h"
+#include <BaseVideoView.h>
+
 #include "ClientUi/Utils/SortItems.h"
 #include "VideoData.h"
 
@@ -12,11 +13,6 @@ namespace download
 {
 struct ResourseInfo;
 }  //  namespace download
-namespace biliapi
-{
-class PlayUrlOrigin;
-class VideoViewOrigin;
-}  //  namespace biliapi
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -41,7 +37,7 @@ public:
     ~VideoWidget();
 
     void prepareBiliVideoView(const std::string& uri);
-    void prepareVideoItem(const biliapi::VideoViewOrigin& videoView);
+    void searchedVideoItem(adapter::VideoView views);
     void downloadCover(const CoverInfo& coverInfo);
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const;
 
@@ -54,7 +50,7 @@ public:
     void setWebsiteIcon(const QString& iconPath);
     void setDownloadingNumber(int number) const;
     void setDownloadedNumber(int number) const;
-    void showHistoryList(Adapter::Views views);
+    void showHistoryList(adapter::VideoView views);
 
 signals:
     void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
@@ -88,7 +84,7 @@ private:
 
     QString getCoverPath() const;
 
-    void showViewList(Adapter::Views views);
+    void showViewList(const adapter::VideoView& views);
 
 private:
     Ui::VideoPage* ui;

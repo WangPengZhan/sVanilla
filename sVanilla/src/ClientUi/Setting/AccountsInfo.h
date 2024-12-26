@@ -8,8 +8,7 @@ class AccountsInfo;
 }
 QT_END_NAMESPACE
 
-struct UserInfo;
-class AbstractLogin;
+class LoginProxy;
 class AccountListWidget;
 
 class AccountsInfo : public QWidget
@@ -20,8 +19,7 @@ public:
     explicit AccountsInfo(QWidget* parent = nullptr);
     ~AccountsInfo();
 
-    void addUserInfo(const UserInfo& userInfo);
-    void addUserInfo(std::shared_ptr<AbstractLogin> loginer);
+    void addUserInfo(std::shared_ptr<LoginProxy> loginer);
     [[nodiscard]] AccountListWidget* listWidgetAccount() const;
 
 private:

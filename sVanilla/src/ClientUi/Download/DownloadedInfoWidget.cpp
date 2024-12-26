@@ -3,10 +3,11 @@
 
 #include <QFileInfo>
 
+#include <BaseVideoView.h>
+
 #include "ui_DownloadedInfoWidget.h"
 #include "VideoList/VideoData.h"
 #include "Config/SingleConfig.h"
-#include "Adapter/BaseVideoView.h"
 #include "Utils/SpeedUtil.h"
 
 DownloadedInfoWidget::DownloadedInfoWidget(QWidget* parent)
@@ -31,9 +32,10 @@ void DownloadedInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& videoI
     ui->labelPublishDate->setText(QString::fromStdString(videoInfo->videoView->PublishDate));
     ui->labelDescription->setText(QString::fromStdString(videoInfo->videoView->Description));
     QString fileName = QString::fromStdString(videoInfo->fileName()) + ".mp4";
+    QString downloadDir = QString::fromStdString(videoInfo->downloadConfig->downloadDir);
     ui->labelFilePath->setText(fileName);
-    ui->labelFolderPath->setText(videoInfo->downloadConfig->downloadDir);
-    QString filePath = videoInfo->downloadConfig->downloadDir + "/" + fileName;
+    ui->labelFolderPath->setText(downloadDir);
+    QString filePath = downloadDir + "/" + fileName;
     QFileInfo fileInfo(filePath);
     ui->labelTotalSize->setText(formatSize(fileInfo.size()));
 }

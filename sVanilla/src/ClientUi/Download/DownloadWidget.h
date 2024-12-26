@@ -1,7 +1,7 @@
 #pragma once
 #include <QWidget>
 
-#include "Aria2Net/Protocol/Protocol.h"
+#include "Aria2Net/AriaClient/AriaApi.h"
 #include "Download/AbstractDownloader.h"
 #include "DownloadManager.h"
 
@@ -21,7 +21,7 @@ struct PlayUrlOrigin;
 }
 namespace download
 {
-class BiliDownloader;
+class FileDownloader;
 }
 struct VideoInfoFull;
 class UiDownloader;
@@ -36,19 +36,16 @@ public:
     explicit DownloadWidget(QWidget* parent = nullptr);
     ~DownloadWidget();
 
-    void addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName);
-    void addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
+    void addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo);
 
+    void addDownloadingItem(std::shared_ptr<download::FileDownloader> downloader, std::shared_ptr<VideoInfoFull> videoInfo);
     void addDownloadedItem(std::shared_ptr<VideoInfoFull> videoInfo);
-
-    void getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo);
-    void praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl, const std::shared_ptr<VideoInfoFull>& videoInfo);
 
     static std::shared_ptr<VideoInfoFull> downloadingItemToVideoInfoFull(const DownloadingItem& item);
     static std::shared_ptr<VideoInfoFull> finishItemToVideoInfoFull(const DownloadedItem& item);
 
 signals:
-    void sigDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info);
+    void sigDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo);
     void downloadingCountChanged(int count);
     void downloadedCountChanged(int count);
 
@@ -60,7 +57,7 @@ private:
     void signalsAndSlots();
     void initHistoryData();
 
-    void addTaskItem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader);
+    void addDownloadingItem(const std::shared_ptr<download::FileDownloader>& fileDownloader, const std::shared_ptr<UiDownloader>& uiDownloader);
 
     void createSelectedActionMenu();
 

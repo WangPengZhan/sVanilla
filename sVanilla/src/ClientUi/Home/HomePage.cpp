@@ -10,14 +10,12 @@
 
 #include "HomePage.h"
 #include "ui_HomePage.h"
-#include "BiliApi/BilibiliUrl.h"
 #include "BaseQt/Utility.h"
 #include "Plugin/PluginManager.h"
 #include "Storage/SearchHistoryStorage.h"
 #include "Storage/StorageManager.h"
 #include "Login/LoginDialog.h"
 #include "MainWindow/SApplication.h"
-#include "Login/BiliLogin.h"
 #include "ClientLog.h"
 #include "const_string.h"
 #include "Login/LoginBubble.h"
@@ -89,7 +87,7 @@ void HomePage::signalsAndSlots()
     connect(ui->btnIcon, &QPushButton::clicked, this, [this] {});
 
     connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
-        emit parseUri(ui->lineEditHome->text());
+        parseUri(ui->lineEditHome->text());
         ui->lineEditHome->clear();
     });
 
@@ -137,27 +135,35 @@ void HomePage::signalsAndSlots()
         }
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
-        std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
-        if (loginer->isLogin())
+        auto& plugins = sApp->pluginManager().plugins();
+        if (plugins.size() > 1)
         {
-            emit switchAccoutTab();
+            QMenu menu(this);
+            for (auto& [_, plugin] : plugins)
+            {
+                auto action = new QAction(QString::fromStdString(plugin->pluginMessage().name), &menu);
+                QIcon icon(LoginDialog::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+                action->setIcon(icon);
+                menu.addAction(action);
+                connect(action, &QAction::triggered, &menu, [this, plugin]() {
+                    auto loginer = std::make_shared<LoginProxy>(plugin->loginer());
+                    showLoginDialog(loginer);
+                });
+            }
+            const QPoint pos = ui->btnLoginWebsite->mapToGlobal(QPoint(0, ui->btnLoginWebsite->sizeHint().height()));
+            menu.exec(pos);
+        }
+        else if (plugins.size() == 1)
+        {
+            for (auto& [_, plugin] : plugins)
+            {
+                auto loginer = std::make_shared<LoginProxy>(plugin->loginer());
+                showLoginDialog(loginer);
+            }
         }
         else
         {
-            MLogI(svanilla::cHomeModule, " LoginWebsite ");
-            std::shared_ptr<AbstractLogin> loginer = std::make_shared<BiliLogin>();
-            LoginDialog login(loginer);
-            if (QDialog::Accepted == login.exec())
-            {
-                MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
-                emit switchAccoutTab();
-                emit loginSucceed(loginer);
-            }
         }
-
-        // const auto loginBubble = new LoginBubble(loginer);
-        // const auto globalPos = mapToGlobal(QPoint(0, 0));
-        // loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
     });
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
@@ -165,7 +171,6 @@ void HomePage::signalsAndSlots()
         ui->lineEditHome->setText(clipboard->text());
         MLogI(svanilla::cHomeModule, " btnClipBoard, search: {}", clipboard->text().toStdString());
         emit parseUri(clipboard->text());
-        ui->lineEditHome->clear();
     });
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
         MLogI(svanilla::cHomeModule, " btnHistory clicked");
@@ -201,4 +206,32 @@ void HomePage::createHistoryMenu()
     auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
     auto history = historyStorage->allItems();
     util::createMenu(m_historyMenu, width() / 3, history, actionCallback);
+}
+
+void HomePage::showLoginDialog(std::shared_ptr<LoginProxy> loginer)
+{
+    if (!loginer)
+    {
+        return;
+    }
+
+    if (loginer->isLogin())
+    {
+        emit switchAccoutTab();
+    }
+    else
+    {
+        MLogI(svanilla::cHomeModule, " LoginWebsite ");
+        LoginDialog login(loginer);
+        if (QDialog::Accepted == login.exec())
+        {
+            MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
+            emit switchAccoutTab();
+            emit loginSucceed(loginer);
+        }
+    }
+
+    // const auto loginBubble = new LoginBubble(loginer);
+    // const auto globalPos = mapToGlobal(QPoint(0, 0));
+    // loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
 }

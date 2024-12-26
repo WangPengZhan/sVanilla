@@ -2,9 +2,10 @@
 
 #include <QWidget>
 
-#include "Aria2Net/Protocol/Protocol.h"
-#include "Login/login.h"
-#include "ClientUi/Adapter/BaseVideoView.h"
+#include <Login.h>
+#include <BaseVideoView.h>
+
+#include <Aria2Net/AriaClient/AriaApi.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -13,7 +14,7 @@ class SettingsPage;
 }
 QT_END_NAMESPACE
 
-class AbstractLogin;
+class LoginProxy;
 
 class SettingsPage final : public QWidget
 {
@@ -29,7 +30,7 @@ public:
     [[nodiscard]] Qt::CheckState isSaveMainWindow() const;
 
     void logined(UserInfo userInfo);
-    void loginSucceed(std::shared_ptr<AbstractLogin> loginer);
+    void loginSucceed(std::shared_ptr<LoginProxy> loginer);
     void switchAccountTab();
 
 private:
@@ -39,7 +40,7 @@ private:
 signals:
     void updateTheme(int theme);
     void enableTray(int);
-    void signalHistoryInfo(Adapter::Views views);
+    void signalHistoryInfo(adapter::VideoView views);
 
 public:
     bool isConnect = false;

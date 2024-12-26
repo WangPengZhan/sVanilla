@@ -1,11 +1,12 @@
 #include <QUuid>
 
+#include <BaseVideoView.h>
+
 #include "UiDownloader.h"
 #include "Storage/StorageManager.h"
 #include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
 #include "VideoList/VideoData.h"
-#include "Adapter/BaseVideoView.h"
 
 UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, std::shared_ptr<VideoInfoFull> videoInfoFull, QObject* parent)
     : QObject(parent)

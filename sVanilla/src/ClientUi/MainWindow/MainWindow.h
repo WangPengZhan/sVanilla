@@ -5,8 +5,6 @@
 
 #include "WindowBar.h"
 #include "Utils/Setting.h"
-#include "Aria2Net/Protocol/Protocol.h"
-#include "Utils/UriProcess.h"
 
 namespace Adapter
 {
@@ -67,7 +65,7 @@ private:
     void createTrayIcon();
     void setTrayIconVisible(int state);
 
-    void startLoading(const UriProcess::UriInfo& uriInfo);
+    void parseUrl(const std::string& url);
 
 signals:
     void onSettingPage();
@@ -80,7 +78,6 @@ private:
     WindowBar* windowBar;
     QSystemTrayIcon* systemTray;
     std::list<std::string> m_history;
-    UriProcess* m_uriProcess;
 #ifndef __APPLE__
     QString currentBlurEffect;
 #endif

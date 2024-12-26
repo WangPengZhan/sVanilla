@@ -15,33 +15,8 @@ if(ThreadPool_test)
     add_subdirectory(ThreadPool)
 endif()
 
-option(Aria2Net_test "ENABLE Aria2Net_test test" ON)
-if(Aria2Net_test)
-    message(STATUS "enable Aria2Net_test")
-    add_subdirectory(Aria2Net)
-endif()
-
-option(NetWork_test "ENABLE NetWork_test test" ON)
-if(NetWork_test)
-    add_subdirectory(NetWork)
-endif()
-
 option(Zipper_test "ENABLE Zipper_test test" ON)
 if(Zipper_test)
     add_subdirectory(Zipper)
 endif()
 
-option(BiliApi_test "ENABLE BiliApi_test test" ON)
-if(BiliApi_test)
-    add_subdirectory(BiliApi)
-endif()
-
-option(Download_test "ENABLE Download_test test" ON)
-if(Download_test)
-    add_subdirectory(Download)
-endif()
-
-option(FFmpeg_test "ENABLE Download_test test" ON)
-if(FFmpeg_test)
-    add_subdirectory(FFmpeg)
-endif()

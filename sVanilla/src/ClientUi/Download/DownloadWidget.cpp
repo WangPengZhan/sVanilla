@@ -2,22 +2,23 @@
 #include <QMenu>
 #include <QFileInfo>
 
+#include <BaseVideoView.h>
+#include <Download/FileDownloader.h>
+
 #include "DownloadWidget.h"
 #include "ui_DownloadWidget.h"
 #include "UiDownloader.h"
-#include "Download/BiliDownloader.h"
 #include "SUI/Tips/Toast.h"
 #include "SUI/Tips/ToastTip.h"
 #include "VideoList/VideoData.h"
-#include "BiliApi/BilibiliClient.h"
 #include "Utils/UrlProcess.h"
 #include "Utils/RunTask.h"
-#include "Adapter/BaseVideoView.h"
 #include "Storage/StorageManager.h"
 #include "Config/SingleConfig.h"
 #include "Download/DownloadedListWidget.h"
 #include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
+#include "MainWindow/SApplication.h"
 #include "ClientLog.h"
 #include "const_string.h"
 
@@ -39,33 +40,7 @@ DownloadWidget::~DownloadWidget()
     delete ui;
 }
 
-void DownloadWidget::addTaskItem(const std::list<std::string>& videos, const std::list<std::string>& audios, const std::string& fileName)
-{
-    // param path: come from config file or custom setting in the future
-    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(videos, audios, "output", fileName);
-    auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder, std::shared_ptr<VideoInfoFull>());
-    uiDownloader->setStatus(UiDownloader::Ready);
-
-    addTaskItem(biliDownlaoder, uiDownloader);
-}
-
-void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo, download::ResourseInfo info)
-{
-    MLogI(svanilla::cDownloadModule, "addDownloadTask: {}", videoInfo->getGuid());
-    auto biliDownlaoder = std::make_shared<download::BiliDownloader>(info);
-    auto uiDownloader = std::make_shared<UiDownloader>(biliDownlaoder, videoInfo);
-    uiDownloader->setStatus(UiDownloader::Ready);
-
-    addTaskItem(biliDownlaoder, uiDownloader);
-}
-
-void DownloadWidget::addDownloadedItem(std::shared_ptr<VideoInfoFull> videoInfo)
-{
-    MLogI(svanilla::cDownloadModule, "addDownloadedItem: {}", videoInfo->getGuid());
-    ui->downloadedListWidget->addDownloadedItem(videoInfo);
-}
-
-void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
+void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo)
 {
     bool isDownload = sqlite::StorageManager::intance().isDownloaded(videoInfo->getGuid());
     if (isDownload)
@@ -78,108 +53,33 @@ void DownloadWidget::getBiliUrl(const std::shared_ptr<VideoInfoFull>& videoInfo)
     auto copyedVideoInfo = videoInfo;
     copyedVideoInfo->downloadConfig = std::make_shared<DownloadConfig>(*(videoInfo->downloadConfig));
     auto taskFunc = [this, copyedVideoInfo]() {
-        auto& biliClient = biliapi::BilibiliClient::globalClient();
-        long long qn = 64;
-        if (biliClient.isLogined())
+        auto plugin = sApp->pluginManager().getPlugin(copyedVideoInfo->videoView->pluginType);
+        if (!plugin)
         {
-            qn = 80;
+            return std::shared_ptr<download::FileDownloader>{};
         }
-        if (false)
-        {
-            qn = 116;
-        }
-
-        long long fnval = isMp4 ? 1 : 16;
-        MLogI(svanilla::cDownloadModule, "getPlayUrl has exist: {}, qn: {}, fnval: {}", copyedVideoInfo->getGuid(), qn, fnval);
-        return biliClient.getPlayUrl(std::stoll(copyedVideoInfo->videoView->VideoId), qn, copyedVideoInfo->videoView->Identifier, fnval);
+        auto downloader = plugin->getDownloader(*copyedVideoInfo);
+        return downloader;
     };
-    auto callback = [this, copyedVideoInfo](const biliapi::PlayUrlOrigin& result) {
-        if (result.code != 0)
-        {
-            MLogW(svanilla::cDownloadModule, "getPlayUrl error {}, error message: {}", result.code, result.message);
-            return;
-        }
-        praseBiliDownloadUrl(result, copyedVideoInfo);
+    auto callback = [this, copyedVideoInfo](std::shared_ptr<download::FileDownloader> downloader) {
+        addDownloadingItem(downloader, copyedVideoInfo);
     };
     runTask(taskFunc, callback, this);
 }
 
-void DownloadWidget::praseBiliDownloadUrl(const biliapi::PlayUrlOrigin& playUrl, const std::shared_ptr<VideoInfoFull>& videoInfo)
+void DownloadWidget::addDownloadingItem(std::shared_ptr<download::FileDownloader> downloader, std::shared_ptr<VideoInfoFull> videoInfo)
 {
-    std::list<std::string> video_urls;
-    std::list<std::string> audio_urls;
-    if (isMp4)
-    {
-        const auto& videos = playUrl.data.durl;
-        for (const auto& video : videos)
-        {
-            video_urls.push_back(video.url);
-        }
-    }
-    else
-    {
-        auto& biliClient = biliapi::BilibiliClient::globalClient();
-        long long qn = 64;
-        if (biliClient.isLogined())
-        {
-            qn = 80;
-        }
-        if (false)
-        {
-            qn = 116;
-        }
+    MLogI(svanilla::cDownloadModule, "addDownloadTask: {}", videoInfo->getGuid());
+    auto uiDownloader = std::make_shared<UiDownloader>(downloader, videoInfo);
+    uiDownloader->setStatus(UiDownloader::Ready);
 
-        int needDownloadVideoId = 16;
-        const auto& videos = playUrl.data.dash.video;
-        for (const auto& video : videos)
-        {
-            if (video.id <= qn && video.id > needDownloadVideoId)
-            {
-                needDownloadVideoId = video.id;
-            }
-        }
+    addDownloadingItem(downloader, uiDownloader);
+}
 
-        MLogI(svanilla::cDownloadModule, "needDownloadVideoId: {}", needDownloadVideoId);
-        for (const auto& video : videos)
-        {
-            if (video.id == needDownloadVideoId)
-            {
-                video_urls.push_back(video.baseUrl);
-            }
-        }
-
-        int needDownloadAudioId = 30216;
-        const auto& audios = playUrl.data.dash.audio;
-        for (const auto& audio : audios)
-        {
-            if (audio.id > needDownloadAudioId)
-            {
-                needDownloadAudioId = audio.id;
-            }
-        }
-
-        MLogI(svanilla::cDownloadModule, "needDownloadAudioId: {}", needDownloadAudioId);
-        for (const auto& audio : audios)
-        {
-            if (audio.id == needDownloadAudioId)
-            {
-                audio_urls.push_back(util::urlDecode(audio.baseUrl));
-            }
-        }
-    }
-
-    download::ResourseInfo info;
-    info.videoUris = video_urls;
-    info.audioUris = audio_urls;
-    auto fileName = videoInfo->fileName();
-    info.option.out = fileName + ".mp4";
-    info.option.dir = videoInfo->downloadConfig->downloadDir.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DownloadLocation).toStdString() :
-                                                                         videoInfo->downloadConfig->downloadDir.toStdString();
-    const std::list<std::string> h = {"Referer: https://www.bilibili.com", std::string("User-Agent: ") + network::chrome};
-    info.option.header = h;
-
-    ToastTip::showTip(tr("video add to download!"), ToastTip::Success);
-    emit sigDownloadTask(videoInfo, info);
+void DownloadWidget::addDownloadedItem(std::shared_ptr<VideoInfoFull> videoInfo)
+{
+    MLogI(svanilla::cDownloadModule, "addDownloadedItem: {}", videoInfo->getGuid());
+    ui->downloadedListWidget->addDownloadedItem(videoInfo);
 }
 
 std::shared_ptr<VideoInfoFull> DownloadWidget::downloadingItemToVideoInfoFull(const DownloadingItem& item)
@@ -187,9 +87,9 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::downloadingItemToVideoInfoFull(co
     auto res = std::make_shared<VideoInfoFull>();
     res->downloadConfig = std::make_shared<DownloadConfig>();
     QFileInfo info(QString::fromStdString(item.filePath));
-    res->downloadConfig->downloadDir = info.absolutePath();
-    res->downloadConfig->nameRule = info.completeBaseName();
-    res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->downloadConfig->downloadDir = info.absolutePath().toStdString();
+    res->downloadConfig->nameRule = info.completeBaseName().toStdString();
+    res->videoView = std::make_shared<adapter::BaseVideoView>();
     res->videoView->AlternateId = item.aid;
     res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
@@ -205,9 +105,9 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const D
     auto res = std::make_shared<VideoInfoFull>();
     res->downloadConfig = std::make_shared<DownloadConfig>();
     QFileInfo info(QString::fromStdString(item.filePath));
-    res->downloadConfig->downloadDir = info.absolutePath();
-    res->downloadConfig->nameRule = info.completeBaseName();
-    res->videoView = std::make_shared<Adapter::BaseVideoView>();
+    res->downloadConfig->downloadDir = info.absolutePath().toStdString();
+    res->downloadConfig->nameRule = info.completeBaseName().toStdString();
+    res->videoView = std::make_shared<adapter::BaseVideoView>();
     res->videoView->AlternateId = item.aid;
     res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
@@ -260,8 +160,8 @@ void DownloadWidget::signalsAndSlots()
     connect(ui->btnClearAll, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::clearAll);
     connect(ui->btnRedownload, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::reloadAll);
     connect(ui->btnScaned, &QPushButton::clicked, ui->downloadedListWidget, &DownloadedListWidget::scan);
-    connect(ui->downloadedListWidget, &DownloadedListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
-    connect(ui->downloadingListWidget, &DownloadingListWidget::reloadItem, this, &DownloadWidget::getBiliUrl);
+    connect(ui->downloadedListWidget, &DownloadedListWidget::reloadItem, this, &DownloadWidget::addDownloadTask);
+    connect(ui->downloadingListWidget, &DownloadingListWidget::reloadItem, this, &DownloadWidget::addDownloadTask);
 }
 
 void DownloadWidget::initHistoryData()
@@ -271,7 +171,7 @@ void DownloadWidget::initHistoryData()
         auto downloadingItems = downloadingStorage->lastItems();
         for (const auto& item : downloadingItems)
         {
-            getBiliUrl(downloadingItemToVideoInfoFull(item));
+            addDownloadTask(downloadingItemToVideoInfoFull(item));
         }
     };
     ThreadPool::instance().enqueue(taskHistoryDownloading);
@@ -286,24 +186,24 @@ void DownloadWidget::initHistoryData()
     ThreadPool::instance().enqueue(taskHistoryDownloaded);
 }
 
-void DownloadWidget::addTaskItem(const std::shared_ptr<download::BiliDownloader>& biliDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)
+void DownloadWidget::addDownloadingItem(const std::shared_ptr<download::FileDownloader>& fileDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)
 {
-    if (biliDownloader->path().empty())
+    if (fileDownloader->path().empty())
     {
         return;
     }
-    std::string fullPath = biliDownloader->path();
+    std::string fullPath = fileDownloader->path();
     if (fullPath.back() != '/' && fullPath.back() != '\\')
     {
         fullPath += "/";
     }
-    fullPath += biliDownloader->filename();
+    fullPath += fileDownloader->filename();
     uiDownloader->setFileName(fullPath);
-    const auto uri = biliDownloader->uris();
-    if (!uri.empty())
-    {
-        uiDownloader->setUri(uri.front());
-    }
+    // const auto uri = fileDownloader->uris();
+    // if (!uri.empty())
+    // {
+    //     uiDownloader->setUri(uri.front());
+    // }
     ui->downloadingListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }
