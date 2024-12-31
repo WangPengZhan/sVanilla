@@ -75,6 +75,7 @@ option(ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
 option(ENABLE_BUILD_PLUGINS "Enable build plugins" OFF)
 option(ENABLE_BUILD_EXAMPLE "Enable build example" OFF)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build spdlog as a shared library")
 add_subdirectory(ThirdParty/spdlog)
 if (ENABLE_BUILD_PLUGINS)

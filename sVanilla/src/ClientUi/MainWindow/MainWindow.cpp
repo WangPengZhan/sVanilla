@@ -328,7 +328,7 @@ void MainWindow::setTrayIconVisible(int state)
 
 void MainWindow::parseUrl(const std::string& url)
 {
-    if (!url.empty())
+    if (url.empty())
     {
         MLogW(svanilla::cMainModule, " url is empty");
         return;

@@ -41,7 +41,7 @@ jobs:
       - name: Get clone
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
           fetch-depth: 0
 
       - name: Get cmake 
@@ -172,7 +172,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
           fetch-depth: 0
 
       - uses: lukka/get-cmake@latest
@@ -303,7 +303,7 @@ jobs:
       steps:
         - uses: actions/checkout@v4
           with:
-            submodules: true
+            submodules: recursive
             fetch-depth: 0
 
         - uses: lukka/get-cmake@latest
