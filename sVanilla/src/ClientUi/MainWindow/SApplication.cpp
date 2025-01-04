@@ -51,9 +51,9 @@ Translater& SApplication::translater()
 QString SApplication::appDir()
 {
     QString dir;
-    if (QFile::exists(QString(constant::installedFile)))
+    if (QFile::exists(QString(svanilla::installedFile)))
     {
-        dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/" + QString(constant::softwareName);
+        dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/" + QString(svanilla::softwareName);
         if (!QDir(dir).exists(dir))
         {
             QDir(dir).mkpath(dir);
@@ -69,7 +69,7 @@ QString SApplication::appDir()
 
 bool SApplication::isInstalled()
 {
-    return QFile::exists(QString(constant::installedFile));
+    return QFile::exists(QString(svanilla::installedFile));
 }
 
 void SApplication::startServer()

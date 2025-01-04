@@ -4,9 +4,6 @@ project(Logger
     VERSION 1.0.0 
     LANGUAGES CXX)
 
-
-find_package(unofficial-breakpad CONFIG REQUIRED)
-
 file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

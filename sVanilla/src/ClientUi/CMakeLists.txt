@@ -12,7 +12,7 @@ set(QT_COMPONENTS
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 find_package(ZLIB)
-find_package(unofficial-breakpad CONFIG REQUIRED)
+find_package(crashpad CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 find_package(CURL REQUIRED)
@@ -22,6 +22,7 @@ find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)
 find_package(OpenSSL REQUIRED)
+find_program(CRASHPAD_HANDLER crashpad_handler PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/tools" REQUIRED)
 
 
 file(GLOB_RECURSE QTS "${CMAKE_CURRENT_SOURCE_DIR}/../../translate/*.ts")
@@ -76,13 +77,32 @@ foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
 
+add_compile_definitions(NOMINMAX)
+message(STATUS "CRASHPAD_HANDLER: ${CRASHPAD_HANDLER}")
+if (CMAKE_CONFIGURATION_TYPES)
+    target_link_libraries(${PROJECT_NAME} 
+        PRIVATE
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/base.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/client.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/common.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/util.lib>
+    )
+    target_include_directories(${PROJECT_NAME}  
+        PRIVATE 
+            ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/crashpad
+    )
+else()
+    target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+            crashpad::crashpad
+    )
+endif()
+
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
         nlohmann_json::nlohmann_json
         CURL::libcurl
-        unofficial::breakpad::libbreakpad
-        unofficial::breakpad::libbreakpad_client
         unofficial::sqlite3::sqlite3
         QWindowKit::Widgets
         unofficial::minizip::minizip
@@ -123,6 +143,7 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:FFmpeg> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CRASHPAD_HANDLER}  $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}
         ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -146,6 +167,7 @@ install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json" DESTINATION ${C
 install(FILES "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:spdlog>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 install(FILES "$<TARGET_FILE:FFmpeg>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+install(FILES ${CRASHPAD_HANDLER} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 if (APPLE)
     install(FILES "$<TARGET_FILE:${PROJECT_NAME}>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 endif()
