@@ -14,6 +14,7 @@
 
 #include <QDir>
 #include <QDateTime>
+#include <QStandardPaths>
 
 std::string getOsType()
 {
@@ -47,13 +48,20 @@ void startLog()
 int main(int argc, char* argv[])
 {
     auto exePath = getModulePath();
-    QDir::setCurrent(QString::fromStdString(exePath));
+    QString qExePath = QString::fromStdString(exePath);
+    QDir::setCurrent(qExePath);
     Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/"));
     Logger::getInstance();
     DumpColletor::setDumpDir(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string("dump"));
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string(".db"));
     network::CurlGlobal curlGlobal;
-    DumpColletor::registerDumpHandle();
+    auto crashHandler = QStandardPaths::findExecutable("crashpad_handler", QStringList() << qExePath);
+#if defined(_WIN32)
+    DumpColletor::initializeCrashpad(crashHandler.toStdWString(),
+                                     SApplication::appDir().toStdWString() + (SApplication::appDir().isEmpty() ? L"" : L"/") + std::wstring(L"dump"));
+#else
+    DumpColletor::initializeCrashpad(crashHandler.toStdString(), DumpColletor::dumpDir);
+#endif
     startLog();
 
     CLog_Unique_TimerK(MainWindow_firstShow);

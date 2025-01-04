@@ -3,8 +3,8 @@
     "version-string": "1.0.0",
     "dependencies": [
         {
-            "name": "breakpad",
-            "version>=": "2023-06-01"
+            "name": "crashpad",
+            "version>=": "2024-04-11"
         },
         {
             "name": "curl",

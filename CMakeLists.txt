@@ -46,9 +46,10 @@ cmake_policy(SET CMP0087 NEW)
 cmake_policy(SET CMP0079 NEW)
 
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE release CACHE STRING "Build Type" FORCE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build Type" FORCE)
 endif ()
 
+message(STATUS "VCPKG_ROOT: ${VCPKG_ROOT}")
 find_program(PYTHON_EXECUTABLE python3)
 if (NOT PYTHON_EXECUTABLE)
     find_program(PYTHON_EXECUTABLE python)

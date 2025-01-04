@@ -16,10 +16,10 @@ void PlatformInitializer::allApplicationBefore()
 
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
-    QApplication::setApplicationName(constant::softwareName);
+    QApplication::setApplicationName(svanilla::softwareName);
     QApplication::setApplicationVersion(SVNLA_VERSION_STR);
-    QApplication::setOrganizationDomain(constant::company);
-    QApplication::setOrganizationName(constant::homePage);
+    QApplication::setOrganizationDomain(svanilla::company);
+    QApplication::setOrganizationName(svanilla::homePage);
 }
 
 void PlatformInitializer::allInit()
