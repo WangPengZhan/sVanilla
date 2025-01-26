@@ -63,19 +63,19 @@ void LoginMonitor::monitorStatus()
             return;
         }
 
-        auto loginStatus = m_loginer.load()->getLoginStatus();
+        auto loginStatus = reinterpret_cast<AbstractLoginApi*>(&m_loginer.load()->realLogin())->getLoginStatus();
         switch (loginStatus)
         {
-        case AbstractLogin::Error:
-        case AbstractLogin::Success:
-        case AbstractLogin::Timeout:
+        case AbstractLoginApi::Error:
+        case AbstractLoginApi::Success:
+        case AbstractLoginApi::Timeout:
         {
             emit sigLoginStatus(loginStatus);
             m_loginer.load().reset();
             break;
         }
-        case AbstractLogin::NoScan:
-        case AbstractLogin::ScanedNoAck:
+        case AbstractLoginApi::NoScan:
+        case AbstractLoginApi::ScanedNoAck:
         default:
             emit sigLoginStatus(loginStatus);
             break;

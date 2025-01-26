@@ -4,14 +4,14 @@
 #include <QLabel>
 #include <QPushButton>
 
-class AbstractLogin;
+class LoginProxy;
 
 class LoginBubble : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit LoginBubble(std::shared_ptr<AbstractLogin> loginer, QWidget* parent = nullptr);
+    explicit LoginBubble(std::shared_ptr<LoginProxy> loginer, QWidget* parent = nullptr);
 
     void showCenter(const QRect& rect);
 
@@ -24,12 +24,10 @@ private:
     void setUi();
     void movePosition(const QRect& pos);
 
-    static QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size);
-
 private:
     qreal m_proportion = 0.5;
 
-    std::shared_ptr<AbstractLogin> m_loginer;
+    std::shared_ptr<LoginProxy> m_loginer;
 
     QLabel* m_background{};
     QLabel* m_orc{};

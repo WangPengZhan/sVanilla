@@ -6,7 +6,7 @@
 #include <thread>
 #include <memory>
 
-#include <Login.h>
+#include <LoginApi.h>
 
 #include "Util/atomic_shared_ptr.h"
 
@@ -35,7 +35,7 @@ public:
     void stop();
 
 signals:
-    void sigLoginStatus(AbstractLogin::LoginSatus status);
+    void sigLoginStatus(AbstractLoginApi::LoginSatus status);
 
 protected:
     void monitorStatus();

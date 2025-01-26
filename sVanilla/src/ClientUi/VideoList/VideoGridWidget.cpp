@@ -253,13 +253,8 @@ void VideoGridWidget::setItemShortCuts()
         showInfo(currentItem());
     });
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     downloadShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_D));
     infoShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_I));
-#else
-    downloadShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_D));
-    infoShortcut->setKey(QKeySequence(Qt::CTRL | Qt::Key_I));
-#endif
 }
 
 void VideoGridWidget::adjustItemSize() const

@@ -20,6 +20,7 @@
 #include "Login/LoginMonitor.h"
 #include "SUI/QrCodeGenerator.h"
 #include "Utils/RunTask.h"
+#include "BaseQt/Utility.h"
 #include "LoginProxy.h"
 #include "ClientLog.h"
 #include "const_string.h"
@@ -29,7 +30,7 @@ LoginDialog::LoginDialog(std::shared_ptr<LoginProxy> loginer, QDialog* parent)
     , ui(new Ui::LoginDialog)
     , m_monitor(new LoginMonitor(this))
     , m_loginer(loginer)
-    , m_status(AbstractLogin::Unknow)
+    , m_status(AbstractLoginApi::Unknow)
 {
     ui->setupUi(this);
     setUi();
@@ -42,7 +43,7 @@ LoginDialog::~LoginDialog()
     delete ui;
 }
 
-void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
+void LoginDialog::slotStatusChanged(AbstractLoginApi::LoginSatus status)
 {
     if (status == m_status)
     {
@@ -53,13 +54,14 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
     m_movie.stop();
     ui->btnRefresh->hide();
 
+    auto realLogin = reinterpret_cast<AbstractLoginApi*>(&m_loginer->realLogin());
     switch (status)
     {
-    case AbstractLogin::Error:
+    case AbstractLoginApi::Error:
     {
         MLogI(svanilla::cLoginModule, "LoginSatus Error!");
-        auto svgContext = m_loginer->resource(AbstractLogin::Refresh);
-        auto pixmap = binToImage(svgContext, ui->btnRefresh->size());
+        auto svgContext = realLogin->resource(AbstractLoginApi::Refresh);
+        auto pixmap = util::binToImage(svgContext, ui->btnRefresh->size());
         QIcon icon(pixmap);
         ui->btnRefresh->setIcon(icon);
         ui->labelStrTip->setText(tr("Error occured, you can refresh QR code"));
@@ -67,11 +69,11 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
         ui->btnRefresh->raise();
         break;
     }
-    case AbstractLogin::Timeout:
+    case AbstractLoginApi::Timeout:
     {
         MLogI(svanilla::cLoginModule, "LoginSatus Timeout!");
-        auto svgContext = m_loginer->resource(AbstractLogin::Refresh);
-        auto pixmap = binToImage(svgContext, ui->btnRefresh->iconSize());
+        auto svgContext = realLogin->resource(AbstractLoginApi::Refresh);
+        auto pixmap = util::binToImage(svgContext, ui->btnRefresh->iconSize());
         QIcon icon(pixmap);
         ui->btnRefresh->setIcon(icon);
         ui->labelStrTip->setText(tr("Timeout, please refresh QR code"));
@@ -79,11 +81,11 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
         ui->btnRefresh->raise();
         break;
     }
-    case AbstractLogin::ScanedNoAck:
+    case AbstractLoginApi::ScanedNoAck:
     {
         MLogI(svanilla::cLoginModule, "LoginSatus ScanedNoAck!");
-        auto svgContext = m_loginer->resource(AbstractLogin::WaitConfirm);
-        auto pixmap = binToImage(svgContext, ui->btnRefresh->iconSize());
+        auto svgContext = realLogin->resource(AbstractLoginApi::WaitConfirm);
+        auto pixmap = util::binToImage(svgContext, ui->btnRefresh->iconSize());
         QIcon icon(pixmap);
         ui->btnRefresh->setIcon(icon);
         ui->labelStrTip->setText(tr("Scaned, please confirm it in app"));
@@ -91,16 +93,16 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
         ui->btnRefresh->raise();
         break;
     }
-    case AbstractLogin::Success:
+    case AbstractLoginApi::Success:
     {
         MLogI(svanilla::cLoginModule, "LoginSatus Success!");
-        m_loginer->loginSuccess();
+        realLogin->loginSuccess();
         QTimer::singleShot(1000, this, [this] {
             accept();
         });
         break;
     }
-    case AbstractLogin::NoScan:
+    case AbstractLoginApi::NoScan:
     default:
         break;
     }
@@ -109,11 +111,11 @@ void LoginDialog::slotStatusChanged(AbstractLogin::LoginSatus status)
 void LoginDialog::slotBtnRefreshClicked()
 {
     MLogI(svanilla::cLoginModule, "slotBtnRefreshClicked");
-    if (m_status == AbstractLogin::Error || m_status == AbstractLogin::Timeout)
+    if (m_status == AbstractLoginApi::Error || m_status == AbstractLoginApi::Timeout)
     {
         loadOrc();
     }
-    else if (m_status == AbstractLogin::Success)
+    else if (m_status == AbstractLoginApi::Success)
     {
         accept();
     }
@@ -136,11 +138,11 @@ void LoginDialog::resizeEvent(QResizeEvent* event)
 
 bool LoginDialog::eventFilter(QObject* obj, QEvent* event)
 {
-    if (obj == ui->labelOrc && event->type() == QEvent::Enter && m_status == AbstractLogin::NoScan)
+    if (obj == ui->labelOrc && event->type() == QEvent::Enter && m_status == AbstractLoginApi::NoScan)
     {
         ui->labelTooltip->show();
     }
-    else if (obj == ui->labelTooltip && event->type() == QEvent::Leave && m_status == AbstractLogin::NoScan)
+    else if (obj == ui->labelTooltip && event->type() == QEvent::Leave && m_status == AbstractLoginApi::NoScan)
     {
         ui->labelTooltip->hide();
     }
@@ -156,19 +158,20 @@ void LoginDialog::signalsAndSlots()
 
 void LoginDialog::setUi()
 {
-    auto svgContext = m_loginer->resource(AbstractLogin::Background);
-    auto pixmap = binToImage(svgContext, ui->labelBackground->size());
+    auto realLogin = reinterpret_cast<AbstractLoginApi*>(&m_loginer->realLogin());
+    auto svgContext = realLogin->resource(AbstractLoginApi::Background);
+    auto pixmap = util::binToImage(svgContext, ui->labelBackground->size());
     ui->labelBackground->setPixmap(pixmap);
     ui->labelBackground->lower();
 
-    svgContext = m_loginer->resource(AbstractLogin::Confirmed);
-    pixmap = binToImage(svgContext, ui->labelOrc->size());
+    svgContext = realLogin->resource(AbstractLoginApi::Confirmed);
+    pixmap = util::binToImage(svgContext, ui->labelOrc->size());
     ui->labelOrc->setPixmap(pixmap);
     ui->labelOrc->raise();
     ui->labelOrc->installEventFilter(this);
 
     ui->btnRefresh->raise();
-    svgContext = m_loginer->resource(AbstractLogin::Loading);
+    svgContext = realLogin->resource(AbstractLoginApi::Loading);
     m_buffer.setData(reinterpret_cast<const char*>(svgContext.data()), svgContext.size());
     connect(&m_movie, &QMovie::frameChanged, this, [this]() {
         ui->btnRefresh->setIcon(QIcon(m_movie.currentPixmap()));
@@ -176,8 +179,8 @@ void LoginDialog::setUi()
     m_movie.setDevice(&m_buffer);
     m_movie.start();
 
-    svgContext = m_loginer->resource(AbstractLogin::Tip);
-    pixmap = binToImage(svgContext, ui->labelTooltip->size());
+    svgContext = realLogin->resource(AbstractLoginApi::Tip);
+    pixmap = util::binToImage(svgContext, ui->labelTooltip->size());
     ui->labelTooltip->setPixmap(pixmap);
     ui->labelTooltip->raise();
     ui->labelTooltip->installEventFilter(this);
@@ -186,38 +189,26 @@ void LoginDialog::setUi()
 
 void LoginDialog::loadOrc()
 {
-    m_status = AbstractLogin::Unknow;
+    m_status = AbstractLoginApi::Unknow;
     auto taskFunc = [this]() {
-        return m_loginer->getScanContext(m_context);
+        auto realLogin = reinterpret_cast<AbstractLoginApi*>(&m_loginer->realLogin());
+        return realLogin->getScanContext(m_context);
     };
 
     auto callback = [this](bool ret) {
         if (!ret || m_context.empty())
         {
-            slotStatusChanged(AbstractLogin::Error);
+            slotStatusChanged(AbstractLoginApi::Error);
             return;
         }
         auto image = QrCodeGenerator().generateQR(QString::fromStdString(m_context));
         auto pixmap = QPixmap::fromImage(image).scaled(ui->labelOrc->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->labelOrc->setPixmap(pixmap);
-        m_status = AbstractLogin::NoScan;
+        m_status = AbstractLoginApi::NoScan;
         m_monitor->setLoginer(m_loginer);
         m_movie.stop();
         ui->btnRefresh->hide();
     };
 
     runTask(taskFunc, callback, this);
-}
-
-QPixmap LoginDialog::binToImage(const std::vector<uint8_t>& bin, QSize size)
-{
-    QBuffer buffer;
-    buffer.setData(reinterpret_cast<const char*>(bin.data()), bin.size());
-    buffer.open(QIODevice::ReadOnly);
-
-    QImageReader render(&buffer);
-    QImage image = render.read();
-    image = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QPixmap pixmap = QPixmap::fromImage(image);
-    return pixmap;
 }

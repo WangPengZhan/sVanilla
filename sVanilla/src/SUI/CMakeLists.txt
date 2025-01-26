@@ -9,6 +9,8 @@ set(QT_COMPONENTS
     Gui
     Widgets
     Svg
+    WebEngineCore
+    WebEngineWidgets
 )
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)

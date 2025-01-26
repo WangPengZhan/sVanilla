@@ -15,6 +15,7 @@
 #include "Storage/SearchHistoryStorage.h"
 #include "Storage/StorageManager.h"
 #include "Login/LoginDialog.h"
+#include "Login/LoginWebDialog.h"
 #include "MainWindow/SApplication.h"
 #include "ClientLog.h"
 #include "const_string.h"
@@ -77,9 +78,9 @@ HomePage::~HomePage()
     delete ui;
 }
 
-void HomePage::setWebsiteIcon(const QString& iconPath)
+void HomePage::setWebsiteIcon(const QIcon& icon)
 {
-    ui->lineEditHome->setWebsiteIcon(iconPath);
+    ui->lineEditHome->setWebsiteIcon(icon);
 }
 
 void HomePage::signalsAndSlots()
@@ -92,10 +93,19 @@ void HomePage::signalsAndSlots()
     });
 
     connect(ui->lineEditHome, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
-        if (!text.isEmpty() && text.length() > 1)
+        if (text.isEmpty())
         {
-            emit updateWebsiteIcon(text.toStdString());
+            return;
         }
+
+        auto plugin = sApp->pluginInterface().parseUrl(text.toStdString());
+        if (!plugin)
+        {
+            return;
+        }
+
+        QIcon icon(util::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+        ui->lineEditHome->setWebsiteIcon(icon);
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
@@ -142,7 +152,7 @@ void HomePage::signalsAndSlots()
             for (auto& [_, plugin] : plugins)
             {
                 auto action = new QAction(QString::fromStdString(plugin->pluginMessage().name), &menu);
-                QIcon icon(LoginDialog::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+                QIcon icon(util::binToImage(plugin->websiteIcon(), QSize(24, 24)));
                 action->setIcon(icon);
                 menu.addAction(action);
                 connect(action, &QAction::triggered, &menu, [this, plugin]() {
@@ -222,16 +232,29 @@ void HomePage::showLoginDialog(std::shared_ptr<LoginProxy> loginer)
     else
     {
         MLogI(svanilla::cHomeModule, " LoginWebsite ");
-        LoginDialog login(loginer);
-        if (QDialog::Accepted == login.exec())
+        if (loginer->loginWay() == AbstractLoginApi::Web)
         {
-            MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
-            emit switchAccoutTab();
-            emit loginSucceed(loginer);
+            LoginWebDialog login(loginer);
+            if (QDialog::Accepted == login.exec())
+            {
+                MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
+                emit switchAccoutTab();
+                emit loginSucceed(loginer);
+            }
+        }
+        else
+        {
+            LoginDialog login(loginer);
+            if (QDialog::Accepted == login.exec())
+            {
+                MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
+                emit switchAccoutTab();
+                emit loginSucceed(loginer);
+            }
+
+            // const auto loginBubble = new LoginBubble(loginer);
+            // const auto globalPos = mapToGlobal(QPoint(0, 0));
+            // loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
         }
     }
-
-    // const auto loginBubble = new LoginBubble(loginer);
-    // const auto globalPos = mapToGlobal(QPoint(0, 0));
-    // loginBubble->showCenter(QRect(globalPos, QSize(width(), height())));
 }

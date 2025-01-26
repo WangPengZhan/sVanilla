@@ -67,10 +67,19 @@ void VideoWidget::signalsAndSlots()
     });
 
     connect(ui->lineEdit, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
-        if (!text.isEmpty() && text.length() > 1)
+        if (text.isEmpty())
         {
-            emit updateWebsiteIcon(text.toStdString());
+            return;
         }
+
+        auto plugin = sApp->pluginInterface().parseUrl(text.toStdString());
+        if (!plugin)
+        {
+            return;
+        }
+
+        QIcon icon(util::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+        ui->lineEdit->setWebsiteIcon(icon);
     });
 
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
@@ -432,9 +441,9 @@ void VideoWidget::searchUrl(const QString& url)
     ui->lineEdit->Complete();
 }
 
-void VideoWidget::setWebsiteIcon(const QString& iconPath)
+void VideoWidget::setWebsiteIcon(const QIcon& icon)
 {
-    ui->lineEdit->setWebsiteIcon(iconPath);
+    ui->lineEdit->setWebsiteIcon(icon);
 }
 
 void VideoWidget::setDownloadingNumber(int number) const
@@ -455,6 +464,10 @@ void VideoWidget::showViewList(const adapter::VideoView& views)
 {
     const QString tempPath = getCoverPath();
     ui->labelPlayListTitle->clear();
+    if (views.empty())
+    {
+        return;
+    }
 
     if (const auto playlistTitle = views.front().PlayListTitle; !playlistTitle.empty())
     {

@@ -76,7 +76,5 @@
     <file>icon/toast/warn.svg</file>
     <file>style/dark.json</file>
     <file>style/light.json</file>
-    <file>website/bilibili.svg</file>
-    <file>website/default.svg</file>
   </qresource>
 </RCC>

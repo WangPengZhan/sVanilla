@@ -18,7 +18,7 @@ public:
     explicit HomePage(QWidget* parent = nullptr);
     ~HomePage();
 
-    void setWebsiteIcon(const QString& iconPath);
+    void setWebsiteIcon(const QIcon& icon);
 
 signals:
     void hasAdded(bool hasAdded);

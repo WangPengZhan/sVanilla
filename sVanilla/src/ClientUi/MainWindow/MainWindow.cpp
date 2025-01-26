@@ -130,9 +130,6 @@ void MainWindow::signalsAndSlots()
         ui->settingPage->loginSucceed(loginer);
     });
 
-    // connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->homePage, &HomePage::setWebsiteIcon);
-    // connect(m_uriProcess, &UriProcess::setWebsiteIcon, ui->videoPage, &VideoWidget::setWebsiteIcon);
-
     connect(ui->homePage, &HomePage::parseUri, this, [&](const QString& url) {
         ui->stackedWidget->setCurrentWidget(ui->videoPage);
         emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
