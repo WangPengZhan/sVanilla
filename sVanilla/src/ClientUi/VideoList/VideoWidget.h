@@ -47,7 +47,7 @@ public:
     void clearVideo();
     void searchUrl(const QString& url);
 
-    void setWebsiteIcon(const QString& iconPath);
+    void setWebsiteIcon(const QIcon& icon);
     void setDownloadingNumber(int number) const;
     void setDownloadedNumber(int number) const;
     void showHistoryList(adapter::VideoView views);

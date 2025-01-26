@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include <Login.h>
+#include <ILogin.h>
 #include <BaseVideoView.h>
 
 #include <Aria2Net/AriaClient/AriaApi.h>

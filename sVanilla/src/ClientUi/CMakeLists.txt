@@ -7,6 +7,8 @@ set(QT_COMPONENTS
     Widgets
     Network
     Svg
+    WebEngineCore
+    WebEngineWidgets
 )
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core LinguistTools)
@@ -22,7 +24,10 @@ find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)
 find_package(OpenSSL REQUIRED)
-find_program(CRASHPAD_HANDLER crashpad_handler PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/tools" REQUIRED)
+set(CRASHPAD_HANDLER_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/tools/crashpad")
+if (NOT EXISTS "${CRASHPAD_HANDLER_DIR}")
+    message(FATAL_ERROR "can't find crashpad_handler executable'")
+endif()
 
 
 file(GLOB_RECURSE QTS "${CMAKE_CURRENT_SOURCE_DIR}/../../translate/*.ts")
@@ -77,15 +82,19 @@ foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
 
+message("CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}")
 add_compile_definitions(NOMINMAX)
-message(STATUS "CRASHPAD_HANDLER: ${CRASHPAD_HANDLER}")
 if (CMAKE_CONFIGURATION_TYPES)
     target_link_libraries(${PROJECT_NAME} 
         PRIVATE
-            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/base.lib>
-            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/client.lib>
-            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/common.lib>
-            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/util.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/vcpkg_crashpad_client.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/vcpkg_crashpad_client_common.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/vcpkg_crashpad_util.lib>
+            $<$<CONFIG:Debug>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/vcpkg_crashpad_base.lib>
+            $<$<CONFIG:Release>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/vcpkg_crashpad_client.lib>
+            $<$<CONFIG:Release>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/vcpkg_crashpad_client_common.lib>
+            $<$<CONFIG:Release>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/vcpkg_crashpad_util.lib>
+            $<$<CONFIG:Release>:${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/vcpkg_crashpad_base.lib>
     )
     target_include_directories(${PROJECT_NAME}  
         PRIVATE 
@@ -141,9 +150,9 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -DEXECUTABLE_PATH="$<TARGET_FILE_DIR:${PROJECT_NAME}>/aria/aria2c" -P "${CMAKE_SOURCE_DIR}/cmake/terminate_process.cmake"
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CRASHPAD_HANDLER_DIR}  $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:FFmpeg> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CRASHPAD_HANDLER}  $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}
         ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/get_authors.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/authors.csv"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}

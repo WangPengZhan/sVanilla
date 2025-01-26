@@ -3,7 +3,7 @@
 #include <QPainterPath>
 #include <QPainter>
 
-#include <Login.h>
+#include <ILogin.h>
 #include <BaseVideoView.h>
 
 #include "AccountListWidget.h"
@@ -40,7 +40,7 @@ AccountItemWidget::AccountItemWidget(std::shared_ptr<LoginProxy> loginer, QListW
     setUi();
     signalsAndSlots();
     setListWidgetItem(item);
-    requestUserInfo();
+    // requestUserInfo();
 }
 
 AccountItemWidget::~AccountItemWidget()

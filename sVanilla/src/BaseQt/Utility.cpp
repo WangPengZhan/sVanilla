@@ -2,6 +2,8 @@
 #include <QProcess>
 #include <QDir>
 #include <QMenu>
+#include <QBuffer>
+#include <QImageReader>
 
 #include "Utility.h"
 
@@ -58,6 +60,19 @@ void animate(QObject* obj, AnimationStartEnd change, const QByteArray& propertyN
         QObject::connect(animation, &QPropertyAnimation::finished, callback);
     }
     animation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size)
+{
+    QBuffer buffer;
+    buffer.setData(reinterpret_cast<const char*>(bin.data()), bin.size());
+    buffer.open(QIODevice::ReadOnly);
+
+    QImageReader render(&buffer);
+    QImage image = render.read();
+    image = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap pixmap = QPixmap::fromImage(image);
+    return pixmap;
 }
 
 }  // namespace util

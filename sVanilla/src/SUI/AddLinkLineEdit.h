@@ -10,7 +10,7 @@ public:
     ~AddLinkLineEdit();
 
     void SetEditFinishedSearch(bool enabled);
-    void setWebsiteIcon(const QString& iconPath) const;
+    void setWebsiteIcon(const QIcon& icon) const;
 
 protected:
     void paintEvent(QPaintEvent* event) override;

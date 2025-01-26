@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>LoginWebDialog</class>
+    <widget class="QWidget" name="LoginWebDialog">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>717</width>
+                <height>614</height>
+            </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+            <property name="leftMargin">
+                <number>0</number>
+            </property>
+            <property name="topMargin">
+                <number>0</number>
+            </property>
+            <property name="rightMargin">
+                <number>0</number>
+            </property>
+            <property name="bottomMargin">
+                <number>0</number>
+            </property>
+            <property name="horizontalSpacing">
+                <number>0</number>
+            </property>
+            <item row="0" column="0">
+                <widget class="WebFrame" name="webFrame">
+                    <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                    </property>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+    <customwidgets>
+        <customwidget>
+            <class>WebFrame</class>
+            <extends>QFrame</extends>
+            <header>SUI/WebEngine/WebFrame.h</header>
+            <container>1</container>
+        </customwidget>
+    </customwidgets>
+    <resources>
+        <include location="../../../resource/sVanilla.qrc" />
+    </resources>
+    <connections />
+</ui>

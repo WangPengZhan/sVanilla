@@ -44,9 +44,9 @@ void AddLinkLineEdit::SetEditFinishedSearch(bool enabled)
     }
 }
 
-void AddLinkLineEdit::setWebsiteIcon(const QString& iconPath) const
+void AddLinkLineEdit::setWebsiteIcon(const QIcon& icon) const
 {
-    m_webSiteAction->setIcon(QIcon(iconPath));
+    m_webSiteAction->setIcon(icon);
 }
 
 void AddLinkLineEdit::paintEvent(QPaintEvent* event)

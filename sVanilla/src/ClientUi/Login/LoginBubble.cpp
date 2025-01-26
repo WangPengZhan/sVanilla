@@ -10,9 +10,11 @@
 
 #include <utility>
 
-#include <Login.h>
+#include <LoginProxy.h>
 
-LoginBubble::LoginBubble(std::shared_ptr<AbstractLogin> loginer, QWidget* parent)
+#include "BaseQt/Utility.h"
+
+LoginBubble::LoginBubble(std::shared_ptr<LoginProxy> loginer, QWidget* parent)
     : QWidget(parent)
     , m_loginer(std::move(loginer))
 
@@ -72,15 +74,16 @@ void LoginBubble::setUi()
     const auto mainLayout = new QGridLayout(this);
     setLayout(mainLayout);
     m_background = new QLabel(this);
-    auto svgContext = m_loginer->resource(AbstractLogin::Background);
-    auto pixmap = binToImage(svgContext, m_background->size());
+    auto realLogin = reinterpret_cast<AbstractLoginApi*>(&m_loginer->realLogin());
+    auto svgContext = realLogin->resource(AbstractLoginApi::Background);
+    auto pixmap = util::binToImage(svgContext, m_background->size());
     m_background->setPixmap(pixmap);
     mainLayout->addWidget(m_background, 0, 0, 4, 4);
 
     m_orc = new QLabel(this);
     mainLayout->addWidget(m_orc, 2, 2, 2, 2);
-    svgContext = m_loginer->resource(AbstractLogin::Confirmed);
-    pixmap = binToImage(svgContext, m_orc->size());
+    svgContext = realLogin->resource(AbstractLoginApi::Confirmed);
+    pixmap = util::binToImage(svgContext, m_orc->size());
     m_orc->setPixmap(pixmap);
     m_orc->raise();
 }
@@ -93,17 +96,4 @@ void LoginBubble::movePosition(const QRect& pos)
     resize(w, h);
     const auto topLeft = QPoint(center.x() - w / 2, center.y() - height() / 2);
     move(topLeft);
-}
-
-QPixmap LoginBubble::binToImage(const std::vector<uint8_t>& bin, QSize size)
-{
-    QBuffer buffer;
-    buffer.setData(reinterpret_cast<const char*>(bin.data()), bin.size());
-    buffer.open(QIODevice::ReadOnly);
-
-    QImageReader render(&buffer);
-    QImage image = render.read();
-    image = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QPixmap pixmap = QPixmap::fromImage(image);
-    return pixmap;
 }
