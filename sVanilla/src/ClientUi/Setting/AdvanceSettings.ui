@@ -533,7 +533,7 @@ video corresponding to the link.
   <customwidget>
    <class>Aria2AdvanceSettings</class>
    <extends>QListWidget</extends>
-   <header>SUI/Aria2Settings/Aria2AdvanceSettings.h</header>
+   <header>ClientUi/Setting/Aria2AdvanceSettings.h</header>
   </customwidget>
  </customwidgets>
  <resources>
