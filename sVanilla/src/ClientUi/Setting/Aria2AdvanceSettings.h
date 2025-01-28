@@ -14,7 +14,7 @@ public:
         Number,
         Bool
     };
-    
+
     explicit Aria2SettingItem() = default;
     explicit Aria2SettingItem(QString key, QString value, Unit unit = String);
 
