@@ -4,12 +4,14 @@ function(appversion)
         message(FATAL_ERROR "Git was not found. Please install Git and ensure it is in your PATH.")
     endif()
 
-    execute_process(
-        COMMAND git rev-parse --abbrev-ref HEAD
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_BRANCH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
+    if (NOT GIT_BRANCH)
+        execute_process(
+            COMMAND git rev-parse --abbrev-ref HEAD
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_BRANCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    endif()
     
     execute_process(
         COMMAND ${GIT_EXECUTABLE} rev-parse HEAD

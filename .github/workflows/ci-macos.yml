@@ -50,12 +50,14 @@ jobs:
           setup-python: 'false'
 
       - name: Configure CMake
+        id: configure
         run: >
           cmake -B ${{ github.workspace }}/build
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
+          -DGIT_BRANCH=${{ github.ref_name }}
           -S ${{ github.workspace }}
 
       - name:  Build Project
@@ -68,3 +70,15 @@ jobs:
       # - name: Test
       #   working-directory: ${{ github.workspace }}/build
       #   run: ctest --build-config ${{ matrix.build_type }}
+
+      - name: Archive build logs on failure
+        if: ${{ failure() && steps.configure.outcome == 'failure' }}
+        run: |
+          tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+
+      - name: Upload build logs artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: ${{ github.workspace }}/build.tar.gz
