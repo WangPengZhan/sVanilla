@@ -72,6 +72,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
           -DENABLE_BUILD_PLUGINS=ON
+          -DGIT_BRANCH=${{ github.ref_name }}
           -S ${{ github.workspace }}
 
       - name: Extract CMake Project Version
@@ -211,6 +212,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
           -DENABLE_BUILD_PLUGINS=ON
+          -DGIT_BRANCH=${{ github.ref_name }}
           -S ${{ github.workspace }}
 
       - name:  Build Project
@@ -334,6 +336,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
             -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
             -DENABLE_BUILD_PLUGINS=ON
+            -DGIT_BRANCH=${{ github.ref_name }}
             -S ${{ github.workspace }}
 
         - name:  Build Project
