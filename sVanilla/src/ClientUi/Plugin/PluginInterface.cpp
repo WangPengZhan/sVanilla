@@ -28,5 +28,5 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
         }
     }
 
-    return m_pluginManager.getPlugin(1);
+    return {};
 }

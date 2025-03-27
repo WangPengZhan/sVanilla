@@ -94,7 +94,7 @@ void AddLinkLineEdit::contextMenuEvent(QContextMenuEvent* event)
 
 void AddLinkLineEdit::setUi()
 {
-    m_webSiteAction = addAction(QIcon(":website/default.svg"), LeadingPosition);
+    m_webSiteAction = addAction(QIcon(":/icon/web_default_icon.svg"), LeadingPosition);
     QIcon moreIcon;
     moreIcon.addFile(QString::fromUtf8(":/icon/down.svg"), QSize(), QIcon::Normal, QIcon::Off);
     moreIcon.addFile(QString::fromUtf8(":/icon/up.svg"), QSize(), QIcon::Normal, QIcon::On);

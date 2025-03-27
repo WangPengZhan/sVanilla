@@ -90,6 +90,7 @@ void HomePage::signalsAndSlots()
     connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
         parseUri(ui->lineEditHome->text());
         ui->lineEditHome->clear();
+        ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
     });
 
     connect(ui->lineEditHome, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
@@ -101,6 +102,7 @@ void HomePage::signalsAndSlots()
         auto plugin = sApp->pluginInterface().parseUrl(text.toStdString());
         if (!plugin)
         {
+            ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
             return;
         }
 
@@ -196,6 +198,7 @@ void HomePage::setUi()
     ui->btnIcon->setIconSize({iconSize, iconSize});
     constexpr int homeLineEditHeight = 30;
     ui->lineEditHome->setFixedHeight(homeLineEditHeight);
+    ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
 }
 
 void HomePage::createHistoryMenu()
