@@ -75,6 +75,7 @@ void VideoWidget::signalsAndSlots()
         auto plugin = sApp->pluginInterface().parseUrl(text.toStdString());
         if (!plugin)
         {
+            ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
             return;
         }
 
@@ -139,6 +140,7 @@ void VideoWidget::setUi()
     ui->btnReset->hide();
     ui->lineEditSearch->hide();
     ui->lineEditSearch->setFocusOutHide();
+    ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
 
     ui->videoListWidget->setInfoPanelSignalPointer(ui->videoListInfoWidget, ui->videoList);
     ui->videoListWidget->setSortingEnabled(true);
