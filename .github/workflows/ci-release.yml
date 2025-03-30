@@ -251,6 +251,7 @@ jobs:
           chmod +x linuxdeploy-plugin-appimage-x86_64.AppImage
 
       - name: 'Create AppImage'
+        id: create_appimage
         run: |
           sed -i 's|^Exec=.*|Exec=sVanilla|' ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop
           export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:$LD_LIBRARY_PATH
@@ -259,6 +260,21 @@ jobs:
           rm linuxdeploy-plugin-qt-x86_64.AppImage
           rm linuxdeploy-plugin-appimage-x86_64.AppImage
           mv *.AppImage ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id }}-x86_64.AppImage ||:
+      
+      - name: Archive build logs on failure
+        if: ${{ failure() && steps.create_appimage.outcome == 'failure' }}
+        run: |
+          tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+          tar -czvf ${{ github.workspace }}/output.tar.gz -C ${{ matrix.install_path }}/bin .
+
+      - name: Upload build logs artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            ${{ github.workspace }}/build.tar.gz
+            ${{ github.workspace }}/output.tar.gz
           
       - name: Calculate SHA256 checksums for each file
         run: |
