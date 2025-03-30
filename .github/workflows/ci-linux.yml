@@ -77,7 +77,7 @@ jobs:
       #   run: ctest --build-config ${{ matrix.build_type }}
 
       - name: Archive build logs on failure
-        if: ${{ failure() && steps.configure.outcome == 'failure' }}
+        if: ${{ failure() && (steps.configure.outcome == 'failure' || steps.runvcpkg.outcome == 'failure') }}
         run: |
           tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
 
