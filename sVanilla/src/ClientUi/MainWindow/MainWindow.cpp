@@ -345,7 +345,7 @@ void MainWindow::parseUrl(const std::string& url)
             auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
             historyStorage->insertOrUpdate(url, plugin->pluginMessage().pluginId);
         }
-        return plugin->getVideoView(url);
+        return views;
     };
 
     auto callback = [this](adapter::VideoView views) {
