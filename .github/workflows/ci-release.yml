@@ -254,7 +254,7 @@ jobs:
         id: create_appimage
         run: |
           sed -i 's|^Exec=.*|Exec=sVanilla|' ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop
-          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
           ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name}} -e ${{ matrix.install_path }}/bin/${{ env.product_name}} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage
           rm linuxdeploy-x86_64.AppImage
           rm linuxdeploy-plugin-qt-x86_64.AppImage
@@ -271,7 +271,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: windows
+          name: logs
           path: |
             ${{ github.workspace }}/build.tar.gz
             ${{ github.workspace }}/output.tar.gz
