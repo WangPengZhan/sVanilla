@@ -19,7 +19,7 @@ concurrency:
 env:
   product_name: sVanilla
   qt_version: 6.7.1
-  qt_modules: qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat
+  qt_modules: qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat qtserialport
 
 jobs:
   build-windows:
