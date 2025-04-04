@@ -21,6 +21,8 @@ jobs:
         install_path: [installed]
         c_compiler: [gcc]
         cpp_compiler: [g++]
+        qt: [6.5.2]
+        qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat qtserialport]
 
     steps:
       - uses: actions/checkout@v4
@@ -49,9 +51,9 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: 6.5.2
+          version: ${{matrix.qt}}
           target: desktop
-          modules: 'qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat'
+          modules:  ${{ matrix.qt_modules }}
           cache: 'true'
 
       - name: Configure CMake
@@ -80,10 +82,13 @@ jobs:
         if: ${{ failure() && (steps.configure.outcome == 'failure' || steps.runvcpkg.outcome == 'failure') }}
         run: |
           tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+          tar -czvf ${{ github.workspace }}/vcpkg.tar.gz -C ${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/ .
 
       - name: Upload build logs artifact
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: windows
-          path: ${{ github.workspace }}/build.tar.gz
+          name: linux_logs
+          path: |
+            ${{ github.workspace }}/build.tar.gz
+            ${{ github.workspace }}/vcpkg.tar.gz

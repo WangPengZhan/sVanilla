@@ -25,7 +25,7 @@ jobs:
         arch: [win64_msvc2019_64]
         platform: [x64]
         qt: [6.5.2]
-        qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat]
+        qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat qtserialport]
 
     steps:
       - uses: actions/checkout@v4
@@ -76,10 +76,13 @@ jobs:
         if: ${{ failure() && (steps.configure.outcome == 'failure' || steps.runvcpkg.outcome == 'failure') }}
         run: |
           Compress-Archive -Path "${{ github.workspace }}/build" -DestinationPath "${{ github.workspace }}/build.zip" -Force
+          Compress-Archive -Path "${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/" -DestinationPath "${{ github.workspace }}/vcpkg.zip" -Force
 
       - name: Upload build logs artifact
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: windows
-          path: ${{ github.workspace }}/build.zip
+          name: windows_logs
+          path: |
+            ${{ github.workspace }}/build.zip
+            ${{ github.workspace }}/vcpkg.zip

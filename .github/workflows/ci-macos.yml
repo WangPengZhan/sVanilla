@@ -32,6 +32,10 @@ jobs:
 
       - uses: lukka/get-cmake@latest
 
+      - name: Install dependencies
+        run: |
+          xcrun --sdk macosx --show-sdk-path
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         id: runvcpkg
@@ -75,10 +79,13 @@ jobs:
         if: ${{ failure() && (steps.configure.outcome == 'failure' || steps.runvcpkg.outcome == 'failure') }}
         run: |
           tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+          tar -czvf ${{ github.workspace }}/vcpkg.tar.gz -C ${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/ .
 
       - name: Upload build logs artifact
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: windows
-          path: ${{ github.workspace }}/build.tar.gz
+          name: macos_logs
+          path: |
+            ${{ github.workspace }}/build.tar.gz
+            ${{ github.workspace }}/vcpkg.tar.gz
