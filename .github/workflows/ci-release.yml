@@ -64,6 +64,10 @@ jobs:
           modules: ${{env.qt_modules}}
           cache: 'true'
 
+      - name: Install dependencies
+        run: |
+          pip install virtualenv
+
       - name: Configure CMake
         run: >
           cmake -B ${{ github.workspace }}/build
