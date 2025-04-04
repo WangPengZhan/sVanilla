@@ -4,7 +4,7 @@
 #include <list>
 #include <functional>
 
-#include <zip.h>
+#include <minizip/zip.h>
 
 class ResourceHelper
 {
