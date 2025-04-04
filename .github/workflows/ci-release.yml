@@ -114,6 +114,7 @@ jobs:
           Compress-Archive -Path ${{ matrix.install_path }}/bin/* -DestinationPath ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_protable.zip
 
       - name: Create .msi package
+        id: create_msi
         run: |
           python.exe scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
@@ -122,11 +123,29 @@ jobs:
           Remove-Item -Path "${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.wixpdb" -Force
 
       - name: create .EXE Installer
+        id: create_exe_installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: scripts/inno_setup/installer.iss
           options: /DRootPath=${{ github.workspace }}/${{ matrix.install_path }}/bin /DCurrenData=${{ env.ref_id}} /DMyAppVersion=${{ env.VERSION}} /O${{ github.workspace }}/${{ matrix.asset_path }}
       
+      - name: Archive build logs on failure
+        if: ${{ failure() && (steps.create_msi.outcome == 'failure' || steps.create_exe_installer.outcome == 'failure') }}
+        run: |
+          Compress-Archive -Path "${{ github.workspace }}/build" -DestinationPath "${{ github.workspace }}/build.zip" -Force
+          Compress-Archive -Path "${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/" -DestinationPath "${{ github.workspace }}/vcpkg.zip" -Force
+          Compress-Archive -Path "${{ github.workspace }}/${{ matrix.install_path }}/bin" -DestinationPath "${{ github.workspace }}/output.zip" -Force
+
+      - name: Upload build logs artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows_release_logs
+          path: |
+            ${{ github.workspace }}/build.zip
+            ${{ github.workspace }}/output.zip
+            ${{ github.workspace }}/vcpkg.zip 
+
       - name: Calculate SHA256 checksums for each file
         run: |
           $Files = Get-ChildItem -File -Path "${{ matrix.asset_path }}/*"
@@ -253,6 +272,7 @@ jobs:
       - name: 'Create AppImage'
         id: create_appimage
         run: |
+          python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           sed -i 's|^Exec=.*|Exec=sVanilla|' ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop
           export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
           ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name}} -e ${{ matrix.install_path }}/bin/${{ env.product_name}} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage
@@ -265,16 +285,18 @@ jobs:
         if: ${{ failure() && steps.create_appimage.outcome == 'failure' }}
         run: |
           tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+          tar -czvf ${{ github.workspace }}/vcpkg.tar.gz -C ${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/ .
           tar -czvf ${{ github.workspace }}/output.tar.gz -C ${{ matrix.install_path }}/bin .
 
       - name: Upload build logs artifact
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: logs
+          name: linux_release_logs
           path: |
             ${{ github.workspace }}/build.tar.gz
             ${{ github.workspace }}/output.tar.gz
+            ${{ github.workspace }}/vcpkg.tar.gz 
           
       - name: Calculate SHA256 checksums for each file
         run: |
@@ -314,8 +336,6 @@ jobs:
           asset_path: [package/asset]
           c_compiler: [clang]
           cpp_compiler: [clang++]
-          qt: [6.7.1]
-          qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat]
 
       steps:
         - uses: actions/checkout@v4
@@ -378,11 +398,29 @@ jobs:
             tar -czvf ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_x86_64_mac.tar.gz -C ${{ matrix.install_path }}/bin .
 
         - name: 'Create dmg'
+          id: create_dmg
           run: |
             python scripts/generator_install_manifest.py -d  ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS -o  ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS/manifest.json
             macdeployqt ${{ matrix.install_path }}/sVanilla.app -dmg
             mv ${{ matrix.install_path }}/*.dmg ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id }}-x86_64.dmg
-              
+
+        - name: Archive build logs on failure
+          if: ${{ failure() && steps.create_dmg.outcome == 'failure' }}
+          run: |
+            tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+            tar -czvf ${{ github.workspace }}/vcpkg.tar.gz -C ${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/ .
+            tar -czvf ${{ github.workspace }}/output.tar.gz -C ${{ matrix.install_path }}/bin .
+
+        - name: Upload build logs artifact
+          if: failure()
+          uses: actions/upload-artifact@v4
+          with:
+            name: macos_release_logs
+            path: |
+              ${{ github.workspace }}/build.tar.gz
+              ${{ github.workspace }}/output.tar.gz
+              ${{ github.workspace }}/vcpkg.tar.gz 
+                
         - name: Calculate SHA256 checksums for each file
           run: |
             cd "${{ matrix.asset_path }}" || exit
