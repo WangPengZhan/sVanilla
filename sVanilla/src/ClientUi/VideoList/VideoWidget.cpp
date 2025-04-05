@@ -484,6 +484,6 @@ void VideoWidget::showViewList(const adapter::VideoView& views)
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
         videoInfoFull->videoView = std::make_shared<adapter::BaseVideoView>(view);
         addVideoItem(videoInfoFull);
-        downloadCover({view.Cover, util::removeSpecialChar(videoInfoFull->coverPath()), tempPath.toStdString()});
+        downloadCover({view.Cover, videoInfoFull->coverPath(), tempPath.toStdString()});
     }
 }

@@ -107,7 +107,7 @@ void VideoGridItemWidget::createContextMenu()
 void VideoGridItemWidget::setCover()
 {
     const QString tempPath = SApplication::appDir() + QString("/") + QString(coverDir);
-    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(util::removeSpecialChar(m_infoFull->coverPath())) + ".jpg";
+    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->coverPath()) + ".jpg";
     if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
     {
         MLogI(svanilla::cVideoList, "setCover, paath: {}", filePath.toStdString());
@@ -144,7 +144,7 @@ const VideoGridItemWidget::CardInfo& VideoGridItemWidget::getCardInfo() const
 
 std::string VideoGridItemWidget::getCoverPath() const
 {
-    return util::removeSpecialChar(m_infoFull->coverPath());
+    return m_infoFull->coverPath();
 }
 
 QSize VideoGridItemWidget::sizeHint() const

@@ -29,6 +29,17 @@ if (NOT EXISTS "${CRASHPAD_HANDLER_DIR}")
     message(FATAL_ERROR "can't find crashpad_handler executable'")
 endif()
 
+# Set executable permissions for all files in CRASHPAD_HANDLER_DIR (UNIX only)
+if (UNIX)
+    file(GLOB CRASHPAD_EXECUTABLES "${CRASHPAD_HANDLER_DIR}/*")
+
+    foreach(file ${CRASHPAD_EXECUTABLES})
+        if (NOT IS_DIRECTORY ${file})
+            execute_process(COMMAND ${CMAKE_COMMAND} -E chmod +x ${file})
+        endif()
+    endforeach()
+endif()
+
 
 file(GLOB_RECURSE QTS "${CMAKE_CURRENT_SOURCE_DIR}/../../translate/*.ts")
 file(GLOB_RECURSE Q_EN_TS "${CMAKE_CURRENT_SOURCE_DIR}/../../translate/*_en.ts")
