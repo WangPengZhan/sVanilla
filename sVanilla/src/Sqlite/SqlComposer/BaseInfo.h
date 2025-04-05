@@ -164,78 +164,93 @@ decltype(auto) indexToType(int index, Lambda lambda)
     {
         static_assert(TypeToIndex_v<bool> == integralStartIndex + 0, "error index");
         lambda(bool{});
+        break;
     }
     case integralStartIndex + 1:
     {
         static_assert(TypeToIndex_v<uint8_t> == integralStartIndex + 1, "error index");
         lambda(uint8_t{});
+        break;
     }
     case integralStartIndex + 2:
     {
         static_assert(TypeToIndex_v<int8_t> == integralStartIndex + 2, "error index");
         lambda(int8_t{});
+        break;
     }
     case integralStartIndex + 3:
     {
         static_assert(TypeToIndex_v<uint16_t> == integralStartIndex + 3, "error index");
         lambda(uint16_t{});
+        break;
     }
     case integralStartIndex + 4:
     {
         static_assert(TypeToIndex_v<int16_t> == integralStartIndex + 4, "error index");
         lambda(int16_t{});
+        break;
     }
     case integralStartIndex + 5:
     {
         static_assert(TypeToIndex_v<uint32_t> == integralStartIndex + 5, "error index");
         lambda(uint32_t{});
+        break;
     }
     case integralStartIndex + 6:
     {
         static_assert(TypeToIndex_v<int32_t> == integralStartIndex + 6, "error index");
         lambda(int32_t{});
+        break;
     }
     case integralStartIndex + 7:
     {
         static_assert(TypeToIndex_v<uint64_t> == integralStartIndex + 7, "error index");
         lambda(uint64_t{});
+        break;
     }
     case integralStartIndex + 8:
     {
         static_assert(TypeToIndex_v<int64_t> == integralStartIndex + 8, "error index");
         lambda(int64_t{});
+        break;
     }
     case floatPointStartIndex + 0:
     {
         static_assert(TypeToIndex_v<float> == floatPointStartIndex + 0, "error index");
         lambda(float{});
+        break;
     }
     case floatPointStartIndex + 1:
     {
         static_assert(TypeToIndex_v<double> == floatPointStartIndex + 1, "error index");
         lambda(double{});
+        break;
     }
     case floatPointStartIndex + 2:
     {
         using ValueIndex = TypeToIndex<long double>;
         static_assert(ValueIndex::value == floatPointStartIndex + 2, "error index");
         lambda(typename ValueIndex::type{});
+        break;
     }
     case stringStartIndex + 0:
     {
         static_assert(TypeToIndex_v<std::string> == stringStartIndex + 0, "error index");
         lambda(std::string{});
+        break;
     }
     case stringStartIndex + 1:
     {
         using ValueIndex = TypeToIndex<const char*>;
         static_assert(ValueIndex::value == stringStartIndex + 1, "error index");
         lambda(typename ValueIndex::type{});
+        break;
     }
     case blobStartIndex + 0:
     {
         static_assert(TypeToIndex_v<std::vector<uint8_t>> == blobStartIndex + 0, "error index");
         lambda(std::vector<uint8_t>{});
+        break;
     }
     // case blobStartIndex + 1:
     //{

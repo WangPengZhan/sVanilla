@@ -414,7 +414,7 @@ void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) 
 
 void VideoWidget::prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const
 {
-    emit createBiliDownloadTask(infoFull);
+    emit createDownloadTask(infoFull);
 }
 
 void VideoWidget::prepareDownloadTaskList()
@@ -440,6 +440,7 @@ void VideoWidget::clearVideo()
 void VideoWidget::searchUrl(const QString& url)
 {
     ui->lineEdit->setText(url);
+    ui->lineEdit->setFocus();
     ui->lineEdit->Complete();
 }
 

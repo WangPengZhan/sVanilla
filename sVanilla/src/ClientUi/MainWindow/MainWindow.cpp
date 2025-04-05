@@ -107,6 +107,8 @@ void MainWindow::setUi()
             projectFile.close();
         }
     }
+
+    timerHelp.setInterval(500);
 }
 
 void MainWindow::signalsAndSlots()
@@ -135,7 +137,7 @@ void MainWindow::signalsAndSlots()
         emit windowBar->tabChanged(ui->stackedWidget->currentIndex());
         ui->videoPage->searchUrl(url);
     });
-    connect(ui->videoPage, &VideoWidget::createBiliDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
+    connect(ui->videoPage, &VideoWidget::createDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
     connect(ui->videoPage, &VideoWidget::parseUri, this, &MainWindow::parseUrl);
 
     connect(ui->downloadPage, &DownloadWidget::downloadingCountChanged, ui->videoPage, &VideoWidget::setDownloadingNumber);
@@ -337,6 +339,16 @@ void MainWindow::parseUrl(const std::string& url)
         MLogW(svanilla::cMainModule, "url is no support, url: {}", url);
         return;
     }
+
+    static std::string lastUrl;
+    if (lastUrl == url && !timerHelp.isElapse())
+    {
+        MLogW(svanilla::cMainModule, "url is same in 500ms, url: {}", url);
+        return;
+    }
+
+    timerHelp.start();
+    lastUrl = url;
 
     auto taskFunc = [plugin, url]() {
         auto views = plugin->getVideoView(url);

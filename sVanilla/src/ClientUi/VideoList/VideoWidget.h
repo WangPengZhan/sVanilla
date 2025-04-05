@@ -53,7 +53,7 @@ public:
     void showHistoryList(adapter::VideoView views);
 
 signals:
-    void createBiliDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
+    void createDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
     void updateWebsiteIcon(const std::string& string);
     void parseUri(const std::string& uri);
 
