@@ -405,6 +405,8 @@ jobs:
           id: create_dmg
           run: |
             python scripts/generator_install_manifest.py -d  ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS -o  ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS/manifest.json
+            hdiutil detach "/Volumes/sVanilla" || true
+            rm -f ${{ matrix.install_path }}/*.dmg
             macdeployqt ${{ matrix.install_path }}/sVanilla.app -dmg
             mv ${{ matrix.install_path }}/*.dmg ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id }}-x86_64.dmg
 
