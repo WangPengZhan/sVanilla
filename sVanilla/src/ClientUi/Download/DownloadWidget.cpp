@@ -204,6 +204,7 @@ void DownloadWidget::addDownloadingItem(const std::shared_ptr<download::FileDown
     // {
     //     uiDownloader->setUri(uri.front());
     // }
+    ToastTip::showTip(tr("video add to download!"), ToastTip::Success);
     ui->downloadingListWidget->addDownloadItem(uiDownloader);
     m_downloadManager->addItem(uiDownloader);
 }

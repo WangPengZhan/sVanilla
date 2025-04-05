@@ -21,7 +21,6 @@ include_directories(
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS} LinguistTools)
 
-
 add_executable(${TEST_NAME} ${SOURCES})
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
@@ -36,4 +35,9 @@ target_link_libraries(${TEST_NAME}
         GTest::gtest_main
         spdlog::spdlog
         ${QT_LIBS}
+)
+
+add_custom_command(TARGET ${TEST_NAME}
+    POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${TEST_NAME}>
 )

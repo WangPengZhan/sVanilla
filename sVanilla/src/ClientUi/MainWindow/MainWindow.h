@@ -5,6 +5,7 @@
 
 #include "WindowBar.h"
 #include "Utils/Setting.h"
+#include "Utils/MenuEventFilter.h"
 
 namespace Adapter
 {
@@ -81,4 +82,5 @@ private:
 #ifndef __APPLE__
     QString currentBlurEffect;
 #endif
+    QTimerHelp timerHelp{this};
 };

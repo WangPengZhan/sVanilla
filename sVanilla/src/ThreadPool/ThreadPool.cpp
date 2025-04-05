@@ -25,10 +25,6 @@ ThreadPool::ThreadPool(size_t threads)
 ThreadPool::~ThreadPool()
 {
     stop();
-    for (std::thread& worker : m_workers)
-    {
-        worker.join();
-    }
 }
 
 ThreadPool& ThreadPool::instance()
@@ -56,6 +52,10 @@ void ThreadPool::stop()
 {
     m_stop = true;
     m_condition.notify_all();
+    for (std::thread& worker : m_workers)
+    {
+        worker.join();
+    }
 }
 
 void ThreadPool::drop()

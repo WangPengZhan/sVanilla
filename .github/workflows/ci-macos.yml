@@ -90,5 +90,3 @@ jobs:
           path: |
             ${{ github.workspace }}/build.tar.gz
             ${{ github.workspace }}/vcpkg.tar.gz
-            /usr/local/include/zip.h
-            

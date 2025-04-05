@@ -88,6 +88,11 @@ void HomePage::signalsAndSlots()
     connect(ui->btnIcon, &QPushButton::clicked, this, [this] {});
 
     connect(ui->lineEditHome, &AddLinkLineEdit::Complete, this, [this] {
+        if (ui->lineEditHome->text().isEmpty())
+        {
+            return;
+        }
+
         parseUri(ui->lineEditHome->text());
         ui->lineEditHome->clear();
         ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
@@ -180,7 +185,6 @@ void HomePage::signalsAndSlots()
 
     connect(ui->btnClipBoard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
-        ui->lineEditHome->setText(clipboard->text());
         MLogI(svanilla::cHomeModule, " btnClipBoard, search: {}", clipboard->text().toStdString());
         emit parseUri(clipboard->text());
     });
