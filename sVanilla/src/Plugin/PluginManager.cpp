@@ -161,8 +161,6 @@ void PluginManager::loadConfig()
 
     if (m_pluginConfig.empty())
     {
-        static PluginConfig biliConfig{"bili", "1.0.0", "bili", 1, "bili plugin for https://www.bilibili.com/", "bilibili.dll", true};
-        m_pluginConfig.emplace_back(biliConfig);
         m_configChanged = true;
         saveConfig();
     }
