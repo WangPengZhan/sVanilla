@@ -46,12 +46,13 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo)
     if (isDownload)
     {
         ToastTip::showTip(tr("video has exist"), ToastTip::Warn);
-        MLogW(svanilla::cDownloadModule, "getBiliUrl has exist: {}", videoInfo->getGuid());
+        MLogW(svanilla::cDownloadModule, "addDownloadTask has exist: {}", videoInfo->getGuid());
         return;
     }
 
     auto copyedVideoInfo = videoInfo;
     copyedVideoInfo->downloadConfig = std::make_shared<DownloadConfig>(*(videoInfo->downloadConfig));
+    MLogI(svanilla::cDownloadModule, "addDownloadTask guid: {}, filename: {}", videoInfo->getGuid(), videoInfo->fileName());
     auto taskFunc = [this, copyedVideoInfo]() {
         auto plugin = sApp->pluginManager().getPlugin(copyedVideoInfo->videoView->pluginType);
         if (!plugin)
@@ -62,6 +63,12 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo)
         return downloader;
     };
     auto callback = [this, copyedVideoInfo](std::shared_ptr<download::FileDownloader> downloader) {
+        if (!downloader)
+        {
+            MLogI(svanilla::cDownloadModule, "downloader error, path: {}, filename: {}", downloader->path(), downloader->filename());
+            ToastTip::showTip(tr("add video download failed!"), ToastTip::Error);
+            return;
+        }
         addDownloadingItem(downloader, copyedVideoInfo);
     };
     runTask(taskFunc, callback, this);
