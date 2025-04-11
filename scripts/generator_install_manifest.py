@@ -23,6 +23,7 @@ def dir_to_dict(dirpath):
 def write_json_to_file(data, filepath):
     with open(filepath, 'w', encoding='utf-8') as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
+    print("manifest:", filepath)
 
 def main():
     parser = argparse.ArgumentParser(description='Get filePaths, variable names and output_file')
@@ -36,6 +37,8 @@ def main():
     
     directory_structure = dir_to_dict(rootdir)
     write_json_to_file(directory_structure, manifest)
+    directory_structure = dir_to_dict(rootdir)
+    print("directory_structure:", directory_structure)
 
 if __name__ == "__main__":
     main()

@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "PluginManager.h"
+#include "PluginLog.h"
 
 namespace plugin
 {
@@ -57,11 +58,13 @@ void PluginManager::unloadPlugins()
 
 void PluginManager::addPlugin(const std::string& pluginPath)
 {
+    PLUGIN_LOG_INFO("add Plugin: {}", pluginPath);
     auto pLoader = std::make_shared<DynamicLibLoader>(pluginPath);
     pLoader->loadLibrary();
     auto plugin = pLoader->loadPluginSymbol();
     if (!plugin)
     {
+        PLUGIN_LOG_WARN("load plugin failed, path: {}", pluginPath);
         return;
     }
 
@@ -199,8 +202,10 @@ std::vector<std::string> PluginManager::pluginDirHaving()
     std::vector<std::string> res;
     std::filesystem::path plugPath(m_pluginDir);
 
+    PLUGIN_LOG_INFO("plugin dir: {}", plugPath.string());
     for (const auto& entry : std::filesystem::directory_iterator(plugPath))
     {
+        PLUGIN_LOG_INFO("entry dir: {}", entry.path().string());
         if (entry.path().extension() == m_dynamicExtension)
         {
             res.emplace_back(std::filesystem::absolute(entry.path()).string());

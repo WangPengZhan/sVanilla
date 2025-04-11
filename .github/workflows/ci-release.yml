@@ -276,10 +276,12 @@ jobs:
       - name: 'Create AppImage'
         id: create_appimage
         run: |
-          python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
+          python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/${{ env.product_name}}/usr/bin/manifest.json
+          cp -r ${{ matrix.install_path }}/bin/plugin ${{ matrix.install_path }}/${{ env.product_name}}/usr/bin/
+          find ${{ matrix.install_path }}/${{ env.product_name}}/usr/bin/ -type f ! -name "*.*" -exec chmod +x {} \;
           sed -i 's|^Exec=.*|Exec=sVanilla|' ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop
           export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
-          ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name}} -e ${{ matrix.install_path }}/bin/${{ env.product_name}} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage
+          ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name}} -e ${{ matrix.install_path }}/bin/${{ env.product_name}} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage --custom-apprun ${{ github.workspace }}/cmake/AppRun
           rm linuxdeploy-x86_64.AppImage
           rm linuxdeploy-plugin-qt-x86_64.AppImage
           rm linuxdeploy-plugin-appimage-x86_64.AppImage

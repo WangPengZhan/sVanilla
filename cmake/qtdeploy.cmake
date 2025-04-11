@@ -43,19 +43,21 @@ function(deployqt arg_target)
         if (NOT EXISTS "${qt_deployqt_executable}")
             message("can not find the deployqt tools")
         else ()
-            add_custom_command(TARGET ${arg_target}
-                POST_BUILD
-                    COMMAND
-                        "${qt_deployqt_executable}"
-                        "$<TARGET_FILE:${arg_target}>"
-                        -always-overwrite
-                        -unsupported-allow-new-glibc
-            )
+            # add_custom_command(TARGET ${arg_target}
+            #     POST_BUILD
+            #         COMMAND
+            #             "${qt_deployqt_executable}"
+            #             "$<TARGET_FILE:${arg_target}>"
+            #             -always-overwrite
+            #             -unsupported-allow-new-glibc
+            # )
         endif ()
 
         install(DIRECTORY ${CMAKE_SOURCE_DIR}/tools/linux/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${arg_target}/usr/bin)
         install(DIRECTORY ${CMAKE_SOURCE_DIR}/sVanilla/resource/style/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${arg_target}/usr/bin)
         install(FILES "$<TARGET_FILE_DIR:${arg_target}>/licenses.json" DESTINATION ${CMAKE_INSTALL_PREFIX}/${arg_target}/usr/bin)
         install(FILES "$<TARGET_FILE_DIR:${arg_target}>/authors.csv" DESTINATION ${CMAKE_INSTALL_PREFIX}/${arg_target}/usr/bin)
+        install(FILES $<TARGET_FILE:spdlog> $<TARGET_SONAME_FILE:spdlog> $<TARGET_LINKER_FILE:spdlog> DESTINATION ${CMAKE_INSTALL_PREFIX}/${arg_target}/usr/lib)
+        install(FILES "$<TARGET_FILE:FFmpeg>" DESTINATION ${CMAKE_INSTALL_PREFIX}/${arg_target}/usr/lib)
     endif ()
 endfunction()

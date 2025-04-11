@@ -7,6 +7,7 @@
 
 namespace plugin
 {
+
 class DynamicLibLoader
 {
 public:

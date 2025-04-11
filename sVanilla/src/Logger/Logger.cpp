@@ -33,6 +33,7 @@ void Logger::initLog()
     registerLogger("ThreadPool");
     registerLogger("Download");
     registerLogger("BiliBili");
+    registerLogger("Plugin");
 }
 
 Logger::Logger()
