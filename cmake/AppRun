@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+set -e
+
+this_dir="$(readlink -f "$(dirname "$0")")"
+
+unset LD_LIBRARY_PATH
+
+export QT_PLUGIN_PATH="$this_dir/usr/plugins"
+export QML2_IMPORT_PATH="$this_dir/usr/qml"
+export QT_QPA_PLATFORM_PLUGIN_PATH="$this_dir/usr/plugins/platforms"
+
+export LD_LIBRARY_PATH="$this_dir/usr/lib:$this_dir/lib"
+
+exec "$this_dir/usr/bin/sVanilla" "$@"

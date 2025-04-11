@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include "Storage/SearchHistoryStorage.h"
 
 int SearchHistory::bind(sqlite::SQLiteStatement& stmt) const

@@ -5,6 +5,7 @@
 #else
 #    include <dlfcn.h>
 #endif
+
 #include <locale>
 
 #include <IPlugin.h>
@@ -22,6 +23,19 @@ std::wstring stringToWideString(const std::string& str)
     std::wstring wstrTo(size_needed, 0);
     MultiByteToWideChar(::GetACP(), 0, str.c_str(), -1, &wstrTo[0], size_needed);
     return wstrTo;
+}
+
+std::string utf16ToString(const std::wstring& utf16Str)
+{
+    if (utf16Str.empty())
+    {
+        return std::string();
+    }
+
+    int utf8Size = ::WideCharToMultiByte(::GetACP(), 0, utf16Str.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string utf8Str(utf8Size, 0);
+    WideCharToMultiByte(::GetACP(), 0, utf16Str.c_str(), -1, &utf8Str[0], utf8Size, nullptr, nullptr);
+    return utf8Str;
 }
 #endif
 }  // namespace
