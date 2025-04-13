@@ -44,6 +44,7 @@ public:
 
     static std::string pluginDir();
     static void setPluginConfigDir(const std::string& dir);
+    static const std::string& configDir();
     void loadPlugins();
     void unloadPlugins();
 

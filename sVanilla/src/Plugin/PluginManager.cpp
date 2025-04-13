@@ -41,6 +41,11 @@ void PluginManager::setPluginConfigDir(const std::string& dir)
     m_dir = dir;
 }
 
+const std::string& PluginManager::configDir()
+{
+    return m_dir;
+}
+
 void PluginManager::loadPlugins()
 {
     for (const auto& pluginPath : m_pluginsPaths)
