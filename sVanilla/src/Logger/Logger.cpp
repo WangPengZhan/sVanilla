@@ -32,7 +32,6 @@ void Logger::initLog()
     registerLogger("SQLite");
     registerLogger("ThreadPool");
     registerLogger("Download");
-    registerLogger("BiliBili");
     registerLogger("Plugin");
 }
 
