@@ -65,7 +65,8 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo)
     auto callback = [this, copyedVideoInfo](std::shared_ptr<download::FileDownloader> downloader) {
         if (!downloader)
         {
-            MLogI(svanilla::cDownloadModule, "downloader error, path: {}, filename: {}", copyedVideoInfo->downloadConfig->downloadDir, downloader->filename());
+            MLogI(svanilla::cDownloadModule, "downloader error, path: {}, filename: {}", copyedVideoInfo->downloadConfig->downloadDir,
+                  copyedVideoInfo->fileName());
             ToastTip::showTip(tr("add video download failed!"), ToastTip::Error);
             return;
         }
