@@ -84,6 +84,7 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
     auto pluginInit = reinterpret_cast<IPlugin* (*)()>(loadSymbol(m_libHandle, "pluginInit"));
     auto initDir = reinterpret_cast<void (*)(const char*)>(loadSymbol(m_libHandle, "initDir"));
     auto pluginDeinit = reinterpret_cast<void (*)(IPlugin*)>(loadSymbol(m_libHandle, "pluginDeinit"));
+    m_deinit = reinterpret_cast<void (*)()>(loadSymbol(m_libHandle, "deinit"));
     if (pluginInit)
     {
         res.reset(pluginInit(), pluginDeinit);
@@ -103,6 +104,12 @@ void DynamicLibLoader::unloadLibrary()
 {
     if (m_libHandle)
     {
+        if (m_deinit)
+        {
+            m_deinit();
+            m_deinit = nullptr;
+        }
+
         unloadLibrary(m_libHandle);
         m_loaded = false;
         m_libHandle = nullptr;

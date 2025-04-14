@@ -2,6 +2,7 @@
 #include <string>
 #include <atomic>
 #include <memory>
+#include <functional>
 
 #include "IPlugin.h"
 
@@ -32,6 +33,7 @@ private:
     std::string m_libPath;
     void* m_libHandle;
     std::atomic_bool m_loaded;
+    std::function<void()> m_deinit;
 };
 
 }  // namespace plugin
