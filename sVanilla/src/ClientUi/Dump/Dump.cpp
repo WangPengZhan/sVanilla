@@ -58,7 +58,7 @@ bool initializeCrashpad(const std::string& crashHandler, const std::string& temp
 
     // Start crash handler
     CrashpadClient* client = new CrashpadClient();
-#ifdef __liunx__
+#ifdef __linux__
     bool status = client->StartHandler(handler, reportsDir, metricsDir, "", annotations, arguments, true, false, {});
 #else
     bool status = client->StartHandler(handler, reportsDir, metricsDir, "", annotations, arguments, true, true, {});
