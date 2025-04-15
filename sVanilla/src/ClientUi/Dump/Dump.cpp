@@ -13,6 +13,7 @@
 
 namespace DumpColletor
 {
+std::string dumpDir = "./dump";
 
 void setDumpDir(const std::string& strDumpDir)
 {
