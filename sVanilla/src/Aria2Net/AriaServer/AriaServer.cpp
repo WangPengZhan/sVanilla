@@ -61,12 +61,22 @@ void AriaServer::startLocalServerAsync()
             }
         }
 
+        m_aria2Process->setProcessChannelMode(QProcess::MergedChannels);
+        QObject::connect(m_aria2Process.get(), &QProcess::readyReadStandardOutput, [&]() {
+            QByteArray output = m_aria2Process->readAllStandardOutput().trimmed();
+            ARIA_LOG_INFO("aria2Process standardOutput: {}", output.toStdString());
+        });
+        QObject::connect(m_aria2Process.get(), &QProcess::readyReadStandardError, [&]() {
+            QByteArray output = m_aria2Process->readAllStandardError().trimmed();
+            ARIA_LOG_ERROR("aria2Process standardError: {}", output.toStdString());
+        });
+
         // 设置启动的程序名和命令行参数
         m_aria2Process->setProgram(ariaExecutable);
         m_aria2Process->setArguments(
             QStringList() << "--enable-rpc" << "--rpc-listen-all=true" << "--rpc-allow-origin-all=true" << "--rpc-listen-port=6800" << "--rpc-secret=sVanilla"
                           << "--input-file=" + sessionFile << "--save-session=" + sessionFile << "--save-session-interval=30" << "--log=" + logFile
-                          << "--log-level=debug" << "--max-concurrent-downloads=3" << "--max-connection-per-server=16" << "--split=5" << "--min-split-size=10M"
+                          << "--log-level=debug" << "--max-concurrent-downloads=6" << "--max-connection-per-server=16" << "--split=5" << "--min-split-size=10M"
                           << "--max-overall-download-limit=0" << "--max-download-limit=0" << "--max-overall-upload-limit=0" << "--max-upload-limit=0"
                           << "--continue=true" << "--allow-overwrite=true" << "--auto-file-renaming=false" << "--file-allocation=none"
                           << "--header=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
