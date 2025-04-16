@@ -107,7 +107,7 @@ jobs:
           }
 
       - name:  collect pdb
-        run: python.exe scripts/collection_pdb.py -b ${{ github.workspace }}/build -o ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_pdb.zip
+        run: python.exe scripts/collection_pdb.py -b ${{ github.workspace }}/build -o ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_pdb.zip
 
       - name: Zip Package
         run: |
@@ -115,16 +115,16 @@ jobs:
           if (-Not (Test-Path ${{ matrix.asset_path }})) {
               New-Item -Path ${{ matrix.asset_path }} -ItemType Directory
           }
-          Compress-Archive -Path ${{ matrix.install_path }}/bin/* -DestinationPath ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_portable.zip
+          Compress-Archive -Path ${{ matrix.install_path }}/bin/* -DestinationPath ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_win64_portable.zip
 
       - name: Create .msi package
         id: create_msi
         run: |
           python.exe scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/bin/manifest.json
           python.exe scripts/generator_wxs.py -i ${{ matrix.install_path }}/bin/
-          candle.exe -nologo -out installer/ build/${{ env.product_name}}.wxs scripts/wix/ui.wxs
-          light.exe -nologo -out ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.msi installer/${{ env.product_name}}.wixobj installer/ui.wixobj  -ext WixUIExtension
-          Remove-Item -Path "${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_win64_installer.wixpdb" -Force
+          candle.exe -nologo -out installer/ build/${{ env.product_name }}.wxs scripts/wix/ui.wxs
+          light.exe -nologo -out ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_win64_installer.msi installer/${{ env.product_name }}.wixobj installer/ui.wixobj  -ext WixUIExtension
+          Remove-Item -Path "${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_win64_installer.wixpdb" -Force
 
       - name: create .EXE Installer
         id: create_exe_installer
@@ -200,11 +200,6 @@ jobs:
 
       - uses: lukka/get-cmake@latest
 
-      - name: Install linuxdeploy
-        uses: miurahr/install-linuxdeploy-action@v1
-        with:
-          plugins: qt appimage
-
       - name: Install Dependencies
         run: |
           sudo DEBIAN_FRONTEND=noninteractive apt-get update
@@ -253,16 +248,22 @@ jobs:
             echo "ref_id=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           fi
 
-      - name: tar  Package
-        run: |
-          mkdir -p ${{ matrix.asset_path }}
-          tar -czvf ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_x86_64_linux.tar.gz -C ${{ matrix.install_path }}/bin .
-          
       - name: 'Install dependencies'
         run: |
           sudo apt-get update
           sudo apt install desktop-file-utils libfuse2 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libxcb-composite0 libxcb-cursor0 libxcb-damage0 libxcb-dpms0 libxcb-dri2-0 libxcb-dri3-0 libxcb-ewmh2 libxcb-glx0 libxcb-present0 libxcb-randr0 libxcb-record0 libxcb-render0 libxcb-res0 libxcb-screensaver0 libxcb-shape0 libxcb-shm0 libxcb-sync1 libxcb-util1 libxkbcommon-x11-0
 
+      - name: tar  Package
+        run: |
+          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+          chmod +x linuxdeployqt-continuous-x86_64.AppImage
+          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
+          ./linuxdeployqt-continuous-x86_64.AppImage ${{ github.workspace }}/${{ matrix.install_path }}/bin/${{ env.product_name }} -executable-dir=${{ github.workspace }}/${{ matrix.install_path }}/bin -always-overwrite -no-translations -unsupported-allow-new-glibc
+          find ${{ matrix.install_path }}/bin/ -type f ! -name "*.*" -exec chmod +x {} \;
+          mkdir -p ${{ matrix.asset_path }}
+          tar -czvf ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_x86_64_linux.tar.gz -C ${{ matrix.install_path }}/bin/ .
+          rm linuxdeployqt-continuous-x86_64.AppImage
+          
       - name: 'Install linuxdeploy'
         run: |
           pwd
@@ -276,12 +277,12 @@ jobs:
       - name: 'Create AppImage'
         id: create_appimage
         run: |
-          python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/${{ env.product_name}}/usr/bin/manifest.json
-          cp -r ${{ matrix.install_path }}/bin/plugin ${{ matrix.install_path }}/${{ env.product_name}}/usr/bin/
-          find ${{ matrix.install_path }}/${{ env.product_name}}/usr/bin/ -type f ! -name "*.*" -exec chmod +x {} \;
+          python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/bin/ -o ${{ matrix.install_path }}/${{ env.product_name }}/usr/bin/manifest.json
+          cp -r ${{ matrix.install_path }}/bin/plugin ${{ matrix.install_path }}/${{ env.product_name }}/usr/bin/
+          find ${{ matrix.install_path }}/${{ env.product_name }}/usr/bin/ -type f ! -name "*.*" -exec chmod +x {} \;
           sed -i 's|^Exec=.*|Exec=sVanilla|' ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop
           export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
-          ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name}} -e ${{ matrix.install_path }}/bin/${{ env.product_name}} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage --custom-apprun ${{ github.workspace }}/cmake/AppRun
+          ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name }} -e ${{ matrix.install_path }}/bin/${{ env.product_name }} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage --custom-apprun ${{ github.workspace }}/cmake/AppRun
           rm linuxdeploy-x86_64.AppImage
           rm linuxdeploy-plugin-qt-x86_64.AppImage
           rm linuxdeploy-plugin-appimage-x86_64.AppImage
@@ -292,7 +293,7 @@ jobs:
         run: |
           tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
           tar -czvf ${{ github.workspace }}/vcpkg.tar.gz -C ${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/ .
-          tar -czvf ${{ github.workspace }}/output.tar.gz -C ${{ matrix.install_path }}/bin .
+          tar -czvf ${{ github.workspace }}/output.tar.gz -C ${{ matrix.install_path }}/bin/ .
 
       - name: Upload build logs artifact
         if: failure()
@@ -400,13 +401,15 @@ jobs:
 
         - name: tar  Package
           run: |
+            scripts/packageosx.sh ${{ matrix.install_path }}/sVanilla.app ${{ github.workspace }}/${{ matrix.install_path }}/bin/
+            find ${{ matrix.install_path }}/ -type f ! -name "*.*" -exec chmod +x {} \;
             mkdir -p ${{ matrix.asset_path }}
-            tar -czvf ${{ matrix.asset_path }}/${{ env.product_name}}_${{ env.ref_id}}_x86_64_mac.tar.gz -C ${{ matrix.install_path }}/bin .
+            tar -czvf ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_x86_64_mac.tar.gz -C ${{ matrix.install_path }}/bin .
 
         - name: 'Create dmg'
           id: create_dmg
           run: |
-            python scripts/generator_install_manifest.py -d  ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS -o  ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS/manifest.json
+            python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS -o ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS/manifest.json
             hdiutil detach "/Volumes/sVanilla" || true
             rm -f ${{ matrix.install_path }}/*.dmg
             find ${{ matrix.install_path }}/ -type f ! -name "*.*" -exec chmod +x {} \;
