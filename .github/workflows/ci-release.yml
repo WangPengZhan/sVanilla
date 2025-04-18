@@ -189,6 +189,7 @@ jobs:
         build_type: [Release]
         install_path: [package/installed]
         asset_path: [package/asset]
+        temp_path: [package/temp_dir]
         c_compiler: [gcc]
         cpp_compiler: [g++]
 
@@ -255,14 +256,16 @@ jobs:
 
       - name: tar  Package
         run: |
+          mkdir -p ${{ matrix.temp_path }}
+          cp -r ${{ matrix.install_path }}/bin/.  ${{ matrix.temp_path }}
           wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
           chmod +x linuxdeployqt-continuous-x86_64.AppImage
           export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
-          ./linuxdeployqt-continuous-x86_64.AppImage ${{ github.workspace }}/${{ matrix.install_path }}/bin/${{ env.product_name }} -executable-dir=${{ github.workspace }}/${{ matrix.install_path }}/bin -always-overwrite -no-translations -unsupported-allow-new-glibc
-          find ${{ matrix.install_path }}/bin/ -type f ! -name "*.*" -exec chmod +x {} \;
-          mkdir -p ${{ matrix.asset_path }}
-          tar -czvf ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_x86_64_linux.tar.gz -C ${{ matrix.install_path }}/bin/ .
+          ./linuxdeployqt-continuous-x86_64.AppImage ${{ github.workspace }}/${{ matrix.temp_path }}/${{ env.product_name }} -always-overwrite -no-translations -unsupported-allow-new-glibc
           rm linuxdeployqt-continuous-x86_64.AppImage
+          find ${{ matrix.temp_path }} -type f ! -name "*.*" -exec chmod +x {} \;
+          mkdir -p ${{ matrix.asset_path }}
+          tar -czvf ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_x86_64_linux.tar.gz -C ${{ matrix.temp_path }} .
           
       - name: 'Install linuxdeploy'
         run: |
@@ -401,6 +404,7 @@ jobs:
 
         - name: tar  Package
           run: |
+            chmod +x scripts/packageosx.sh
             scripts/packageosx.sh ${{ matrix.install_path }}/sVanilla.app ${{ github.workspace }}/${{ matrix.install_path }}/bin/
             find ${{ matrix.install_path }}/ -type f ! -name "*.*" -exec chmod +x {} \;
             mkdir -p ${{ matrix.asset_path }}
