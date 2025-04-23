@@ -256,7 +256,7 @@ jobs:
           cp -r ${{ matrix.install_path }}/bin/.  ${{ matrix.temp_path }}
           wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
           chmod +x linuxdeployqt-continuous-x86_64.AppImage
-          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:${{ github.workspace }}/${{ matrix.install_path }}/bin/ffmpeg:$LD_LIBRARY_PATH
           ./linuxdeployqt-continuous-x86_64.AppImage ${{ github.workspace }}/${{ matrix.temp_path }}/${{ env.product_name }} -always-overwrite -no-translations -unsupported-allow-new-glibc
           rm linuxdeployqt-continuous-x86_64.AppImage
           find ${{ matrix.temp_path }} -type f ! -name "*.*" -exec chmod +x {} \;
@@ -280,7 +280,7 @@ jobs:
           cp -r ${{ matrix.install_path }}/bin/plugin ${{ matrix.install_path }}/${{ env.product_name }}/usr/bin/
           find ${{ matrix.install_path }}/${{ env.product_name }}/usr/bin/ -type f ! -name "*.*" -exec chmod +x {} \;
           sed -i 's|^Exec=.*|Exec=sVanilla|' ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop
-          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ github.workspace }}/build/vcpkg_installed/x64-linux/lib:${{ github.workspace }}/${{ matrix.install_path }}/bin:${{ github.workspace }}/${{ matrix.install_path }}/bin/ffmpeg:$LD_LIBRARY_PATH
           ./linuxdeploy-x86_64.AppImage --appdir ${{ matrix.install_path }}/${{ env.product_name }} -e ${{ matrix.install_path }}/bin/${{ env.product_name }} -i ${{ matrix.install_path }}/bin/share/icon/sVanilla.svg -d ${{ matrix.install_path }}/bin/share/applications/sVanilla.desktop --plugin qt --output appimage --custom-apprun ${{ github.workspace }}/cmake/AppRun
           rm linuxdeploy-x86_64.AppImage
           rm linuxdeploy-plugin-qt-x86_64.AppImage
@@ -412,7 +412,7 @@ jobs:
             rm -f ${{ matrix.install_path }}/*.dmg
             find ${{ matrix.install_path }}/ -type f ! -name "*.*" -exec chmod +x {} \;
             macdeployqt ${{ matrix.install_path }}/sVanilla.app -dmg
-            mv ${{ matrix.install_path }}/*.dmg ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id }}-x86_64.dmg
+            mv ${{ matrix.install_path }}/*.dmg ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id }}_x86_64.dmg
 
         - name: Archive build logs on failure
           if: ${{ failure() && steps.create_dmg.outcome == 'failure' }}
@@ -458,3 +458,138 @@ jobs:
             done
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-macos-arm:
+        name: build-macos-arm
+        runs-on: macos-14
+        timeout-minutes: 120
+
+        strategy:
+          matrix:
+            build_type: [Release]
+            install_path: [package/installed]
+            asset_path: [package/asset]
+            c_compiler: [clang]
+            cpp_compiler: [clang++]
+
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              submodules: recursive
+              fetch-depth: 0
+
+          - uses: lukka/get-cmake@latest
+
+          - name: Set up virtualenv and inject PATH
+            run: |
+              python -m venv venv
+              echo "PATH=$(pwd)/venv/bin:$PATH" >> $GITHUB_ENV
+
+          - name: Setup vcpkg
+            uses: lukka/run-vcpkg@v11
+            id: runvcpkg
+            with:
+              vcpkgDirectory: '${{ github.workspace }}/ThirdParty/vcpkg'
+
+          - name: Install Qt
+            uses: jurplel/install-qt-action@v4
+            with:
+              version: ${{ env.qt_version }}
+              host: 'mac'
+              target: desktop
+              modules:  ${{ env.qt_modules }}
+              cache: 'true'
+              setup-python: 'false'
+
+          - name: Configure CMake
+            run: >
+              cmake -B ${{ github.workspace }}/build
+              -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+              -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+              -DCMAKE_INSTALL_PREFIX=${{ matrix.install_path }}
+              -DENABLE_BUILD_PLUGINS=ON
+              -DGIT_BRANCH=${{ github.ref_name }}
+              -S ${{ github.workspace }}
+
+          - name:  Build Project
+            run: |
+              export Qt6_DIR=${QT_ROOT_DIR}/lib
+              cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel --target all --
+            
+          - name:  Install Project
+            run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --target install --
+
+          - name: Get current date
+            id: date
+            run: |
+              branchName="${GITHUB_REF#refs/tags/}"
+              if [[ "$branchName" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                echo "ref_id=$branchName" >> $GITHUB_ENV
+              else
+                echo "ref_id=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+              fi
+
+          - name: tar  Package
+            run: |
+              chmod +x scripts/packageosx.sh
+              scripts/packageosx.sh ${{ matrix.install_path }}/sVanilla.app ${{ github.workspace }}/${{ matrix.install_path }}/bin/
+              find ${{ matrix.install_path }}/ -type f ! -name "*.*" -exec chmod +x {} \;
+              mkdir -p ${{ matrix.asset_path }}
+              tar -czvf ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id}}_arm_mac.tar.gz -C ${{ matrix.install_path }}/bin .
+
+          - name: 'Create dmg'
+            id: create_dmg
+            run: |
+              python scripts/generator_install_manifest.py -d ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS -o ${{ matrix.install_path }}/sVanilla.app/Contents/MacOS/manifest.json
+              hdiutil detach "/Volumes/sVanilla" || true
+              rm -f ${{ matrix.install_path }}/*.dmg
+              find ${{ matrix.install_path }}/ -type f ! -name "*.*" -exec chmod +x {} \;
+              macdeployqt ${{ matrix.install_path }}/sVanilla.app -dmg
+              mv ${{ matrix.install_path }}/*.dmg ${{ matrix.asset_path }}/${{ env.product_name }}_${{ env.ref_id }}_arm.dmg
+
+          - name: Archive build logs on failure
+            if: ${{ failure() && steps.create_dmg.outcome == 'failure' }}
+            run: |
+              tar -czvf ${{ github.workspace }}/build.tar.gz -C ${{ github.workspace }}/build/ .
+              tar -czvf ${{ github.workspace }}/vcpkg.tar.gz -C ${{ github.workspace }}/ThirdParty/vcpkg/buildtrees/ .
+              tar -czvf ${{ github.workspace }}/output.tar.gz -C ${{ matrix.install_path }}/bin .
+
+          - name: Upload build logs artifact
+            if: failure()
+            uses: actions/upload-artifact@v4
+            with:
+              name: macos_release_logs
+              path: |
+                ${{ github.workspace }}/build.tar.gz
+                ${{ github.workspace }}/output.tar.gz
+                ${{ github.workspace }}/vcpkg.tar.gz 
+                  
+          - name: Calculate SHA256 checksums for each file
+            run: |
+              cd "${{ matrix.asset_path }}" || exit
+              for file in *; do
+                if [ -f "$file" ]; then
+                    shasum -a 256 "$file" > "$file.sha256"
+                fi
+              done
+
+          - name: Update GitHub Release
+            uses: actions/upload-artifact@v4
+            with:
+              name: macos_arm
+              path: |
+                ${{ matrix.asset_path }}/*.dmg
+                ${{ matrix.asset_path }}/*.sha256
+                ${{ matrix.asset_path }}/*.tar.gz
+
+          - name: Upload Release Assets
+            run: |
+              files=$(find ${{ matrix.asset_path }} -type f);
+              for file in $files; do
+                echo "Uploading $file"
+                gh release upload "${{ github.ref_name }}" "$file" --clobber
+              done
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
