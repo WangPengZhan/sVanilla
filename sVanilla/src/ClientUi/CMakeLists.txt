@@ -35,7 +35,7 @@ if (UNIX)
 
     foreach(file ${CRASHPAD_EXECUTABLES})
         if (NOT IS_DIRECTORY ${file})
-            execute_process(COMMAND ${CMAKE_COMMAND} -E chmod +x ${file})
+            execute_process(COMMAND chmod +x ${file})
         endif()
     endforeach()
 endif()
