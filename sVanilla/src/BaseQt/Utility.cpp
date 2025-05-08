@@ -4,6 +4,9 @@
 #include <QMenu>
 #include <QBuffer>
 #include <QImageReader>
+#include <QMimeDatabase>
+#include <QSvgRenderer>
+#include <QPainter>
 
 #include "Utility.h"
 
@@ -68,11 +71,28 @@ QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size)
     buffer.setData(reinterpret_cast<const char*>(bin.data()), bin.size());
     buffer.open(QIODevice::ReadOnly);
 
+    const QMimeDatabase db;
+    if (const QMimeType mime = db.mimeTypeForData(buffer.data()); mime.inherits("image/svg+xml"))
+    {
+        QSvgRenderer render;
+        render.load(buffer.data());
+        if (!render.isValid())
+        {
+            return {};
+        }
+        QPixmap pixmap(size);
+        pixmap.fill(Qt::transparent);
+        QPainter painter(&pixmap);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        render.render(&painter, pixmap.rect());
+        return pixmap;
+    }
     QImageReader render(&buffer);
+    render.setQuality(100);
     QImage image = render.read();
     image = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QPixmap pixmap = QPixmap::fromImage(image);
-    return pixmap;
+    return QPixmap::fromImage(std::move(image));
+    ;
 }
 
 }  // namespace util

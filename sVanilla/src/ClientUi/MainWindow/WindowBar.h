@@ -18,7 +18,7 @@ public:
     explicit WindowBar(QWidget* parent = nullptr);
     ~WindowBar();
 
-    [[nodiscard]] const QWidget* getHitWidget() const;
+    [[nodiscard]] QWidget* getHitWidget() const;
 
     void setMinButton(QAbstractButton* btn);
     void setMaxButton(QAbstractButton* btn);

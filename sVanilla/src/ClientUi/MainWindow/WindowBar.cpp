@@ -18,7 +18,7 @@ WindowBar::~WindowBar()
     delete ui;
 }
 
-const QWidget* WindowBar::getHitWidget() const
+QWidget* WindowBar::getHitWidget() const
 {
     return ui->Hit;
 }
