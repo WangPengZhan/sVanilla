@@ -111,7 +111,8 @@ void HomePage::signalsAndSlots()
             return;
         }
 
-        QIcon icon(util::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+        constexpr QSize iconSize(24, 24);
+        QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
         ui->lineEditHome->setWebsiteIcon(icon);
     });
 
@@ -159,7 +160,8 @@ void HomePage::signalsAndSlots()
             for (auto& [_, plugin] : plugins)
             {
                 auto action = new QAction(QString::fromStdString(plugin->pluginMessage().name), &menu);
-                QIcon icon(util::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+                constexpr QSize iconSize(24, 24);
+                QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
                 action->setIcon(icon);
                 menu.addAction(action);
                 connect(action, &QAction::triggered, &menu, [this, plugin]() {

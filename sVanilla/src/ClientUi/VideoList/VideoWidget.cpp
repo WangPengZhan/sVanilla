@@ -79,7 +79,8 @@ void VideoWidget::signalsAndSlots()
             return;
         }
 
-        QIcon icon(util::binToImage(plugin->websiteIcon(), QSize(24, 24)));
+        constexpr QSize iconSize(24, 24);
+        QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
         ui->lineEdit->setWebsiteIcon(icon);
     });
 
