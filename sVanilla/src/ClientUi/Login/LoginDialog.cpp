@@ -18,7 +18,6 @@
 #include "Storage/SearchHistoryStorage.h"
 #include "Storage/StorageManager.h"
 #include "Login/LoginMonitor.h"
-#include "SUI/QrCodeGenerator.h"
 #include "Utils/RunTask.h"
 #include "BaseQt/Utility.h"
 #include "LoginProxy.h"
@@ -201,7 +200,7 @@ void LoginDialog::loadOrc()
             slotStatusChanged(AbstractLoginApi::Error);
             return;
         }
-        auto image = QrCodeGenerator().generateQR(QString::fromStdString(m_context));
+        auto image = QImage(QString::fromStdString(m_context));
         auto pixmap = QPixmap::fromImage(image).scaled(ui->labelOrc->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->labelOrc->setPixmap(pixmap);
         m_status = AbstractLoginApi::NoScan;

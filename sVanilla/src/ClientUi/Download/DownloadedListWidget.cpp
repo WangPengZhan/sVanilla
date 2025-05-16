@@ -80,6 +80,10 @@ void DownloadedItemWidget::setUi()
     QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir) + "/" + fileName;
     QFileInfo fileInfo(filePath);
     ui->labelSize->setText(formatSize(fileInfo.size()));
+    if (!QFileInfo::exists(filePath))
+    {
+        setStyleSheet(".DownloadedItemWidget { background-color:#141210; }");
+    }
 }
 
 void DownloadedItemWidget::signalsAndSlots()
