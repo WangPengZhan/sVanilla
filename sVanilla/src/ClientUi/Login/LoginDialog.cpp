@@ -200,8 +200,11 @@ void LoginDialog::loadOrc()
             slotStatusChanged(AbstractLoginApi::Error);
             return;
         }
-        auto image = QImage(QString::fromStdString(m_context));
-        auto pixmap = QPixmap::fromImage(image).scaled(ui->labelOrc->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QFile file(QString::fromStdString(m_context));
+        file.open(QIODevice::ReadOnly);
+        QByteArray data = file.readAll();
+        std::vector<uint8_t> bin(data.begin(), data.end());
+        auto pixmap = util::binToImage(bin, ui->labelOrc->size());
         ui->labelOrc->setPixmap(pixmap);
         m_status = AbstractLoginApi::NoScan;
         m_monitor->setLoginer(m_loginer);

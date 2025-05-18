@@ -8,6 +8,8 @@
 #include <QSvgRenderer>
 #include <QPainter>
 
+#include <fstream>
+
 #include "Utility.h"
 
 namespace util
@@ -92,7 +94,19 @@ QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size)
     QImage image = render.read();
     image = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     return QPixmap::fromImage(std::move(image));
-    ;
+}
+
+std::vector<uint8_t> readFileToVector(const std::string& path)
+{
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    if (!file)
+        throw std::runtime_error("Cannot open file");
+
+    std::streamsize size = file.tellg();
+    std::vector<uint8_t> buffer(size);
+    file.seekg(0);
+    file.read(reinterpret_cast<char*>(buffer.data()), size);
+    return buffer;
 }
 
 }  // namespace util
