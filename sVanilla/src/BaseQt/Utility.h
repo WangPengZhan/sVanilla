@@ -16,4 +16,7 @@ struct AnimationStartEnd
 void animate(QObject* obj, AnimationStartEnd change, const QByteArray& propertyName = "pos", const std::function<void()>& = {}, int duration = 300);
 
 QPixmap binToImage(const std::vector<uint8_t>& bin, QSize size);
+
+std::vector<uint8_t> readFileToVector(const std::string& path);
+
 }  // namespace util
