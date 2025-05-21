@@ -222,7 +222,7 @@ void HomePage::createHistoryMenu()
         ui->lineEditHome->setText(text);
         ui->lineEditHome->setFocus();
     };
-    auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
+    auto historyStorage = sqlite::StorageManager::instance().searchHistoryStorage();
     auto history = historyStorage->allItems();
     util::createMenu(m_historyMenu, width() / 3, history, actionCallback);
 }

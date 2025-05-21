@@ -42,7 +42,7 @@ DownloadWidget::~DownloadWidget()
 
 void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo)
 {
-    bool isDownload = sqlite::StorageManager::intance().isDownloaded(videoInfo->getGuid());
+    bool isDownload = sqlite::StorageManager::instance().isDownloaded(videoInfo->getGuid());
     if (isDownload)
     {
         ToastTip::showTip(tr("video has exist"), ToastTip::Warn);
@@ -175,7 +175,7 @@ void DownloadWidget::signalsAndSlots()
 void DownloadWidget::initHistoryData()
 {
     auto taskHistoryDownloading = [this]() {
-        auto downloadingStorage = sqlite::StorageManager::intance().downloadingStorage();
+        auto downloadingStorage = sqlite::StorageManager::instance().downloadingStorage();
         auto downloadingItems = downloadingStorage->lastItems();
         for (const auto& item : downloadingItems)
         {
@@ -184,7 +184,7 @@ void DownloadWidget::initHistoryData()
     };
     ThreadPool::instance().enqueue(taskHistoryDownloading);
     auto taskHistoryDownloaded = [this]() {
-        auto downloadedStorage = sqlite::StorageManager::intance().downloadedtemStorage();
+        auto downloadedStorage = sqlite::StorageManager::instance().downloadedtemStorage();
         auto downloadedItems = downloadedStorage->lastItems();
         for (auto it = downloadedItems.rbegin(); it != downloadedItems.rend(); ++it)
         {

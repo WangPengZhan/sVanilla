@@ -418,8 +418,8 @@ public:
 public:
     static const TableStructInfo<FinishedItem>& self()
     {
-        static const TableStructInfo<FinishedItem> intance;
-        return intance;
+        static const TableStructInfo<FinishedItem> instance;
+        return instance;
     }
 
     TableStructInfo(const TableStructInfo&) = delete;
@@ -464,8 +464,8 @@ public:\
     using StructType = ::type;\
     static const TableStructInfo<StructType>& self()\
     {\
-        static const TableStructInfo<StructType> intance;\
-        return intance;\
+        static const TableStructInfo<StructType> instance;\
+        return instance;\
     }\
     TableStructInfo(const TableStructInfo&) = delete;\
     TableStructInfo& operator=(const TableStructInfo&) = delete;\

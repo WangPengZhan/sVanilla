@@ -1,8 +1,11 @@
 #include <QClipboard>
 
+#include <BaseQt/Utility.h>
+
 #include "About.h"
 #include "ui_About.h"
 #include "version.h"
+#include "MainWindow/SApplication.h"
 
 About::About(QWidget* parent)
     : QWidget(parent)
@@ -47,5 +50,9 @@ void About::signalsAndSlots()
                        ui->labelBuildTime->text() + split + ui->labelBuildTimeContext->text() + "\r\n";
         QClipboard* clipboard = QGuiApplication::clipboard();
         clipboard->setText(text);
+    });
+    connect(ui->btnOpenLogDir, &QPushButton::clicked, this, [&]() {
+        QString dir = SApplication::appDir() + "/log";
+        util::showInFileExplorer(dir);
     });
 }

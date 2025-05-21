@@ -26,6 +26,7 @@ void SApplication::init()
     startServer();
     signalsAndSlots();
     pluginManager().loadPlugins();
+    m_pluginInterface.setCookiesForPlugins();
 }
 
 aria2net::AriaServer& SApplication::ariaServer()

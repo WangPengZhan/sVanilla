@@ -93,6 +93,7 @@ void VideoListItemWidget::downloadItem() const
 VideoListWidget::VideoListWidget(QWidget* parent)
     : QListWidget(parent)
 {
+    setUniformItemSizes(true);
     setSelectionMode(ExtendedSelection);
 }
 

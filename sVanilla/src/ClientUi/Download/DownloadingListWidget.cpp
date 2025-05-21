@@ -195,7 +195,7 @@ void DownloadingItemWidget::pauseItem(bool isResume)
 void DownloadingItemWidget::openItemFolder()
 {
     QString filePath = QString::fromStdString(m_downloader->filename());
-    if (std::filesystem::u8path(m_downloader->filename()).is_relative())
+    if (std::filesystem::path(filePath.toLocal8Bit().toStdString()).is_relative())
     {
         filePath = SApplication::appDir() + "/" + filePath;
     }
@@ -378,7 +378,7 @@ void DownloadingItemWidget::createContextMenu()
 
 void DownloadingItemWidget::restartItem()
 {
-    auto& storageManager = sqlite::StorageManager::intance();
+    auto& storageManager = sqlite::StorageManager::instance();
     bool isDownloaded = storageManager.isDownloaded(m_downloader->videoInfoFull()->getGuid());
     if (isDownloaded)
     {

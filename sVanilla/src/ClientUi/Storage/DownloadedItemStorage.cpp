@@ -1,6 +1,7 @@
 #include <filesystem>
 
 #include "Storage/DownloadedItemStorage.h"
+#include "Util/LocaleHelper.h"
 
 int DownloadedItem::bind(sqlite::SQLiteStatement& stmt) const
 {
@@ -72,7 +73,7 @@ void DownloadedItemStorage::updateFileExist()
     auto finishItems = queryEntities<Entity>(0, maxQueryNum, {});
     for (const auto& finishItem : finishItems)
     {
-        std::filesystem::path path = std::filesystem::u8path(finishItem.filePath);
+        std::filesystem::path path = util::utf8ToLocale(finishItem.filePath);
         bool isExist = std::filesystem::exists(path);
         updateFileExist(isExist, finishItem.uniqueId);
     }

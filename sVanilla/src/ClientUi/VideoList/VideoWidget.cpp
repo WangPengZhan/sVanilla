@@ -13,7 +13,6 @@
 #include "Download/AbstractDownloader.h"
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
-#include "Utils/CoverUtil.h"
 #include "VideoGridWidget.h"
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
@@ -107,8 +106,6 @@ void VideoWidget::signalsAndSlots()
 
     connect(ui->btnReset, &QPushButton::clicked, this, &VideoWidget::resetList);
 
-    connect(this, &VideoWidget::coverReady, ui->videoGridWidget, &VideoGridWidget::coverReady);
-
     connect(ui->videoGridWidget, &VideoGridWidget::infoBtnClick, this, [this](const InfoPanelData& data) {
         showInfo(ui->videoGridInfoWidget, ui->videoGrid, data.currentRow, data.previousRow);
         if (ui->videoGridInfoWidget->isVisible())
@@ -156,7 +153,7 @@ void VideoWidget::createHistoryMenu()
         ui->lineEdit->setText(text);
         ui->lineEdit->setFocus();
     };
-    auto historyStorage = sqlite::StorageManager::intance().searchHistoryStorage();
+    auto historyStorage = sqlite::StorageManager::instance().searchHistoryStorage();
     auto history = historyStorage->allItems();
     util::createMenu(m_historyMenu, width() / 3, history, actionCallback);
 }
@@ -360,51 +357,11 @@ void VideoWidget::hideBtnSearch()
     util::animate(ui->btnSearch, {maxWidth, 0}, "maximumWidth", finished);
 }
 
-QString VideoWidget::getCoverPath() const
-{
-    QString coverPath = SApplication::appDir() + QString("/") + QString(coverDir);  // It is now in the temporary area
-    QDir dir(coverPath);
-    if (!dir.exists())
-    {
-        dir.mkpath(coverPath);
-    }
-
-    QFileInfoList folderList = dir.entryInfoList(QDir::Files, QDir::Time);
-    if (folderList.size() > coverMaxNum)
-    {
-        int removeNum = folderList.size() - 200;
-
-        for (int i = 0; i < removeNum; ++i)
-        {
-            QFileInfo oldFile = folderList.at(i);
-            QString oldFilePath = oldFile.absoluteFilePath();
-            QFile::remove(oldFilePath);
-        }
-    }
-
-    return coverPath;
-}
-
 void VideoWidget::searchedVideoItem(adapter::VideoView views)
 {
     ui->labelPlayListTitle->clear();
     clearVideo();
     showViewList(views);
-}
-
-void VideoWidget::downloadCover(const CoverInfo& coverInfo)
-{
-    auto taskFunc = [coverInfo]() {
-        return downloadCoverImage(coverInfo);
-    };
-    auto callback = [this, coverInfo](bool result) {
-        if (!result)
-        {
-            return;
-        }
-        emit coverReady(coverInfo.fileName);
-    };
-    runTask(taskFunc, callback, this);
 }
 
 void VideoWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const
@@ -466,13 +423,14 @@ void VideoWidget::showHistoryList(adapter::VideoView views)
 
 void VideoWidget::showViewList(const adapter::VideoView& views)
 {
-    const QString tempPath = getCoverPath();
     ui->labelPlayListTitle->clear();
     if (views.empty())
     {
         return;
     }
 
+    ui->videoGridWidget->setUpdatesEnabled(false);
+    ui->videoListWidget->setUpdatesEnabled(false);
     if (const auto playlistTitle = views.front().PlayListTitle; !playlistTitle.empty())
     {
         const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
@@ -485,6 +443,8 @@ void VideoWidget::showViewList(const adapter::VideoView& views)
         videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
         videoInfoFull->videoView = std::make_shared<adapter::BaseVideoView>(view);
         addVideoItem(videoInfoFull);
-        downloadCover({view.Cover, videoInfoFull->coverPath(), tempPath.toStdString()});
     }
+
+    ui->videoGridWidget->setUpdatesEnabled(true);
+    ui->videoListWidget->setUpdatesEnabled(true);
 }

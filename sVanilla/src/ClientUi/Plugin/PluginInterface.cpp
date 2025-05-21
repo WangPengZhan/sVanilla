@@ -1,4 +1,9 @@
+#include <QDateTime>
+
 #include "PluginInterface.h"
+#include "Storage/StorageManager.h"
+#include "Storage/CookiesInfoStorage.h"
+#include "PluginCommon/ILogin.h"
 
 PluginInterface::PluginInterface()
 {
@@ -29,4 +34,34 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
     }
 
     return {};
+}
+
+void PluginInterface::setCookiesForPlugins()
+{
+    for (auto& [_, plugin] : m_pluginManager.plugins())
+    {
+        setCookiesForPlugin(plugin);
+    }
+}
+
+void PluginInterface::setCookiesForPlugin(std::shared_ptr<plugin::IPlugin> plugin)
+{
+    auto pluginId = plugin->pluginMessage().pluginId;
+    auto cookiesInfoStorage = sqlite::StorageManager::instance().cookiesInfoStorage();
+    auto cookiesInfo = cookiesInfoStorage->getCookiesInfo(pluginId);
+    if (cookiesInfo.cookie.empty())
+    {
+        return;
+    }
+
+    QDateTime dt = QDateTime::fromString(cookiesInfo.expires.c_str(), "ddd, dd-MMM-yyyy HH:mm:ss 'GMT'");
+    dt.setTimeSpec(Qt::UTC);
+    if (dt.isValid() && dt < QDateTime::currentDateTimeUtc())
+    {
+        plugin->loginer().refreshCookies(cookiesInfo.cookie);
+    }
+    else
+    {
+        plugin->loginer().setCookies(cookiesInfo.cookie);
+    }
 }

@@ -21,6 +21,10 @@ public:
 
     std::shared_ptr<plugin::IPlugin> parseUrl(const std::string& url);
 
+    void setCookiesForPlugins();
+
+    static void setCookiesForPlugin(std::shared_ptr<plugin::IPlugin> plugin);
+
 private:
     plugin::PluginManager m_pluginManager;
 

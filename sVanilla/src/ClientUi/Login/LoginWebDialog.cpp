@@ -66,7 +66,7 @@ void LoginWebDialog::cookiesChanged(const QNetworkCookie& cookie)
     }
 
     QTimer::singleShot(0, this, [this, realLogin] {
-        realLogin->setCookies(ui->webFrame->cookies().toStdString());
+        realLogin->setCookie(ui->webFrame->cookies().toStdString());
         accept();
     });
 }

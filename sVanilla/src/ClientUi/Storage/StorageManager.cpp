@@ -2,6 +2,7 @@
 #include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
 #include "Storage/SearchHistoryStorage.h"
+#include "Storage/CookiesInfoStorage.h"
 #include "StorageManager.h"
 
 namespace sqlite
@@ -9,7 +10,7 @@ namespace sqlite
 
 const std::string StorageManager::m_dbName{"data.db"};
 
-StorageManager& StorageManager::intance()
+StorageManager& StorageManager::instance()
 {
     static StorageManager storageManager;
     return storageManager;
@@ -30,9 +31,9 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::searchHistoryStorage() con
     return m_searchHistoryStorage;
 }
 
-std::shared_ptr<CookiesStorage> StorageManager::searchCookiesStorage() const
+std::shared_ptr<CookiesInfoStorage> StorageManager::cookiesInfoStorage() const
 {
-    return m_cookiesStorage;
+    return m_cookiesInfoStorage;
 }
 
 bool StorageManager::isDownloaded(const std::string& guid) const
@@ -99,11 +100,35 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage
     return std::make_shared<SearchHistoryStorage>(readPtr, tableName, writePtr);
 }
 
+std::shared_ptr<CookiesInfoStorage> StorageManager::createCookiesInfoStorage(const std::string& tableName)
+{
+    auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
+    auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
+    auto& tableStruct = sqlite::TableStructInfo<typename CookiesInfoStorage::Entity>::self();
+    sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
+
+    std::vector<std::string> indexColNames = {tableStruct.pluginType.colunmName()};
+    std::string indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
+    sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
+    indexColNames = {tableStruct.domain.colunmName()};
+    indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
+    sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
+    indexColNames = {tableStruct.updateTimestamp.colunmName()};
+    indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
+    sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
+    indexColNames = {tableStruct.expires.colunmName()};
+    indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
+    sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
+
+    return std::make_shared<CookiesInfoStorage>(readPtr, tableName, writePtr);
+}
+
 StorageManager::StorageManager()
 {
     m_downloadingItemStorage = createDownloadingItemStorage("DownloadingItem");
     m_downloadedItemStorage = createFinishedItemStorage("DownloadedItem");
     m_searchHistoryStorage = createSearchHistoryStorage("SearchHistory");
+    m_cookiesInfoStorage = createCookiesInfoStorage("CookiesInfo");
 }
 
 }  // namespace sqlite

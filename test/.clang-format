@@ -212,3 +212,4 @@ FixNamespaceComments: true
 AllowShortLambdasOnASingleLine: Empty
 #AllowAllConstructorInitializersOnNextLine: true
 PackConstructorInitializers: Never
+InsertNewlineAtEOF: true
