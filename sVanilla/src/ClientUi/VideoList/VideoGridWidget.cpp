@@ -16,8 +16,12 @@
 #include "ClientUi/VideoList/VideoData.h"
 #include "ClientUi/MainWindow/SApplication.h"
 #include "Utils/UrlProcess.h"
+#include "Utils/CoverUtil.h"
+#include "Utils/RunTask.h"
 #include "ClientLog.h"
 #include "const_string.h"
+
+constexpr int coverMaxNum = 256;
 
 void elideText(QLabel* label, const QString& text)
 {
@@ -56,6 +60,36 @@ void VideoGridItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& inf
 {
     m_infoFull = infoFull;
     updateVideoCard();
+
+    CoverInfo coverInfo{infoFull->videoView->Cover, infoFull->coverPath(), coverPath().toStdString()};
+    auto taskFunc = [coverInfo]() {
+        QPixmap pixmap;
+        if (coverInfo.url.starts_with("http"))
+        {
+            if (downloadCoverImage(coverInfo))
+            {
+                const QString tempPath = QString::fromStdString(coverInfo.path);
+                const QString fileName = QString::fromStdString(coverInfo.fileName);
+                const QString fullPath = QDir::cleanPath(tempPath + QDir::separator() + fileName + ".jpg");
+                pixmap = QPixmap(fullPath);
+            }
+        }
+        else if (!coverInfo.url.empty())
+        {
+            pixmap = QPixmap(QString::fromStdString(coverInfo.url));
+        }
+
+        return pixmap;
+    };
+    auto callback = [this, coverInfo](const QPixmap& pixmap) {
+        if (pixmap.isNull())
+        {
+            return;
+        }
+
+        updateCover(pixmap);
+    };
+    runTask(taskFunc, callback, this);
 }
 
 std::shared_ptr<VideoInfoFull> VideoGridItemWidget::getVideoInfo()
@@ -65,8 +99,7 @@ std::shared_ptr<VideoInfoFull> VideoGridItemWidget::getVideoInfo()
 
 void VideoGridItemWidget::setUi()
 {
-    const QPixmap pixmap(":/CoverSpace.svg");
-    ui->cover->setPixmap(pixmap);
+    ui->cover->setPixmap(defaultCover());
 }
 
 void VideoGridItemWidget::signalsAndSlots()
@@ -104,17 +137,41 @@ void VideoGridItemWidget::createContextMenu()
     m_menu->addAction(similarAction);
 }
 
-void VideoGridItemWidget::setCover()
+QString VideoGridItemWidget::coverPath()
 {
-    const QString tempPath = SApplication::appDir() + QString("/") + QString(coverDir);
-    const auto filePath = tempPath + QDir::separator() + QString::fromStdString(m_infoFull->coverPath()) + ".jpg";
-    if (const QString fullPath = QDir::cleanPath(filePath); QFile::exists(fullPath))
+    QString coverPath = SApplication::appDir() + QString("/") + QString(coverDir);  // It is now in the temporary area
+    QDir dir(coverPath);
+    if (!dir.exists())
     {
-        MLogI(svanilla::cVideoList, "setCover, paath: {}", filePath.toStdString());
-        const QPixmap pixmap(fullPath);
-        ui->cover->setPixmap(pixmap);
-        update();
+        dir.mkpath(coverPath);
     }
+
+    QFileInfoList folderList = dir.entryInfoList(QDir::Files, QDir::Time);
+    if (folderList.size() > coverMaxNum)
+    {
+        int removeNum = folderList.size() - 200;
+
+        for (int i = 0; i < removeNum; ++i)
+        {
+            QFileInfo oldFile = folderList.at(i);
+            QString oldFilePath = oldFile.absoluteFilePath();
+            QFile::remove(oldFilePath);
+        }
+    }
+
+    return coverPath;
+}
+
+const QPixmap& VideoGridItemWidget::defaultCover()
+{
+    static QPixmap pixmap(":/CoverSpace.svg");
+    return pixmap;
+}
+
+void VideoGridItemWidget::setCover(const QPixmap& pixmap)
+{
+    ui->cover->setPixmap(pixmap);
+    update();
 }
 
 void VideoGridItemWidget::updateVideoCard()
@@ -126,9 +183,9 @@ void VideoGridItemWidget::updateVideoCard()
     updateCard();
 }
 
-void VideoGridItemWidget::updateCover()
+void VideoGridItemWidget::updateCover(const QPixmap& pixmap)
 {
-    setCover();
+    setCover(pixmap);
     if (ui->spinner != nullptr)
     {
         ui->spinner->setVisible(false);
@@ -185,11 +242,13 @@ void VideoGridWidget::addVideoItem(const std::shared_ptr<VideoInfoFull>& videoVi
     MLogI(svanilla::cVideoList, "addVideoItem {}", videoView->videoView->Title);
     auto* const videoItem = new VideoGridItemWidget(this);
     auto* const item = new VideoListWidgetItem(videoView, count());
-    addItem(item);
+
     videoItem->saveWidgetItem(item);
-    item->setSizeHint(calculateItemSize());
-    setItemWidget(item, videoItem);
     videoItem->setVideoInfo(videoView);
+    item->setSizeHint(calculateItemSize());
+    addItem(item);
+    setItemWidget(item, videoItem);
+
     connect(videoItem, &VideoGridItemWidget::downloadTrigger, this, [this, item]() {
         downloadItem(item);
     });
@@ -214,12 +273,6 @@ void VideoGridWidget::setOrderType(OrderType orderType)
     }
 }
 
-void VideoGridWidget::coverReady(const std::string& fileName) const
-{
-    auto* const itemWidget = getItem(fileName);
-    itemWidget->updateCover();
-}
-
 void VideoGridWidget::resizeEvent(QResizeEvent* event)
 {
     QListWidget::resizeEvent(event);
@@ -235,6 +288,7 @@ void VideoGridWidget::wheelEvent(QWheelEvent* event)
 
 void VideoGridWidget::setUi()
 {
+    setUniformItemSizes(true);
     setSpacing(itemSpacing);
     setSelectionMode(ExtendedSelection);
     verticalScrollBar()->setSingleStep(1);
@@ -317,19 +371,6 @@ QSize VideoGridWidget::calculateItemSize() const
     const int itemWidth = (width() - verticalScrollBar()->width() - 5 - (n - 1) * itemWidthSpacing) / n;
     const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
     return QSize(itemWidth, itemHeight);
-}
-
-void VideoGridWidget::updateCovers()
-{
-    for (int i = 0; i < count(); ++i)
-    {
-        const auto coverPath = getItem(i)->getCoverPath();
-        if (coverPath.empty())
-        {
-            return;
-        }
-        coverReady(coverPath);
-    }
 }
 
 VideoGridItemWidget* VideoGridWidget::getItem(const std::string& fileName) const

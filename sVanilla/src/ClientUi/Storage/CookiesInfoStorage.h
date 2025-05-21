@@ -6,9 +6,10 @@
 struct CookiesInfo
 {
     int pluginType{};
-    int64_t timestamp{};
-    int64_t cookieTimestamp{};
+    std::string domain;
+    int64_t updateTimestamp{};
     std::string cookie;
+    std::string expires;
     std::string storedata;
 
     // move to sqlite
@@ -19,9 +20,10 @@ struct CookiesInfo
 // clang-format off
 TABLESTRUCTINFO_BEGIN(CookiesInfo)
     TABLESTRUCTINFO_COMLUNM(pluginType, pluginType, false, true, true)
-    TABLESTRUCTINFO_COMLUNM(timestamp)
-    TABLESTRUCTINFO_COMLUNM(cookieTimestamp)
+    TABLESTRUCTINFO_COMLUNM(domain, domain, false, true, true)
+    TABLESTRUCTINFO_COMLUNM(updateTimestamp)
     TABLESTRUCTINFO_COMLUNM(cookie)
+    TABLESTRUCTINFO_COMLUNM(expires)
     TABLESTRUCTINFO_COMLUNM(storedata)
 TABLESTRUCTINFO_END(CookiesInfo)
 // clang-format on
@@ -31,6 +33,12 @@ class CookiesInfoStorage : public sqlite::BaseStorage
 public:
     using Entity = CookiesInfo;
     using BaseStorage::BaseStorage;
+
+    Entity getCookiesInfo(int pluginId);
+
+    bool insertOrUpdate(const Entity& entity);
+
+    bool havePlugin(int pluginType, const std::string& domain);
 
     std::vector<Entity> allItems();
 };

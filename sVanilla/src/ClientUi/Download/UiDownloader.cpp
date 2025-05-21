@@ -12,7 +12,7 @@ UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, std::
     : QObject(parent)
     , m_realDownloader(std::move(downloader))
     , m_videoInfoFull(std::move(videoInfoFull))
-    , m_storageManager(sqlite::StorageManager::intance())
+    , m_storageManager(sqlite::StorageManager::instance())
 {
     setStatus(Waitting);
     m_guid = m_videoInfoFull->getGuid();

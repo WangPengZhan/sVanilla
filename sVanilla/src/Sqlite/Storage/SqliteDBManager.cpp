@@ -2,7 +2,52 @@
 
 #include <sqlite3.h>
 
+#ifdef _WIN32
+#    include <windows.h>
+#endif
+
 #include "SqliteDBManager.h"
+
+namespace
+{
+
+std::string localeToUtf8(const std::string& localeStr)
+{
+#ifdef _WIN32
+    int len = MultiByteToWideChar(GetACP(), 0, localeStr.data(), localeStr.size(), nullptr, 0);
+    std::wstring wsz_utf8(len, L'\0');
+    MultiByteToWideChar(GetACP(), 0, localeStr.data(), localeStr.size(), &wsz_utf8[0], len);
+
+    len = WideCharToMultiByte(CP_UTF8, 0, wsz_utf8.data(), wsz_utf8.size(), nullptr, 0, nullptr, nullptr);
+    std::string strTemp(len, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, wsz_utf8.data(), wsz_utf8.size(), &strTemp[0], len, nullptr, nullptr);
+
+#else
+    std::string strTemp = localeStr;
+#endif
+
+    return strTemp;
+}
+
+std::string utf8ToLocale(const std::string& utf8Str)
+{
+#ifdef _WIN32
+    int len = MultiByteToWideChar(CP_UTF8, 0, utf8Str.data(), utf8Str.size(), nullptr, 0);
+    std::wstring wsz_ansi(len, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, utf8Str.data(), utf8Str.size(), &wsz_ansi[0], len);
+
+    len = WideCharToMultiByte(GetACP(), 0, wsz_ansi.data(), wsz_ansi.size(), nullptr, 0, nullptr, nullptr);
+    std::string strTemp(len, '\0');
+    WideCharToMultiByte(GetACP(), 0, wsz_ansi.data(), wsz_ansi.size(), &strTemp[0], len, nullptr, nullptr);
+
+#else
+    std::string strTemp = utf8Str;
+#endif
+
+    return strTemp;
+}
+
+}  // namespace
 
 namespace sqlite
 {
@@ -20,7 +65,8 @@ void SqliteDBManager::setDbPath(const std::string& path)
 SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew)
 {
     init();
-    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
+
+    std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
     SqliteDBPtr db;
     if (createNew)
     {
@@ -42,7 +88,7 @@ SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew
 
 SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
 {
-    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
+    std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
     {
         std::lock_guard lk(m_mutex);
         if (m_defaultWriteDbs.find(fullPath) == m_defaultWriteDbs.end())
@@ -59,7 +105,7 @@ SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
 SqliteWithMutexPtr SqliteDBManager::createDBWithMutexPtr(const std::string& path, bool createNew)
 {
     init();
-    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
+    std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
     SqliteWithMutexPtr db;
     if (createNew)
     {
@@ -81,7 +127,7 @@ SqliteWithMutexPtr SqliteDBManager::createDBWithMutexPtr(const std::string& path
 
 SqliteWithMutexPtr SqliteDBManager::writeDBWithMutexPtr(const std::string& path)
 {
-    std::string fullPath = std::filesystem::absolute(std::filesystem::u8path(path)).string();
+    std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
     {
         std::lock_guard lk(m_mutex);
         if (m_defaultWriteDbWtihMutexs.find(fullPath) == m_defaultWriteDbWtihMutexs.end())
@@ -128,7 +174,7 @@ void SqliteDBManager::dbInit(SqliteWithMutexPtr& db)
 
 void SqliteDBManager::createDir()
 {
-    auto dbDir = std::filesystem::u8path(dbPath);
+    auto dbDir = std::filesystem::path(utf8ToLocale(dbPath));
     if (!std::filesystem::is_directory(dbDir))
     {
         std::filesystem::create_directory(dbDir);

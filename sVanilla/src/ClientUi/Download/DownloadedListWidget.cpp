@@ -20,6 +20,7 @@
 #include "BaseQt/Utility.h"
 #include "MainWindow/SApplication.h"
 #include "Utils/SpeedUtil.h"
+#include "Util/LocaleHelper.h"
 #include "ClientLog.h"
 #include "const_string.h"
 
@@ -108,7 +109,7 @@ void DownloadedItemWidget::deleteItem()
 
 void DownloadedItemWidget::restartItem()
 {
-    auto& storageManager = sqlite::StorageManager::intance();
+    auto& storageManager = sqlite::StorageManager::instance();
     bool isDownloaded = storageManager.isDownloaded(m_videoInfoFull->getGuid());
     if (isDownloaded)
     {
@@ -143,7 +144,7 @@ void DownloadedItemWidget::openItemFolder()
     }
     filePath += ".mp4";
 
-    if (std::filesystem::u8path(filePath.toStdString()).is_relative())
+    if (std::filesystem::path(filePath.toLocal8Bit().toStdString()).is_relative())
     {
         filePath = SApplication::appDir() + "/" + filePath;
     }
@@ -154,7 +155,7 @@ void DownloadedItemWidget::openItemFolder()
 
 void DownloadedItemWidget::deleteDbFinishItem()
 {
-    auto& storageManager = sqlite::StorageManager::intance();
+    auto& storageManager = sqlite::StorageManager::instance();
     auto& table = sqlite::TableStructInfo<DownloadedItemStorage::Entity>::self();
     sqlite::ConditionWrapper condition;
     condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, m_videoInfoFull->getGuid());
@@ -223,7 +224,7 @@ void DownloadedListWidget::reloadAll()
 void DownloadedListWidget::scan()
 {
     MLogI(svanilla::cDownloadModule, "DownloadedListWidget scan");
-    auto& storageManager = sqlite::StorageManager::intance();
+    auto& storageManager = sqlite::StorageManager::instance();
     storageManager.downloadedtemStorage()->updateFileExist();
 
     int nCount = count();

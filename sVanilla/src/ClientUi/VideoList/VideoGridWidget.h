@@ -48,9 +48,12 @@ public:
     void setVideoInfo(const std::shared_ptr<VideoInfoFull>& infoFull);
     std::shared_ptr<VideoInfoFull> getVideoInfo();
 
-    void setCover();
+    static QString coverPath();
+    static const QPixmap& defaultCover();
+
+    void setCover(const QPixmap& pixmap);
     void updateVideoCard();
-    void updateCover();
+    void updateCover(const QPixmap& pixmap);
 
     const CardInfo& getCardInfo() const;
     std::string getCoverPath() const;
@@ -96,7 +99,6 @@ public:
     void clearVideo();
     void setOrderType(OrderType orderType);
 
-    void coverReady(const std::string& fileName) const;
     void updateCovers();
 
     VideoGridItemWidget* getItem(const std::string& fileName) const;

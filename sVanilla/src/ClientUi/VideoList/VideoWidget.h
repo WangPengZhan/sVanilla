@@ -21,7 +21,6 @@ class VideoPage;
 }  //  namespace Ui
 QT_END_NAMESPACE
 
-struct CoverInfo;
 struct DownloadConfig;
 struct VideoInfoFull;
 
@@ -38,7 +37,6 @@ public:
 
     void prepareBiliVideoView(const std::string& uri);
     void searchedVideoItem(adapter::VideoView views);
-    void downloadCover(const CoverInfo& coverInfo);
     void addVideoItem(const std::shared_ptr<VideoInfoFull>& videoInfo) const;
 
     void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const;
@@ -58,7 +56,6 @@ signals:
     void parseUri(const std::string& uri);
 
     void allReady() const;
-    void coverReady(const std::string&) const;
 
 private:
     void setUi();
@@ -81,8 +78,6 @@ private:
 
     template <typename Widget>
     void showInfo(Widget* widget, QSplitter* splitter, int currentRow, int previousRow);
-
-    QString getCoverPath() const;
 
     void showViewList(const adapter::VideoView& views);
 

@@ -17,7 +17,10 @@
 #include "Plugin/PluginManager.h"
 #include "Storage/SearchHistoryStorage.h"
 #include "Storage/StorageManager.h"
+#include "Storage/CookiesInfoStorage.h"
 #include "Login/LoginMonitor.h"
+#include "NetWork/CurlCpp/CurlCookies.h"
+#include "NetWork/CurlCpp/CurlCookie.h"
 #include "Utils/RunTask.h"
 #include "BaseQt/Utility.h"
 #include "LoginProxy.h"
@@ -96,6 +99,7 @@ void LoginDialog::slotStatusChanged(AbstractLoginApi::LoginSatus status)
     {
         MLogI(svanilla::cLoginModule, "LoginSatus Success!");
         realLogin->loginSuccess();
+        writeCookieToDb(*realLogin);
         QTimer::singleShot(1000, this, [this] {
             accept();
         });
@@ -213,4 +217,29 @@ void LoginDialog::loadOrc()
     };
 
     runTask(taskFunc, callback, this);
+}
+
+void LoginDialog::writeCookieToDb(const AbstractLogin& login)
+{
+    CookiesInfo cookiesInfo;
+    cookiesInfo.pluginType = login.type();
+    cookiesInfo.updateTimestamp = std::chrono::system_clock::now().time_since_epoch().count();
+    cookiesInfo.cookie = login.cookies();
+
+    QDateTime earliest;
+    network::CurlCookies cookies(cookiesInfo.cookie);
+    for (const auto& domain : cookies.keys())
+    {
+        std::string expireTime = cookies.cookie(domain).expireDatatime();
+        QDateTime dt = QDateTime::fromString(expireTime.c_str(), "ddd, dd-MMM-yyyy HH:mm:ss 'GMT'");
+        dt.setTimeSpec(Qt::UTC);
+        if (!earliest.isValid() || (dt.isValid() && dt < earliest))
+        {
+            earliest = dt;
+            cookiesInfo.expires = expireTime;
+        }
+    }
+
+    auto storage = sqlite::StorageManager::instance().cookiesInfoStorage();
+    storage->insertOrUpdate(cookiesInfo);
 }

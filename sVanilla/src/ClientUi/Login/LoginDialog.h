@@ -37,6 +37,8 @@ private:
 
     void loadOrc();
 
+    static void writeCookieToDb(const AbstractLogin& login);
+
 private:
     Ui::LoginDialog* ui;
     LoginMonitor* m_monitor;
