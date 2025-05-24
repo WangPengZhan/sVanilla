@@ -5,6 +5,7 @@
 
 #include "SQLiteStatement.h"
 #include "SQLiteDatabase.h"
+#include "SQLiteException.h"
 
 namespace sqlite
 {
@@ -64,66 +65,118 @@ int SQLiteStatement::getIndex(const std::string& colunmName)
 void SQLiteStatement::bind(int index, int32_t value)
 {
     const int ret = sqlite3_bind_int(handle(), index, value);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, uint32_t value)
 {
     const int ret = sqlite3_bind_int64(handle(), index, value);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, int64_t value)
 {
     const int ret = sqlite3_bind_int64(handle(), index, value);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, double value)
 {
     const int ret = sqlite3_bind_double(handle(), index, value);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, const std::string& value)
 {
     const int ret = sqlite3_bind_text(handle(), index, value.c_str(), -1, SQLITE_TRANSIENT);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, const char* value)
 {
     const int ret = sqlite3_bind_text(handle(), index, value, -1, SQLITE_TRANSIENT);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, const void* value, const int size)
 {
     const int ret = sqlite3_bind_blob(handle(), index, value, size, SQLITE_TRANSIENT);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index, const std::vector<uint8_t>& blob)
 {
     const int ret = sqlite3_bind_blob(handle(), index, blob.data(), blob.size(), SQLITE_TRANSIENT);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bindNoCopy(int index, const std::string& value)
 {
     const int ret = sqlite3_bind_text(handle(), index, value.c_str(), -1, SQLITE_STATIC);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bindNoCopy(int index, const char* value)
 {
     const int ret = sqlite3_bind_text(handle(), index, value, -1, SQLITE_STATIC);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bindNoCopy(int index, const void* value, const int size)
 {
     const int ret = sqlite3_bind_blob(handle(), index, value, size, SQLITE_STATIC);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bindNoCopy(int index, const std::vector<uint8_t>& blob)
 {
     const int ret = sqlite3_bind_blob(handle(), index, blob.data(), blob.size(), SQLITE_STATIC);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(int index)
 {
     const int ret = sqlite3_bind_null(handle(), index);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(m_db.handle());
+    }
 }
 
 void SQLiteStatement::bind(const std::string& columnName, int32_t value)
@@ -307,6 +360,10 @@ void SQLiteStatement::prepareStatement()
     sqlite3_stmt* stmt = nullptr;
     const char* pzTail = nullptr;
     const int ret = sqlite3_prepare_v2(dbHandle(), m_sql.c_str(), m_sql.size(), &stmt, &pzTail);
+    if (ret != SQLITE_OK)
+    {
+        throw SQLiteException(dbHandle(), ret);
+    }
     m_stmt.reset(stmt);
 }
 
@@ -323,6 +380,10 @@ int SQLiteStatement::tryExecuteStep() noexcept
     if (SQLITE_ROW == ret)
     {
         m_hasRow = true;
+    }
+    else if (ret == SQLITE_ERROR)
+    {
+        throw SQLiteException(dbHandle());
     }
     else
     {

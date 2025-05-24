@@ -7,12 +7,13 @@
 
 #include "Base/MacroTool.h"
 
-#define LogT(...) SPDLOG_LOGGER_CALL(spdlog::get(Logger::defaultName), spdlog::level::trace, __VA_ARGS__)
-#define LogD(...) SPDLOG_LOGGER_CALL(spdlog::get(Logger::defaultName), spdlog::level::debug, __VA_ARGS__)
-#define LogI(...) SPDLOG_LOGGER_CALL(spdlog::get(Logger::defaultName), spdlog::level::info, __VA_ARGS__)
-#define LogW(...) SPDLOG_LOGGER_CALL(spdlog::get(Logger::defaultName), spdlog::level::warn, __VA_ARGS__)
-#define LogE(...) SPDLOG_LOGGER_CALL(spdlog::get(Logger::defaultName), spdlog::level::err, __VA_ARGS__)
-#define LogC(...) SPDLOG_LOGGER_CALL(spdlog::get(Logger::defaultName), spdlog::level::critical, __VA_ARGS__)
+#define LogT(...) SPDLOG_LOGGER_TRACE(spdlog::get(Logger::defaultName), __VA_ARGS__)
+#define LogD(...) SPDLOG_LOGGER_DEBUG(spdlog::get(Logger::defaultName), __VA_ARGS__)
+#define LogI(...) SPDLOG_LOGGER_INFO(spdlog::get(Logger::defaultName), __VA_ARGS__)
+#define LogW(...) SPDLOG_LOGGER_WARN(spdlog::get(Logger::defaultName), __VA_ARGS__)
+#define LogE(...) SPDLOG_LOGGER_ERROR(spdlog::get(Logger::defaultName), __VA_ARGS__)
+#define LogC(...) SPDLOG_LOGGER_CRITICAL(spdlog::get(Logger::defaultName), __VA_ARGS__)
+#define LogO(...) SPDLOG_LOGGER_OFF(spdlog::get(Logger::defaultName), __VA_ARGS__)
 
 template <typename ReleaseFunc>
 class scope_guard

@@ -3,13 +3,13 @@
 
 #include "Logger/LogUtil.h"
 
-#define CLINET_LOG_TRACE(...)    SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::trace, __VA_ARGS__)
-#define CLINET_LOG_DEBUG(...)    SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::debug, __VA_ARGS__)
-#define CLINET_LOG_INFO(...)     SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::info, __VA_ARGS__)
-#define CLINET_LOG_WARN(...)     SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::warn, __VA_ARGS__)
-#define CLINET_LOG_ERROR(...)    SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::err, __VA_ARGS__)
-#define CLINET_LOG_CRITICAL(...) SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::critical, __VA_ARGS__)
-#define CLINET_LOG_OFF(...)      SPDLOG_LOGGER_CALL(spdlog::get("Client"), spdlog::level::off, __VA_ARGS__)
+#define CLINET_LOG_TRACE(...)    SPDLOG_LOGGER_TRACE(spdlog::get("Client"), __VA_ARGS__)
+#define CLINET_LOG_DEBUG(...)    SPDLOG_LOGGER_DEBUG(spdlog::get("Client"), __VA_ARGS__)
+#define CLINET_LOG_INFO(...)     SPDLOG_LOGGER_INFO(spdlog::get("Client"), __VA_ARGS__)
+#define CLINET_LOG_WARN(...)     SPDLOG_LOGGER_WARN(spdlog::get("Client"), __VA_ARGS__)
+#define CLINET_LOG_ERROR(...)    SPDLOG_LOGGER_ERROR(spdlog::get("Client"), __VA_ARGS__)
+#define CLINET_LOG_CRITICAL(...) SPDLOG_LOGGER_CRITICAL(spdlog::get("Client"), __VA_ARGS__)
+#define CLINET_LOG_OFF(...)      SPDLOG_LOGGER_OFF(spdlog::get("Client"), __VA_ARGS__)
 
 namespace
 {
