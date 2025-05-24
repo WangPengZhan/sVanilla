@@ -19,8 +19,8 @@ struct CookiesInfo
 
 // clang-format off
 TABLESTRUCTINFO_BEGIN(CookiesInfo)
-    TABLESTRUCTINFO_COMLUNM(pluginType, pluginType, false, true, true)
-    TABLESTRUCTINFO_COMLUNM(domain, domain, false, true, true)
+    TABLESTRUCTINFO_COMLUNM(pluginType, pluginType, false, false, true)
+    TABLESTRUCTINFO_COMLUNM(domain, domain, false, false, true)
     TABLESTRUCTINFO_COMLUNM(updateTimestamp)
     TABLESTRUCTINFO_COMLUNM(cookie)
     TABLESTRUCTINFO_COMLUNM(expires)

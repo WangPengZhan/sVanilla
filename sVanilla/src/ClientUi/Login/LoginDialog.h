@@ -26,6 +26,7 @@ public:
 
     void slotStatusChanged(AbstractLoginApi::LoginSatus status);
     void slotBtnRefreshClicked();
+    static void writeCookieToDb(const AbstractLogin& login);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
@@ -36,8 +37,6 @@ private:
     void signalsAndSlots();
 
     void loadOrc();
-
-    static void writeCookieToDb(const AbstractLogin& login);
 
 private:
     Ui::LoginDialog* ui;
