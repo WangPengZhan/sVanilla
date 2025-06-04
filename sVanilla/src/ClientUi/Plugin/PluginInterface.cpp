@@ -18,6 +18,11 @@ plugin::PluginManager& PluginInterface::pluginManager()
     return m_pluginManager;
 }
 
+std::shared_ptr<plugin::IPlugin> PluginInterface::getPlugin(int pluginId)
+{
+    return m_pluginManager.getPlugin(pluginId);
+}
+
 std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& url)
 {
     if (url.empty())

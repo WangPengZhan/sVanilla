@@ -24,6 +24,8 @@ find_package(unofficial-minizip CONFIG REQUIRED)
 find_package(QWindowKit REQUIRED)
 find_package(VanillaStyle REQUIRED)
 find_package(OpenSSL REQUIRED)
+find_package(ftxui CONFIG REQUIRED)
+find_package(indicators CONFIG REQUIRED)
 set(CRASHPAD_HANDLER_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/tools/crashpad")
 if (NOT EXISTS "${CRASHPAD_HANDLER_DIR}")
     message(FATAL_ERROR "can't find crashpad_handler executable'")
@@ -135,6 +137,10 @@ target_link_libraries(${PROJECT_NAME}
         OpenSSL::SSL
         OpenSSL::Crypto
         VanillaStyle::VanillaStyle
+        ftxui::screen 
+        ftxui::dom 
+        ftxui::component
+        indicators::indicators
         Aria2Net
         Logger
         Plugin

@@ -18,6 +18,12 @@ DownloadStatusThread::~DownloadStatusThread()
     m_thread.join();
 }
 
+bool DownloadStatusThread::empty() const
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    return m_downloadTasks.empty();
+}
+
 bool DownloadStatusThread::addTaks(std::shared_ptr<AbstractDownloader> downloader)
 {
     std::lock_guard<std::mutex> lock(m_mutex);

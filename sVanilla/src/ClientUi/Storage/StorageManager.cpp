@@ -107,13 +107,8 @@ std::shared_ptr<CookiesInfoStorage> StorageManager::createCookiesInfoStorage(con
     auto& tableStruct = sqlite::TableStructInfo<typename CookiesInfoStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
-    std::vector<std::string> indexColNames = {tableStruct.pluginType.colunmName()};
+    std::vector<std::string> indexColNames = {tableStruct.updateTimestamp.colunmName()};
     std::string indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
-    sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
-    indexColNames = {tableStruct.domain.colunmName()};
-    indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
-    sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
-    indexColNames = {tableStruct.updateTimestamp.colunmName()};
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
     indexColNames = {tableStruct.expires.colunmName()};
