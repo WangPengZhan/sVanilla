@@ -49,6 +49,11 @@ Translater& SApplication::translater()
     return m_translater;
 }
 
+download::DownloadStatusThread& SApplication::downloadThread()
+{
+    return m_downloadThread;
+}
+
 QString SApplication::appDir()
 {
     QString dir;

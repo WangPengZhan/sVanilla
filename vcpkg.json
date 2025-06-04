@@ -38,6 +38,14 @@
         },
         {
             "name": "vanillastyle"
+        },
+        {
+            "name": "indicators",
+            "version>=": "2.3"
+        },
+        {
+            "name": "ftxui",
+            "version>=": "6.1.9"
         }
     ],
     "overrides": [

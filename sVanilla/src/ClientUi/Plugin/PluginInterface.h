@@ -19,6 +19,7 @@ public:
 
     plugin::PluginManager& pluginManager();
 
+    std::shared_ptr<plugin::IPlugin> getPlugin(int pluginId);
     std::shared_ptr<plugin::IPlugin> parseUrl(const std::string& url);
 
     void setCookiesForPlugins();

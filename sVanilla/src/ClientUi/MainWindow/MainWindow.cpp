@@ -51,6 +51,11 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() = default;
 
+void MainWindow::setUrl(const QString& url)
+{
+    ui->homePage->parseUri(url);
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     if (systemTray->isVisible() && ui->settingPage->isEnableMinimizeTray() == Qt::Checked)

@@ -10,6 +10,7 @@
 #include "Util/TimerUtil.h"
 #include "ClientLog.h"
 #include "const_string.h"
+#include "CommandLine/CommandLine.h"
 #include "version.h"
 
 #include <QDir>
@@ -45,8 +46,16 @@ void startLog()
     MLogI(svanilla::cMainModule, "-----------------------------");
 }
 
+void myMessageHandler(QtMsgType, const QMessageLogContext&, const QString&)
+{
+}
+
 int main(int argc, char* argv[])
 {
+#ifndef _DEBUG
+    qInstallMessageHandler(myMessageHandler);
+#endif
+
     auto exePath = getModulePath();
     QString qExePath = QString::fromStdString(exePath);
     QDir::setCurrent(qExePath);
@@ -71,26 +80,49 @@ int main(int argc, char* argv[])
     sVanilla.initApplicationBefore();
 
     SApplication application(argc, argv);
-    SingleAppHelper singleAppHelper;
-    if (singleAppHelper.isHaveInstance())
+
+    auto commandLine = parseCommandLineOption(argc, argv);
+    MLogI(svanilla::cMainModule, "start sVanilla with gui {}", commandLine.showGui ? "enabled" : "disabled");
+
+    std::shared_ptr<SingleAppHelper> singleAppHelper;
+    if (commandLine.showGui)
     {
-        MLogW(svanilla::cMainModule, "sVanilla has opened, please check it");
-        MLogI(svanilla::cMainModule, "-----------------------------");
-        MLogI(svanilla::cMainModule, "==== second exit ====");
-        MLogI(svanilla::cMainModule, "-----------------------------");
-        return 0;
+        singleAppHelper = std::make_shared<SingleAppHelper>();
+        if (singleAppHelper->isHaveInstance())
+        {
+            MLogW(svanilla::cMainModule, "sVanilla has opened, please check it");
+            MLogI(svanilla::cMainModule, "-----------------------------");
+            MLogI(svanilla::cMainModule, "==== second exit ====");
+            MLogI(svanilla::cMainModule, "-----------------------------");
+            return 0;
+        }
     }
 
     sVanilla.init();
     application.init();
 
-    MainWindow maimWindow;
-    singleAppHelper.setMainWidget(&maimWindow);
-    maimWindow.show();
-    CLog_Unique_TimerK_END(MainWindow_firstShow);
+    int exitCode = 0;
+    if (commandLine.showGui)
+    {
+        MainWindow maimWindow;
+        singleAppHelper->setMainWidget(&maimWindow);
+        maimWindow.show();
+        CLog_Unique_TimerK_END(MainWindow_firstShow);
 
-    int exitCode = restarter.restartOrExit(SApplication::exec());
+        if (!commandLine.url.empty())
+        {
+            maimWindow.setUrl(QString::fromStdString(commandLine.url));
+        }
 
+        exitCode = restarter.restartOrExit(SApplication::exec());
+    }
+    else
+    {
+        attachConsole();
+        exitCode = execCommandLine(commandLine, application);
+    }
+
+    exitCode = restarter.restartOrExit(exitCode);
     MLogI(svanilla::cMainModule, "-----------------------------");
     MLogI(svanilla::cMainModule, "exit svanilla, time: {} exitCode: {}", QDateTime::currentDateTime().toString().toStdString(), exitCode);
     MLogI(svanilla::cMainModule, "-----------------------------");

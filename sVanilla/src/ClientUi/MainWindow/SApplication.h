@@ -5,6 +5,7 @@
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "Plugin/PluginInterface.h"
 #include "Translater.h"
+#include "Download/DownloadStatusThread.h"
 
 class SApplication : public QApplication
 {
@@ -19,6 +20,7 @@ public:
     PluginInterface& pluginInterface();
     plugin::PluginManager& pluginManager();
     Translater& translater();
+    download::DownloadStatusThread& downloadThread();
 
     static QString appDir();
     static bool isInstalled();
@@ -32,6 +34,7 @@ private:
     PluginInterface m_pluginInterface;
     QFileSystemWatcher m_watcher;
     Translater m_translater;
+    download::DownloadStatusThread m_downloadThread;
 };
 
 #define sApp static_cast<SApplication*>(qApp)
