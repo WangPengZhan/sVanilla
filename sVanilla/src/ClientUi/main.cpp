@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     SApplication application(argc, argv);
 
     auto commandLine = parseCommandLineOption(argc, argv);
-    MLogI(svanilla::cMainModule, "start sVanilla with gui {}", commandLine.showGui ? "enabled" : "disabled");
+    MLogI(svanilla::cMainModule, "start sVanilla with gui: {}", commandLine.showGui ? "enabled" : "disabled");
 
     std::shared_ptr<SingleAppHelper> singleAppHelper;
     if (commandLine.showGui)

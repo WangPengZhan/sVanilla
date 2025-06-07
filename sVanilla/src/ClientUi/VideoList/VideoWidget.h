@@ -1,8 +1,11 @@
 #pragma once
 #include <memory>
+#include <string>
+#include <deque>
 
 #include <QStackedWidget>
 #include <QSplitter>
+#include <QTimer>
 
 #include <BaseVideoView.h>
 
@@ -26,6 +29,26 @@ struct VideoInfoFull;
 
 class QPushButton;
 class DownloadTip;
+
+class BatchAdderOnTimer
+{
+public:
+    BatchAdderOnTimer();
+    ~BatchAdderOnTimer();
+
+    void reset();
+    void addItems(const adapter::VideoView& views);
+
+    void setAddItemFunc(std::function<void(const adapter::BaseVideoView&)> func);
+
+private:
+    void addBatch();
+
+private:
+    QTimer m_timer;
+    std::deque<adapter::BaseVideoView> m_views;
+    std::function<void(const adapter::BaseVideoView&)> m_addItemFunc;
+};
 
 class VideoWidget : public QWidget
 {
@@ -53,7 +76,7 @@ public:
 signals:
     void createDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo) const;
     void updateWebsiteIcon(const std::string& string);
-    void parseUri(const std::string& uri);
+    bool parseUri(const std::string& uri);
 
     void allReady() const;
 
@@ -94,6 +117,7 @@ private:
     DownloadTip* m_downloadTip{nullptr};
     std::vector<std::shared_ptr<VideoInfoFull>> m_originalList;
     std::vector<std::shared_ptr<VideoInfoFull>> m_sortedList;
+    BatchAdderOnTimer m_batchAdder;
 };
 
 template <typename Widget>

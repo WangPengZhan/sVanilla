@@ -367,7 +367,7 @@ void SQLiteStatement::prepareStatement()
     m_stmt.reset(stmt);
 }
 
-int SQLiteStatement::tryExecuteStep() noexcept
+int SQLiteStatement::tryExecuteStep()
 {
     if (m_done)
     {

@@ -14,6 +14,7 @@
 #include "MainWindow/SApplication.h"
 #include "Config/SingleConfig.h"
 #include "version.h"
+#include "ClientLog.h"
 
 #ifdef _WIN32
 #    include <windows.h>
@@ -26,11 +27,17 @@ void attachConsole()
 #ifdef _WIN32
     if (AttachConsole(ATTACH_PARENT_PROCESS))
     {
-        FILE* fDummy;
+        FILE* fDummy = nullptr;
         freopen_s(&fDummy, "CONOUT$", "w", stdout);
         freopen_s(&fDummy, "CONOUT$", "w", stderr);
         freopen_s(&fDummy, "CONIN$", "r", stdin);
         std::ios::sync_with_stdio();
+        static std::shared_ptr<FILE> ptr(fDummy, [](FILE* fDummy) {
+            if (fDummy)
+            {
+                fclose(fDummy);
+            }
+        });
     }
 #endif
 }
@@ -103,6 +110,7 @@ public:
 
     void finish() override
     {
+        MLogI("CommandLineDownloader", "finish download");
         m_realDownloader->finish();
         setStatus(Finished);
         m_progressBar.set_option(indicators::option::PostfixText{"Finished"});
@@ -137,6 +145,7 @@ CommandLineOption parseCommandLineOption(int argc, char* argv[])
     {
         args << QString::fromLocal8Bit(argv[i]);
     }
+    MLogI("CommandLine", "parseCommandLineOption: {}", args.join(" ").toStdString());
 
     CommandLineOption option;
     if (args.size() == 1)
@@ -216,10 +225,13 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
         return 0;
     }
 
+    MLogI("CommandLine", "execCommandLine url: {}", commandLine.url);
+    std::cout << "parser url ..." << std::endl;
     auto plugin =
         commandLine.pluginId == -1 ? application.pluginInterface().parseUrl(commandLine.url) : application.pluginInterface().getPlugin(commandLine.pluginId);
     if (!plugin)
     {
+        MLogE("CommandLine", "parse url failed!");
         std::cerr << "parse url failed" << std::endl;
         return 1;
     }
@@ -229,13 +241,16 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
         plugin->loginer().setCookies(commandLine.cookie);
     }
 
+    std::cout << "get video info ..." << std::endl;
     auto views = plugin->getVideoView(commandLine.url);
     if (views.empty())
     {
+        MLogE("CommandLine", "get video view failed");
         std::cerr << "get video view failed" << std::endl;
         return 2;
     }
 
+    MLogI("CommandLine", "get video view success, size: {}", views.size());
     adapter::BaseVideoView view;
     if (views.size() == 1 || commandLine.autoSelectFirst)
     {
@@ -335,6 +350,7 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
         screen.Loop(inputHandler);
         screen.Clear();
         std::cout << "Selected: " << selected << " - " << tableDatas[selected][0] << std::endl;
+        MLogI("CommandLine", "Selected: {} - {}", selected, tableDatas[selected][0]);
 
         view = views[selected - 1];
     }
@@ -374,6 +390,7 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
     application.downloadThread().addTaks(commandLineDownloader);
     commandLineDownloader->setStatus(download::AbstractDownloader::Ready);
 
+    MLogI("CommandLine", "Waitting downloadfinished!");
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -390,6 +407,7 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
     if (commandLineDownloader->status() == download::AbstractDownloader::Error)
     {
         std::cerr << "download failed" << std::endl;
+        MLogI("CommandLine", "Download error! url: {}", commandLine.url);
         return 4;
     }
 

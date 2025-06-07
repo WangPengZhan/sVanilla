@@ -334,33 +334,34 @@ void MainWindow::setTrayIconVisible(int state)
     }
 }
 
-void MainWindow::parseUrl(const std::string& url)
+bool MainWindow::parseUrl(const std::string& url)
 {
     if (url.empty())
     {
         MLogW(svanilla::cMainModule, " url is empty");
-        return;
-    }
-
-    auto plugin = sApp->pluginInterface().parseUrl(url);
-    if (!plugin)
-    {
-        MLogW(svanilla::cMainModule, "url is no support, url: {}", url);
-        return;
+        return false;
     }
 
     static std::string lastUrl;
     if (lastUrl == url && !timerHelp.isElapse())
     {
         MLogW(svanilla::cMainModule, "url is same in 500ms, url: {}", url);
-        return;
+        return false;
     }
 
     timerHelp.start();
     lastUrl = url;
 
-    auto taskFunc = [plugin, url]() {
-        auto views = plugin->getVideoView(url);
+    auto taskFunc = [url]() {
+        adapter::VideoView views;
+        auto plugin = sApp->pluginInterface().parseUrl(url);
+        if (!plugin)
+        {
+            MLogW(svanilla::cMainModule, "url is no support, url: {}", url);
+            return views;
+        }
+
+        views = plugin->getVideoView(url);
         if (!views.empty())
         {
             auto historyStorage = sqlite::StorageManager::instance().searchHistoryStorage();
@@ -369,11 +370,20 @@ void MainWindow::parseUrl(const std::string& url)
         return views;
     };
 
-    auto callback = [this](adapter::VideoView views) {
+    static uint64_t videoViewVersion = 0;
+    videoViewVersion++;
+    uint64_t lVideoViewVersion = videoViewVersion;
+    auto callback = [this, lVideoViewVersion](adapter::VideoView views) {
+        if (lVideoViewVersion != videoViewVersion)
+        {
+            MLogW(svanilla::cMainModule, "lVideoViewVersion is different: capture-{}, now-{}", lVideoViewVersion, videoViewVersion);
+            return;
+        }
         ui->videoPage->searchedVideoItem(views);
     };
 
     runTask(taskFunc, callback, this);
+    return true;
 }
 
 void MainWindow::setBlurEffect(const BlurEffect effect)

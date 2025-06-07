@@ -68,7 +68,7 @@ private:
     void createTrayIcon();
     void setTrayIconVisible(int state);
 
-    void parseUrl(const std::string& url);
+    bool parseUrl(const std::string& url);
 
 signals:
     void onSettingPage();
