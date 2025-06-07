@@ -12,4 +12,5 @@ constexpr char cPlatform[] = "Platform";
 constexpr char cStorage[] = "Storage";
 constexpr char cSettings[] = "Settings";
 constexpr char cVideoList[] = "VideoList";
+constexpr char cPluginModule[] = "Plugin";
 }  // namespace svanilla

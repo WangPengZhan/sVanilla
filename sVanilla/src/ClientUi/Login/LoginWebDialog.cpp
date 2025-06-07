@@ -6,6 +6,8 @@
 #include "SUI/WebEngine/WebView.h"
 #include "SUI/WebEngine/WebPage.h"
 #include "LoginDialog.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 #include <QWebEngineCookieStore>
 #include <QThread>
@@ -66,6 +68,7 @@ void LoginWebDialog::cookiesChanged(const QNetworkCookie& cookie)
         }
     }
 
+    MLogI(svanilla::cLoginModule, "LoginWebDialog complete: ", ui->webFrame->cookies().toStdString());
     QTimer::singleShot(0, this, [this, realLogin] {
         realLogin->setCookie(ui->webFrame->cookies().toStdString());
         LoginDialog::writeCookieToDb(*realLogin);

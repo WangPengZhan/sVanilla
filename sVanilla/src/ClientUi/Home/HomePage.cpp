@@ -20,6 +20,9 @@
 #include "ClientLog.h"
 #include "const_string.h"
 #include "Login/LoginBubble.h"
+#include "Utils/RunTask.h"
+#include "SUI/Tips/Toast.h"
+#include "SUI/Tips/ToastTip.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 constexpr char userfaceDir[] = "userface";
@@ -101,19 +104,37 @@ void HomePage::signalsAndSlots()
     connect(ui->lineEditHome, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
         if (text.isEmpty())
         {
-            return;
-        }
-
-        auto plugin = sApp->pluginInterface().parseUrl(text.toStdString());
-        if (!plugin)
-        {
             ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
             return;
         }
 
-        constexpr QSize iconSize(24, 24);
-        QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
-        ui->lineEditHome->setWebsiteIcon(icon);
+        static uint64_t getPluginVersion = 0;
+        auto taskFunc = [text]() {
+            return sApp->pluginInterface().parseUrl(text.toStdString());
+        };
+
+        getPluginVersion++;
+        uint64_t capturedVersion = getPluginVersion;
+        auto callback = [this, capturedVersion, text](std::shared_ptr<plugin::IPlugin> plugin) {
+            if (capturedVersion != getPluginVersion)
+            {
+                MLogI(svanilla::cVideoList, "return version different: capture-{}, now-{}", capturedVersion, getPluginVersion);
+                return;
+            }
+
+            if (!plugin)
+            {
+                MLogI(svanilla::cVideoList, "can't parser url: {}", text.toStdString());
+                ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
+                return;
+            }
+
+            constexpr QSize iconSize(24, 24);
+            QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
+            ui->lineEditHome->setWebsiteIcon(icon);
+        };
+
+        runTask(taskFunc, callback, this);
     });
 
     connect(ui->btnLearn, &QPushButton::clicked, this, [this] {
@@ -182,6 +203,8 @@ void HomePage::signalsAndSlots()
         }
         else
         {
+            MLogW(svanilla::cHomeModule, "No login plugin available");
+            ToastTip::showTip(tr("No login plugin available"), ToastTip::Warn);
         }
     });
 

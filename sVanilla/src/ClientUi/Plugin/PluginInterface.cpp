@@ -4,6 +4,8 @@
 #include "Storage/StorageManager.h"
 #include "Storage/CookiesInfoStorage.h"
 #include "PluginCommon/ILogin.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 PluginInterface::PluginInterface()
 {
@@ -56,6 +58,7 @@ void PluginInterface::setCookiesForPlugin(std::shared_ptr<plugin::IPlugin> plugi
     auto cookiesInfo = cookiesInfoStorage->getCookiesInfo(pluginId);
     if (cookiesInfo.cookie.empty())
     {
+        MLogI(svanilla::cPluginModule, "No cookies for plugin: {} , id: {}", plugin->pluginMessage().name, pluginId);
         return;
     }
 

@@ -95,7 +95,7 @@ public:
 
 private:
     void prepareStatement();
-    int tryExecuteStep() noexcept;
+    int tryExecuteStep();
     SqliteColumn getColunmFromStmt(int col) const;
 
 private:

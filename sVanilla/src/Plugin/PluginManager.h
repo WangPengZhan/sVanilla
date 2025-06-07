@@ -18,6 +18,22 @@
 namespace plugin
 {
 
+class PluginProxy : public IPlugin
+{
+public:
+    explicit PluginProxy(std::shared_ptr<IPlugin> realPlugin);
+
+    const PluginMessage& pluginMessage() const override;
+    const std::vector<uint8_t>& websiteIcon() override;
+    bool canParseUrl(const std::string& url) override;
+    adapter::VideoView getVideoView(const std::string& url) override;
+    std::shared_ptr<download::FileDownloader> getDownloader(const VideoInfoFull& videoInfo) override;
+    LoginProxy loginer() override;
+
+private:
+    std::shared_ptr<IPlugin> m_realPlugin;
+};
+
 struct PluginConfig
 {
     std::string name;

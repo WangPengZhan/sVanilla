@@ -70,6 +70,7 @@ void LoginMonitor::monitorStatus()
         case AbstractLoginApi::Success:
         case AbstractLoginApi::Timeout:
         {
+            MLogI(svanilla::cLoginModule, "monitorStatus result: {}", static_cast<int>(loginStatus));
             emit sigLoginStatus(loginStatus);
             m_loginer.load().reset();
             break;

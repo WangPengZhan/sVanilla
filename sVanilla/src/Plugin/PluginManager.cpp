@@ -19,6 +19,196 @@ std::string const PluginManager::m_dynamicExtension = ".so";
 std::string const PluginManager::m_dynamicExtension = ".dylib";
 #endif
 
+class EmptyLoginApi : public AbstractLoginApi
+{
+public:
+    EmptyLoginApi() = default;
+    ~EmptyLoginApi() = default;
+
+    bool isLogin() const override
+    {
+        return false;
+    }
+    std::string cookies() const override
+    {
+        return {};
+    }
+
+    void setCookies(std::string cookies) override
+    {
+    }
+
+    bool refreshCookies(std::string cookies) override
+    {
+        return {};
+    }
+    bool logout() override
+    {
+        return false;
+    }
+
+    UserInfo getUserInfo(std::string dir) override
+    {
+        return {};
+    }
+
+    std::vector<adapter::BaseVideoView> history() override
+    {
+        return {};
+    }
+
+    int type() const override
+    {
+        return 0;
+    }
+
+    // thread-safe
+    LoginSatus getLoginStatus() override
+    {
+        return AbstractLoginApi::Unknow;
+    }
+    bool getScanContext(std::string& content) override
+    {
+        return false;
+    }
+    void loginSuccess() override
+    {
+    }
+
+    // resource
+    const LoginResource& allResources() const override
+    {
+        static LoginResource empty;
+        return empty;
+    }
+
+    const std::vector<uint8_t>& resource(ResourceIndex index) const override
+    {
+        static std::vector<uint8_t> empty;
+        return empty;
+    }
+};
+
+PluginProxy::PluginProxy(std::shared_ptr<IPlugin> realPlugin)
+    : m_realPlugin(std::move(realPlugin))
+{
+}
+
+const PluginMessage& PluginProxy::pluginMessage() const
+{
+    try
+    {
+        PLUGIN_LOG_INFO("call pluginMessage, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        return m_realPlugin->pluginMessage();
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("pluginMessage throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("pluginMessage throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+    }
+
+    static PluginMessage empty;
+    return empty;
+}
+
+const std::vector<uint8_t>& PluginProxy::websiteIcon()
+{
+    try
+    {
+        PLUGIN_LOG_INFO("call websiteIcon, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        return m_realPlugin->websiteIcon();
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("websiteIcon throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("websiteIcon throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+    }
+
+    static std::vector<uint8_t> empty;
+    return empty;
+}
+
+bool PluginProxy::canParseUrl(const std::string& url)
+{
+    try
+    {
+        PLUGIN_LOG_INFO("call canParseUrl, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        return m_realPlugin->canParseUrl(url);
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("canParseUrl throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("canParseUrl throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+    }
+    return false;
+}
+
+adapter::VideoView PluginProxy::getVideoView(const std::string& url)
+{
+    try
+    {
+        PLUGIN_LOG_INFO("call getVideoView, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        return m_realPlugin->getVideoView(url);
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("getVideoView throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("getVideoView throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+    }
+    return {};
+}
+
+std::shared_ptr<download::FileDownloader> PluginProxy::getDownloader(const VideoInfoFull& videoInfo)
+{
+    try
+    {
+        PLUGIN_LOG_INFO("call getDownloader, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        return m_realPlugin->getDownloader(videoInfo);
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("getDownloader throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("getDownloader throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+    }
+    return {};
+}
+
+LoginProxy PluginProxy::loginer()
+{
+    try
+    {
+        PLUGIN_LOG_INFO("call loginer, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        return m_realPlugin->loginer();
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("loginer throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("loginer throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+    }
+
+    static EmptyLoginApi empty;
+
+    return LoginProxy(empty);
+}
+
 PluginManager::PluginManager()
 {
     createPluginDir();
@@ -72,6 +262,8 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         PLUGIN_LOG_WARN("load plugin failed, path: {}", pluginPath);
         return;
     }
+
+    plugin = std::make_shared<PluginProxy>(plugin);
 
     PluginConfig pluginConfig;
     for (const auto& config : m_pluginConfig)

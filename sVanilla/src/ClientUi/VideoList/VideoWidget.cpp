@@ -16,7 +16,7 @@
 #include "VideoGridWidget.h"
 #include "VideoWidget.h"
 #include "ui_VideoWidget.h"
-#include "Utils/UrlProcess.h"
+#include "Utils/RunTask.h"
 #include "ClientUi/Config/SingleConfig.h"
 #include "ClientUi/Setting/About.h"
 #include "ClientUi/Utils/MenuEventFilter.h"
@@ -33,6 +33,61 @@
 #include "const_string.h"
 
 constexpr int coverMaxNum = 256;
+constexpr int addBatchNum = 5;
+
+BatchAdderOnTimer::BatchAdderOnTimer()
+{
+    m_timer.setInterval(1000);
+    QObject::connect(&m_timer, &QTimer::timeout, [&]() {
+        addBatch();
+    });
+}
+
+BatchAdderOnTimer::~BatchAdderOnTimer()
+{
+    m_timer.stop();
+}
+
+void BatchAdderOnTimer::reset()
+{
+    m_timer.stop();
+    m_views.clear();
+}
+
+void BatchAdderOnTimer::addItems(const adapter::VideoView& views)
+{
+    m_views.insert(m_views.end(), views.begin(), views.end());
+    if (!m_timer.isActive())
+    {
+        addBatch();
+        if (!m_views.empty())
+        {
+            m_timer.start();
+        }
+    }
+}
+
+void BatchAdderOnTimer::setAddItemFunc(std::function<void(const adapter::BaseVideoView&)> func)
+{
+    m_addItemFunc = std::move(func);
+}
+
+void BatchAdderOnTimer::addBatch()
+{
+    for (int i = addBatchNum; i > 0 && !m_views.empty(); --i)
+    {
+        if (m_addItemFunc)
+        {
+            m_addItemFunc(m_views.front());
+        }
+        m_views.pop_front();
+    }
+
+    if (m_views.empty())
+    {
+        m_timer.stop();
+    }
+}
 
 VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
@@ -43,6 +98,12 @@ VideoWidget::VideoWidget(QWidget* parent)
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    m_batchAdder.setAddItemFunc([this](const adapter::BaseVideoView& view) {
+        auto videoInfoFull = std::make_shared<VideoInfoFull>();
+        videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
+        videoInfoFull->videoView = std::make_shared<adapter::BaseVideoView>(view);
+        addVideoItem(videoInfoFull);
+    });
     m_downloadTip = new DownloadTip(this);
     m_downloadTip->hide();
 }
@@ -62,7 +123,14 @@ void VideoWidget::signalsAndSlots()
 
     connect(ui->lineEdit, &AddLinkLineEdit::Complete, this, [this]() {
         MLogI(svanilla::cVideoList, "parseUri {}", ui->lineEdit->text().toStdString());
-        emit parseUri(ui->lineEdit->text().toStdString());
+        auto result = parseUri(ui->lineEdit->text().toStdString());
+        if (result)
+        {
+            ui->widgetSliding->show();
+            ui->widgetSliding->reStart();
+            ui->labelPlayListTitle->clear();
+            clearVideo();
+        }
     });
 
     connect(ui->lineEdit, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
@@ -71,16 +139,32 @@ void VideoWidget::signalsAndSlots()
             return;
         }
 
-        auto plugin = sApp->pluginInterface().parseUrl(text.toStdString());
-        if (!plugin)
-        {
-            ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
-            return;
-        }
+        static uint64_t parseUrlVersion = 0;
+        auto taskFunc = [text]() {
+            return sApp->pluginInterface().parseUrl(text.toStdString());
+        };
 
-        constexpr QSize iconSize(24, 24);
-        QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
-        ui->lineEdit->setWebsiteIcon(icon);
+        parseUrlVersion++;
+        uint64_t lParseUrlVersion = parseUrlVersion;
+        auto callback = [this, lParseUrlVersion](std::shared_ptr<plugin::IPlugin> plugin) {
+            if (parseUrlVersion != lParseUrlVersion)
+            {
+                MLogI(svanilla::cVideoList, "return version different: capture-{}, now-{}", lParseUrlVersion, parseUrlVersion);
+                return;
+            }
+
+            if (!plugin)
+            {
+                ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
+                return;
+            }
+
+            constexpr QSize iconSize(24, 24);
+            QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
+            ui->lineEdit->setWebsiteIcon(icon);
+        };
+
+        runTask(taskFunc, callback, this);
     });
 
     connect(ui->btnHistory, &QPushButton::clicked, this, [this] {
@@ -137,6 +221,7 @@ void VideoWidget::setUi()
     createSortMenu();
     ui->btnReset->hide();
     ui->lineEditSearch->hide();
+    ui->widgetSliding->hide();
     ui->lineEditSearch->setFocusOutHide();
     ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
 
@@ -359,8 +444,8 @@ void VideoWidget::hideBtnSearch()
 
 void VideoWidget::searchedVideoItem(adapter::VideoView views)
 {
-    ui->labelPlayListTitle->clear();
-    clearVideo();
+    ui->widgetSliding->hide();
+    ui->widgetSliding->stop();
     showViewList(views);
 }
 
@@ -429,22 +514,12 @@ void VideoWidget::showViewList(const adapter::VideoView& views)
         return;
     }
 
-    ui->videoGridWidget->setUpdatesEnabled(false);
-    ui->videoListWidget->setUpdatesEnabled(false);
     if (const auto playlistTitle = views.front().PlayListTitle; !playlistTitle.empty())
     {
         const auto title = QString::fromStdString(playlistTitle) + "(" + QString::number(views.size()) + ")";
         ui->labelPlayListTitle->setText(title);
     }
 
-    for (const auto& view : views)
-    {
-        auto videoInfoFull = std::make_shared<VideoInfoFull>();
-        videoInfoFull->downloadConfig = std::make_shared<DownloadConfig>(SingleConfig::instance().downloadConfig());
-        videoInfoFull->videoView = std::make_shared<adapter::BaseVideoView>(view);
-        addVideoItem(videoInfoFull);
-    }
-
-    ui->videoGridWidget->setUpdatesEnabled(true);
-    ui->videoListWidget->setUpdatesEnabled(true);
+    m_batchAdder.reset();
+    m_batchAdder.addItems(views);
 }
