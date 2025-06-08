@@ -1,6 +1,7 @@
 #include <QEvent>
 
 #include "MenuEventFilter.h"
+#include "ClientLog.h"
 
 MenuEventFilter::MenuEventFilter(QMenu* menu)
     : QObject(menu)
@@ -28,6 +29,7 @@ QTimerHelp::QTimerHelp(QObject* parent)
 {
     m_timer.setSingleShot(true);
     connect(&m_timer, &QTimer::timeout, this, [this]() {
+        MLogI("Utils", "QTimerHelp::m_timer timeout");
         m_elapse = true;
     });
 }

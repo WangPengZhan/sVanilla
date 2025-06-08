@@ -124,18 +124,22 @@ void VideoWidget::signalsAndSlots()
     connect(ui->lineEdit, &AddLinkLineEdit::Complete, this, [this]() {
         MLogI(svanilla::cVideoList, "parseUri {}", ui->lineEdit->text().toStdString());
         auto result = parseUri(ui->lineEdit->text().toStdString());
+        MLogI(svanilla::cVideoList, "parseUri result {}", result);
         if (result)
         {
             ui->widgetSliding->show();
             ui->widgetSliding->reStart();
             ui->labelPlayListTitle->clear();
+            m_batchAdder.reset();
             clearVideo();
         }
+        MLogI(svanilla::cVideoList, "parseUri after");
     });
 
     connect(ui->lineEdit, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
         if (text.isEmpty())
         {
+            ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
             return;
         }
 
