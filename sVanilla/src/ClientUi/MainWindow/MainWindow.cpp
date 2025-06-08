@@ -113,7 +113,7 @@ void MainWindow::setUi()
         }
     }
 
-    timerHelp.setInterval(500);
+    timerHelp.setInterval(1200);
 }
 
 void MainWindow::signalsAndSlots()
@@ -343,6 +343,7 @@ bool MainWindow::parseUrl(const std::string& url)
     }
 
     static std::string lastUrl;
+    MLogI(svanilla::cMainModule, "url: {}, lastUrl: {}, time status: {}", url, lastUrl, timerHelp.isElapse());
     if (lastUrl == url && !timerHelp.isElapse())
     {
         MLogW(svanilla::cMainModule, "url is same in 500ms, url: {}", url);

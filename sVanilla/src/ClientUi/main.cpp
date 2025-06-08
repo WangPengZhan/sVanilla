@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 #ifndef _DEBUG
     qInstallMessageHandler(myMessageHandler);
 #endif
-
+    network::CurlGlobal curlGlobal;
     auto exePath = getModulePath();
     QString qExePath = QString::fromStdString(exePath);
     QDir::setCurrent(qExePath);
@@ -63,7 +63,6 @@ int main(int argc, char* argv[])
     Logger::getInstance();
     DumpColletor::setDumpDir(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string("dump"));
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string(".db"));
-    network::CurlGlobal curlGlobal;
     auto crashHandler = QStandardPaths::findExecutable("crashpad_handler", QStringList() << qExePath);
 #if defined(_WIN32)
     DumpColletor::initializeCrashpad(crashHandler.toStdWString(),
