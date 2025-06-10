@@ -123,17 +123,7 @@ void VideoWidget::signalsAndSlots()
 
     connect(ui->lineEdit, &AddLinkLineEdit::Complete, this, [this]() {
         MLogI(svanilla::cVideoList, "parseUri {}", ui->lineEdit->text().toStdString());
-        auto result = parseUri(ui->lineEdit->text().toStdString());
-        MLogI(svanilla::cVideoList, "parseUri result {}", result);
-        if (result)
-        {
-            ui->widgetSliding->show();
-            ui->widgetSliding->reStart();
-            ui->labelPlayListTitle->clear();
-            m_batchAdder.reset();
-            clearVideo();
-        }
-        MLogI(svanilla::cVideoList, "parseUri after");
+        emit parseUri(ui->lineEdit->text().toStdString());
     });
 
     connect(ui->lineEdit, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
@@ -225,7 +215,7 @@ void VideoWidget::setUi()
     createSortMenu();
     ui->btnReset->hide();
     ui->lineEditSearch->hide();
-    ui->widgetSliding->hide();
+    ui->widgetLoding->hide();
     ui->lineEditSearch->setFocusOutHide();
     ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
 
@@ -448,8 +438,8 @@ void VideoWidget::hideBtnSearch()
 
 void VideoWidget::searchedVideoItem(adapter::VideoView views)
 {
-    ui->widgetSliding->hide();
-    ui->widgetSliding->stop();
+    ui->widgetLoding->hide();
+    ui->widgetLoding->stopAnimation();
     showViewList(views);
 }
 
@@ -471,6 +461,19 @@ void VideoWidget::prepareDownloadTaskList()
         auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
         auto* widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
         prepareDownloadTask(widget->getVideoInfo());
+    }
+}
+
+void VideoWidget::processParseResult(bool bResult)
+{
+    if (bResult)
+    {
+        ui->widgetLoding->show();
+        ui->widgetLoding->resetAnimation();
+        ui->labelPlayListTitle->clear();
+        m_batchAdder.reset();
+        clearVideo();
+        MLogI(svanilla::cVideoList, "parseUri {} , result: {}", ui->lineEdit->text().toStdString(), bResult);
     }
 }
 

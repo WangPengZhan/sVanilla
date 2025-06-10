@@ -1,10 +1,10 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO AlanusMeminius/VanillaStyle
-        REF 4db800cf4c8a7a048832287979d1a53575952b79
-        SHA512 97dc23952590649380cdd3bad375a998d4d71fc190cd8660320750f60b5e5a5e8782580706879c0cb4b7b325700b72c711766512566423a9464207cbb2a26478
+       REF 55790ec3275ff6fb7050560a3a0a9549aeb0761b
+       SHA512 5afb738fd9b55bc6b3d35cfdf5f40d9d4bc8ebff78bb94cf8b1eb8655489d3556060be4205701efdb4019624c1d7af422bcd10e121cd1389aacaf8adef68352c
     PATCHES
-    dependence.patch
+        dependence.patch
 )
 
 vcpkg_download_distfile(

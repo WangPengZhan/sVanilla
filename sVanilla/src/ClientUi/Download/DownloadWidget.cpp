@@ -152,7 +152,7 @@ void DownloadWidget::setUi()
 
 void DownloadWidget::signalsAndSlots()
 {
-    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    connect(ui->horizonNavigation, &Vanilla::ToggleButton::currentItemChanged, this, &DownloadWidget::onNavigationChanged);
 
     connect(this, &DownloadWidget::sigDownloadTask, this, &DownloadWidget::addDownloadTask);
     connect(ui->btnStartAll, &QPushButton::clicked, ui->downloadingListWidget, &DownloadingListWidget::startAll);
@@ -184,7 +184,7 @@ void DownloadWidget::initHistoryData()
     };
     sApp->threadPool().enqueue(taskHistoryDownloading);
     auto taskHistoryDownloaded = [this]() {
-        auto downloadedStorage = sqlite::StorageManager::instance().downloadedtemStorage();
+        auto downloadedStorage = sqlite::StorageManager::instance().downloadedItemStorage();
         auto downloadedItems = downloadedStorage->lastItems();
         for (auto it = downloadedItems.rbegin(); it != downloadedItems.rend(); ++it)
         {
@@ -248,4 +248,26 @@ void DownloadWidget::setDownloadedNumber(int number)
 {
     ui->widgetDownNumber->setDownloadErrorNumber(number);
     emit downloadedCountChanged(number);
+}
+
+void DownloadWidget::onNavigationChanged(int index)
+{
+    ui->stackedWidget->setCurrentIndex(index);
+
+    switch (static_cast<NavigationIndex>(index))
+    {
+    case NavigationIndex::Downloading:
+    {
+        break;
+    }
+    case NavigationIndex::Completed:
+    {
+        ui->downloadedListWidget->scan();
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
 }

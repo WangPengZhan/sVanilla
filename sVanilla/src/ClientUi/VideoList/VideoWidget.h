@@ -65,6 +65,8 @@ public:
     void prepareDownloadTask(const std::shared_ptr<VideoInfoFull>& infoFull) const;
     void prepareDownloadTaskList();
 
+    void processParseResult(bool bResult);
+
     void clearVideo();
     void searchUrl(const QString& url);
 

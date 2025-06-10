@@ -385,6 +385,7 @@ bool MainWindow::parseUrl(const std::string& url)
     };
 
     runTask(taskFunc, callback, this);
+    ui->videoPage->processParseResult(true);
     return true;
 }
 

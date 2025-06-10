@@ -13,7 +13,7 @@ class StorageManager
 {
 public:
     static StorageManager& instance();
-    std::shared_ptr<DownloadedItemStorage> downloadedtemStorage() const;
+    std::shared_ptr<DownloadedItemStorage> downloadedItemStorage() const;
     std::shared_ptr<DownloadingItemStorage> downloadingStorage() const;
     std::shared_ptr<SearchHistoryStorage> searchHistoryStorage() const;
     std::shared_ptr<CookiesInfoStorage> cookiesInfoStorage() const;

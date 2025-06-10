@@ -16,7 +16,7 @@ StorageManager& StorageManager::instance()
     return storageManager;
 }
 
-std::shared_ptr<DownloadedItemStorage> StorageManager::downloadedtemStorage() const
+std::shared_ptr<DownloadedItemStorage> StorageManager::downloadedItemStorage() const
 {
     return m_downloadedItemStorage;
 }

@@ -6,6 +6,8 @@
 
 #include <utility>
 
+#include <VanillaStyle/Style/Global.h>
+
 #include <BaseVideoView.h>
 
 #include "DownloadedListWidget.h"
@@ -24,6 +26,12 @@
 #include "ClientLog.h"
 #include "const_string.h"
 
+namespace
+{
+const QString s_disableLabelStyle{"QLabel { color: gray; }"};
+const QColor s_disableLabelColor{"#E6B9A6"};
+}  // namespace
+
 DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoInfoFull, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::DownloadedItemWidget)
@@ -33,7 +41,6 @@ DownloadedItemWidget::DownloadedItemWidget(std::shared_ptr<VideoInfoFull> videoI
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
-    setBackgroundRole(QPalette::NoRole);
 }
 
 DownloadedItemWidget::~DownloadedItemWidget()
@@ -69,6 +76,31 @@ void DownloadedItemWidget::reloadItem()
 
 void DownloadedItemWidget::updateStatus()
 {
+    QString fileName = QString::fromStdString(m_videoInfoFull->fileName()) + ".mp4";
+    QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir) + "/" + fileName;
+    QFileInfo fileInfo(filePath);
+    ui->labelSize->setText(formatSize(fileInfo.size()));
+    const bool bIsFileExists = fileInfo.exists();
+
+    auto& storageManager = sqlite::StorageManager::instance();
+    storageManager.downloadedItemStorage()->updateFileExist(bIsFileExists, m_videoInfoFull->getGuid());
+
+    if (bIsFileExists)
+    {
+        m_listWidgetItem->setBackground(QBrush());
+        ui->btnFolder->setEnabled(true);
+    }
+    else
+    {
+        m_listWidgetItem->setBackground(QBrush(s_disableLabelColor));
+        ui->btnFolder->setEnabled(false);
+        ui->labelTitle->setText(QString::fromStdString(m_videoInfoFull->fileName()) + tr("(File does not exist)"));
+        ui->labelTitle->setStyleSheet(s_disableLabelStyle);
+        ui->labelDuration->setStyleSheet(s_disableLabelStyle);
+        ui->labelPublisher->setStyleSheet(s_disableLabelStyle);
+        ui->labelPublishDate->setStyleSheet(s_disableLabelStyle);
+        ui->labelSize->setStyleSheet(s_disableLabelStyle);
+    }
 }
 
 void DownloadedItemWidget::setUi()
@@ -81,10 +113,6 @@ void DownloadedItemWidget::setUi()
     QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir) + "/" + fileName;
     QFileInfo fileInfo(filePath);
     ui->labelSize->setText(formatSize(fileInfo.size()));
-    if (!QFileInfo::exists(filePath))
-    {
-        setStyleSheet(".DownloadedItemWidget { background-color:#141210; }");
-    }
 }
 
 void DownloadedItemWidget::signalsAndSlots()
@@ -160,7 +188,7 @@ void DownloadedItemWidget::deleteDbFinishItem()
     sqlite::ConditionWrapper condition;
     condition.addCondition(table.uniqueId, sqlite::Condition::EQUALS, m_videoInfoFull->getGuid());
 
-    storageManager.downloadedtemStorage()->deleteEntities(condition);
+    storageManager.downloadedItemStorage()->deleteEntities(condition);
 }
 
 void DownloadedItemWidget::showInfoPanel() const
@@ -179,7 +207,7 @@ DownloadedListWidget::DownloadedListWidget(QWidget* parent)
     verticalScrollBar()->setSingleStep(1);
     verticalScrollBar()->setPageStep(5);
     signalsAndSlots();
-    setBackgroundRole(QPalette::NoRole);
+    setProperty(Vanilla::s_CustomItemViewBackground.c_str(), true);
     m_splitter = qobject_cast<QSplitter*>(parent);
 }
 
@@ -224,8 +252,6 @@ void DownloadedListWidget::reloadAll()
 void DownloadedListWidget::scan()
 {
     MLogI(svanilla::cDownloadModule, "DownloadedListWidget scan");
-    auto& storageManager = sqlite::StorageManager::instance();
-    storageManager.downloadedtemStorage()->updateFileExist();
 
     int nCount = count();
     for (int i = 0; i < nCount; ++i)
