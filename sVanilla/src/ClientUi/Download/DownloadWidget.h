@@ -33,6 +33,12 @@ class DownloadWidget : public QWidget
     Q_OBJECT
 
 public:
+    enum class NavigationIndex
+    {
+        Downloading,
+        Completed,
+    };
+
     explicit DownloadWidget(QWidget* parent = nullptr);
     ~DownloadWidget();
 
@@ -63,6 +69,8 @@ private:
 
     void setDownloadingNumber(int number);
     void setDownloadedNumber(int number);
+
+    void onNavigationChanged(int index);
 
 private:
     Ui::DownloadWidget* ui;

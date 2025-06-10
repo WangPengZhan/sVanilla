@@ -162,5 +162,5 @@ void UiDownloader::ctreateDbFinishedItem()
     item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
     item.type = 0;
     item.fileExist = true;
-    m_storageManager.downloadedtemStorage()->insertEntities<DownloadedItem>({item});
+    m_storageManager.downloadedItemStorage()->insertEntities<DownloadedItem>({item});
 }

@@ -54,7 +54,7 @@
       <item>
        <spacer name="Spacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -129,7 +129,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -161,7 +161,7 @@
       <item>
        <widget class="QPushButton" name="btnFolder">
         <property name="toolTip">
-         <string>open floder in files explorer</string>
+         <string>open folder in files explorer</string>
         </property>
         <property name="text">
          <string/>
