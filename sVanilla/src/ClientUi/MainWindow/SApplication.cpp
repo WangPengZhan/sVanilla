@@ -54,6 +54,11 @@ download::DownloadStatusThread& SApplication::downloadThread()
     return m_downloadThread;
 }
 
+ThreadPool& SApplication::threadPool()
+{
+    return m_threadPool;
+}
+
 QString SApplication::appDir()
 {
     QString dir;

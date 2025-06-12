@@ -1,6 +1,7 @@
 #pragma once
 #include <QObject>
 
+#include "ClientUi/MainWindow/SApplication.h"
 #include "ThreadPool/ThreadPool.h"
 #include "ThreadPool/Task.h"
 #include "ClientLog.h"
@@ -37,5 +38,5 @@ void runTask(TaskFunc taskFunc, Callback callback, QObject* object = nullptr)
             CLINET_LOG_ERROR("exception ocurred, message: {}", e.what());
         }
     });
-    ThreadPool::instance().enqueue(task);
+    sApp->threadPool().enqueue(task);
 }

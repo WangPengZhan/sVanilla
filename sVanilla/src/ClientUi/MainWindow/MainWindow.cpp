@@ -339,6 +339,7 @@ bool MainWindow::parseUrl(const std::string& url)
     if (url.empty())
     {
         MLogW(svanilla::cMainModule, " url is empty");
+        ToastTip::showTip(tr("url is empty"), ToastTip::Warn);
         return false;
     }
 

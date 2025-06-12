@@ -18,15 +18,13 @@
 class ThreadPool
 {
 public:
-    ThreadPool(size_t num);
+    ThreadPool(size_t num = std::thread::hardware_concurrency());
     ~ThreadPool();
 
     template <class F, class... Args>
     auto enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>;
     template <typename T, typename std::enable_if<std::is_base_of<Task, typename std::remove_cv<T>::type>::value, int>::type = 0>
     std::future<void> enqueue(std::shared_ptr<T> pTask);
-
-    static ThreadPool& instance();
 
     int threadNumber(std::thread::id id);
     size_t numThreads();

@@ -27,12 +27,6 @@ ThreadPool::~ThreadPool()
     stop();
 }
 
-ThreadPool& ThreadPool::instance()
-{
-    static ThreadPool threadPool(std::thread::hardware_concurrency());
-    return threadPool;
-}
-
 int ThreadPool::threadNumber(std::thread::id id)
 {
     if (m_idMap.find(id) != m_idMap.end())
@@ -51,10 +45,17 @@ size_t ThreadPool::numThreads()
 void ThreadPool::stop()
 {
     m_stop = true;
+    {
+        std::lock_guard lk(m_tasksMutex);
+        m_tasks.clear();
+    }
     m_condition.notify_all();
     for (std::thread& worker : m_workers)
     {
-        worker.join();
+        if (worker.joinable())
+        {
+            worker.join();
+        }
     }
 }
 
