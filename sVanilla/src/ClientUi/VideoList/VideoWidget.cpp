@@ -180,7 +180,7 @@ void VideoWidget::signalsAndSlots()
     connect(ui->btnClipboard, &QPushButton::clicked, this, [this] {
         const QClipboard* clipboard = QGuiApplication::clipboard();
         MLogI(svanilla::cVideoList, "parseUri {}", clipboard->text().toStdString());
-        sApp->pluginInterface().parseUrl(clipboard->text().toStdString());
+        searchUrl(clipboard->text());
     });
 
     connect(ui->btnSort, &QPushButton::clicked, this, [this]() {

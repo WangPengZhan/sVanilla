@@ -96,7 +96,7 @@ void HomePage::signalsAndSlots()
             return;
         }
 
-        parseUri(ui->lineEditHome->text());
+        emit parseUri(ui->lineEditHome->text());
         ui->lineEditHome->clear();
         ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
     });
@@ -175,10 +175,19 @@ void HomePage::signalsAndSlots()
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
         auto& plugins = sApp->pluginManager().plugins();
-        if (plugins.size() > 1)
+        std::vector<std::shared_ptr<plugin::IPlugin>> loginPlugins;
+        for (auto& [_, plugin] : plugins)
+        {
+            if (plugin->loginer().supportLogin())
+            {
+                loginPlugins.push_back(plugin);
+            }
+        }
+
+        if (loginPlugins.size() > 1)
         {
             QMenu menu(this);
-            for (auto& [_, plugin] : plugins)
+            for (auto& plugin : loginPlugins)
             {
                 auto action = new QAction(QString::fromStdString(plugin->pluginMessage().name), &menu);
                 constexpr QSize iconSize(24, 24);
@@ -193,9 +202,9 @@ void HomePage::signalsAndSlots()
             const QPoint pos = ui->btnLoginWebsite->mapToGlobal(QPoint(0, ui->btnLoginWebsite->sizeHint().height()));
             menu.exec(pos);
         }
-        else if (plugins.size() == 1)
+        else if (loginPlugins.size() == 1)
         {
-            for (auto& [_, plugin] : plugins)
+            for (auto& plugin : loginPlugins)
             {
                 auto loginer = std::make_shared<LoginProxy>(plugin->loginer());
                 showLoginDialog(loginer);

@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 #ifndef _DEBUG
     qInstallMessageHandler(myMessageHandler);
 #endif
-    network::CurlGlobal curlGlobal;
+    network::CurlGlobal::instance();
     auto exePath = getModulePath();
     QString qExePath = QString::fromStdString(exePath);
     QDir::setCurrent(qExePath);

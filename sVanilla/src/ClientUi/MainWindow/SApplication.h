@@ -3,9 +3,10 @@
 #include <QFileSystemWatcher>
 
 #include "Aria2Net/AriaServer/AriaServer.h"
-#include "Plugin/PluginInterface.h"
+#include "ClientUi/Plugin/PluginInterface.h"
 #include "Translater.h"
 #include "Download/DownloadStatusThread.h"
+#include "ThreadPool/ThreadPool.h"
 
 class SApplication : public QApplication
 {
@@ -21,6 +22,7 @@ public:
     plugin::PluginManager& pluginManager();
     Translater& translater();
     download::DownloadStatusThread& downloadThread();
+    ThreadPool& threadPool();
 
     static QString appDir();
     static bool isInstalled();
@@ -35,6 +37,7 @@ private:
     QFileSystemWatcher m_watcher;
     Translater m_translater;
     download::DownloadStatusThread m_downloadThread;
+    ThreadPool m_threadPool;
 };
 
 #define sApp static_cast<SApplication*>(qApp)

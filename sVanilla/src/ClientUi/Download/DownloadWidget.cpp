@@ -182,7 +182,7 @@ void DownloadWidget::initHistoryData()
             addDownloadTask(downloadingItemToVideoInfoFull(item));
         }
     };
-    ThreadPool::instance().enqueue(taskHistoryDownloading);
+    sApp->threadPool().enqueue(taskHistoryDownloading);
     auto taskHistoryDownloaded = [this]() {
         auto downloadedStorage = sqlite::StorageManager::instance().downloadedtemStorage();
         auto downloadedItems = downloadedStorage->lastItems();
@@ -191,7 +191,7 @@ void DownloadWidget::initHistoryData()
             emit ui->downloadingListWidget->finished(finishItemToVideoInfoFull(*it));
         }
     };
-    ThreadPool::instance().enqueue(taskHistoryDownloaded);
+    sApp->threadPool().enqueue(taskHistoryDownloaded);
 }
 
 void DownloadWidget::addDownloadingItem(const std::shared_ptr<download::FileDownloader>& fileDownloader, const std::shared_ptr<UiDownloader>& uiDownloader)

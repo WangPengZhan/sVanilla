@@ -25,6 +25,11 @@ public:
     EmptyLoginApi() = default;
     ~EmptyLoginApi() = default;
 
+    bool supportLogin() const override
+    {
+        return false;
+    }
+
     bool isLogin() const override
     {
         return false;
