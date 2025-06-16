@@ -4,8 +4,118 @@
 #include "Storage/StorageManager.h"
 #include "Storage/CookiesInfoStorage.h"
 #include "PluginCommon/ILogin.h"
+#include "NetWork/CurlCpp/CurlHeader.h"
+#include "NetWork/CurlCpp/CurlOption.h"
+#include "NetWork/CurlCpp/CurlWriter.h"
+#include "NetWork/CurlCpp/CurlEasy.h"
+#include "NetWork/CNetWork.h"
+#include "NetWork/CurlCpp/CurlResponseWrapper.h"
 #include "ClientLog.h"
 #include "const_string.h"
+
+struct LocationUrl
+{
+    std::string locationUrl;
+};
+
+namespace network
+{
+template <typename T>
+class CurlResponseWrapper;
+
+template <>
+class CurlResponseWrapper<LocationUrl>
+{
+public:
+    CurlResponseWrapper(LocationUrl& response)
+        : m_response(response)
+    {
+    }
+
+    void setToCurl(CURL* handle)
+    {
+    }
+    void setToCurl(CurlEasy& easy)
+    {
+        setToCurl(easy.handle());
+    }
+
+    void readAfter(CURL* handle)
+    {
+        char* redirectUrl = nullptr;
+        curl_easy_getinfo(handle, CURLINFO_REDIRECT_URL, &redirectUrl);
+        if (redirectUrl)
+        {
+            m_response.locationUrl = redirectUrl;
+        }
+    }
+
+    void readAfter(CurlEasy& easy)
+    {
+        readAfter(easy.handle());
+    }
+
+private:
+    LocationUrl& m_response;
+};
+}  // namespace network
+
+namespace
+{
+
+bool getUrlLocation(const std::string& url, std::string& location)
+{
+    if (url.empty())
+    {
+        return false;
+    }
+
+    LocationUrl response;
+    network::CurlEasy easy;
+    network::CurlResponseWrapper writer(response);
+
+    network::CurlHeader headers;
+    std::string userAgent = std::string("User-Agent: ") + network::chrome;
+    headers.add(userAgent);
+    headers.add(network::accept_language);
+    headers.add(network::accept_encoding);
+
+    network::NetWork::CurlOptions options;
+    constexpr time_t timeoutSecond = 5000;
+    auto timeout = std::make_shared<network::TimeOut>(timeoutSecond);
+    options.insert({timeout->getOption(), timeout});
+    auto acceptEncoding = std::make_shared<network::AcceptEncoding>("gzip");
+    options.insert({acceptEncoding->getOption(), acceptEncoding});
+    auto sslVerifyHost = std::make_shared<network::SSLVerifyHost>(false);
+    options.insert({sslVerifyHost->getOption(), sslVerifyHost});
+    auto sslVerifyPeer = std::make_shared<network::SSLVerifyPeer>(false);
+    options.insert({sslVerifyPeer->getOption(), sslVerifyPeer});
+    auto verbose = std::make_shared<network::Verbose>(false);
+    options.insert({verbose->getOption(), verbose});
+
+    curl_easy_setopt(easy.handle(), CURLOPT_HTTPGET, 1L);
+    curl_easy_setopt(easy.handle(), CURLOPT_URL, url.c_str());
+    curl_easy_setopt(easy.handle(), CURLOPT_HTTPHEADER, headers.get());
+    for (const auto& option : options)
+    {
+        option.second->setToCurl(easy.handle());
+    }
+    writer.setToCurl(easy);
+
+    easy.perform();
+
+    writer.readAfter(easy);
+
+    location = response.locationUrl;
+    if (location.empty())
+    {
+        MLogE(svanilla::cPluginModule, "Failed to get location from URL: {}", url);
+        return false;
+    }
+
+    return true;
+}
+}  // namespace
 
 PluginInterface::PluginInterface()
 {
@@ -25,7 +135,7 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::getPlugin(int pluginId)
     return m_pluginManager.getPlugin(pluginId);
 }
 
-std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& url)
+std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& url, std::string& locationUrl)
 {
     if (url.empty())
     {
@@ -37,6 +147,17 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
         if (plugin->canParseUrl(url))
         {
             return plugin;
+        }
+    }
+
+    if (getUrlLocation(url, locationUrl))
+    {
+        for (auto& [_, plugin] : m_pluginManager.plugins())
+        {
+            if (plugin->canParseUrl(locationUrl))
+            {
+                return plugin;
+            }
         }
     }
 

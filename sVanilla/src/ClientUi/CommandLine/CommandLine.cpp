@@ -227,8 +227,9 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
 
     MLogI("CommandLine", "execCommandLine url: {}", commandLine.url);
     std::cout << "parser url ..." << std::endl;
-    auto plugin =
-        commandLine.pluginId == -1 ? application.pluginInterface().parseUrl(commandLine.url) : application.pluginInterface().getPlugin(commandLine.pluginId);
+    std::string localUrl;
+    auto plugin = commandLine.pluginId == -1 ? application.pluginInterface().parseUrl(commandLine.url, localUrl) :
+                                               application.pluginInterface().getPlugin(commandLine.pluginId);
     if (!plugin)
     {
         MLogE("CommandLine", "parse url failed!");
@@ -242,7 +243,7 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
     }
 
     std::cout << "get video info ..." << std::endl;
-    auto views = plugin->getVideoView(commandLine.url);
+    auto views = plugin->getVideoView(localUrl.empty() ? commandLine.url : localUrl);
     if (views.empty())
     {
         MLogE("CommandLine", "get video view failed");

@@ -356,14 +356,15 @@ bool MainWindow::parseUrl(const std::string& url)
 
     auto taskFunc = [url]() {
         adapter::VideoView views;
-        auto plugin = sApp->pluginInterface().parseUrl(url);
+        std::string locationUrl;
+        auto plugin = sApp->pluginInterface().parseUrl(url, locationUrl);
         if (!plugin)
         {
             MLogW(svanilla::cMainModule, "url is no support, url: {}", url);
             return views;
         }
 
-        views = plugin->getVideoView(url);
+        views = plugin->getVideoView(locationUrl.empty() ? url : locationUrl);
         if (!views.empty())
         {
             auto historyStorage = sqlite::StorageManager::instance().searchHistoryStorage();

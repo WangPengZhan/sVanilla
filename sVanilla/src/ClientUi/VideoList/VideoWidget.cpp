@@ -135,7 +135,8 @@ void VideoWidget::signalsAndSlots()
 
         static uint64_t parseUrlVersion = 0;
         auto taskFunc = [text]() {
-            return sApp->pluginInterface().parseUrl(text.toStdString());
+            std::string locationUrl;
+            return sApp->pluginInterface().parseUrl(text.toStdString(), locationUrl);
         };
 
         parseUrlVersion++;
