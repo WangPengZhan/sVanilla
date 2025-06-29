@@ -24,15 +24,16 @@ public:
     void hidePreviewLabel(bool hide) const;
     bool isHidePreviewLabel() const;
 
+    void setParseNameRulesFunction(const std::function<std::string(const std::string&)>& parseNameRulesFunction);
+
     Q_SIGNAL void editingFinished(const QString& rule);
 
 private:
     void signalsAndSlots();
     void initListWidget(const std::vector<QString>& nameRules) const;
-    std::string parseNameRules(const std::string& rules);
     void updatePreview(const QString& preview);
 
 private:
     Ui::NameRuleWidget* ui;
-    std::unordered_map<std::string, std::string> m_rules;
+    std::function<std::string(const std::string&)> m_parseNameRulesFunction;
 };

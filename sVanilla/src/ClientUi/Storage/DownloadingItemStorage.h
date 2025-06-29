@@ -15,10 +15,11 @@ struct DownloadingItem
     std::string url;
     std::string cid;
     std::string aid;
+    std::string fileExtension;
     double progress;
     int duration;
     int status;
-    int type;
+    int fileType;
 
     // move to sqlite
     int bind(sqlite::SQLiteStatement& stmt) const;
@@ -40,7 +41,8 @@ TABLESTRUCTINFO_BEGIN(DownloadingItem)
     TABLESTRUCTINFO_COMLUNM(progress)
     TABLESTRUCTINFO_COMLUNM(duration)
     TABLESTRUCTINFO_COMLUNM(status)
-    TABLESTRUCTINFO_COMLUNM(type)
+    TABLESTRUCTINFO_COMLUNM(fileType)
+    TABLESTRUCTINFO_COMLUNM(fileExtension)
 TABLESTRUCTINFO_END(DownloadingItem)
 // clang-format on
 

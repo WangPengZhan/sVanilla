@@ -68,11 +68,7 @@ void DefaultSettings::setUi()
     ui->spinBoxThread->hide();
     ui->labelThread->hide();
 
-    std::unordered_map<std::string, std::string> rules;
-    for (const auto& rule : VideoInfoFull::ruleList)
-    {
-        rules.insert({rule, ""});
-    }
+    std::unordered_map<std::string, std::string> rules(VideoInfoFull::ruleMap.begin(), VideoInfoFull::ruleMap.end());
     ui->widgetNameRule->init(rules);
     QPalette palette = this->palette();
     palette.setColor(QPalette::Window, Qt::transparent);

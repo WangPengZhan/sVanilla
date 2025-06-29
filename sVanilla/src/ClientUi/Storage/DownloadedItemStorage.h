@@ -16,8 +16,9 @@ struct DownloadedItem
     std::string aid;
     std::string cid;
     int duration;
-    int type;
+    int fileType;
     bool fileExist;
+    std::string fileExtension;
 
     // move to sqlite
     int bind(sqlite::SQLiteStatement& stmt) const;
@@ -37,8 +38,9 @@ TABLESTRUCTINFO_BEGIN(DownloadedItem)
     TABLESTRUCTINFO_COMLUNM(cid)
     TABLESTRUCTINFO_COMLUNM(aid)
     TABLESTRUCTINFO_COMLUNM(duration)
-    TABLESTRUCTINFO_COMLUNM(type)
+    TABLESTRUCTINFO_COMLUNM(fileType)
     TABLESTRUCTINFO_COMLUNM(fileExist)
+    TABLESTRUCTINFO_COMLUNM(fileExtension)
 TABLESTRUCTINFO_END(FinishedItem)
 // clang-format on
 

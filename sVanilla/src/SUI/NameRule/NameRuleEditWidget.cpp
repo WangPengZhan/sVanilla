@@ -9,6 +9,16 @@ NameRuleEditWidget::NameRuleEditWidget(QWidget* parent)
     setAcceptDrops(true);
 }
 
+void NameRuleEditWidget::setRules(const QMap<QString, QString>& rules)
+{
+    m_rules = rules;
+}
+
+const QMap<QString, QString>& NameRuleEditWidget::rules() const
+{
+    return m_rules;
+}
+
 void NameRuleEditWidget::dragMoveEvent(QDragMoveEvent* event)
 {
     event->setDropAction(Qt::MoveAction);
@@ -32,8 +42,13 @@ void NameRuleEditWidget::dropEvent(QDropEvent* event)
 
 void NameRuleEditWidget::appendRule(const QString& rule)
 {
-    const auto previousText = text();
-    const auto addText = previousText + "$" + rule + "$";
+    QString showRule = rule;
+    if (m_rules.find(rule) != m_rules.end())
+    {
+        showRule = m_rules[rule];
+    }
+
+    const auto addText = text() + showRule;
     setText(addText);
     emit textChanged(addText);
 }

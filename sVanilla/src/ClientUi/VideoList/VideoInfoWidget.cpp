@@ -44,7 +44,15 @@ void VideoInfoWidget::updateUi()
     ui->labelDescription->setText(QString::fromStdString(m_infoFull->videoView->Description));
 
     QSignalBlocker blockerNameRule(ui->fileNameRule);
-    ui->fileNameRule->init(m_infoFull->nameRules());
+    std::unordered_map<std::string, std::string> rules(VideoInfoFull::ruleMap.begin(), VideoInfoFull::ruleMap.end());
+    ui->fileNameRule->init(rules);
+    ui->fileNameRule->setParseNameRulesFunction([this](const std::string& text) {
+        if (!m_infoFull)
+        {
+            return text;
+        }
+        return m_infoFull->parseNameRules(text);
+    });
     ui->fileNameRule->updateLineEdit(QString::fromStdString(m_infoFull->downloadConfig->nameRule));
 
     QString downloadDir = QString::fromStdString(m_infoFull->downloadConfig->downloadDir);

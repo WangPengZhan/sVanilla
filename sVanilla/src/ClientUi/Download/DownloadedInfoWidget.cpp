@@ -31,7 +31,7 @@ void DownloadedInfoWidget::updateUi(const std::shared_ptr<VideoInfoFull>& videoI
     ui->labelDuration->setText(QString::fromStdString(videoInfo->videoView->Duration));
     ui->labelPublishDate->setText(QString::fromStdString(videoInfo->videoView->PublishDate));
     ui->labelDescription->setText(QString::fromStdString(videoInfo->videoView->Description));
-    QString fileName = QString::fromStdString(videoInfo->fileName()) + ".mp4";
+    QString fileName = QString::fromStdString(videoInfo->fileName());
     QString downloadDir = QString::fromStdString(videoInfo->downloadConfig->downloadDir);
     ui->labelFilePath->setText(fileName);
     ui->labelFolderPath->setText(downloadDir);
