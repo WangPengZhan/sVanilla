@@ -35,6 +35,7 @@ void attachConsole()
         static std::shared_ptr<FILE> ptr(fDummy, [](FILE* fDummy) {
             if (fDummy)
             {
+                std::cout << std::endl;
                 fclose(fDummy);
             }
         });
@@ -114,7 +115,6 @@ public:
         m_realDownloader->finish();
         setStatus(Finished);
         m_progressBar.set_option(indicators::option::PostfixText{"Finished"});
-        m_progressBar.set_progress(100);
         m_progressBar.mark_as_completed();
     }
 
@@ -311,12 +311,13 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
 
                 std::string marker = is_header ? "   " : (is_selected ? " > " : "   ");
                 ftxui::Elements columns;
-                columns.push_back(ftxui::text(marker) | (is_selected ? ftxui::bold : ftxui::dim));
-                columns.push_back(ftxui::text(columnData[0]) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80));
+                ftxui::Color markerColor = is_selected ? ftxui::Color::Green : ftxui::Color::White;
+                columns.push_back(ftxui::text(marker) | (is_selected ? ftxui::bold : ftxui::dim) | ftxui::color(markerColor));
+                columns.push_back(ftxui::text(columnData[0]) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::color(markerColor));
                 for (size_t j = 1; j < columnData.size(); ++j)
                 {
                     columns.push_back(ftxui::text(" "));
-                    columns.push_back(ftxui::text(columnData[j]) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 16));
+                    columns.push_back(ftxui::text(columnData[j]) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 16) | ftxui::color(markerColor));
                 }
                 auto line = ftxui::hbox(std::move(columns));
                 tableRows.push_back(line);

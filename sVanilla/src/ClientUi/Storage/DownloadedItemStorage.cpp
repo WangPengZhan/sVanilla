@@ -17,8 +17,9 @@ int DownloadedItem::bind(sqlite::SQLiteStatement& stmt) const
     stmt.bind(index++, cid);
     stmt.bind(index++, aid);
     stmt.bind(index++, duration);
-    stmt.bind(index++, type);
+    stmt.bind(index++, fileType);
     stmt.bind(index++, fileExist);
+    stmt.bind(index++, fileExtension);
 
     return index;
 }
@@ -37,8 +38,9 @@ void DownloadedItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
     cid = stmt.column(index++).getString();
     aid = stmt.column(index++).getString();
     duration = stmt.column(index++);
-    type = stmt.column(index++);
+    fileType = stmt.column(index++);
     fileExist = stmt.column(index++).getInt() != 0;
+    fileExtension = stmt.column(index++).getString();
 }
 
 bool DownloadedItemStorage::isDownload(const std::string& guid)

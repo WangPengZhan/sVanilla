@@ -16,7 +16,8 @@ int DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
     stmt.bind(index++, progress);
     stmt.bind(index++, duration);
     stmt.bind(index++, status);
-    stmt.bind(index++, type);
+    stmt.bind(index++, fileType);
+    stmt.bind(index++, fileExtension);
 
     return index;
 }
@@ -37,7 +38,8 @@ void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
     progress = stmt.column(index++);
     duration = stmt.column(index++);
     status = stmt.column(index++);
-    type = stmt.column(index++);
+    fileType = stmt.column(index++);
+    fileExtension = stmt.column(index++).getString();
 }
 
 void DownloadingItemStorage::updateStatus(int status, const sqlite::ConditionWrapper& condition)

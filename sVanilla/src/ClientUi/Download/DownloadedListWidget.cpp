@@ -76,7 +76,7 @@ void DownloadedItemWidget::reloadItem()
 
 void DownloadedItemWidget::updateStatus()
 {
-    QString fileName = QString::fromStdString(m_videoInfoFull->fileName()) + ".mp4";
+    QString fileName = QString::fromStdString(m_videoInfoFull->fileName());
     QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir) + "/" + fileName;
     QFileInfo fileInfo(filePath);
     ui->labelSize->setText(formatSize(fileInfo.size()));
@@ -109,7 +109,7 @@ void DownloadedItemWidget::setUi()
     ui->labelPublisher->setText(QString::fromStdString(m_videoInfoFull->videoView->Publisher));
     ui->labelDuration->setText(QString::fromStdString(m_videoInfoFull->videoView->Duration));
     ui->labelPublishDate->setText(QString::fromStdString(m_videoInfoFull->videoView->PublishDate));
-    QString fileName = QString::fromStdString(m_videoInfoFull->fileName()) + ".mp4";
+    QString fileName = QString::fromStdString(m_videoInfoFull->fileName());
     QString filePath = QString::fromStdString(m_videoInfoFull->downloadConfig->downloadDir) + "/" + fileName;
     QFileInfo fileInfo(filePath);
     ui->labelSize->setText(formatSize(fileInfo.size()));
@@ -170,7 +170,6 @@ void DownloadedItemWidget::openItemFolder()
         filePath += "/";
         filePath += QString::fromStdString(m_videoInfoFull->fileName());
     }
-    filePath += ".mp4";
 
     if (std::filesystem::path(filePath.toLocal8Bit().toStdString()).is_relative())
     {

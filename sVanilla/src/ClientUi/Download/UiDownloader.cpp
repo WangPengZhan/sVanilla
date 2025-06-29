@@ -111,7 +111,7 @@ void UiDownloader::createDbDownloadingItem()
 {
     DownloadingItem item;
     item.uniqueId = guid();
-    item.pluginType = 0;
+    item.pluginType = m_videoInfoFull->videoView->pluginType;
     item.filePath = filename();
     item.coverPath = m_videoInfoFull->videoView->Cover;
     item.bvid = m_videoInfoFull->videoView->Identifier;
@@ -123,7 +123,8 @@ void UiDownloader::createDbDownloadingItem()
     item.duration = std::stoi(m_videoInfoFull->videoView->Duration);
     item.progress = 0;
     item.status = static_cast<int>(status());
-    item.type = 0;
+    item.fileType = m_videoInfoFull->videoView->fileType;
+    item.fileExtension = m_videoInfoFull->videoView->fileExtension;
     m_storageManager.downloadingStorage()->insertEntities<DownloadingItem>({item});
 }
 
@@ -150,7 +151,7 @@ void UiDownloader::ctreateDbFinishedItem()
 {
     DownloadedItem item;
     item.uniqueId = guid();
-    item.pluginType = 0;
+    item.pluginType = m_videoInfoFull->videoView->pluginType;
     item.filePath = filename();
     item.coverPath = m_videoInfoFull->videoView->Cover;
     item.bvid = m_videoInfoFull->videoView->Identifier;
@@ -160,7 +161,8 @@ void UiDownloader::ctreateDbFinishedItem()
     item.cid = m_videoInfoFull->videoView->VideoId;
     item.aid = m_videoInfoFull->videoView->AlternateId;
     item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
-    item.type = 0;
+    item.fileType = m_videoInfoFull->videoView->fileType;
     item.fileExist = true;
+    item.fileExtension = m_videoInfoFull->videoView->fileExtension;
     m_storageManager.downloadedItemStorage()->insertEntities<DownloadedItem>({item});
 }

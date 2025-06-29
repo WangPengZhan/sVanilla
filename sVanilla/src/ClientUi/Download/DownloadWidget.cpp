@@ -13,6 +13,7 @@
 #include "VideoList/VideoData.h"
 #include "Utils/UrlProcess.h"
 #include "Utils/RunTask.h"
+#include "Util/TimerUtil.h"
 #include "Storage/StorageManager.h"
 #include "Config/SingleConfig.h"
 #include "Download/DownloadedListWidget.h"
@@ -98,13 +99,16 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::downloadingItemToVideoInfoFull(co
     res->downloadConfig->downloadDir = info.absolutePath().toStdString();
     res->downloadConfig->nameRule = info.completeBaseName().toStdString();
     res->videoView = std::make_shared<adapter::BaseVideoView>();
+    res->videoView->pluginType = item.pluginType;
+    res->videoView->fileType = static_cast<adapter::FileType>(item.fileType);
     res->videoView->AlternateId = item.aid;
     res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
     res->videoView->Identifier = item.bvid;
     res->videoView->Title = item.title;
     res->videoView->Publisher = item.auther;
-    res->videoView->Duration = std::to_string(item.duration);
+    res->videoView->Duration = formatDuration(item.duration);
+    res->videoView->fileExtension = item.fileExtension;
     return res;
 }
 
@@ -116,13 +120,16 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const D
     res->downloadConfig->downloadDir = info.absolutePath().toStdString();
     res->downloadConfig->nameRule = info.completeBaseName().toStdString();
     res->videoView = std::make_shared<adapter::BaseVideoView>();
+    res->videoView->pluginType = item.pluginType;
+    res->videoView->fileType = static_cast<adapter::FileType>(item.fileType);
     res->videoView->AlternateId = item.aid;
     res->videoView->VideoId = item.cid;
     res->videoView->Cover = item.coverPath;
     res->videoView->Identifier = item.bvid;
     res->videoView->Title = item.title;
     res->videoView->Publisher = item.auther;
-    res->videoView->Duration = std::to_string(item.duration);
+    res->videoView->Duration = formatDuration(item.duration);
+    res->videoView->fileExtension = item.fileExtension;
     return res;
 }
 
