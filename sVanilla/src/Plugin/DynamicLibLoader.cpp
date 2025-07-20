@@ -85,16 +85,17 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
     auto initDir = reinterpret_cast<void (*)(const char*)>(loadSymbol(m_libHandle, "initDir"));
     auto pluginDeinit = reinterpret_cast<void (*)(IPlugin*)>(loadSymbol(m_libHandle, "pluginDeinit"));
     m_deinit = reinterpret_cast<void (*)()>(loadSymbol(m_libHandle, "deinit"));
-    if (pluginInit)
-    {
-        res.reset(pluginInit(), pluginDeinit);
-    }
 
     if (initDir)
     {
         const auto& configDir = PluginManager::configDir();
         std::string dir = (configDir.back() == '/' || configDir.back() == '\\') ? configDir : configDir + "/";
         initDir(dir.data());
+    }
+
+    if (pluginInit)
+    {
+        res.reset(pluginInit(), pluginDeinit);
     }
 
     return res;
