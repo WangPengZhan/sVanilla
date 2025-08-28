@@ -1,6 +1,5 @@
 function(apptranslate QT_COMPMENTS)
     set(QT_TRANSLATES_DIR ${Qt${QT_VERSION_MAJOR}_DIR}/../../../translations)
-    message("QT_TRANSLATE ${QT_TRANSLATE}")
     set(LANGUAGES
         zh_CN
         en
@@ -40,11 +39,10 @@ function(apptranslate QT_COMPMENTS)
     endforeach()
 endfunction()
 
-function(apptranslate_copy TS_FILES LANGUAGE)
-    foreach(TS_FILE ${TS_FILES})
-        get_filename_component(QM_FILENAME ${TS_FILE} NAME_WE)
-        set(QM_FILE ${CMAKE_CURRENT_BINARY_DIR}/${QM_FILENAME}.qm)
-        if (EXISTS ${QM_FILE})
+function(apptranslate_copy QM_FILES LANGUAGE)
+    foreach(QM_FILE ${QM_FILES})
+        get_filename_component(QM_FILENAME ${QM_FILE} NAME_WE)
+        if ("${QM_FILENAME}" MATCHES "_${LANGUAGE}$")
             add_custom_command(TARGET ${PROJECT_NAME} 
                 POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E make_directory 
