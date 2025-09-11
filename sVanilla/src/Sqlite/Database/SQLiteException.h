@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "SQLiteColunm.h"
+#include "SQLiteColumn.h"
 #include "SQLiteDatabase.h"
 
 struct sqlite3;

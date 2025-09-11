@@ -5,7 +5,7 @@
 
 struct CookiesInfo
 {
-    int pluginType{};
+    int pluginId{};
     std::string domain;
     int64_t updateTimestamp{};
     std::string cookie;
@@ -19,12 +19,12 @@ struct CookiesInfo
 
 // clang-format off
 TABLESTRUCTINFO_BEGIN(CookiesInfo)
-    TABLESTRUCTINFO_COMLUNM(pluginType, pluginType, false, false, true)
-    TABLESTRUCTINFO_COMLUNM(domain, domain, false, false, true)
-    TABLESTRUCTINFO_COMLUNM(updateTimestamp)
-    TABLESTRUCTINFO_COMLUNM(cookie)
-    TABLESTRUCTINFO_COMLUNM(expires)
-    TABLESTRUCTINFO_COMLUNM(storedata)
+    TABLESTRUCTINFO_COLUMN(pluginId, pluginId, false, false, true)
+    TABLESTRUCTINFO_COLUMN(domain, domain, false, false, true)
+    TABLESTRUCTINFO_COLUMN(updateTimestamp)
+    TABLESTRUCTINFO_COLUMN(cookie)
+    TABLESTRUCTINFO_COLUMN(expires)
+    TABLESTRUCTINFO_COLUMN(storedata)
 TABLESTRUCTINFO_END(CookiesInfo)
 // clang-format on
 
@@ -38,7 +38,7 @@ public:
 
     bool insertOrUpdate(const Entity& entity);
 
-    bool havePlugin(int pluginType, const std::string& domain);
+    bool havePlugin(int pluginId, const std::string& domain);
 
     std::vector<Entity> allItems();
 };

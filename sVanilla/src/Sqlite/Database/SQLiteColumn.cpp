@@ -3,7 +3,7 @@
 
 #include "SQLiteStatement.h"
 #include "Sqlite/SQLiteLog.h"
-#include "SQLiteColunm.h"
+#include "SQLiteColumn.h"
 
 namespace sqlite
 {
@@ -46,11 +46,11 @@ std::stringstream& conditionString(std::stringstream& ss, const SqliteColumnValu
     return ss;
 }
 
-SqliteColumn::SqliteColumn(SqliteColumnValue value, int index, std::string colunmName, std::string originOriginName)
+SqliteColumn::SqliteColumn(SqliteColumnValue value, int index, std::string columnName, std::string originOriginName)
     : m_value(std::move(value))
     , m_index(index)
-    , m_colunmName(std::move(colunmName))
-    , m_originColunmName(std::move(originOriginName))
+    , m_columnName(std::move(columnName))
+    , m_originColumnName(std::move(originOriginName))
 
 {
 }
@@ -62,12 +62,12 @@ SqliteColumn::SqliteColumn(SqliteColumnValue value)
 
 const std::string& SqliteColumn::getName() const
 {
-    return m_colunmName;
+    return m_columnName;
 }
 
 const std::string& SqliteColumn::getOriginName() const
 {
-    return m_originColunmName;
+    return m_originColumnName;
 }
 
 const SqliteColumnValue& SqliteColumn::value() const
@@ -138,9 +138,9 @@ double SqliteColumn::getDouble() const noexcept
     return res;
 }
 
-std::string SqliteColumn::getText(const std::string& defalutValue) const
+std::string SqliteColumn::getText(const std::string& defaultValue) const
 {
-    std::string res = defalutValue;
+    std::string res = defaultValue;
     std::visit(
         [&res](auto&& elem) {
             if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, std::string>)

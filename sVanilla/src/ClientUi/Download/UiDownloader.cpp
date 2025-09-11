@@ -14,7 +14,7 @@ UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, std::
     , m_videoInfoFull(std::move(videoInfoFull))
     , m_storageManager(sqlite::StorageManager::instance())
 {
-    setStatus(Waitting);
+    setStatus(Waiting);
     m_guid = m_videoInfoFull->getGuid();
     createDbDownloadingItem();
 }
@@ -102,7 +102,7 @@ void UiDownloader::finish()
     m_realDownloader->finish();
 
     deleteDbDownloadingItem();
-    ctreateDbFinishedItem();
+    createDbFinishedItem();
 
     emit finished(QString());
 }
@@ -111,15 +111,17 @@ void UiDownloader::createDbDownloadingItem()
 {
     DownloadingItem item;
     item.uniqueId = guid();
-    item.pluginType = m_videoInfoFull->videoView->pluginType;
+    item.pluginId = m_videoInfoFull->videoView->pluginId;
     item.filePath = filename();
     item.coverPath = m_videoInfoFull->videoView->Cover;
-    item.bvid = m_videoInfoFull->videoView->Identifier;
+    item.id = m_videoInfoFull->videoView->Identifier;
+    item.idType = m_videoInfoFull->videoView->IdType;
     item.title = m_videoInfoFull->videoView->Title;
-    item.auther = m_videoInfoFull->videoView->Publisher;
-    item.url = "https://www.bilibili.com/video/" + item.bvid;
-    item.cid = m_videoInfoFull->videoView->VideoId;
-    item.aid = m_videoInfoFull->videoView->AlternateId;
+    item.author = m_videoInfoFull->videoView->Publisher;
+    item.url = "https://www.bilibili.com/video/" + item.id;
+    item.option1 = m_videoInfoFull->videoView->Option1;
+    item.option2 = m_videoInfoFull->videoView->Option2;
+    item.option3 = m_videoInfoFull->videoView->Option3;
     item.duration = std::stoi(m_videoInfoFull->videoView->Duration);
     item.progress = 0;
     item.status = static_cast<int>(status());
@@ -147,19 +149,21 @@ void UiDownloader::deleteDbDownloadingItem()
     m_storageManager.downloadingStorage()->deleteEntities(condition);
 }
 
-void UiDownloader::ctreateDbFinishedItem()
+void UiDownloader::createDbFinishedItem()
 {
     DownloadedItem item;
     item.uniqueId = guid();
-    item.pluginType = m_videoInfoFull->videoView->pluginType;
+    item.pluginId = m_videoInfoFull->videoView->pluginId;
     item.filePath = filename();
     item.coverPath = m_videoInfoFull->videoView->Cover;
-    item.bvid = m_videoInfoFull->videoView->Identifier;
+    item.id = m_videoInfoFull->videoView->Identifier;
+    item.idType = m_videoInfoFull->videoView->IdType;
     item.title = m_videoInfoFull->videoView->Title;
-    item.auther = m_videoInfoFull->videoView->Publisher;
-    item.url = "https://www.bilibili.com/video/" + item.bvid;
-    item.cid = m_videoInfoFull->videoView->VideoId;
-    item.aid = m_videoInfoFull->videoView->AlternateId;
+    item.author = m_videoInfoFull->videoView->Publisher;
+    item.url = "https://www.bilibili.com/video/" + item.id;
+    item.option1 = m_videoInfoFull->videoView->Option1;
+    item.option2 = m_videoInfoFull->videoView->Option2;
+    item.option3 = m_videoInfoFull->videoView->Option3;
     item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
     item.fileType = m_videoInfoFull->videoView->fileType;
     item.fileExist = true;

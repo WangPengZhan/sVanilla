@@ -267,7 +267,7 @@ ConditionWrapper& ConditionWrapper::addCondition(const ColumnInfo& column, Condi
         strValue += "%";
     }
 
-    PrepareInfo prepareInfo = {column.colunmName(), condition, value};
+    PrepareInfo prepareInfo = {column.columnName(), condition, value};
     mergeOptimization(prepareInfo);
     m_conditionInfos.emplace_back(prepareInfo);
 
@@ -299,7 +299,7 @@ ConditionWrapper& ConditionWrapper::popCondition(const std::string& colName)
 
 ConditionWrapper& ConditionWrapper::popCondition(const ColumnInfo& colInfo)
 {
-    return popCondition(colInfo.colunmName());
+    return popCondition(colInfo.columnName());
 }
 
 bool ConditionWrapper::contain(const std::string& colName) const
@@ -329,10 +329,10 @@ bool ConditionWrapper::contain(const std::string& colName) const
 
 bool ConditionWrapper::contain(const ColumnInfo& col) const
 {
-    return contain(col.colunmName());
+    return contain(col.columnName());
 }
 
-std::unordered_set<std::string> ConditionWrapper::colunmNames() const
+std::unordered_set<std::string> ConditionWrapper::columnNames() const
 {
     return std::unordered_set<std::string>();
 }

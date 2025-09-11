@@ -76,7 +76,7 @@ void LoginMonitor::monitorStatus()
             break;
         }
         case AbstractLoginApi::NoScan:
-        case AbstractLoginApi::ScanedNoAck:
+        case AbstractLoginApi::ScannedNoAck:
         default:
             emit sigLoginStatus(loginStatus);
             break;

@@ -24,7 +24,7 @@ public:
     explicit LoginDialog(std::shared_ptr<LoginProxy> loginer, QDialog* parent = nullptr);
     ~LoginDialog();
 
-    void slotStatusChanged(AbstractLoginApi::LoginSatus status);
+    void slotStatusChanged(AbstractLoginApi::LoginStatus status);
     void slotBtnRefreshClicked();
     static void writeCookieToDb(const AbstractLogin& login);
 
@@ -42,7 +42,7 @@ private:
     Ui::LoginDialog* ui;
     LoginMonitor* m_monitor;
     std::shared_ptr<LoginProxy> m_loginer;
-    AbstractLoginApi::LoginSatus m_status;
+    AbstractLoginApi::LoginStatus m_status;
     std::string m_context;
     QMovie m_movie;
     QBuffer m_buffer;

@@ -45,7 +45,7 @@ LoginDialog::~LoginDialog()
     delete ui;
 }
 
-void LoginDialog::slotStatusChanged(AbstractLoginApi::LoginSatus status)
+void LoginDialog::slotStatusChanged(AbstractLoginApi::LoginStatus status)
 {
     if (status == m_status)
     {
@@ -61,19 +61,19 @@ void LoginDialog::slotStatusChanged(AbstractLoginApi::LoginSatus status)
     {
     case AbstractLoginApi::Error:
     {
-        MLogI(svanilla::cLoginModule, "LoginSatus Error!");
+        MLogI(svanilla::cLoginModule, "LoginStatus Error!");
         auto svgContext = realLogin->resource(AbstractLoginApi::Refresh);
         auto pixmap = util::binToImage(svgContext, ui->btnRefresh->size());
         QIcon icon(pixmap);
         ui->btnRefresh->setIcon(icon);
-        ui->labelStrTip->setText(tr("Error occured, you can refresh QR code"));
+        ui->labelStrTip->setText(tr("Error occurred, you can refresh QR code"));
         ui->btnRefresh->show();
         ui->btnRefresh->raise();
         break;
     }
     case AbstractLoginApi::Timeout:
     {
-        MLogI(svanilla::cLoginModule, "LoginSatus Timeout!");
+        MLogI(svanilla::cLoginModule, "LoginStatus Timeout!");
         auto svgContext = realLogin->resource(AbstractLoginApi::Refresh);
         auto pixmap = util::binToImage(svgContext, ui->btnRefresh->iconSize());
         QIcon icon(pixmap);
@@ -83,21 +83,21 @@ void LoginDialog::slotStatusChanged(AbstractLoginApi::LoginSatus status)
         ui->btnRefresh->raise();
         break;
     }
-    case AbstractLoginApi::ScanedNoAck:
+    case AbstractLoginApi::ScannedNoAck:
     {
-        MLogI(svanilla::cLoginModule, "LoginSatus ScanedNoAck!");
+        MLogI(svanilla::cLoginModule, "LoginStatus ScannedNoAck!");
         auto svgContext = realLogin->resource(AbstractLoginApi::WaitConfirm);
         auto pixmap = util::binToImage(svgContext, ui->btnRefresh->iconSize());
         QIcon icon(pixmap);
         ui->btnRefresh->setIcon(icon);
-        ui->labelStrTip->setText(tr("Scaned, please confirm it in app"));
+        ui->labelStrTip->setText(tr("Scanned, please confirm it in app"));
         ui->btnRefresh->show();
         ui->btnRefresh->raise();
         break;
     }
     case AbstractLoginApi::Success:
     {
-        MLogI(svanilla::cLoginModule, "LoginSatus Success!");
+        MLogI(svanilla::cLoginModule, "LoginStatus Success!");
         realLogin->loginSuccess();
         writeCookieToDb(*realLogin);
         QTimer::singleShot(1000, this, [this] {
@@ -222,7 +222,7 @@ void LoginDialog::loadOrc()
 void LoginDialog::writeCookieToDb(const AbstractLogin& login)
 {
     CookiesInfo cookiesInfo;
-    cookiesInfo.pluginType = login.type();
+    cookiesInfo.pluginId = login.pluginId();
     cookiesInfo.updateTimestamp = std::chrono::system_clock::now().time_since_epoch().count();
     cookiesInfo.cookie = login.cookies();
 

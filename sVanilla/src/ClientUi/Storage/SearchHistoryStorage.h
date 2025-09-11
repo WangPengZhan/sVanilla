@@ -6,7 +6,7 @@
 struct SearchHistory
 {
     std::string url;
-    int pluginType;
+    int pluginId;
     int64_t timestamp;
     int searchTimes{};
 
@@ -17,10 +17,10 @@ struct SearchHistory
 
 // clang-format off
 TABLESTRUCTINFO_BEGIN(SearchHistory)
-    TABLESTRUCTINFO_COMLUNM(url, url, false, true, true)
-    TABLESTRUCTINFO_COMLUNM(pluginType)
-    TABLESTRUCTINFO_COMLUNM(timestamp)
-    TABLESTRUCTINFO_COMLUNM(searchTimes)
+    TABLESTRUCTINFO_COLUMN(url, url, false, true, true)
+    TABLESTRUCTINFO_COLUMN(pluginId)
+    TABLESTRUCTINFO_COLUMN(timestamp)
+    TABLESTRUCTINFO_COLUMN(searchTimes)
 TABLESTRUCTINFO_END(SearchHistory)
 // clang-format on
 
@@ -30,7 +30,7 @@ public:
     using Entity = SearchHistory;
     using BaseStorage::BaseStorage;
 
-    bool insertOrUpdate(const std::string& url, int pluginType);
+    bool insertOrUpdate(const std::string& url, int pluginId);
     std::vector<std::string> allItems();
 
     static constexpr int maxNum = 20;

@@ -17,7 +17,7 @@ public:
     DownloadStatusThread();
     ~DownloadStatusThread();
 
-    bool addTaks(std::shared_ptr<AbstractDownloader> downloader);
+    bool addTask(std::shared_ptr<AbstractDownloader> downloader);
 
     void stop();
 

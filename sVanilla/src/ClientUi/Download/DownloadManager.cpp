@@ -12,5 +12,5 @@ DownloadManager::DownloadManager(QObject* parent)
 
 void DownloadManager::addItem(std::shared_ptr<download::AbstractDownloader> downloader)
 {
-    sApp->downloadThread().addTaks(downloader);
+    sApp->downloadThread().addTask(downloader);
 }

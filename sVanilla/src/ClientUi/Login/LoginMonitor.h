@@ -35,7 +35,7 @@ public:
     void stop();
 
 signals:
-    void sigLoginStatus(AbstractLoginApi::LoginSatus status);
+    void sigLoginStatus(AbstractLoginApi::LoginStatus status);
 
 protected:
     void monitorStatus();
