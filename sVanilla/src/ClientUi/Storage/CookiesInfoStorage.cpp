@@ -3,7 +3,7 @@
 int CookiesInfo::bind(sqlite::SQLiteStatement& stmt) const
 {
     int index = 1;
-    stmt.bind(index++, pluginType);
+    stmt.bind(index++, pluginId);
     stmt.bind(index++, domain);
     stmt.bind(index++, updateTimestamp);
     stmt.bind(index++, cookie);
@@ -16,7 +16,7 @@ int CookiesInfo::bind(sqlite::SQLiteStatement& stmt) const
 void CookiesInfo::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 {
     int index = startIndex;
-    pluginType = stmt.column(index++);
+    pluginId = stmt.column(index++);
     domain = stmt.column(index++).getString();
     updateTimestamp = stmt.column(index++);
     cookie = stmt.column(index++).getString();
@@ -28,7 +28,7 @@ CookiesInfoStorage::Entity CookiesInfoStorage::getCookiesInfo(int pluginId)
 {
     auto& tableStruct = sqlite::TableStructInfo<typename CookiesInfoStorage::Entity>::self();
     sqlite::ConditionWrapper condition;
-    condition.addCondition(tableStruct.pluginType, sqlite::Condition::EQUALS, pluginId);
+    condition.addCondition(tableStruct.pluginId, sqlite::Condition::EQUALS, pluginId);
     auto entities = queryEntities<Entity>(0, 10, condition);
     if (entities.empty())
     {
@@ -48,7 +48,7 @@ std::vector<CookiesInfoStorage::Entity> CookiesInfoStorage::allItems()
 
 bool CookiesInfoStorage::insertOrUpdate(const Entity& entity)
 {
-    if (havePlugin(entity.pluginType, entity.domain))
+    if (havePlugin(entity.pluginId, entity.domain))
     {
         sqlite::SqliteUtil::updateEntities<Entity>(m_writeDBPtr, tableName(), {entity});
     }
@@ -60,11 +60,11 @@ bool CookiesInfoStorage::insertOrUpdate(const Entity& entity)
     return true;
 }
 
-bool CookiesInfoStorage::havePlugin(int pluginType, const std::string& domain)
+bool CookiesInfoStorage::havePlugin(int pluginId, const std::string& domain)
 {
     auto& tableStruct = sqlite::TableStructInfo<Entity>::self();
     sqlite::ConditionWrapper condition;
-    condition.addCondition(tableStruct.pluginType, sqlite::Condition::EQUALS, pluginType);
+    condition.addCondition(tableStruct.pluginId, sqlite::Condition::EQUALS, pluginId);
     condition.addCondition(tableStruct.domain, sqlite::Condition::EQUALS, domain);
     int size = sqlite::SqliteUtil::queryEntities<Entity>(m_readDBPtr, tableName(), condition).size();
     return size > 0;

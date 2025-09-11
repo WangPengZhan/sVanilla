@@ -55,7 +55,7 @@ void DownloadWidget::addDownloadTask(std::shared_ptr<VideoInfoFull> videoInfo)
     copyedVideoInfo->downloadConfig = std::make_shared<DownloadConfig>(*(videoInfo->downloadConfig));
     MLogI(svanilla::cDownloadModule, "addDownloadTask guid: {}, filename: {}", videoInfo->getGuid(), videoInfo->fileName());
     auto taskFunc = [this, copyedVideoInfo]() {
-        auto plugin = sApp->pluginManager().getPlugin(copyedVideoInfo->videoView->pluginType);
+        auto plugin = sApp->pluginManager().getPlugin(copyedVideoInfo->videoView->pluginId);
         if (!plugin)
         {
             return std::shared_ptr<download::FileDownloader>{};
@@ -99,14 +99,16 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::downloadingItemToVideoInfoFull(co
     res->downloadConfig->downloadDir = info.absolutePath().toStdString();
     res->downloadConfig->nameRule = info.completeBaseName().toStdString();
     res->videoView = std::make_shared<adapter::BaseVideoView>();
-    res->videoView->pluginType = item.pluginType;
+    res->videoView->pluginId = item.pluginId;
     res->videoView->fileType = static_cast<adapter::FileType>(item.fileType);
-    res->videoView->AlternateId = item.aid;
-    res->videoView->VideoId = item.cid;
+    res->videoView->Identifier = item.id;
+    res->videoView->IdType = item.idType;
     res->videoView->Cover = item.coverPath;
-    res->videoView->Identifier = item.bvid;
     res->videoView->Title = item.title;
-    res->videoView->Publisher = item.auther;
+    res->videoView->Publisher = item.author;
+    res->videoView->Option1 = item.option1;
+    res->videoView->Option2 = item.option2;
+    res->videoView->Option3 = item.option3;
     res->videoView->Duration = formatDuration(item.duration);
     res->videoView->fileExtension = item.fileExtension;
     return res;
@@ -120,14 +122,16 @@ std::shared_ptr<VideoInfoFull> DownloadWidget::finishItemToVideoInfoFull(const D
     res->downloadConfig->downloadDir = info.absolutePath().toStdString();
     res->downloadConfig->nameRule = info.completeBaseName().toStdString();
     res->videoView = std::make_shared<adapter::BaseVideoView>();
-    res->videoView->pluginType = item.pluginType;
+    res->videoView->pluginId = item.pluginId;
     res->videoView->fileType = static_cast<adapter::FileType>(item.fileType);
-    res->videoView->AlternateId = item.aid;
-    res->videoView->VideoId = item.cid;
+    res->videoView->Option1 = item.option1;
+    res->videoView->Option2 = item.option2;
+    res->videoView->Option3 = item.option3;
     res->videoView->Cover = item.coverPath;
-    res->videoView->Identifier = item.bvid;
+    res->videoView->Identifier = item.id;
+    res->videoView->IdType = item.idType;
     res->videoView->Title = item.title;
-    res->videoView->Publisher = item.auther;
+    res->videoView->Publisher = item.author;
     res->videoView->Duration = formatDuration(item.duration);
     res->videoView->fileExtension = item.fileExtension;
     return res;

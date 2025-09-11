@@ -3,7 +3,7 @@
 #include <vector>
 #include <type_traits>
 
-#include "Sqlite/Database/SQLiteColunm.h"
+#include "Sqlite/Database/SQLitecolumn.h"
 #include "Base/MacroTool.h"
 
 namespace sqlite
@@ -296,16 +296,16 @@ FieldType getFieldType()
 class ColumnInfo
 {
 public:
-    ColumnInfo(std::string columnName, bool autoIncremnet = false, bool unique = false);
-    ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos, bool autoIncremnet = false,
+    ColumnInfo(std::string columnName, bool autoIncrement = false, bool unique = false);
+    ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos, bool autoIncrement = false,
                bool unique = false);
 
     template <typename Entity, typename ValueType>
-    ColumnInfo(std::string columnName, ValueType Entity::*memberPtr, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
-               bool autoIncremnet, bool unique, bool primaryKey)
+    ColumnInfo(std::string columnName, ValueType Entity::* memberPtr, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
+               bool autoIncrement, bool unique, bool primaryKey)
         : m_columnName(std::move(columnName))
         , m_fieldType(getFieldType<ValueType>())
-        , m_autoIncrement(autoIncremnet)
+        , m_autoIncrement(autoIncrement)
         , m_unique(unique)
         , m_pColumnInfos(pColumnInfos)
         , m_pPrimaryKeyColumnInfos(pPrimaryKeyColumnInfos)
@@ -321,7 +321,7 @@ public:
             pColumnInfos->push_back(this);
         }
 
-        if (pPrimaryKeyColumnInfos && (autoIncremnet || primaryKey))
+        if (pPrimaryKeyColumnInfos && (autoIncrement || primaryKey))
         {
             pPrimaryKeyColumnInfos->push_back(this);
         }
@@ -336,8 +336,8 @@ public:
 
     int valueTypeIndex() const;
 
-    std::string colunmSql() const;
-    const std::string& colunmName() const;
+    std::string columnSql() const;
+    const std::string& columnName() const;
 
 private:
     std::string m_columnName;
@@ -353,7 +353,7 @@ private:
 class BaseTableStructInfo
 {
 public:
-    size_t colunmCount() const;
+    size_t columnCount() const;
     ColumnInfo& columnInfo(int index) const;
 
     void addColumn(ColumnInfo* col);
@@ -365,18 +365,18 @@ public:
     std::string createSql() const;
     std::string prepareSql() const;
     std::string insertPrepareSql() const;
-    std::string colunmsSql() const;
+    std::string columnsSql() const;
     std::string updatePrepareSql() const;
     std::string primaryKeyPrepareSql() const;
 
 protected:
     std::vector<ColumnInfo*> m_columnInfos;
-    std::vector<ColumnInfo*> m_primaryColunmInfos;
+    std::vector<ColumnInfo*> m_primarycolumnInfos;
 
     mutable std::string m_createSql;
     mutable std::string m_prepareSql;
     mutable std::string m_insertPrepareSql;
-    mutable std::string m_colunmsSql;
+    mutable std::string m_columnsSql;
     mutable std::string m_updatePrepareSql;
     mutable std::string m_primaryKeyPrepareSql;
 };
@@ -413,7 +413,7 @@ template <>
 class TableStructInfo<FinishedItem> : public BaseTableStructInfo
 {
 public:
-    ColumnInfo m_uniqueId = ColumnInfo(std::string(""), &FinishedItem::uniqueId, &m_columnInfos, &m_primaryColunmInfos, false, false, false);
+    ColumnInfo m_uniqueId = ColumnInfo(std::string(""), &FinishedItem::uniqueId, &m_columnInfos, &m_primarycolumnInfos, false, false, false);
 
 public:
     static const TableStructInfo<FinishedItem>& self()
@@ -444,7 +444,7 @@ public:
     IndexColInfo(std::string colName, std::vector<IndexAttribute> attr = {});
 
     std::string indexSql() const;
-    const std::string& colunmName() const;
+    const std::string& columnName() const;
 
 private:
     std::string m_colName;
@@ -474,13 +474,13 @@ protected:\
     ~TableStructInfo() = default;\
 public:
 
-#define TABLESTRUCTINFO_COMLUNM_5(type, colunmName, autoIncremnet, unique, primaryKey) \
-    ColumnInfo type = ColumnInfo(STR(colunmName), &StructType::type, &m_columnInfos, &m_primaryColunmInfos, autoIncremnet, unique, primaryKey);
-#define TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, unique) TABLESTRUCTINFO_COMLUNM_5(type, colunmName, autoIncremnet, unique, false)
-#define TABLESTRUCTINFO_COMLUNM_3(type, colunmName, autoIncremnet) TABLESTRUCTINFO_COMLUNM_4(type, colunmName, autoIncremnet, false)
-#define TABLESTRUCTINFO_COMLUNM_2(type, colunmName) TABLESTRUCTINFO_COMLUNM_3(type, colunmName, false)
-#define TABLESTRUCTINFO_COMLUNM_1(type) TABLESTRUCTINFO_COMLUNM_2(type, type)
-#define TABLESTRUCTINFO_COMLUNM(...) EXPAND(CAT(TABLESTRUCTINFO_COMLUNM_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
+#define TABLESTRUCTINFO_COLUMN_5(type, columnName, autoIncrement, unique, primaryKey) \
+    ColumnInfo type = ColumnInfo(STR(columnName), &StructType::type, &m_columnInfos, &m_primarycolumnInfos, autoIncrement, unique, primaryKey);
+#define TABLESTRUCTINFO_COLUMN_4(type, columnName, autoIncrement, unique) TABLESTRUCTINFO_COLUMN_5(type, columnName, autoIncrement, unique, false)
+#define TABLESTRUCTINFO_COLUMN_3(type, columnName, autoIncrement) TABLESTRUCTINFO_COLUMN_4(type, columnName, autoIncrement, false)
+#define TABLESTRUCTINFO_COLUMN_2(type, columnName) TABLESTRUCTINFO_COLUMN_3(type, columnName, false)
+#define TABLESTRUCTINFO_COLUMN_1(type) TABLESTRUCTINFO_COLUMN_2(type, type)
+#define TABLESTRUCTINFO_COLUMN(...) EXPAND(CAT(TABLESTRUCTINFO_COLUMN_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
 
 #define TABLESTRUCTINFO_END(type) \
 };\
@@ -489,19 +489,19 @@ public:
 
 // clang-format off
 TABLESTRUCTINFO_BEGIN(sqlite::FinishedItems)
-    TABLESTRUCTINFO_COMLUNM(uniqueId)
-    TABLESTRUCTINFO_COMLUNM(filePath)
-    TABLESTRUCTINFO_COMLUNM(bvid)
-    TABLESTRUCTINFO_COMLUNM(title)
-    TABLESTRUCTINFO_COMLUNM(duration)
+    TABLESTRUCTINFO_COLUMN(uniqueId)
+    TABLESTRUCTINFO_COLUMN(filePath)
+    TABLESTRUCTINFO_COLUMN(bvid)
+    TABLESTRUCTINFO_COLUMN(title)
+    TABLESTRUCTINFO_COLUMN(duration)
 TABLESTRUCTINFO_END(sqlite::FinishedItems)
 
 TABLESTRUCTINFO_BEGIN(sqlite::FinishedItemNosames)
-    TABLESTRUCTINFO_COMLUNM(uniqueId, uniqueId1)
-    TABLESTRUCTINFO_COMLUNM(filePath, filePath1)
-    TABLESTRUCTINFO_COMLUNM(bvid, bvid1)
-    TABLESTRUCTINFO_COMLUNM(title, title1)
-    TABLESTRUCTINFO_COMLUNM(duration, duration1)
+    TABLESTRUCTINFO_COLUMN(uniqueId, uniqueId1)
+    TABLESTRUCTINFO_COLUMN(filePath, filePath1)
+    TABLESTRUCTINFO_COLUMN(bvid, bvid1)
+    TABLESTRUCTINFO_COLUMN(title, title1)
+    TABLESTRUCTINFO_COLUMN(duration, duration1)
 TABLESTRUCTINFO_END(sqlite::FinishedItemNosames)
 
 // clang-format on

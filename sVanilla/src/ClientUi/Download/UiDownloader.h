@@ -47,7 +47,7 @@ private:
     void createDbDownloadingItem();
     void updateDbStatus();
     void deleteDbDownloadingItem();
-    void ctreateDbFinishedItem();
+    void createDbFinishedItem();
 
 private:
     std::shared_ptr<download::AbstractDownloader> m_realDownloader;

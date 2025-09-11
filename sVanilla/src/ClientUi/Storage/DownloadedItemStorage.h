@@ -6,15 +6,17 @@
 struct DownloadedItem
 {
     std::string uniqueId;
-    int pluginType;
+    int pluginId;
     std::string filePath;
     std::string coverPath;
-    std::string bvid;
+    std::string id;
+    std::string idType;
     std::string title;
-    std::string auther;
+    std::string author;
     std::string url;
-    std::string aid;
-    std::string cid;
+    std::string option1;
+    std::string option2;
+    std::string option3;
     int duration;
     int fileType;
     bool fileExist;
@@ -27,20 +29,22 @@ struct DownloadedItem
 
 // clang-format off
 TABLESTRUCTINFO_BEGIN(DownloadedItem)
-    TABLESTRUCTINFO_COMLUNM(uniqueId, uniqueId, false, true)
-    TABLESTRUCTINFO_COMLUNM(pluginType)
-    TABLESTRUCTINFO_COMLUNM(filePath)
-    TABLESTRUCTINFO_COMLUNM(coverPath)
-    TABLESTRUCTINFO_COMLUNM(bvid)
-    TABLESTRUCTINFO_COMLUNM(title)
-    TABLESTRUCTINFO_COMLUNM(auther)
-    TABLESTRUCTINFO_COMLUNM(url)
-    TABLESTRUCTINFO_COMLUNM(cid)
-    TABLESTRUCTINFO_COMLUNM(aid)
-    TABLESTRUCTINFO_COMLUNM(duration)
-    TABLESTRUCTINFO_COMLUNM(fileType)
-    TABLESTRUCTINFO_COMLUNM(fileExist)
-    TABLESTRUCTINFO_COMLUNM(fileExtension)
+    TABLESTRUCTINFO_COLUMN(uniqueId, uniqueId, false, true)
+    TABLESTRUCTINFO_COLUMN(pluginId)
+    TABLESTRUCTINFO_COLUMN(filePath)
+    TABLESTRUCTINFO_COLUMN(coverPath)
+    TABLESTRUCTINFO_COLUMN(id)
+    TABLESTRUCTINFO_COLUMN(idType)
+    TABLESTRUCTINFO_COLUMN(title)
+    TABLESTRUCTINFO_COLUMN(author)
+    TABLESTRUCTINFO_COLUMN(url)
+    TABLESTRUCTINFO_COLUMN(option1)
+    TABLESTRUCTINFO_COLUMN(option2)
+    TABLESTRUCTINFO_COLUMN(option3)
+    TABLESTRUCTINFO_COLUMN(duration)
+    TABLESTRUCTINFO_COLUMN(fileType)
+    TABLESTRUCTINFO_COLUMN(fileExist)
+    TABLESTRUCTINFO_COLUMN(fileExtension)
 TABLESTRUCTINFO_END(FinishedItem)
 // clang-format on
 

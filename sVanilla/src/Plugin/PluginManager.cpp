@@ -62,13 +62,13 @@ public:
         return {};
     }
 
-    int type() const override
+    int pluginId() const override
     {
         return 0;
     }
 
     // thread-safe
-    LoginSatus getLoginStatus() override
+    LoginStatus getLoginStatus() override
     {
         return AbstractLoginApi::Unknow;
     }
@@ -331,8 +331,8 @@ void PluginManager::pluginDirFileAdded()
     auto pluginPaths = pluginDirHaving();
     for (const auto& pluginPath : pluginPaths)
     {
-        auto [_, successed] = m_pluginsPaths.insert(pluginPath);
-        if (successed)
+        auto [_, succeeded] = m_pluginsPaths.insert(pluginPath);
+        if (succeeded)
         {
             addPlugin(pluginPath);
         }

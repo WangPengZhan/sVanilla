@@ -25,7 +25,7 @@ SQLiteStatement::SQLiteStatement(SQLiteDatabase& db, const std::string& query)
     , m_done(false)
 {
     prepareStatement();
-    m_colunmCount = sqlite3_column_count(handle());
+    m_columnCount = sqlite3_column_count(handle());
 }
 
 void SQLiteStatement::clearBindings()
@@ -57,9 +57,9 @@ bool SQLiteStatement::isDone() const
     return m_done;
 }
 
-int SQLiteStatement::getIndex(const std::string& colunmName)
+int SQLiteStatement::getIndex(const std::string& columnName)
 {
-    return sqlite3_bind_parameter_index(handle(), colunmName.c_str());
+    return sqlite3_bind_parameter_index(handle(), columnName.c_str());
 }
 
 void SQLiteStatement::bind(int index, int32_t value)
@@ -258,17 +258,17 @@ std::string SQLiteStatement::expandedSQL() const
 
 int SQLiteStatement::columnCount() const
 {
-    return m_colunmCount;
+    return m_columnCount;
 }
 
 SqliteColumn SQLiteStatement::column(int col) const
 {
-    if (m_colunmsMap.find(col) == m_colunmsMap.end())
+    if (m_columnsMap.find(col) == m_columnsMap.end())
     {
-        m_colunmsMap[col] = getColunmFromStmt(col);
+        m_columnsMap[col] = getColumnFromStmt(col);
     }
 
-    return m_colunmsMap.at(col);
+    return m_columnsMap.at(col);
 }
 
 SqliteColumn SQLiteStatement::column(const std::string& colName) const
@@ -276,43 +276,43 @@ SqliteColumn SQLiteStatement::column(const std::string& colName) const
     return column(columnIndex(colName));
 }
 
-bool SQLiteStatement::isColunmNull(int col) const
+bool SQLiteStatement::isColumnNull(int col) const
 {
     return (SQLITE_NULL == sqlite3_column_type(handle(), col));
 }
 
-bool SQLiteStatement::isColunmNull(const std::string& colName) const
+bool SQLiteStatement::isColumnNull(const std::string& colName) const
 {
-    return isColunmNull(columnIndex(colName));
+    return isColumnNull(columnIndex(colName));
 }
 
-std::string SQLiteStatement::colunmName(int col) const
+std::string SQLiteStatement::columnName(int col) const
 {
     return sqlite3_column_name(handle(), col);
 }
 
-std::string SQLiteStatement::originColunmName(int col) const
+std::string SQLiteStatement::originColumnName(int col) const
 {
     return sqlite3_column_origin_name(handle(), col);
 }
 
 int SQLiteStatement::columnIndex(const std::string& colName) const
 {
-    if (m_colunmIndexMap.empty())
+    if (m_columnIndexMap.empty())
     {
-        for (int i = 0; i < m_colunmCount; ++i)
+        for (int i = 0; i < m_columnCount; ++i)
         {
             std::string colName = sqlite3_column_name(handle(), i);
-            m_colunmIndexMap[colName] = i;
+            m_columnIndexMap[colName] = i;
         }
     }
 
-    if (m_colunmIndexMap.find(colName) == m_colunmIndexMap.end())
+    if (m_columnIndexMap.find(colName) == m_columnIndexMap.end())
     {
         return -1;
     }
 
-    return m_colunmIndexMap.at(colName);
+    return m_columnIndexMap.at(colName);
 }
 
 int SQLiteStatement::getChanges() const
@@ -374,8 +374,8 @@ int SQLiteStatement::tryExecuteStep()
         return SQLITE_MISUSE;
     }
 
-    m_colunmIndexMap.clear();
-    m_colunmsMap.clear();
+    m_columnIndexMap.clear();
+    m_columnsMap.clear();
     const int ret = sqlite3_step(handle());
     if (SQLITE_ROW == ret)
     {
@@ -394,7 +394,7 @@ int SQLiteStatement::tryExecuteStep()
     return ret;
 }
 
-SqliteColumn SQLiteStatement::getColunmFromStmt(int col) const
+SqliteColumn SQLiteStatement::getColumnFromStmt(int col) const
 {
     std::string colName;
     const char* pColName = sqlite3_column_name(handle(), col);

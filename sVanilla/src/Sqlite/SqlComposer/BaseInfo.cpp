@@ -38,17 +38,17 @@ void test()
     auto value = testItem.*(*memberPtr);
 }
 
-ColumnInfo::ColumnInfo(std::string columnName, bool autoIncremnet, bool unique)
+ColumnInfo::ColumnInfo(std::string columnName, bool autoIncrement, bool unique)
     : m_columnName(std::move(columnName))
-    , m_autoIncrement(autoIncremnet)
+    , m_autoIncrement(autoIncrement)
     , m_unique(unique)
 {
 }
 
-ColumnInfo::ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos, bool autoIncremnet,
+ColumnInfo::ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos, bool autoIncrement,
                        bool unique)
     : m_columnName(std::move(columnName))
-    , m_autoIncrement(autoIncremnet)
+    , m_autoIncrement(autoIncrement)
     , m_unique(unique)
     , m_pColumnInfos(pColumnInfos)
 {
@@ -57,7 +57,7 @@ ColumnInfo::ColumnInfo(std::string columnName, std::vector<ColumnInfo*>* pColumn
         pColumnInfos->push_back(this);
     }
 
-    if (pPrimaryKeyColumnInfos && autoIncremnet)
+    if (pPrimaryKeyColumnInfos && autoIncrement)
     {
         pPrimaryKeyColumnInfos->push_back(this);
     }
@@ -68,7 +68,7 @@ int ColumnInfo::valueTypeIndex() const
     return m_valueTypeIndex;
 }
 
-std::string ColumnInfo::colunmSql() const
+std::string ColumnInfo::columnSql() const
 {
     std::stringstream ss;
     ss << m_columnName << " " << fieldTypeSql(m_fieldType);
@@ -84,12 +84,12 @@ std::string ColumnInfo::colunmSql() const
     return ss.str();
 }
 
-const std::string& ColumnInfo::colunmName() const
+const std::string& ColumnInfo::columnName() const
 {
     return m_columnName;
 }
 
-size_t BaseTableStructInfo::colunmCount() const
+size_t BaseTableStructInfo::columnCount() const
 {
     return m_columnInfos.size();
 }
@@ -119,7 +119,7 @@ const std::vector<ColumnInfo*>& BaseTableStructInfo::columnInfos() const
 
 const std::vector<ColumnInfo*>& BaseTableStructInfo::primaryColumnInfos() const
 {
-    return m_primaryColunmInfos;
+    return m_primarycolumnInfos;
 }
 
 std::string BaseTableStructInfo::createSql() const
@@ -132,27 +132,27 @@ std::string BaseTableStructInfo::createSql() const
             if (it != m_columnInfos.begin())
             {
                 ss << ", ";
-                ss << (*it)->colunmSql();
+                ss << (*it)->columnSql();
             }
             else
             {
-                ss << (*it)->colunmSql();
+                ss << (*it)->columnSql();
             }
         }
 
-        if (!m_primaryColunmInfos.empty())
+        if (!m_primarycolumnInfos.empty())
         {
-            for (auto it = m_primaryColunmInfos.begin(); it != m_primaryColunmInfos.end(); ++it)
+            for (auto it = m_primarycolumnInfos.begin(); it != m_primarycolumnInfos.end(); ++it)
             {
-                if (it != m_primaryColunmInfos.begin())
+                if (it != m_primarycolumnInfos.begin())
                 {
                     ss << ", ";
-                    ss << (*it)->colunmName();
+                    ss << (*it)->columnName();
                 }
                 else
                 {
                     ss << ", PRIMARY KEY" << "(";
-                    ss << (*it)->colunmName();
+                    ss << (*it)->columnName();
                 }
             }
             ss << ")";
@@ -191,7 +191,7 @@ std::string BaseTableStructInfo::insertPrepareSql() const
     if (m_insertPrepareSql.empty())
     {
         std::stringstream ss;
-        ss << "(" << colunmsSql() << ")";
+        ss << "(" << columnsSql() << ")";
         ss << " VALUES ";
         ss << "(" << prepareSql() << ")";
 
@@ -201,9 +201,9 @@ std::string BaseTableStructInfo::insertPrepareSql() const
     return m_insertPrepareSql;
 }
 
-std::string BaseTableStructInfo::colunmsSql() const
+std::string BaseTableStructInfo::columnsSql() const
 {
-    if (m_colunmsSql.empty())
+    if (m_columnsSql.empty())
     {
         std::stringstream ss;
         for (auto it = m_columnInfos.begin(); it != m_columnInfos.end(); ++it)
@@ -211,18 +211,18 @@ std::string BaseTableStructInfo::colunmsSql() const
             if (it != m_columnInfos.begin())
             {
                 ss << ", ";
-                ss << (*it)->colunmName();
+                ss << (*it)->columnName();
             }
             else
             {
-                ss << (*it)->colunmName();
+                ss << (*it)->columnName();
             }
         }
 
-        m_colunmsSql = ss.str();
+        m_columnsSql = ss.str();
     }
 
-    return m_colunmsSql;
+    return m_columnsSql;
 }
 
 std::string BaseTableStructInfo::updatePrepareSql() const
@@ -235,12 +235,12 @@ std::string BaseTableStructInfo::updatePrepareSql() const
             if (it != m_columnInfos.begin())
             {
                 ss << ", ";
-                ss << (*it)->colunmName();
+                ss << (*it)->columnName();
                 ss << " = ?";
             }
             else
             {
-                ss << (*it)->colunmName();
+                ss << (*it)->columnName();
                 ss << " = ?";
             }
         }
@@ -256,17 +256,17 @@ std::string BaseTableStructInfo::primaryKeyPrepareSql() const
     if (m_primaryKeyPrepareSql.empty())
     {
         std::stringstream ss;
-        for (auto it = m_primaryColunmInfos.begin(); it != m_primaryColunmInfos.end(); ++it)
+        for (auto it = m_primarycolumnInfos.begin(); it != m_primarycolumnInfos.end(); ++it)
         {
-            if (it != m_primaryColunmInfos.begin())
+            if (it != m_primarycolumnInfos.begin())
             {
                 ss << ", ";
-                ss << (*it)->colunmName();
+                ss << (*it)->columnName();
                 ss << " = ?";
             }
             else
             {
-                ss << (*it)->colunmName();
+                ss << (*it)->columnName();
                 ss << " = ?";
             }
         }
@@ -310,7 +310,7 @@ std::string IndexColInfo::indexSql() const
     return ss.str();
 }
 
-const std::string& IndexColInfo::colunmName() const
+const std::string& IndexColInfo::columnName() const
 {
     return m_colName;
 }

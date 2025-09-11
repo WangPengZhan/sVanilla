@@ -54,7 +54,7 @@ DownloadingListWidget* DownloadingItemWidget::listWidget() const
     return m_listWidget;
 }
 
-std::shared_ptr<UiDownloader> DownloadingItemWidget::downloaoder() const
+std::shared_ptr<UiDownloader> DownloadingItemWidget::downloader() const
 {
     return m_downloader;
 }
@@ -64,7 +64,7 @@ void DownloadingItemWidget::setStart()
     const auto status = m_downloader->status();
     MLogI(svanilla::cDownloadModule, "DownloadingItemWidget setStart, status: {} | fileName: {} | guid: {}", static_cast<int>(status),
           m_downloader->videoInfoFull()->fileName(), m_downloader->videoInfoFull()->getGuid());
-    if (status == download::AbstractDownloader::Waitting)
+    if (status == download::AbstractDownloader::Waiting)
     {
         m_downloader->setStatus(download::AbstractDownloader::Ready);
     }
@@ -87,7 +87,7 @@ void DownloadingItemWidget::setPause()
     }
     else if (status == download::AbstractDownloader::Ready)
     {
-        m_downloader->setStatus(download::AbstractDownloader::Waitting);
+        m_downloader->setStatus(download::AbstractDownloader::Waiting);
     }
 }
 
@@ -98,7 +98,7 @@ void DownloadingItemWidget::setDelete()
     deleteItem();
 }
 
-DonwloadingStatus DownloadingItemWidget::status() const
+DownloadingStatus DownloadingItemWidget::status() const
 {
     return m_status;
 }
@@ -176,9 +176,9 @@ void DownloadingItemWidget::pauseItem(bool isResume)
     };
     const bool isDownloading = status == download::AbstractDownloader::Downloading;
     const bool isPaused = (status == download::AbstractDownloader::Paused || status == download::AbstractDownloader::Pause);
-    const bool isWaitting = status == download::AbstractDownloader::Waitting;
+    const bool isWaiting = status == download::AbstractDownloader::Waiting;
     const bool isResumed = status == download::AbstractDownloader::Resumed;
-    if (!isResume && (isPaused || isWaitting))
+    if (!isResume && (isPaused || isWaiting))
     {
         setStatus(download::AbstractDownloader::Resumed);
     }
@@ -279,7 +279,7 @@ void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Statu
         ui->btnStatus->setIcon(QIcon(":icon/pause.svg"));
         break;
     }
-    case download::AbstractDownloader::Waitting:
+    case download::AbstractDownloader::Waiting:
     {
         ui->btnStatus->setIcon(QIcon(":icon/waiting.svg"));
         break;
@@ -310,7 +310,7 @@ void DownloadingItemWidget::updateStatusIcon(download::AbstractDownloader::Statu
     else
     {
         ui->btnFolder->setIcon(QIcon(":/icon/folder.svg"));
-        ui->btnFolder->setToolTip(tr("open floder in files explorer"));
+        ui->btnFolder->setToolTip(tr("open folder in files explorer"));
         ui->btnFolder->setCheckable(false);
     }
 }
@@ -552,7 +552,7 @@ void DownloadingListWidget::updateDowningCount()
     {
         if (auto pWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(item(i))))
         {
-            pWidget->downloaoder()->status() == download::AbstractDownloader::Error ? downloadError++ : downloading++;
+            pWidget->downloader()->status() == download::AbstractDownloader::Error ? downloadError++ : downloading++;
         }
     }
 

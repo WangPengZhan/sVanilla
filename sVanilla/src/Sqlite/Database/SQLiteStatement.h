@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "SQLiteColunm.h"
+#include "SQLiteColumn.h"
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -34,7 +34,7 @@ public:
 
     void clearBindings();
     int getBindParameterCount() const;
-    int getIndex(const std::string& colunmName);
+    int getIndex(const std::string& columnName);
 
     bool executeStep();
     bool reset();
@@ -76,10 +76,10 @@ public:
 
     SqliteColumn column(int col) const;
     SqliteColumn column(const std::string& colName) const;
-    bool isColunmNull(int col) const;
-    bool isColunmNull(const std::string& colName) const;
-    std::string colunmName(int col) const;
-    std::string originColunmName(int col) const;
+    bool isColumnNull(int col) const;
+    bool isColumnNull(const std::string& colName) const;
+    std::string columnName(int col) const;
+    std::string originColumnName(int col) const;
     int columnIndex(const std::string& colName) const;
 
     int getChanges() const;
@@ -96,7 +96,7 @@ public:
 private:
     void prepareStatement();
     int tryExecuteStep();
-    SqliteColumn getColunmFromStmt(int col) const;
+    SqliteColumn getColumnFromStmt(int col) const;
 
 private:
     statementPtr m_stmt;
@@ -104,9 +104,9 @@ private:
     std::string m_sql;
     bool m_hasRow;
     bool m_done;
-    int m_colunmCount;
-    mutable std::unordered_map<std::string, int> m_colunmIndexMap;
-    mutable std::unordered_map<int, SqliteColumn> m_colunmsMap;
+    int m_columnCount;
+    mutable std::unordered_map<std::string, int> m_columnIndexMap;
+    mutable std::unordered_map<int, SqliteColumn> m_columnsMap;
 };
 
 }  // namespace sqlite

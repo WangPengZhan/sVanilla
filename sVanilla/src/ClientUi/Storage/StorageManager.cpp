@@ -48,10 +48,10 @@ std::shared_ptr<DownloadedItemStorage> StorageManager::createFinishedItemStorage
     auto& tableStruct = sqlite::TableStructInfo<typename DownloadedItemStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
-    std::vector<std::string> indexColNames = {tableStruct.filePath.colunmName()};
+    std::vector<std::string> indexColNames = {tableStruct.filePath.columnName()};
     std::string indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
-    indexColNames = {tableStruct.bvid.colunmName()};
+    indexColNames = {tableStruct.id.columnName()};
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
 
@@ -65,10 +65,10 @@ std::shared_ptr<DownloadingItemStorage> StorageManager::createDownloadingItemSto
     auto& tableStruct = sqlite::TableStructInfo<typename DownloadingItemStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
-    std::vector<std::string> indexColNames = {tableStruct.filePath.colunmName()};
+    std::vector<std::string> indexColNames = {tableStruct.filePath.columnName()};
     std::string indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
-    indexColNames = {tableStruct.bvid.colunmName()};
+    indexColNames = {tableStruct.id.columnName()};
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
 
@@ -83,17 +83,17 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
     std::string limitTrigger = "CREATE TRIGGER IF NOT EXISTS limit_table_size AFTER INSERT ON " + tableName + " ";
     limitTrigger += "BEGIN DELETE FROM " + tableName + " WHERE ";
-    limitTrigger += tableStruct.url.colunmName() + " IN ( ";
-    limitTrigger += "SELECT " + tableStruct.url.colunmName() + " FROM " + tableName + " ";
-    limitTrigger += "ORDER BY " + tableStruct.timestamp.colunmName() + " DESC ";
+    limitTrigger += tableStruct.url.columnName() + " IN ( ";
+    limitTrigger += "SELECT " + tableStruct.url.columnName() + " FROM " + tableName + " ";
+    limitTrigger += "ORDER BY " + tableStruct.timestamp.columnName() + " DESC ";
     limitTrigger += "LIMIT 1 OFFSET " + std::to_string(SearchHistoryStorage::maxNum) + " );";
     limitTrigger += "END;";
     writePtr->execute(limitTrigger);
 
     std::string updateTimesTrigger = "CREATE TRIGGER IF NOT EXISTS update_time AFTER UPDATE ON " + tableName + " FOR EACH ROW ";
     updateTimesTrigger += "BEGIN UPDATE " + tableName + " ";
-    updateTimesTrigger += "SET " + tableStruct.searchTimes.colunmName() + " = " + tableStruct.searchTimes.colunmName() + " + 1 ";
-    updateTimesTrigger += "WHERE " + tableStruct.url.colunmName() + " = OLD." + tableStruct.url.colunmName() + "; ";
+    updateTimesTrigger += "SET " + tableStruct.searchTimes.columnName() + " = " + tableStruct.searchTimes.columnName() + " + 1 ";
+    updateTimesTrigger += "WHERE " + tableStruct.url.columnName() + " = OLD." + tableStruct.url.columnName() + "; ";
     updateTimesTrigger += "END;";
     writePtr->execute(updateTimesTrigger);
 
@@ -107,11 +107,11 @@ std::shared_ptr<CookiesInfoStorage> StorageManager::createCookiesInfoStorage(con
     auto& tableStruct = sqlite::TableStructInfo<typename CookiesInfoStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
-    std::vector<std::string> indexColNames = {tableStruct.updateTimestamp.colunmName()};
+    std::vector<std::string> indexColNames = {tableStruct.updateTimestamp.columnName()};
     std::string indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
-    indexColNames = {tableStruct.expires.colunmName()};
+    indexColNames = {tableStruct.expires.columnName()};
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
 

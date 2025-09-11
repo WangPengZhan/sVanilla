@@ -22,7 +22,7 @@ DownloadingInfoWidget::~DownloadingInfoWidget()
 
 void DownloadingInfoWidget::updateInfoPanel(const DownloadingItemWidget* itemWidget)
 {
-    auto videoInfo = itemWidget->downloaoder()->videoInfoFull();
+    auto videoInfo = itemWidget->downloader()->videoInfoFull();
     ui->labelTitle->setText(QString::fromStdString(videoInfo->videoView->Title));
     ui->labelPublisher->setText(QString::fromStdString(videoInfo->videoView->Publisher));
     ui->labelFolderPath->setText(itemWidget->status().folderPath);

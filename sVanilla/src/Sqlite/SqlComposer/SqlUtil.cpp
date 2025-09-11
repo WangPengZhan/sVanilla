@@ -256,16 +256,16 @@ int64_t SqliteUtil::countEntities(const SqliteWithMutexPtr& db, const std::strin
 std::vector<std::string> SqliteUtil::queryDistinctCol(const SqliteWithMutexPtr& db, const std::string& tableName, const ColumnInfo& metaInfo,
                                                       const ConditionWrapper& condition)
 {
-    if (!db || tableName.empty() || metaInfo.colunmName().empty())
+    if (!db || tableName.empty() || metaInfo.columnName().empty())
     {
         return {};
     }
 
-    auto colNames = condition.colunmNames();
-    colNames.insert(metaInfo.colunmName());
+    auto colNames = condition.columnNames();
+    colNames.insert(metaInfo.columnName());
 
     std::stringstream ss;
-    ss << "SELECT DISTINCT " << metaInfo.colunmName();
+    ss << "SELECT DISTINCT " << metaInfo.columnName();
     ss << " FROM ( SELECT " << stringJoin(colNames.begin(), colNames.end(), ", ");
     ss << " FROM " << tableName << ")";
     ss << condition.prepareConditionString();

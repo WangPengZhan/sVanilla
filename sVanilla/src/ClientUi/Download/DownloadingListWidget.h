@@ -15,7 +15,7 @@ class UiDownloader;
 class DownloadingListWidget;
 class DownloadingInfoWidget;
 
-struct DonwloadingStatus
+struct DownloadingStatus
 {
     QString uri;
     QString stage;
@@ -39,13 +39,13 @@ public:
 
     void setListWidget(DownloadingListWidget* listWidget, QListWidgetItem* widgetItem);
     [[nodiscard]] DownloadingListWidget* listWidget() const;
-    [[nodiscard]] std::shared_ptr<UiDownloader> downloaoder() const;
+    [[nodiscard]] std::shared_ptr<UiDownloader> downloader() const;
 
     void setStart();
     void setPause();
     void setDelete();
 
-    [[nodiscard]] DonwloadingStatus status() const;
+    [[nodiscard]] DownloadingStatus status() const;
 
 protected:
     void contextMenuEvent(QContextMenuEvent* event) override;
@@ -72,7 +72,7 @@ private:
     DownloadingListWidget* m_listWidget = nullptr;
     QListWidgetItem* m_listWidgetItem = nullptr;
     std::shared_ptr<UiDownloader> m_downloader;
-    DonwloadingStatus m_status;
+    DownloadingStatus m_status;
     QMenu* m_contextMenu = nullptr;
 };
 

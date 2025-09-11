@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 #include "BaseInfo.h"
-#include "Sqlite/Database/SQLiteColunm.h"
+#include "Sqlite/Database/SQLiteColumn.h"
 #include "Sqlite/Database/SQLiteStatement.h"
 
 namespace sqlite
@@ -72,7 +72,7 @@ public:
 
     bool contain(const std::string& colName) const;
     bool contain(const ColumnInfo& col) const;
-    std::unordered_set<std::string> colunmNames() const;
+    std::unordered_set<std::string> columnNames() const;
 
     bool empty() const;
     size_t size() const;
@@ -80,7 +80,7 @@ public:
 
     std::string prepareConditionString() const;
     std::string conditionString() const;
-    int bind(SQLiteStatement& stament, int startIndex = 1) const;
+    int bind(SQLiteStatement& stmt, int startIndex = 1) const;
 
     std::stringstream& prepareConditionString(std::stringstream& ss) const;
     std::stringstream& conditionString(std::stringstream& ss) const;

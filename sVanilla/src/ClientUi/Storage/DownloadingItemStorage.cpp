@@ -4,15 +4,17 @@ int DownloadingItem::bind(sqlite::SQLiteStatement& stmt) const
 {
     int index = 1;
     stmt.bind(index++, uniqueId);
-    stmt.bind(index++, pluginType);
+    stmt.bind(index++, pluginId);
     stmt.bind(index++, filePath);
     stmt.bind(index++, coverPath);
-    stmt.bind(index++, bvid);
+    stmt.bind(index++, id);
+    stmt.bind(index++, idType);
     stmt.bind(index++, title);
-    stmt.bind(index++, auther);
+    stmt.bind(index++, author);
     stmt.bind(index++, url);
-    stmt.bind(index++, cid);
-    stmt.bind(index++, aid);
+    stmt.bind(index++, option1);
+    stmt.bind(index++, option2);
+    stmt.bind(index++, option3);
     stmt.bind(index++, progress);
     stmt.bind(index++, duration);
     stmt.bind(index++, status);
@@ -26,15 +28,17 @@ void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 {
     int index = startIndex;
     uniqueId = stmt.column(index++).getString();
-    pluginType = stmt.column(index++);
+    pluginId = stmt.column(index++);
     filePath = stmt.column(index++).getString();
     coverPath = stmt.column(index++).getString();
-    bvid = stmt.column(index++).getString();
+    id = stmt.column(index++).getString();
+    idType = stmt.column(index++).getString();
     title = stmt.column(index++).getString();
-    auther = stmt.column(index++).getString();
+    author = stmt.column(index++).getString();
     url = stmt.column(index++).getString();
-    cid = stmt.column(index++).getString();
-    aid = stmt.column(index++).getString();
+    option1 = stmt.column(index++).getString();
+    option2 = stmt.column(index++).getString();
+    option3 = stmt.column(index++).getString();
     progress = stmt.column(index++);
     duration = stmt.column(index++);
     status = stmt.column(index++);
@@ -45,9 +49,9 @@ void DownloadingItem::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 void DownloadingItemStorage::updateStatus(int status, const sqlite::ConditionWrapper& condition)
 {
     sqlite::SqliteColumnValue value = static_cast<int64_t>(status);
-    auto statusName = sqlite::TableStructInfo<Entity>::self().status.colunmName();
-    sqlite::SqliteColumn colunmValue(value, -1, statusName);
-    sqlite::SqliteUtil::updateEntities(m_writeDBPtr, tableName(), {colunmValue}, condition);
+    auto statusName = sqlite::TableStructInfo<Entity>::self().status.columnName();
+    sqlite::SqliteColumn columnValue(value, -1, statusName);
+    sqlite::SqliteUtil::updateEntities(m_writeDBPtr, tableName(), {columnValue}, condition);
 }
 
 bool DownloadingItemStorage::isDownload(const std::string& guid) const

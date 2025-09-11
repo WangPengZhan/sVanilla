@@ -61,7 +61,7 @@ public:
         , m_realDownloader(downloader)
         , m_progressBar(progressBar)
     {
-        setStatus(Waitting);
+        setStatus(Waiting);
     }
     ~CommandLineDownloader() = default;
 
@@ -188,7 +188,7 @@ CommandLineOption parseCommandLineOption(int argc, char* argv[])
         "Plugin id", "plugin"
     });
     parser.addOption({
-        {"sf", "seclect-first"},
+        {"sf", "select-first"},
         "Select first video view"
     });
 
@@ -206,7 +206,7 @@ CommandLineOption parseCommandLineOption(int argc, char* argv[])
     }
     option.showHelp = parser.isSet("help");
     option.showVersion = parser.isSet("version");
-    option.autoSelectFirst = parser.isSet("seclect-first");
+    option.autoSelectFirst = parser.isSet("select-first");
 
     return option;
 }
@@ -389,10 +389,10 @@ int execCommandLine(const CommandLineOption& commandLine, SApplication& applicat
                                 indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}}};
     bar.set_progress(0.0);
     auto commandLineDownloader = std::make_shared<CommandLineDownloader>(downloader, bar);
-    application.downloadThread().addTaks(commandLineDownloader);
+    application.downloadThread().addTask(commandLineDownloader);
     commandLineDownloader->setStatus(download::AbstractDownloader::Ready);
 
-    MLogI("CommandLine", "Waitting downloadfinished!");
+    MLogI("CommandLine", "Waiting downloadfinished!");
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));

@@ -24,7 +24,7 @@ bool DownloadStatusThread::empty() const
     return m_downloadTasks.empty();
 }
 
-bool DownloadStatusThread::addTaks(std::shared_ptr<AbstractDownloader> downloader)
+bool DownloadStatusThread::addTask(std::shared_ptr<AbstractDownloader> downloader)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     auto [iter, inserted] = m_downloadTasks.insert({downloader->guid(), downloader});

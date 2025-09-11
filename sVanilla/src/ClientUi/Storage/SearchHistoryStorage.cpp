@@ -6,7 +6,7 @@ int SearchHistory::bind(sqlite::SQLiteStatement& stmt) const
 {
     int index = 1;
     stmt.bind(index++, url);
-    stmt.bind(index++, pluginType);
+    stmt.bind(index++, pluginId);
     stmt.bind(index++, timestamp);
     stmt.bind(index++, searchTimes);
 
@@ -17,12 +17,12 @@ void SearchHistory::setValue(sqlite::SQLiteStatement& stmt, int startIndex)
 {
     int index = startIndex;
     url = stmt.column(index++).getString();
-    pluginType = stmt.column(index++);
+    pluginId = stmt.column(index++);
     timestamp = stmt.column(index++);
     searchTimes = stmt.column(index++);
 }
 
-bool SearchHistoryStorage::insertOrUpdate(const std::string& url, int pluginType)
+bool SearchHistoryStorage::insertOrUpdate(const std::string& url, int pluginId)
 {
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
@@ -30,7 +30,7 @@ bool SearchHistoryStorage::insertOrUpdate(const std::string& url, int pluginType
 
     SearchHistory history;
     history.url = url;
-    history.pluginType = pluginType;
+    history.pluginId = pluginId;
     history.timestamp = ms;
 
     if (haveUrl(url))

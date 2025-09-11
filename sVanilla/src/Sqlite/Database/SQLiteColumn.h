@@ -27,7 +27,7 @@ enum class FieldType
 class SqliteColumn
 {
 public:
-    SqliteColumn(SqliteColumnValue value, int index, std::string colunmName, std::string colunmOriginName = {});
+    SqliteColumn(SqliteColumnValue value, int index, std::string columnName, std::string columnOriginName = {});
     SqliteColumn(SqliteColumnValue value = std::monostate{});
     ~SqliteColumn() = default;
 
@@ -39,7 +39,7 @@ public:
     uint32_t getUInt() const noexcept;
     int64_t getInt64() const noexcept;
     double getDouble() const noexcept;
-    std::string getText(const std::string& defalutValue) const;
+    std::string getText(const std::string& defaultValue) const;
     std::vector<uint8_t> getBlob() const;
     std::string getString() const;
 
@@ -70,8 +70,8 @@ public:
 private:
     SqliteColumnValue m_value;
     int m_index;
-    std::string m_colunmName;
-    std::string m_originColunmName;
+    std::string m_columnName;
+    std::string m_originColumnName;
 };
 
 }  // namespace sqlite
