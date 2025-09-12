@@ -3,7 +3,7 @@
 #include <vector>
 #include <type_traits>
 
-#include "Sqlite/Database/SQLitecolumn.h"
+#include "Sqlite/Database/SQLiteColumn.h"
 #include "Base/MacroTool.h"
 
 namespace sqlite
@@ -301,7 +301,7 @@ public:
                bool unique = false);
 
     template <typename Entity, typename ValueType>
-    ColumnInfo(std::string columnName, ValueType Entity::* memberPtr, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
+    ColumnInfo(std::string columnName, ValueType Entity::*memberPtr, std::vector<ColumnInfo*>* pColumnInfos, std::vector<ColumnInfo*>* pPrimaryKeyColumnInfos,
                bool autoIncrement, bool unique, bool primaryKey)
         : m_columnName(std::move(columnName))
         , m_fieldType(getFieldType<ValueType>())
