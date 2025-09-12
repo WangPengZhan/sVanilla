@@ -69,9 +69,10 @@ def find_clang_format():
             return p
 
     return None
+
+clang_format = find_clang_format()
  
 def format_code(file_path):
-    clang_format = find_clang_format()
     print(file_path)
     command = [clang_format, "-i", "--style=file", file_path]
     subprocess.run(command)
