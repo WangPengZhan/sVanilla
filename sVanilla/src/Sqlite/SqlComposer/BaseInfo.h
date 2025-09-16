@@ -384,52 +384,6 @@ protected:
 template <typename Table>
 class TableStructInfo;
 
-struct FinishedItem
-{
-    std::string uniqueId;  // UniqueId Text
-};
-
-struct FinishedItems
-{
-    std::string uniqueId;  // UniqueId Text
-    std::string filePath;  //
-    std::string bvid;      //
-    std::string title;
-    int duration;
-};
-
-struct FinishedItemNosames
-{
-    std::string uniqueId;  // UniqueId Text
-    std::string filePath;  //
-    std::string bvid;      //
-    std::string title;
-    int duration;
-};
-
-void test();
-
-template <>
-class TableStructInfo<FinishedItem> : public BaseTableStructInfo
-{
-public:
-    ColumnInfo m_uniqueId = ColumnInfo(std::string(""), &FinishedItem::uniqueId, &m_columnInfos, &m_primarycolumnInfos, false, false, false);
-
-public:
-    static const TableStructInfo<FinishedItem>& self()
-    {
-        static const TableStructInfo<FinishedItem> instance;
-        return instance;
-    }
-
-    TableStructInfo(const TableStructInfo&) = delete;
-    TableStructInfo& operator=(const TableStructInfo&) = delete;
-
-protected:
-    TableStructInfo() = default;
-    ~TableStructInfo() = default;
-};
-
 enum class IndexAttribute
 {
     EMPTY,
@@ -486,29 +440,3 @@ public:
 };\
 } // namespace SQLite
 // clang-format on
-
-// clang-format off
-TABLESTRUCTINFO_BEGIN(sqlite::FinishedItems)
-    TABLESTRUCTINFO_COLUMN(uniqueId)
-    TABLESTRUCTINFO_COLUMN(filePath)
-    TABLESTRUCTINFO_COLUMN(bvid)
-    TABLESTRUCTINFO_COLUMN(title)
-    TABLESTRUCTINFO_COLUMN(duration)
-TABLESTRUCTINFO_END(sqlite::FinishedItems)
-
-TABLESTRUCTINFO_BEGIN(sqlite::FinishedItemNosames)
-    TABLESTRUCTINFO_COLUMN(uniqueId, uniqueId1)
-    TABLESTRUCTINFO_COLUMN(filePath, filePath1)
-    TABLESTRUCTINFO_COLUMN(bvid, bvid1)
-    TABLESTRUCTINFO_COLUMN(title, title1)
-    TABLESTRUCTINFO_COLUMN(duration, duration1)
-TABLESTRUCTINFO_END(sqlite::FinishedItemNosames)
-
-// clang-format on
-
-// namespace test
-// {
-// const auto& self2 = sqlite::TableStructInfo<sqlite::FinishedItem>::self();
-// const auto& self = sqlite::TableStructInfo<sqlite::FinishedItems>::self();
-// const auto& self1 = sqlite::TableStructInfo<sqlite::FinishedItemNosames>::self();
-// }  // namespace test

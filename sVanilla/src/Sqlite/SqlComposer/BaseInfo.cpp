@@ -28,16 +28,6 @@ std::string fieldTypeSql(FieldType fieldType)
     return res;
 }
 
-void test()
-{
-    FinishedItem testItem;
-    ColumnInfo columnInfo =
-        ColumnInfo(std::string(""), &FinishedItem::uniqueId, (std::vector<ColumnInfo*>*)nullptr, (std::vector<ColumnInfo*>*)nullptr, false, false, false);
-    auto memberPtr = columnInfo.memberPtr<FinishedItem, std::string>();
-    testItem.*(*memberPtr) = std::string("test");
-    auto value = testItem.*(*memberPtr);
-}
-
 ColumnInfo::ColumnInfo(std::string columnName, bool autoIncrement, bool unique)
     : m_columnName(std::move(columnName))
     , m_autoIncrement(autoIncrement)
