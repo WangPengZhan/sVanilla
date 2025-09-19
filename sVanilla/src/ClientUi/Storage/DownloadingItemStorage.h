@@ -17,11 +17,11 @@ struct DownloadingItem
     std::string option1;
     std::string option2;
     std::string option3;
-    std::string fileExtension;
     double progress;
     int duration;
     int status;
     int fileType;
+    std::string fileExtension;
 
     // move to sqlite
     int bind(sqlite::SQLiteStatement& stmt) const;
@@ -35,6 +35,7 @@ TABLESTRUCTINFO_BEGIN(DownloadingItem)
     TABLESTRUCTINFO_COLUMN(filePath)
     TABLESTRUCTINFO_COLUMN(coverPath)
     TABLESTRUCTINFO_COLUMN(id)
+    TABLESTRUCTINFO_COLUMN(idType)
     TABLESTRUCTINFO_COLUMN(title)
     TABLESTRUCTINFO_COLUMN(author)
     TABLESTRUCTINFO_COLUMN(url)

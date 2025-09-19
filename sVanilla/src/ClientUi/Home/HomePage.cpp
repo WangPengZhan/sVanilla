@@ -179,7 +179,7 @@ void HomePage::signalsAndSlots()
         std::vector<std::shared_ptr<plugin::IPlugin>> loginPlugins;
         for (auto& [_, plugin] : plugins)
         {
-            if (plugin->loginer().supportLogin())
+            if (plugin->loginer().supportsLogin())
             {
                 loginPlugins.push_back(plugin);
             }
@@ -267,7 +267,7 @@ void HomePage::showLoginDialog(std::shared_ptr<LoginProxy> loginer)
         return;
     }
 
-    if (loginer->isLogin())
+    if (loginer->isLoggedIn())
     {
         emit switchAccoutTab();
     }

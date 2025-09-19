@@ -25,15 +25,16 @@ public:
     EmptyLoginApi() = default;
     ~EmptyLoginApi() = default;
 
-    bool supportLogin() const override
+    bool supportsLogin() const override
     {
         return false;
     }
 
-    bool isLogin() const override
+    bool isLoggedIn() const override
     {
         return false;
     }
+
     std::string cookies() const override
     {
         return {};
@@ -47,9 +48,15 @@ public:
     {
         return {};
     }
+
     bool logout() override
     {
         return false;
+    }
+
+    std::string domain() const override
+    {
+        return {};
     }
 
     UserInfo getUserInfo(std::string dir) override
