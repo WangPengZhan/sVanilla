@@ -7,9 +7,7 @@
 #include <QSettings>
 
 #include "DefaultSettings.h"
-
-#include <QMessageBox>
-
+#include "SUI/Tips/TipDialog.h"
 #include "ui_DefaultSettings.h"
 #include "Config/SingleConfig.h"
 #include "MainWindow/SApplication.h"
@@ -86,7 +84,10 @@ void DefaultSettings::signalsAndSlots()
     connect(ui->comboBoxLanguge, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [this](int language) {
         if (m_isTip)
         {
-            QMessageBox::information(this, tr("Info"), tr("It takes effect only after the restart"), QMessageBox::Ok);
+            TipDialog dialog;
+            dialog.showTip(tr("It takes effect only after the restart."), TipDialog::Info);
+            dialog.setNoCancelButton(true);
+            dialog.exec();
             m_isTip = false;
         }
         sApp->translater().setLanguage(static_cast<Translater::Language>(language));

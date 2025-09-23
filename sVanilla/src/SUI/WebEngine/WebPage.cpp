@@ -1,6 +1,5 @@
 #include "WebPage.h"
 
-#include <QMessageBox>
 #include <QTimer>
 #include <QWebEngineCertificateError>
 #include <QtDebug>

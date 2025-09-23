@@ -10,7 +10,6 @@ RoundImageWidget::RoundImageWidget(QWidget* parent)
 
 void RoundImageWidget::setPixmap(const QPixmap& pixmap)
 {
-    // m_image->setPixmap(pixmap);
     m_pixmap = pixmap;
     m_originalPixmap = pixmap;
     resizePixmap();
