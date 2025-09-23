@@ -71,6 +71,10 @@
     <file>icon/bar/restore.svg</file>
     <file>icon/bar/setting.svg</file>
     <file>icon/bar/video.svg</file>
+    <file>icon/tip/error.svg</file>
+    <file>icon/tip/info.svg</file>
+    <file>icon/tip/success.svg</file>
+    <file>icon/tip/warning.svg</file>
     <file>icon/toast/error.svg</file>
     <file>icon/toast/info.svg</file>
     <file>icon/toast/success.svg</file>

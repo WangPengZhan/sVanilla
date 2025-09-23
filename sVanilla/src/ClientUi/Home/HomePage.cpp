@@ -6,7 +6,6 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QProcess>
-#include <QMessageBox>
 
 #include "HomePage.h"
 #include "ui_HomePage.h"
@@ -23,6 +22,7 @@
 #include "Utils/RunTask.h"
 #include "SUI/Tips/Toast.h"
 #include "SUI/Tips/ToastTip.h"
+#include "SUI/Tips/TipDialog.h"
 
 inline const std::string mainPage = "https://svanilla.app/";
 constexpr char userfaceDir[] = "userface";
@@ -62,7 +62,10 @@ bool copyWithAdminPrivileges(const QString& source, const QString& destination)
     {
         MLogE(svanilla::cHomeModule, "Failed to copy file with administrator privileges, source: {}, destination: {}", source.toStdString(),
               destination.toStdString());
-        QMessageBox::critical(nullptr, "Error", "Failed to copy file with administrator privileges.");
+        TipDialog dialog;
+        dialog.showTip(QObject::tr("Failed to copy file without administrator privileges."), TipDialog::Error);
+        dialog.setNoCancelButton(true);
+        dialog.exec();
         return false;
     }
 }

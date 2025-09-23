@@ -6,7 +6,6 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
-#include <QMessageBox>
 #include <QStyle>
 #include <QToolButton>
 

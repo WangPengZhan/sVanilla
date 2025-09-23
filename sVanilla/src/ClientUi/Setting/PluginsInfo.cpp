@@ -1,9 +1,8 @@
-#include <QMessageBox>
-
 #include "PluginsInfo.h"
 #include "ui_PluginsInfo.h"
 #include "MainWindow/SApplication.h"
 #include "Plugin/PluginManager.h"
+#include "SUI/Tips/TipDialog.h"
 
 PluginsInfo::PluginsInfo(QWidget* parent)
     : QWidget(parent)
@@ -85,7 +84,10 @@ void PluginsInfo::setPluginConfig()
 {
     if (m_isTip)
     {
-        QMessageBox::information(this, tr("Info"), tr("It takes effect only after the restart"), QMessageBox::Ok);
+        TipDialog dialog;
+        dialog.showTip(tr("It takes effect only after the restart."), TipDialog::Info);
+        dialog.setNoCancelButton(true);
+        dialog.exec();
         m_isTip = false;
     }
 
