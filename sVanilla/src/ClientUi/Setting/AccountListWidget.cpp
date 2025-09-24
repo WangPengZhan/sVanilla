@@ -40,7 +40,7 @@ AccountItemWidget::AccountItemWidget(std::shared_ptr<LoginProxy> loginer, QListW
     setUi();
     signalsAndSlots();
     setListWidgetItem(item);
-    // requestUserInfo();
+    requestUserInfo();
 }
 
 AccountItemWidget::~AccountItemWidget()
@@ -55,6 +55,9 @@ void AccountItemWidget::setUserInfo(UserInfo userInfo)
     ui->labelFace->setPixmap(pixmap);
     ui->labelFace->setStyleSheet(".QLabel{ border-radius:24px; background: transparent; }");
     ui->labelName->setText(QString::fromStdString(userInfo.uname));
+    ui->labelVipType->setText(QString::fromStdString(userInfo.vipType));
+    QString richText = QString("<a href=\"%1\">%1</a>").arg(QString::fromStdString(userInfo.home));
+    ui->labelHome->setText(richText);
 }
 
 void AccountItemWidget::setListWidgetItem(QListWidgetItem* item)
@@ -64,6 +67,8 @@ void AccountItemWidget::setListWidgetItem(QListWidgetItem* item)
 
 void AccountItemWidget::setUi()
 {
+    ui->labelHome->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    ui->labelHome->setOpenExternalLinks(true);
 }
 
 void AccountItemWidget::signalsAndSlots()

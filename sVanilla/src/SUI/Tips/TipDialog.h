@@ -36,7 +36,6 @@ public:
     void setNoOkButton(bool noOk);
     bool noOkButton() const;
 
-
 private:
     void setUi();
     void signalsAndSlots();
