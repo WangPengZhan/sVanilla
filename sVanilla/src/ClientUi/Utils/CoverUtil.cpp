@@ -20,7 +20,7 @@ bool downloadCoverImage(const CoverInfo& coverInfo)
     if (!file)
     {
         std::string str = strerror(errno);
-        MLogE(svanilla::cDownloadModule, "fopen error: {}", str);
+        MLogE(svanilla::cDownloadModule, "fopen error: {}, filePath: {}", str, path);
         return false;
     }
     network::NetWork netWork;
