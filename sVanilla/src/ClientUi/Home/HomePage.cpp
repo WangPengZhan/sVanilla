@@ -15,6 +15,7 @@
 #include "Storage/StorageManager.h"
 #include "Login/LoginDialog.h"
 #include "Login/LoginWebDialog.h"
+#include "Login/SetCookieDialog.h"
 #include "MainWindow/SApplication.h"
 #include "ClientLog.h"
 #include "const_string.h"
@@ -188,11 +189,17 @@ void HomePage::signalsAndSlots()
             }
         }
 
-        if (loginPlugins.size() > 1)
+        if (loginPlugins.size() >= 1)
         {
             QMenu menu(this);
+            bool hasNoLogined = false;
             for (auto& plugin : loginPlugins)
             {
+                if (!plugin->loginer().isLoggedIn())
+                {
+                    hasNoLogined = true;
+                }
+
                 auto action = new QAction(QString::fromStdString(plugin->pluginMessage().name), &menu);
                 constexpr QSize iconSize(24, 24);
                 QIcon icon(util::binToImage(plugin->websiteIcon(), iconSize * sApp->devicePixelRatio()));
@@ -203,16 +210,30 @@ void HomePage::signalsAndSlots()
                     showLoginDialog(loginer);
                 });
             }
+
+#ifdef _DEBUG
+            if (true)
+#else
+            if (hasNoLogined)
+#endif
+            {
+                menu.addSeparator();
+                auto addCookieAction = new QAction(tr("Set Cookie"), &menu);
+                QIcon icon(":/icon/cookie.svg");
+                addCookieAction->setIcon(icon);
+                menu.addAction(addCookieAction);
+                connect(addCookieAction, &QAction::triggered, &menu, [this, loginPlugins]() {
+                    SetCookieDialog dialog(loginPlugins, this);
+                    if (QDialog::Accepted == dialog.exec())
+                    {
+                        MLogI(svanilla::cHomeModule, " LoginWebsite succeed");
+                        emit switchAccoutTab();
+                        emit loginSucceed(dialog.loginer());
+                    }
+                });
+            }
             const QPoint pos = ui->btnLoginWebsite->mapToGlobal(QPoint(0, ui->btnLoginWebsite->sizeHint().height()));
             menu.exec(pos);
-        }
-        else if (loginPlugins.size() == 1)
-        {
-            for (auto& plugin : loginPlugins)
-            {
-                auto loginer = std::make_shared<LoginProxy>(plugin->loginer());
-                showLoginDialog(loginer);
-            }
         }
         else
         {
@@ -289,7 +310,7 @@ void HomePage::showLoginDialog(std::shared_ptr<LoginProxy> loginer)
         }
         else
         {
-            LoginDialog login(loginer);
+            LoginDialog login(loginer, this);
             if (QDialog::Accepted == login.exec())
             {
                 MLogI(svanilla::cHomeModule, " LoginWebsite succeed");

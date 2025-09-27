@@ -1,6 +1,10 @@
 #include "AccountsInfo.h"
 #include "ui_AccountsInfo.h"
 
+#include "MainWindow/SApplication.h"
+#include "Plugin/PluginManager.h"
+#include "LoginProxy.h"
+
 AccountsInfo::AccountsInfo(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::AccountsInfo)
@@ -8,6 +12,7 @@ AccountsInfo::AccountsInfo(QWidget* parent)
     ui->setupUi(this);
     setUi();
     signalsAndSlots();
+    init();
 }
 
 AccountsInfo::~AccountsInfo()
@@ -31,4 +36,16 @@ void AccountsInfo::setUi()
 
 void AccountsInfo::signalsAndSlots()
 {
+}
+
+void AccountsInfo::init()
+{
+    auto& plugins = sApp->pluginManager().plugins();
+    for (auto& [_, plugin] : plugins)
+    {
+        if (plugin->loginer().isLoggedIn())
+        {
+            addUserInfo(std::make_shared<LoginProxy>(plugin->loginer()));
+        }
+    }
 }

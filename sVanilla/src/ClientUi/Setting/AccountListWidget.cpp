@@ -56,7 +56,7 @@ void AccountItemWidget::setUserInfo(UserInfo userInfo)
     ui->labelFace->setStyleSheet(".QLabel{ border-radius:24px; background: transparent; }");
     ui->labelName->setText(QString::fromStdString(userInfo.uname));
     ui->labelVipType->setText(QString::fromStdString(userInfo.vipType));
-    QString richText = QString("<a href=\"%1\">%1</a>").arg(QString::fromStdString(userInfo.home));
+    QString richText = QString("%1").arg(QString::fromStdString(userInfo.home));
     ui->labelHome->setText(richText);
 }
 

@@ -21,7 +21,7 @@ class LoginDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit LoginDialog(std::shared_ptr<LoginProxy> loginer, QDialog* parent = nullptr);
+    explicit LoginDialog(std::shared_ptr<LoginProxy> loginer, QWidget* parent = nullptr);
     ~LoginDialog();
 
     void slotStatusChanged(AbstractLoginApi::LoginStatus status);
