@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>673</width>
-    <height>54</height>
+    <height>50</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,13 +16,16 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="8">
     <widget class="QPushButton" name="btnFavorite">
-     <property name="minimumSize">
+     <property name="maximumSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>24</width>
+       <height>24</height>
       </size>
      </property>
      <property name="text">
@@ -33,16 +36,16 @@
        <normaloff>:/icon/favorites.svg</normaloff>:/icon/favorites.svg</iconset>
      </property>
      <property name="_vanillaStyle_Patch" stdset="0">
-      <string>ButtonWithBorderPatch</string>
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
    <item row="0" column="6">
     <widget class="QPushButton" name="btnHistory">
-     <property name="minimumSize">
+     <property name="maximumSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>24</width>
+       <height>24</height>
       </size>
      </property>
      <property name="text">
@@ -53,16 +56,16 @@
        <normaloff>:/icon/watch_history.svg</normaloff>:/icon/watch_history.svg</iconset>
      </property>
      <property name="_vanillaStyle_Patch" stdset="0">
-      <string>ButtonWithBorderPatch</string>
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
    <item row="0" column="7">
     <widget class="QPushButton" name="btnWork">
-     <property name="minimumSize">
+     <property name="maximumSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>24</width>
+       <height>24</height>
       </size>
      </property>
      <property name="text">
@@ -73,7 +76,7 @@
        <normaloff>:/icon/my_space.svg</normaloff>:/icon/my_space.svg</iconset>
      </property>
      <property name="_vanillaStyle_Patch" stdset="0">
-      <string>ButtonWithBorderPatch</string>
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
@@ -87,8 +90,8 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>36</width>
-       <height>36</height>
+       <width>32</width>
+       <height>32</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -109,7 +112,7 @@
     <widget class="QLabel" name="labelHome">
      <property name="minimumSize">
       <size>
-       <width>140</width>
+       <width>180</width>
        <height>0</height>
       </size>
      </property>
@@ -133,10 +136,16 @@
    </item>
    <item row="0" column="9">
     <widget class="Line" name="line">
+     <property name="maximumSize">
+      <size>
+       <width>1</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">.QFrame
 {
-	background-color: #7D7C7C;
+background-color: #3D3D3D;
 }</string>
      </property>
      <property name="orientation">
@@ -165,10 +174,10 @@
    </item>
    <item row="0" column="10">
     <widget class="QPushButton" name="btnLogout">
-     <property name="minimumSize">
+     <property name="maximumSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>24</width>
+       <height>24</height>
       </size>
      </property>
      <property name="text">
@@ -179,7 +188,7 @@
        <normaloff>:/icon/logout.svg</normaloff>:/icon/logout.svg</iconset>
      </property>
      <property name="_vanillaStyle_Patch" stdset="0">
-      <string>ButtonWithBorderPatch</string>
+      <string>CleanButtonPatch</string>
      </property>
     </widget>
    </item>
@@ -198,10 +207,16 @@
    </item>
    <item row="0" column="5">
     <widget class="Line" name="line_2">
+     <property name="maximumSize">
+      <size>
+       <width>1</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">.QFrame
 {
-	background-color: #7D7C7C;
+background-color: #3D3D3D;
 }</string>
      </property>
      <property name="orientation">

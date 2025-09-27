@@ -27,7 +27,7 @@
 #include "ClientLog.h"
 #include "const_string.h"
 
-LoginDialog::LoginDialog(std::shared_ptr<LoginProxy> loginer, QDialog* parent)
+LoginDialog::LoginDialog(std::shared_ptr<LoginProxy> loginer, QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::LoginDialog)
     , m_monitor(new LoginMonitor(this))

@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TipDialog</class>
- <widget class="QDialog" name="TipDialog">
+ <class>SetCookieDialog</class>
+ <widget class="QWidget" name="SetCookieDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>441</width>
-    <height>146</height>
+    <width>699</width>
+    <height>350</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="windowTitle">
-   <string>TipDialog</string>
   </property>
   <property name="styleSheet">
    <string notr="true">.QWidget
@@ -25,7 +16,7 @@
 background-color: #FFFFFF;
 }</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_2">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -42,97 +33,81 @@ background-color: #FFFFFF;
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QWidget" name="widgetCenter" native="true">
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
+    <widget class="QWidget" name="widgetContent" native="true">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelPluginName">
+        <property name="text">
+         <string>PluginName：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxPlugins">
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelWebsite">
+        <property name="text">
+         <string>Website：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="labelWebsiteContent">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelDomain">
+        <property name="text">
+         <string>Domain：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxDomian"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelCookie">
+        <property name="text">
+         <string>Cookie:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QTextEdit" name="textEditCookie">
+        <property name="styleSheet">
+         <string notr="true">.QTextEdit {
+	border: 1px solid #3D3D3D; 
+    border-radius: 8px;
+}</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" rowspan="3">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>16</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelIcon">
-        <property name="minimumSize">
-         <size>
-          <width>48</width>
-          <height>48</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>48</width>
-          <height>48</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="widgetConten" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelText">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>16</width>
-          <height>20</height>
+          <width>108</width>
+          <height>108</height>
          </size>
         </property>
        </spacer>
@@ -236,7 +211,6 @@ background-color: #FFFFFF;
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="../../../resource/sVanilla.qrc"/>
  </resources>

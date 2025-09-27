@@ -25,6 +25,7 @@ public:
 private:
     void setUi();
     void signalsAndSlots();
+    void init();
 
 private:
     Ui::AccountsInfo* ui;
