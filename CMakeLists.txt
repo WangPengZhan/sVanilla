@@ -5,7 +5,7 @@ set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/vcpkg/scripts/b
 set(VCPKG_APPLOCAL_DEPS ON)
 
 project(sVanilla 
-    VERSION 1.0.0 
+    VERSION 2.2.0 
     DESCRIPTION "sVanilla"
     HOMEPAGE_URL "https://svanilla.app/"
     LANGUAGES CXX)
