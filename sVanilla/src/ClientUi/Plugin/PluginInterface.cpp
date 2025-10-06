@@ -10,55 +10,9 @@
 #include "NetWork/CurlCpp/CurlEasy.h"
 #include "NetWork/CNetWork.h"
 #include "NetWork/CurlCpp/CurlResponseWrapper.h"
+#include "NetWork/LocationUrlResponseWrapper.h"
 #include "ClientLog.h"
 #include "const_string.h"
-
-struct LocationUrl
-{
-    std::string locationUrl;
-};
-
-namespace network
-{
-template <typename T>
-class CurlResponseWrapper;
-
-template <>
-class CurlResponseWrapper<LocationUrl>
-{
-public:
-    CurlResponseWrapper(LocationUrl& response)
-        : m_response(response)
-    {
-    }
-
-    void setToCurl(CURL* handle)
-    {
-    }
-    void setToCurl(CurlEasy& easy)
-    {
-        setToCurl(easy.handle());
-    }
-
-    void readAfter(CURL* handle)
-    {
-        char* redirectUrl = nullptr;
-        curl_easy_getinfo(handle, CURLINFO_REDIRECT_URL, &redirectUrl);
-        if (redirectUrl)
-        {
-            m_response.locationUrl = redirectUrl;
-        }
-    }
-
-    void readAfter(CurlEasy& easy)
-    {
-        readAfter(easy.handle());
-    }
-
-private:
-    LocationUrl& m_response;
-};
-}  // namespace network
 
 namespace
 {
@@ -70,7 +24,7 @@ bool getUrlLocation(const std::string& url, std::string& location)
         return false;
     }
 
-    LocationUrl response;
+    network::LocationUrl response;
     network::CurlEasy easy;
     network::CurlResponseWrapper writer(response);
 
