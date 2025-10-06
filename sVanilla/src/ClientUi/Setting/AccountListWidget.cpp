@@ -54,9 +54,9 @@ void AccountItemWidget::setUserInfo(UserInfo userInfo)
     pixmap = createRoundedPixmap(pixmap, pixmap.width() / 2);
     ui->labelFace->setPixmap(pixmap);
     ui->labelFace->setStyleSheet(".QLabel{ border-radius:24px; background: transparent; }");
-    ui->labelName->setText(QString::fromStdString(userInfo.uname));
-    ui->labelVipType->setText(QString::fromStdString(userInfo.vipType));
-    QString richText = QString("%1").arg(QString::fromStdString(userInfo.home));
+    ui->labelName->setText(QString::fromStdString(userInfo.uname.empty() ? "-" : userInfo.uname));
+    ui->labelVipType->setText(QString::fromStdString(userInfo.vipType.empty() ? "-" : userInfo.vipType));
+    QString richText = QString("%1").arg(QString::fromStdString(userInfo.home.empty() ? "-" : userInfo.home));
     ui->labelHome->setText(richText);
 }
 
