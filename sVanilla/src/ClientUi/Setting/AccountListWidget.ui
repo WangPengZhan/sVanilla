@@ -28,6 +28,9 @@
        <height>24</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>favorite</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -48,6 +51,9 @@
        <height>24</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>history</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -67,6 +73,9 @@
        <width>24</width>
        <height>24</height>
       </size>
+     </property>
+     <property name="toolTip">
+      <string>my work</string>
      </property>
      <property name="text">
       <string/>
@@ -123,14 +132,14 @@
       </size>
      </property>
      <property name="text">
-      <string>Home</string>
+      <string>-</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
     <widget class="QLabel" name="labelName">
      <property name="text">
-      <string>Name</string>
+      <string>-</string>
      </property>
     </widget>
    </item>
@@ -138,7 +147,7 @@
     <widget class="Line" name="line">
      <property name="maximumSize">
       <size>
-       <width>1</width>
+       <width>2</width>
        <height>16777215</height>
       </size>
      </property>
@@ -168,7 +177,7 @@ background-color: #3D3D3D;
       </size>
      </property>
      <property name="text">
-      <string>VipType</string>
+      <string>-</string>
      </property>
     </widget>
    </item>
@@ -179,6 +188,9 @@ background-color: #3D3D3D;
        <width>24</width>
        <height>24</height>
       </size>
+     </property>
+     <property name="toolTip">
+      <string>logout</string>
      </property>
      <property name="text">
       <string/>
@@ -209,7 +221,7 @@ background-color: #3D3D3D;
     <widget class="Line" name="line_2">
      <property name="maximumSize">
       <size>
-       <width>1</width>
+       <width>2</width>
        <height>16777215</height>
       </size>
      </property>
