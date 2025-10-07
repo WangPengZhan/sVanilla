@@ -10,6 +10,7 @@
 #include <QBuffer>
 #include <QPainter>
 #include <QRect>
+#include <QDateTime>
 
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
