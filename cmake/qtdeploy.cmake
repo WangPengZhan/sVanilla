@@ -24,11 +24,11 @@ function(deployqt arg_target)
                     --no-compiler-runtime
                     --no-system-d3d-compiler
                     --no-opengl-sw
-                    $<$<CONFIG:Debug>:--pdb>
+                    --pdb
                     "$<TARGET_FILE:${arg_target}>"
         )
 
-        install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+        install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>/ DESTINATION ${CMAKE_INSTALL_BINDIR})
     elseif (APPLE)
         get_target_property(mac_app_dir ${arg_target} BINARY_DIR)
         set(mac_app_path "${mac_app_dir}/${arg_target}.app")

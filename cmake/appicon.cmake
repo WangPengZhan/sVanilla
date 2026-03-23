@@ -31,6 +31,6 @@ function(appicon TARGET_NAME RESOURCE_FILES)
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/sVanilla/resource/appIcon/${TARGET_NAME}.svg ${ICON_DIR}
         )
 
-        install(DIRECTORY ${ICON_ROOT} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+        install(DIRECTORY ${ICON_ROOT} DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
 endfunction()

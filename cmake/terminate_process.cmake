@@ -1,20 +1,26 @@
 set(TARGET_EXECUTABLE_PATH "${EXECUTABLE_PATH}")
 
 function(kill_process_by_path executable_path)
+    get_filename_component(process_name "${executable_path}" NAME)
+
     if(WIN32)
         string(REPLACE "/" "\\\\" executable_path "${executable_path}.exe")
 
         execute_process(
-            COMMAND wmic process where "ExecutablePath='${executable_path}'" call terminate
+            COMMAND powershell -Command "
+                Get-Process -Name '${process_name}' -ErrorAction SilentlyContinue |
+                Stop-Process -Force;
+                Start-Sleep -Milliseconds 200
+            "
             RESULT_VARIABLE result
             ERROR_QUIET
         )
     elseif(APPLE OR UNIX)
-        # execute_process(
-        #     COMMAND pkill -f ${executable_path}
-        #     RESULT_VARIABLE result
-        #     ERROR_QUIET
-        # )
+        execute_process(
+            COMMAND bash -c "ps -eo pid,args | grep '${executable_path}' | grep -v grep | awk '{print \$1}' | xargs -r kill -9"
+            RESULT_VARIABLE result
+            ERROR_QUIET
+        )
     endif()
 
     if(result EQUAL 0)
