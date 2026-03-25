@@ -332,7 +332,7 @@ jobs:
 
   build-macos:
       name: build-macos
-      runs-on: macos-13
+      runs-on: macos-15-intel
       timeout-minutes: 120
 
       strategy:
@@ -350,6 +350,12 @@ jobs:
             fetch-depth: 0
 
         - uses: lukka/get-cmake@latest
+
+        - name: Setup Python venv (global)
+          run: |
+            python3 -m venv .venv
+            echo "VIRTUAL_ENV=${{ github.workspace }}/.venv" >> $GITHUB_ENV
+            echo "${{ github.workspace }}/.venv/bin" >> $GITHUB_PATH
 
         - name: Setup vcpkg
           uses: lukka/run-vcpkg@v11
@@ -461,7 +467,7 @@ jobs:
 
   build-macos-arm:
         name: build-macos-arm
-        runs-on: macos-14
+        runs-on: macos-15
         timeout-minutes: 120
 
         strategy:

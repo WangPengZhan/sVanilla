@@ -24,7 +24,7 @@ function(deployqt arg_target)
                     --no-compiler-runtime
                     --no-system-d3d-compiler
                     --no-opengl-sw
-                    --pdb
+                    $<$<CONFIG:Debug>:--pdb>
                     "$<TARGET_FILE:${arg_target}>"
         )
 

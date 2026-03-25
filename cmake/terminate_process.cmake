@@ -1,10 +1,15 @@
 set(TARGET_EXECUTABLE_PATH "${EXECUTABLE_PATH}")
 
 function(kill_process_by_path executable_path)
+    if(NOT executable_path OR executable_path STREQUAL "")
+        message(WARNING "Empty executable path provided, skipping process termination.")
+        return()
+    endif()
+
     get_filename_component(process_name "${executable_path}" NAME)
 
     if(WIN32)
-        string(REPLACE "/" "\\\\" executable_path "${executable_path}.exe")
+        string(REPLACE "/" "\\" executable_path "${executable_path}.exe")
 
         execute_process(
             COMMAND powershell -Command "
@@ -16,8 +21,13 @@ function(kill_process_by_path executable_path)
             ERROR_QUIET
         )
     elseif(APPLE OR UNIX)
+        if(NOT EXISTS "${executable_path}")
+            message("Executable path does not exist: ${executable_path}, skipping process termination.")
+            return()
+        endif()
+
         execute_process(
-            COMMAND bash -c "ps -eo pid,args | grep '${executable_path}' | grep -v grep | awk '{print \$1}' | xargs -r kill -9"
+            COMMAND bash -c "pkill -f '^${executable_path}( |$)' || true"
             RESULT_VARIABLE result
             ERROR_QUIET
         )
