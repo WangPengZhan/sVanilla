@@ -15,7 +15,6 @@ function(kill_process_by_path executable_path)
             COMMAND powershell -Command "
                 Get-Process -Name '${process_name}' -ErrorAction SilentlyContinue |
                 Stop-Process -Force;
-                Start-Sleep -Milliseconds 200
             "
             RESULT_VARIABLE result
             ERROR_QUIET
