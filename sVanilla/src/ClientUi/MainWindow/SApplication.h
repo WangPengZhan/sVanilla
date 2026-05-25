@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QFileSystemWatcher>
 
+#include <future>
+
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "ClientUi/Plugin/PluginInterface.h"
 #include "Translater.h"
@@ -32,6 +34,7 @@ private:
     void signalsAndSlots();
 
 private:
+    std::future<void> m_loadPluginFuture;
     aria2net::AriaServer m_ariaServer;
     PluginInterface m_pluginInterface;
     QFileSystemWatcher m_watcher;

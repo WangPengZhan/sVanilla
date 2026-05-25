@@ -25,8 +25,10 @@ void SApplication::init()
     m_watcher.addPath(applicationDirPath() + "/" + QString::fromStdString(plugin::PluginManager::pluginDir()));
     startServer();
     signalsAndSlots();
-    pluginManager().loadPlugins();
-    m_pluginInterface.setCookiesForPlugins();
+    m_loadPluginFuture = std::async([&]() {
+        pluginManager().loadPlugins();
+        m_pluginInterface.setCookiesForPlugins();
+    });
 }
 
 aria2net::AriaServer& SApplication::ariaServer()

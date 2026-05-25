@@ -278,7 +278,14 @@ void PluginManager::addPlugin(const std::string& pluginPath)
     plugin = std::make_shared<PluginProxy>(plugin);
 
     PluginConfig pluginConfig;
-    for (const auto& config : m_pluginConfig)
+    std::vector<PluginConfig> configs;
+
+    {
+        std::lock_guard lk(m_pluginsMutex);
+        configs = m_pluginConfig;
+    }
+
+    for (const auto& config : configs)
     {
         if (config.name == plugin->pluginMessage().name)
         {
@@ -297,6 +304,7 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         pluginConfig.version = pluginMessage.version;
         pluginConfig.id = pluginMessage.pluginId;
         pluginConfig.description = pluginMessage.description;
+        std::lock_guard lk(m_pluginsMutex);
         m_configChanged = true;
         m_pluginConfig.emplace_back(pluginConfig);
     }
