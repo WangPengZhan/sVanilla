@@ -13,6 +13,7 @@ LoginMonitor::LoginMonitor(QObject* parent)
     , m_stop(false)
     , m_thread(&LoginMonitor::monitorStatus, this)
 {
+    MLogI(svanilla::cLoginModule, "monitorStatus thread created");
 }
 
 LoginMonitor::~LoginMonitor()
@@ -60,7 +61,7 @@ void LoginMonitor::monitorStatus()
 
         if (m_stop)
         {
-            return;
+            break;
         }
 
         auto loginStatus = reinterpret_cast<AbstractLoginApi*>(&m_loginer.load()->realLogin())->getLoginStatus();

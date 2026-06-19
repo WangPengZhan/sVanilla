@@ -1,4 +1,5 @@
 #include "ThreadPool.h"
+#include "ThreadPoolLog.h"
 
 ThreadPool::ThreadPool(size_t threads)
     : m_stop(false)
@@ -12,6 +13,7 @@ ThreadPool::ThreadPool(size_t threads)
     for (size_t i = 0; i < threads; ++i)
     {
         m_workers.emplace_back(std::thread(&ThreadPool::workLoop, this));
+        THEADPOOL_LOG_INFO("ThreadPool worker {} created", i);
     }
 
     size_t thread_count = 0;
@@ -69,6 +71,7 @@ void ThreadPool::drop()
 
 void ThreadPool::workLoop()
 {
+    THEADPOOL_LOG_INFO("ThreadPool worker start, thread hash: {}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
     while (true)
     {
         std::function<void()> task;
@@ -79,6 +82,7 @@ void ThreadPool::workLoop()
             });
             if (m_stop && m_tasks.empty())
             {
+                THEADPOOL_LOG_INFO("ThreadPool worker exit, thread hash: {}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
                 return;
             }
             task = std::move(m_tasks.front());

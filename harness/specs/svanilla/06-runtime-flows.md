@@ -63,6 +63,7 @@ User selects media item
 - 下载状态应以 `AbstractDownloader::Status` 为基准。
 - UI 展示状态不得和数据库状态长期不一致。
 - 完成任务必须具备可追踪的 `uniqueId`。
+- `DownloadStatusThread` 仅在复制任务快照和提交任务删除时持有任务集合锁；状态查询、下载器控制、持久化和信号通知必须在锁外执行。
 
 ## 登录和 Cookie 流程
 
