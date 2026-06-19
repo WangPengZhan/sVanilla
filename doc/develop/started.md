@@ -159,12 +159,15 @@ python -m pip install -r scripts/requirements.txt
 sVanilla
 |-- CMakeLists.txt                  # 顶层 CMake 工程
 |-- README.md                       # 项目简介
+|-- AGENTS.md                       # AI 智能体协作总规则
 |-- vcpkg.json                      # vcpkg 依赖清单
 |-- vcpkg-configuration.json        # vcpkg 配置
+|-- .codex/                         # Codex 专用命令与适配说明
 |-- cmake/                          # CMake 辅助脚本与模板
 |-- doc/                            # 文档
 |   |-- develop/                    # 开发文档
 |-- example/                        # 示例工程
+|-- harness/                        # 共享规范、SDD、需求与实现知识
 |-- overlay/                        # vcpkg overlay ports/triplets/toolchains
 |-- scripts/                        # 构建、打包、资源生成脚本
 |-- sVanilla/

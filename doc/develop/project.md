@@ -192,14 +192,17 @@ sequenceDiagram
 
 | 路径 | 职责 |
 | --- | --- |
+| `AGENTS.md` | AI 智能体协作总规则和 Harness 工作入口 |
 | `CMakeLists.txt` | 顶层构建入口，设置 vcpkg toolchain、C++20、全局选项和子目录 |
 | `vcpkg.json` | vcpkg 依赖清单和版本约束 |
 | `vcpkg-configuration.json` | vcpkg baseline、overlay ports、overlay triplets |
+| `.codex/` | Codex 专用命令、提示词和适配说明，不保存共享规范副本 |
 | `.github/workflows` | CI、格式检查、静态分析、跨平台构建和发布流程 |
 | `cmake/` | 图标、版本、Qt deploy、WiX、打包和辅助 CMake 脚本 |
 | `scripts/` | 资源生成、安装清单、作者/许可证生成、打包脚本 |
 | `tools/` | 平台内置工具，例如 aria2、ffmpeg |
 | `doc/` | 用户文档和开发文档 |
+| `harness/` | 工具无关的工程规范、SDD、需求档案、实现知识、模板和工作流 |
 | `ThirdParty/` | Git 子模块和第三方源码，包括 vcpkg、spdlog、插件公共库和插件源码 |
 | `sVanilla/` | 主程序源码、资源和翻译 |
 | `test/` | GoogleTest 测试 |
