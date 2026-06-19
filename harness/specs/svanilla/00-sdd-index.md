@@ -35,7 +35,7 @@
 
 | 任务类型 | 优先阅读 |
 | --- | --- |
-| 新功能需求 | `02-functional-requirements.md`、`03-architecture-design.md`、`08-codex-working-rules.md` |
+| 新功能需求 | `02-functional-requirements.md`、`03-architecture-design.md`、`08-agent-working-rules.md` |
 | UI 修改 | `02-functional-requirements.md`、`03-architecture-design.md`、`06-runtime-flows.md` |
 | 下载逻辑 | `05-interfaces-contracts.md`、`06-runtime-flows.md` |
 | 插件逻辑 | `05-interfaces-contracts.md`、`06-runtime-flows.md` |
@@ -45,7 +45,7 @@
 
 ## 维护要求
 
-每次修改代码时，Codex 应检查：
+每次修改代码时，AI 智能体 应检查：
 
 - 是否改变用户可见行为。
 - 是否改变模块接口或数据结构。

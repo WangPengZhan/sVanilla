@@ -37,4 +37,4 @@ REQ-20260613-plugin-enabled-dynamic.md
 
 - 原始需求不要覆盖，追加“澄清记录”。
 - 最终落地行为必须写入同一个需求文件的“落地结果”。
-- 如果需求改变 SDD 覆盖的行为，同步更新 `.codex/specs/svanilla/`。
+- 如果需求改变 SDD 覆盖的行为，同步更新 `harness/specs/svanilla/`。
