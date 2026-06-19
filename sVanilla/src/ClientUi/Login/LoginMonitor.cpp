@@ -64,7 +64,8 @@ void LoginMonitor::monitorStatus()
             break;
         }
 
-        auto loginStatus = reinterpret_cast<AbstractLoginApi*>(&m_loginer.load()->realLogin())->getLoginStatus();
+        auto loginer = m_loginer.load();
+        auto loginStatus = reinterpret_cast<AbstractLoginApi*>(&loginer->realLogin())->getLoginStatus();
         switch (loginStatus)
         {
         case AbstractLoginApi::Error:
@@ -73,7 +74,7 @@ void LoginMonitor::monitorStatus()
         {
             MLogI(svanilla::cLoginModule, "monitorStatus result: {}", static_cast<int>(loginStatus));
             emit sigLoginStatus(loginStatus);
-            m_loginer.load().reset();
+            m_loginer.store(nullptr);
             break;
         }
         case AbstractLoginApi::NoScan:
