@@ -125,3 +125,19 @@ MainWindow closeEvent
 约束：
 
 - 退出时应释放 aria2、插件、线程和下载状态线程资源。
+## 2026-06-19 Async Plugin Loading Flow
+
+```text
+SApplication::init
+  -> set plugin loading flag
+  -> std::async(std::launch::async) loads plugins
+  -> PluginInterface sets cookies from snapshot
+  -> clear plugin loading flag
+  -> emit pluginsLoaded
+```
+
+- URL parsing and login-plugin UI must handle the async loading state before reading plugin snapshots.
+- Plugin list iteration must use `PluginManager::pluginsSnapshot()`.
+- `SApplication` shutdown must consume the plugin loading future with `get()` before `PluginInterface` is destroyed.
+- `pluginsLoaded(bool succeeded)` tells the main window whether initial plugin loading completed successfully so the UI can show success or failure feedback.
+- URL parsing entry points in both MainWindow and VideoWidget must show a loading warning while plugins are still loading.

@@ -8,6 +8,7 @@
 #include <set>
 #include <shared_mutex>
 #include <compare>
+#include <vector>
 
 #include <nlohmann/json.hpp>
 
@@ -67,7 +68,7 @@ public:
     void addPlugin(const std::string& pluginPath);
     std::shared_ptr<IPlugin> getPlugin(int pluginId);
     void removePlugin(int pluginId);
-    const std::unordered_map<int, std::shared_ptr<IPlugin>>& plugins() const;
+    std::vector<std::shared_ptr<IPlugin>> pluginsSnapshot() const;
 
     void pluginDirFileAdded();
 

@@ -3,6 +3,7 @@
 #include <QFileSystemWatcher>
 
 #include <future>
+#include <atomic>
 
 #include "Aria2Net/AriaServer/AriaServer.h"
 #include "ClientUi/Plugin/PluginInterface.h"
@@ -18,6 +19,7 @@ public:
     ~SApplication();
 
     void init();
+    bool isLoadingPlugins() const;
 
     aria2net::AriaServer& ariaServer();
     PluginInterface& pluginInterface();
@@ -32,11 +34,16 @@ public:
 private:
     void startServer();
     void signalsAndSlots();
+    void waitForPluginLoadTask() noexcept;
+
+signals:
+    void pluginsLoaded(bool succeeded);
 
 private:
-    std::future<void> m_loadPluginFuture;
     aria2net::AriaServer m_ariaServer;
     PluginInterface m_pluginInterface;
+    std::future<void> m_loadPluginFuture;
+    std::atomic_bool m_isLoadingPlugins{false};
     QFileSystemWatcher m_watcher;
     Translater m_translater;
     download::DownloadStatusThread m_downloadThread;

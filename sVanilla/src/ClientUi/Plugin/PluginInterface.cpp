@@ -96,7 +96,7 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
         return {};
     }
 
-    for (auto& [_, plugin] : m_pluginManager.plugins())
+    for (auto& plugin : m_pluginManager.pluginsSnapshot())
     {
         if (plugin->canParseUrl(url))
         {
@@ -106,7 +106,7 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
 
     if (getUrlLocation(url, locationUrl))
     {
-        for (auto& [_, plugin] : m_pluginManager.plugins())
+        for (auto& plugin : m_pluginManager.pluginsSnapshot())
         {
             if (plugin->canParseUrl(locationUrl))
             {
@@ -120,7 +120,7 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
 
 void PluginInterface::setCookiesForPlugins()
 {
-    for (auto& [_, plugin] : m_pluginManager.plugins())
+    for (auto& plugin : m_pluginManager.pluginsSnapshot())
     {
         setCookiesForPlugin(plugin);
     }

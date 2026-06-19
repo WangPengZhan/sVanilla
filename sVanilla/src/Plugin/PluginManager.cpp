@@ -250,7 +250,13 @@ const std::string& PluginManager::configDir()
 
 void PluginManager::loadPlugins()
 {
-    for (const auto& pluginPath : m_pluginsPaths)
+    std::vector<std::string> pluginPaths;
+    {
+        std::lock_guard lk(m_pluginsMutex);
+        pluginPaths.assign(m_pluginsPaths.begin(), m_pluginsPaths.end());
+    }
+
+    for (const auto& pluginPath : pluginPaths)
     {
         addPlugin(pluginPath);
     }
@@ -336,9 +342,16 @@ void PluginManager::removePlugin(int pluginId)
     m_libHandles.erase(pluginId);
 }
 
-const std::unordered_map<int, std::shared_ptr<IPlugin>>& PluginManager::plugins() const
+std::vector<std::shared_ptr<IPlugin>> PluginManager::pluginsSnapshot() const
 {
-    return m_plugins;
+    std::lock_guard lk(m_pluginsMutex);
+    std::vector<std::shared_ptr<IPlugin>> plugins;
+    plugins.reserve(m_plugins.size());
+    for (const auto& [_, plugin] : m_plugins)
+    {
+        plugins.emplace_back(plugin);
+    }
+    return plugins;
 }
 
 void PluginManager::pluginDirFileAdded()
@@ -346,7 +359,11 @@ void PluginManager::pluginDirFileAdded()
     auto pluginPaths = pluginDirHaving();
     for (const auto& pluginPath : pluginPaths)
     {
-        auto [_, succeeded] = m_pluginsPaths.insert(pluginPath);
+        bool succeeded = false;
+        {
+            std::lock_guard lk(m_pluginsMutex);
+            succeeded = m_pluginsPaths.insert(pluginPath).second;
+        }
         if (succeeded)
         {
             addPlugin(pluginPath);
