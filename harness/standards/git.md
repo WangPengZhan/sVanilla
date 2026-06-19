@@ -29,7 +29,7 @@ type(scope): summary
 
 ```text
 fix(plugin): persist enabled state from manager UI
-docs(codex): add harness SDD workflow standards
+docs(agent): add harness SDD workflow standards
 ```
 
 ## 提交前检查

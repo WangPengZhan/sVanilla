@@ -11,12 +11,12 @@
 读取：
 
 - `AGENTS.md`
-- `.codex/standards/`
-- `.codex/specs/svanilla/00-sdd-index.md`
-- `.codex/specs/svanilla/08-codex-working-rules.md`
-- `.codex/requirements/README.md`
-- `.codex/knowledge/README.md`
-- `.codex/ai-experience/README.md`
+- `harness/standards/`
+- `harness/specs/svanilla/00-sdd-index.md`
+- `harness/specs/svanilla/08-agent-working-rules.md`
+- `harness/requirements/README.md`
+- `harness/knowledge/README.md`
+- `harness/ai-experience/README.md`
 
 输出：
 
@@ -59,7 +59,7 @@
 
 - 验收标准是否可执行。
 - 是否触碰持久化、插件 ABI/API、下载状态、线程、Qt 生命周期或构建配置。
-- 是否符合 `.codex/standards/`。
+- 是否符合 `harness/standards/`。
 - 是否需要迁移策略。
 - 测试是否覆盖主要风险。
 - 是否存在必须先问用户的问题。
@@ -110,10 +110,10 @@
 
 沉淀位置：
 
-- AI 协作经验：`.codex/ai-experience/`
-- 模块实现知识：`.codex/knowledge/`
-- 团队规范：`.codex/standards/`
-- 版本需求或落地需求：`.codex/requirements/`
+- AI 协作经验：`harness/ai-experience/`
+- 模块实现知识：`harness/knowledge/`
+- 团队规范：`harness/standards/`
+- 版本需求或落地需求：`harness/requirements/`
 
 ## 压缩规则
 
