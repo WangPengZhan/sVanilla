@@ -35,4 +35,5 @@ endforeach ()
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${QT_LIBS}
+        spdlog::spdlog
 )
