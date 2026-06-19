@@ -144,6 +144,18 @@ void MainWindow::signalsAndSlots()
     });
     connect(ui->videoPage, &VideoWidget::createDownloadTask, ui->downloadPage, &DownloadWidget::addDownloadTask);
     connect(ui->videoPage, &VideoWidget::parseUri, this, &MainWindow::parseUrl);
+    connect(sApp, &SApplication::pluginsLoaded, this, [this](const bool succeeded) {
+        if (succeeded)
+        {
+            MLogI(svanilla::cMainWindowModule, "plugins loaded successfully");
+            ToastTip::showTip(tr("Plugins loaded successfully"), ToastTip::Success);
+        }
+        else
+        {
+            MLogE(svanilla::cMainWindowModule, "plugins loading failed");
+            ToastTip::showTip(tr("Plugins loading failed"), ToastTip::Error);
+        }
+    });
 
     connect(ui->downloadPage, &DownloadWidget::downloadingCountChanged, ui->videoPage, &VideoWidget::setDownloadingNumber);
     connect(ui->downloadPage, &DownloadWidget::downloadedCountChanged, ui->videoPage, &VideoWidget::setDownloadedNumber);
@@ -348,6 +360,13 @@ bool MainWindow::parseUrl(const std::string& url)
     if (lastUrl == url && !timerHelp.isElapse())
     {
         MLogW(svanilla::cMainModule, "url is same in 500ms, url: {}", url);
+        return false;
+    }
+
+    if (sApp->isLoadingPlugins())
+    {
+        MLogW(svanilla::cMainModule, "plugins are loading, skip parse url: {}", url);
+        ToastTip::showTip(tr("Plugins are loading, please try again later"), ToastTip::Warn);
         return false;
     }
 

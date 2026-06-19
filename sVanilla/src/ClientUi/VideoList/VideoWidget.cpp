@@ -28,6 +28,7 @@
 #include "ClientUi/Storage/SearchHistoryStorage.h"
 #include "ClientUi/Storage/StorageManager.h"
 #include "ClientUi/MainWindow/SApplication.h"
+#include "SUI/Tips/ToastTip.h"
 #include "DownloadTip.h"
 #include "ClientLog.h"
 #include "const_string.h"
@@ -123,12 +124,26 @@ void VideoWidget::signalsAndSlots()
 
     connect(ui->lineEdit, &AddLinkLineEdit::Complete, this, [this]() {
         MLogI(svanilla::cVideoList, "parseUri {}", ui->lineEdit->text().toStdString());
+        if (sApp->isLoadingPlugins())
+        {
+            MLogW(svanilla::cVideoList, "plugins are loading, skip parse url: {}", ui->lineEdit->text().toStdString());
+            ToastTip::showTip(tr("Plugins are loading, please try again later"), ToastTip::Warn);
+            return;
+        }
+
         emit parseUri(ui->lineEdit->text().toStdString());
     });
 
     connect(ui->lineEdit, &AddLinkLineEdit::textChanged, this, [this](const QString& text) {
         if (text.isEmpty())
         {
+            ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
+            return;
+        }
+
+        if (sApp->isLoadingPlugins())
+        {
+            MLogI(svanilla::cVideoList, "plugins are loading, skip url icon parsing: {}", text.toStdString());
             ui->lineEdit->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
             return;
         }

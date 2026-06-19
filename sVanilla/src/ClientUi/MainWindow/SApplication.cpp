@@ -3,6 +3,8 @@
 #include "Config/GlobalData.h"
 #include "Plugin/PluginManager.h"
 #include "Plugin/PluginInterface.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 #include <QDir>
 #include <QStandardPaths>
@@ -18,6 +20,7 @@ SApplication::SApplication(int& argc, char** argv)
 
 SApplication::~SApplication()
 {
+    waitForPluginLoadTask();
 }
 
 void SApplication::init()
@@ -25,10 +28,56 @@ void SApplication::init()
     m_watcher.addPath(applicationDirPath() + "/" + QString::fromStdString(plugin::PluginManager::pluginDir()));
     startServer();
     signalsAndSlots();
-    m_loadPluginFuture = std::async([&]() {
-        pluginManager().loadPlugins();
-        m_pluginInterface.setCookiesForPlugins();
+    m_isLoadingPlugins.store(true);
+    m_loadPluginFuture = std::async(std::launch::async, [this]() {
+        bool succeeded = true;
+        try
+        {
+            pluginManager().loadPlugins();
+            m_pluginInterface.setCookiesForPlugins();
+        }
+        catch (const std::exception& e)
+        {
+            succeeded = false;
+            MLogE(svanilla::cPluginModule, "load plugins failed, msg: {}", e.what());
+        }
+        catch (...)
+        {
+            succeeded = false;
+            MLogE(svanilla::cPluginModule, "load plugins failed with unknown exception");
+        }
+
+        m_isLoadingPlugins.store(false);
+        emit pluginsLoaded(succeeded);
     });
+}
+
+bool SApplication::isLoadingPlugins() const
+{
+    return m_isLoadingPlugins.load();
+}
+
+void SApplication::waitForPluginLoadTask() noexcept
+{
+    if (!m_loadPluginFuture.valid())
+    {
+        return;
+    }
+
+    try
+    {
+        m_loadPluginFuture.get();
+    }
+    catch (const std::exception& e)
+    {
+        MLogE(svanilla::cPluginModule, "plugin loading task failed during shutdown, msg: {}", e.what());
+    }
+    catch (...)
+    {
+        MLogE(svanilla::cPluginModule, "plugin loading task failed during shutdown with unknown exception");
+    }
+
+    m_isLoadingPlugins.store(false);
 }
 
 aria2net::AriaServer& SApplication::ariaServer()

@@ -21,3 +21,12 @@
 ## 证据
 
 - 需要结合实际任务读取插件管理 UI 和 `sVanilla/src/Plugin`。
+## 2026-06-19 Threading Note
+
+- `PluginManager` owns plugin containers and path sets behind `m_pluginsMutex`.
+- UI and coordination code should use `pluginsSnapshot()` for iteration. Do not expose or iterate the internal `unordered_map`.
+- `SApplication` loads plugins asynchronously and emits `pluginsLoaded()` when the initial load and cookie setup have completed.
+- URL parsing should return a loading response instead of treating an incomplete plugin set as unsupported.
+- The plugin loading future must be consumed before `PluginInterface` destruction; keep the future declared after `PluginInterface` and call `get()` during shutdown.
+- `pluginsLoaded(bool succeeded)` carries initial load result for main-window feedback.
+- Add loading checks to every URL parsing entry point, including `VideoWidget::Complete` and icon pre-parse.

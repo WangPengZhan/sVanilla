@@ -112,6 +112,13 @@ void HomePage::signalsAndSlots()
             return;
         }
 
+        if (sApp->isLoadingPlugins())
+        {
+            MLogI(svanilla::cHomeModule, "plugins are loading, skip url icon parsing: {}", text.toStdString());
+            ui->lineEditHome->setWebsiteIcon(QIcon(":/icon/web_default_icon.svg"));
+            return;
+        }
+
         static uint64_t getPluginVersion = 0;
         auto taskFunc = [text]() {
             std::string locationUrl;
@@ -179,9 +186,16 @@ void HomePage::signalsAndSlots()
         }
     });
     connect(ui->btnLoginWebsite, &QPushButton::clicked, this, [this] {
-        auto& plugins = sApp->pluginManager().plugins();
+        if (sApp->isLoadingPlugins())
+        {
+            MLogW(svanilla::cHomeModule, "plugins are loading, login plugin list is not ready");
+            ToastTip::showTip(tr("Plugins are loading, please try again later"), ToastTip::Warn);
+            return;
+        }
+
+        auto plugins = sApp->pluginManager().pluginsSnapshot();
         std::vector<std::shared_ptr<plugin::IPlugin>> loginPlugins;
-        for (auto& [_, plugin] : plugins)
+        for (auto& plugin : plugins)
         {
             if (plugin->loginer().supportsLogin())
             {

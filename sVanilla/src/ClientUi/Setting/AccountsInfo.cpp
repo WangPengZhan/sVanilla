@@ -36,12 +36,16 @@ void AccountsInfo::setUi()
 
 void AccountsInfo::signalsAndSlots()
 {
+    connect(sApp, &SApplication::pluginsLoaded, this, [this](bool) {
+        init();
+    });
 }
 
 void AccountsInfo::init()
 {
-    auto& plugins = sApp->pluginManager().plugins();
-    for (auto& [_, plugin] : plugins)
+    ui->listWidgetAccount->clear();
+    auto plugins = sApp->pluginManager().pluginsSnapshot();
+    for (auto& plugin : plugins)
     {
         if (plugin->loginer().isLoggedIn())
         {

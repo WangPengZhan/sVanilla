@@ -128,3 +128,8 @@ Waiting -> Ready -> Downloading -> Pause/Paused/Resumed -> Finished
 - `Zipper` 压缩文件列表或目录。
 - `Unzipper` 解压文件到目标路径。
 - `ResourceHelper` 负责 RAII 清理函数执行。
+## 2026-06-19 PluginManager Thread Contract
+
+- `pluginsSnapshot()` returns a locked value snapshot of enabled plugin shared pointers.
+- Callers must not iterate internal plugin containers directly.
+- Plugin path discovery and dynamic plugin addition must use the same manager mutex as the loaded-plugin map.
