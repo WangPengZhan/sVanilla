@@ -141,4 +141,25 @@ SApplication::init
 - Plugin list iteration must use `PluginManager::pluginsSnapshot()`.
 - `SApplication` shutdown must consume the plugin loading future with `get()` before `PluginInterface` is destroyed.
 - `pluginsLoaded(bool succeeded)` tells the main window whether initial plugin loading completed successfully so the UI can show success or failure feedback.
-- URL parsing entry points in both MainWindow and VideoWidget must show a loading warning while plugins are still loading.
+## 2026-06-19 CLI Plugin Loading Flow
+
+```text
+main
+  -> SApplication::init
+  -> GUI branch: continue with MainWindow after async plugin loading starts
+  -> CLI branch: waitForPluginLoadTask
+  -> execCommandLine
+```
+
+- CLI 模式在调用 `execCommandLine()` 前必须等待 `SApplication::waitForPluginLoadTask()` 完成。
+
+## 2026-06-19 CLI Help and Version Fast Exit
+
+```text
+main
+  -> parseCommandLineOption
+  -> print help/version
+  -> exit before SApplication::init
+```
+
+- `-h` / `--help` / `-v` / `--version` should exit before `SApplication::init()` so Windows CLI output returns immediately and does not start plugin loading or background threads.

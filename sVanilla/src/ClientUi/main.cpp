@@ -72,6 +72,21 @@ int main(int argc, char* argv[])
 #endif
     startLog();
 
+    auto commandLine = parseCommandLineOption(argc, argv);
+    MLogI(svanilla::cMainModule, "start sVanilla with gui: {}", commandLine.showGui ? "enabled" : "disabled");
+
+    int exitCode = 0;
+    if (commandLine.isOnlyPrint())
+    {
+        attachConsole();
+        exitCode = execCommandLine(commandLine);
+
+        MLogI(svanilla::cMainModule, "-----------------------------");
+        MLogI(svanilla::cMainModule, "exit svanilla, time: {} exitCode: {}", QDateTime::currentDateTime().toString().toStdString(), exitCode);
+        MLogI(svanilla::cMainModule, "-----------------------------");
+        return exitCode;
+    }
+
     CLog_Unique_TimerK(MainWindow_firstShow);
     Restarter restarter(argc, argv);
 
@@ -79,9 +94,6 @@ int main(int argc, char* argv[])
     sVanilla.initApplicationBefore();
 
     SApplication application(argc, argv);
-
-    auto commandLine = parseCommandLineOption(argc, argv);
-    MLogI(svanilla::cMainModule, "start sVanilla with gui: {}", commandLine.showGui ? "enabled" : "disabled");
 
     std::shared_ptr<SingleAppHelper> singleAppHelper;
     if (commandLine.showGui)
@@ -100,7 +112,6 @@ int main(int argc, char* argv[])
     sVanilla.init();
     application.init();
 
-    int exitCode = 0;
     if (commandLine.showGui)
     {
         MainWindow maimWindow;
