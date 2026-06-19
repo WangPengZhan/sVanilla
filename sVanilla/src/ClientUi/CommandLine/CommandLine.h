@@ -17,6 +17,7 @@ struct CommandLineOption
     int pluginId = -1;
 
     bool isShowHelp() const;
+    bool isOnlyPrint() const;
 
     void setHelpText(const std::string& text);
     std::string getHelpText() const;
@@ -29,4 +30,5 @@ void attachConsole();
 
 CommandLineOption parseCommandLineOption(int argc, char* argv[]);
 
+int execCommandLine(const CommandLineOption& commandLine);
 int execCommandLine(const CommandLineOption& commandLine, SApplication& application);

@@ -20,6 +20,7 @@ public:
 
     void init();
     bool isLoadingPlugins() const;
+    void waitForPluginLoadTask() noexcept;
 
     aria2net::AriaServer& ariaServer();
     PluginInterface& pluginInterface();
@@ -34,7 +35,6 @@ public:
 private:
     void startServer();
     void signalsAndSlots();
-    void waitForPluginLoadTask() noexcept;
 
 signals:
     void pluginsLoaded(bool succeeded);

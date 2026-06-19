@@ -16,6 +16,8 @@
 #include "version.h"
 #include "ClientLog.h"
 
+#include <cstdio>
+
 #ifdef _WIN32
 #    include <windows.h>
 #    include <fcntl.h>
@@ -31,14 +33,9 @@ void attachConsole()
         freopen_s(&fDummy, "CONOUT$", "w", stdout);
         freopen_s(&fDummy, "CONOUT$", "w", stderr);
         freopen_s(&fDummy, "CONIN$", "r", stdin);
-        std::ios::sync_with_stdio();
-        static std::shared_ptr<FILE> ptr(fDummy, [](FILE* fDummy) {
-            if (fDummy)
-            {
-                std::cout << std::endl;
-                fclose(fDummy);
-            }
-        });
+        std::ios::sync_with_stdio(true);
+        setvbuf(stdout, nullptr, _IONBF, 0);
+        setvbuf(stderr, nullptr, _IONBF, 0);
     }
 #endif
 }
@@ -128,6 +125,11 @@ bool CommandLineOption::isShowHelp() const
     return showHelp || url.empty();
 }
 
+bool CommandLineOption::isOnlyPrint() const
+{
+    return (showHelp || showVersion) && !showGui;
+}
+
 void CommandLineOption::setHelpText(const std::string& text)
 {
     helpText = text;
@@ -211,19 +213,28 @@ CommandLineOption parseCommandLineOption(int argc, char* argv[])
     return option;
 }
 
-int execCommandLine(const CommandLineOption& commandLine, SApplication& application)
+int execCommandLine(const CommandLineOption& commandLine)
 {
     if (commandLine.showVersion)
     {
         std::cout << "version: " << SVNLA_VERSION_STR_WITH_GIT << std::endl;
+        std::cout.flush();
         return 0;
     }
 
     if (commandLine.isShowHelp())
     {
         std::cout << commandLine.getHelpText() << std::endl;
+        std::cout.flush();
         return 0;
     }
+
+    return 0;
+}
+
+int execCommandLine(const CommandLineOption& commandLine, SApplication& application)
+{
+    application.waitForPluginLoadTask();
 
     MLogI("CommandLine", "execCommandLine url: {}", commandLine.url);
     std::cout << "parser url ..." << std::endl;
