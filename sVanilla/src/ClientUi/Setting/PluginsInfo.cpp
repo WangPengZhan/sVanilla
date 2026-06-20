@@ -99,9 +99,9 @@ void PluginsInfo::setPluginConfig()
     {
         plugin::PluginConfig pluginInfo;
         int col = 0;
-        int colMax = ui->tableWidget->colorCount() - 1;
+        int colMax = ui->tableWidget->columnCount() - 1;
         pluginInfo.name = ui->tableWidget->item(i, col++)->text().toStdString();
-        pluginInfo.enabled = ui->tableWidget->item(i, col++)->checkState() == Qt::Unchecked;
+        pluginInfo.enabled = ui->tableWidget->item(i, col++)->checkState() == Qt::Checked;
         pluginInfo.version = ui->tableWidget->item(i, col++)->text().toStdString();
         pluginInfo.id = ui->tableWidget->item(i, col++)->text().toInt();
         pluginInfo.libFile = ui->tableWidget->item(i, col++)->text().toStdString();

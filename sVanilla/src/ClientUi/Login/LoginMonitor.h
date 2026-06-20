@@ -41,7 +41,6 @@ protected:
     void monitorStatus();
 
 private:
-    std::mutex m_mutex;
     std::atomic<std::shared_ptr<LoginProxy>> m_loginer;
     SNullMutex m_waitNullMutex;
     std::atomic<bool> m_stop;

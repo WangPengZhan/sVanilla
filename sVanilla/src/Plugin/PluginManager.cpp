@@ -381,6 +381,7 @@ void PluginManager::setPluginConfig(std::vector<PluginConfig> configs)
 {
     std::lock_guard lk(m_pluginsMutex);
     m_pluginConfig = std::move(configs);
+    m_configChanged = true;
 }
 
 void PluginManager::loadConfig()
