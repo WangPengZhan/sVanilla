@@ -130,9 +130,9 @@ int main(int argc, char* argv[])
     {
         attachConsole();
         exitCode = execCommandLine(commandLine, application);
+        exitCode = restarter.restartOrExit(exitCode);
     }
 
-    exitCode = restarter.restartOrExit(exitCode);
     MLogI(svanilla::cMainModule, "-----------------------------");
     MLogI(svanilla::cMainModule, "exit svanilla, time: {} exitCode: {}", QDateTime::currentDateTime().toString().toStdString(), exitCode);
     MLogI(svanilla::cMainModule, "-----------------------------");
