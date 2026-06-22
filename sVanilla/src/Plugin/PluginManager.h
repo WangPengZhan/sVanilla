@@ -24,6 +24,7 @@ class PluginProxy : public IPlugin
 public:
     explicit PluginProxy(std::shared_ptr<IPlugin> realPlugin);
 
+    bool isValid() const;
     const PluginMessage& pluginMessage() const override;
     const std::vector<uint8_t>& websiteIcon() override;
     bool canParseUrl(const std::string& url) override;
@@ -33,6 +34,8 @@ public:
 
 private:
     std::shared_ptr<IPlugin> m_realPlugin;
+    PluginMessage m_pluginMessage;
+    bool m_valid{false};
 };
 
 struct PluginConfig

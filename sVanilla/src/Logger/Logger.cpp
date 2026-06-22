@@ -4,10 +4,13 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/async.h>
 
+#include <cstddef>
+
 namespace
 {
-constexpr int logFileMaxSize = 100 * 1024 * 1024;  // 20M
-}
+constexpr std::size_t logFileMaxSize = 50 * 1024 * 1024;
+constexpr std::size_t logRotatedFileCount = 10;
+}  // namespace
 
 std::string Logger::m_dir;
 
@@ -48,8 +51,7 @@ Logger::~Logger()
 
 void Logger::registerLogger(const std::string& logName)
 {
-    spdlog::rotating_logger_mt<spdlog::async_factory>(logName, m_dir + "log/" + logName + ".log", logFileMaxSize, 100);
-    // spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(logName, "log/" + logName + ".log", logFileMaxSize, 100);
+    spdlog::rotating_logger_mt<spdlog::async_factory>(logName, m_dir + "log/" + logName + ".log", logFileMaxSize, logRotatedFileCount);
 }
 
 std::shared_ptr<spdlog::logger> Logger::get(const std::string& logName)

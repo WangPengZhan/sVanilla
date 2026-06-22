@@ -68,6 +68,7 @@ cmake --build build --config Release --parallel --target all
 | `test/SQLite` | SQLite 封装和 SQL/storage 行为 |
 | `test/ThreadPool` | 线程池 |
 | `test/Zipper` | 压缩和解压 |
+| `test/Audit` | 下载异常边界和插件代理异常隔离 |
 
 ## CI
 
@@ -87,3 +88,10 @@ cmake --build build --config Release --parallel --target all
 - 影响 UI 的变更至少说明手动验收路径。
 - 影响插件接口的变更必须同步更新插件规格和兼容性说明。
 - 影响 CMake、vcpkg、CI 的变更必须说明平台影响。
+
+## 2026-06-20 Audit Regression Coverage
+
+- `Audit_test` uses fake downloaders and plugins to verify that downloader exceptions become terminal Error states and plugin catch paths do not call `pluginMessage()` again.
+- `Zipper_test` creates archives in a test-owned temporary directory and covers normal extraction, ZIP64 metadata, `../`, backslash traversal, and Windows absolute paths.
+- Release Qt messages are forwarded to the Client logger; per-logger rotation is limited to 50 MiB per file, one current file, and ten rotated files.
+- The complete configured log upper bound is approximately 4,950 MiB for nine loggers, excluding transient filesystem allocation overhead.

@@ -1,5 +1,6 @@
 #include <utility>
 #include <vector>
+#include <exception>
 
 #include "DownloadStatusThread.h"
 #include "DownloadLog.h"
@@ -66,43 +67,48 @@ void DownloadStatusThread::downloadThread()
         std::vector<std::pair<std::string, std::shared_ptr<AbstractDownloader>>> removeTasks;
         for (const auto& [key, value] : tasks)
         {
-            switch (value->status())
+            try
             {
-            case AbstractDownloader::Ready:
-            {
-                value->start();
-                break;
+                switch (value->status())
+                {
+                case AbstractDownloader::Ready:
+                    value->start();
+                    break;
+                case AbstractDownloader::Downloading:
+                    value->downloadStatus();
+                    break;
+                case AbstractDownloader::Pause:
+                    value->pause();
+                    break;
+                case AbstractDownloader::Resumed:
+                    value->resume();
+                    break;
+                case AbstractDownloader::Stopped:
+                    value->stop();
+                    removeTasks.emplace_back(key, value);
+                    break;
+                case AbstractDownloader::Finished:
+                    value->finish();
+                    removeTasks.emplace_back(key, value);
+                    break;
+                case AbstractDownloader::Error:
+                    removeTasks.emplace_back(key, value);
+                    break;
+                default:
+                    break;
+                }
             }
-            case AbstractDownloader::Downloading:
+            catch (const std::exception& e)
             {
-                value->downloadStatus();
-                break;
-            }
-            case AbstractDownloader::Pause:
-            {
-                value->pause();
-                break;
-            }
-            case AbstractDownloader::Resumed:
-            {
-                value->resume();
-                break;
-            }
-            case AbstractDownloader::Stopped:
-            {
-                value->stop();
+                DOWNLOAD_LOG_ERROR("download task threw an exception, guid: {}, error: {}", key, e.what());
+                value->setStatus(AbstractDownloader::Error);
                 removeTasks.emplace_back(key, value);
-                break;
             }
-            case AbstractDownloader::Finished:
+            catch (...)
             {
-                value->finish();
+                DOWNLOAD_LOG_ERROR("download task threw an unknown exception, guid: {}", key);
+                value->setStatus(AbstractDownloader::Error);
                 removeTasks.emplace_back(key, value);
-                break;
-            }
-            case AbstractDownloader::Error:
-            default:
-                break;
             }
         }
 

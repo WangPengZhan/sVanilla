@@ -74,7 +74,7 @@ void AriaServer::startLocalServerAsync()
         // 设置启动的程序名和命令行参数
         m_aria2Process->setProgram(ariaExecutable);
         m_aria2Process->setArguments(
-            QStringList() << "--enable-rpc" << "--rpc-listen-all=true" << "--rpc-allow-origin-all=true" << "--rpc-listen-port=6800" << "--rpc-secret=sVanilla"
+            QStringList() << "--enable-rpc" << "--rpc-listen-all=false" << "--rpc-allow-origin-all=false" << "--rpc-listen-port=6800" << "--rpc-secret=sVanilla"
                           << "--input-file=" + sessionFile << "--save-session=" + sessionFile << "--save-session-interval=30" << "--log=" + logFile
                           << "--log-level=debug" << "--max-concurrent-downloads=6" << "--max-connection-per-server=16" << "--split=5" << "--min-split-size=10M"
                           << "--max-overall-download-limit=0" << "--max-download-limit=0" << "--max-overall-upload-limit=0" << "--max-upload-limit=0"
