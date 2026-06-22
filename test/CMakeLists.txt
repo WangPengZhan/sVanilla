@@ -20,3 +20,8 @@ if(Zipper_test)
     add_subdirectory(Zipper)
 endif()
 
+option(Audit_test "ENABLE audit regression tests" ON)
+if(Audit_test)
+    add_subdirectory(Audit)
+endif()
+

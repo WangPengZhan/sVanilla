@@ -128,6 +128,16 @@ Waiting -> Ready -> Downloading -> Pause/Paused/Resumed -> Finished
 - `Zipper` 压缩文件列表或目录。
 - `Unzipper` 解压文件到目标路径。
 - `ResourceHelper` 负责 RAII 清理函数执行。
+
+## 2026-06-20 Audit Hardening Contracts
+
+- `DownloadStatusThread` catches exceptions from downloader operations per task. An exception sets the task to `Error` and removes it from the polling container without stopping other downloads.
+- `Error`, `Stopped`, and `Finished` are terminal scheduling states and must not remain in the status-thread task map.
+- `PluginProxy` reads and caches `PluginMessage` once during construction. A plugin whose metadata call fails is invalid and must not be registered.
+- Plugin exception handlers must use cached metadata and must not call plugin code while handling an exception.
+- `Unzipper` accepts only relative archive entries contained by the canonical output root. Absolute paths, parent traversal, symbolic links, and excessive compression ratios are rejected.
+- `Zipper` and `Unzipper` use minizip ZIP64 APIs. Archive and entry sizes are limited by the filesystem and available storage rather than fixed 1 GiB or 4 GiB application thresholds.
+- Unzip output is streamed through a reusable 1 MiB heap buffer rather than allocated from the archive-declared uncompressed size or placed on the thread stack.
 ## 2026-06-19 PluginManager Thread Contract
 
 - `pluginsSnapshot()` returns a locked value snapshot of enabled plugin shared pointers.

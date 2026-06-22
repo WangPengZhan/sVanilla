@@ -30,3 +30,9 @@
 - The plugin loading future must be consumed before `PluginInterface` destruction; keep the future declared after `PluginInterface` and call `get()` during shutdown.
 - `pluginsLoaded(bool succeeded)` carries initial load result for main-window feedback.
 - Add loading checks to every URL parsing entry point, including `VideoWidget::Complete` and icon pre-parse.
+
+## 2026-06-20 Exception Isolation Note
+
+- `PluginProxy` caches `PluginMessage` once at construction because plugin identity is a stable contract.
+- If the initial metadata call throws, the proxy is invalid and PluginManager rejects the plugin.
+- Proxy logging and catch handlers use only cached metadata. Never call `pluginMessage()` or another plugin method from a catch block.

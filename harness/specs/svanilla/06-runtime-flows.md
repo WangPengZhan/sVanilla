@@ -64,6 +64,8 @@ User selects media item
 - UI 展示状态不得和数据库状态长期不一致。
 - 完成任务必须具备可追踪的 `uniqueId`。
 - `DownloadStatusThread` 仅在复制任务快照和提交任务删除时持有任务集合锁；状态查询、下载器控制、持久化和信号通知必须在锁外执行。
+- 下载器操作抛出异常时，状态线程必须记录任务 ID 和错误，将任务置为 `Error` 并移出调度容器；异常不得逃出后台线程入口。
+- `Error`、`Stopped` 和 `Finished` 均为调度终态，CLI 不得因 Error 任务残留而无限等待。
 
 ## 登录和 Cookie 流程
 
@@ -97,6 +99,14 @@ SApplication owns PluginInterface/PluginManager
 
 - 动态库扩展名平台相关。
 - 插件配置保存后应可在下次启动恢复。
+- PluginProxy 在注册前缓存插件元数据；元数据读取失败的插件不得进入运行时插件集合。
+- 插件调用异常的日志只能使用缓存身份，catch 路径不得再次调用插件代码。
+
+## 2026-06-20 Local Aria2 Security Flow
+
+- 内置 aria2 RPC 仅监听回环地址，必须使用 `rpc-listen-all=false`。
+- 内置 aria2 RPC 不允许任意浏览器 Origin，必须使用 `rpc-allow-origin-all=false`。
+- 当前固定 RPC secret 保持兼容，但不得记录到应用日志。
 
 ## 设置变更流程
 

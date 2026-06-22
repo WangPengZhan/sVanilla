@@ -17,6 +17,8 @@
 #include <QDateTime>
 #include <QStandardPaths>
 
+#include <spdlog/spdlog.h>
+
 std::string getOsType()
 {
 #if defined(_WIN32)
@@ -46,29 +48,68 @@ void startLog()
     MLogI(svanilla::cMainModule, "-----------------------------");
 }
 
-void myMessageHandler(QtMsgType, const QMessageLogContext&, const QString&)
+void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message)
 {
+    const auto logger = Logger::get("Client");
+    if (!logger)
+    {
+        return;
+    }
+
+    const auto category = context.category ? context.category : "qt";
+    const auto text = message.toUtf8().toStdString();
+    auto level = spdlog::level::info;
+    switch (type)
+    {
+    case QtDebugMsg:
+        level = spdlog::level::debug;
+        break;
+    case QtInfoMsg:
+        level = spdlog::level::info;
+        break;
+    case QtWarningMsg:
+        level = spdlog::level::warn;
+        break;
+    case QtCriticalMsg:
+        level = spdlog::level::err;
+        break;
+    case QtFatalMsg:
+        level = spdlog::level::critical;
+        break;
+    }
+
+    const spdlog::source_loc source{context.file ? context.file : "", context.line, context.function ? context.function : ""};
+    logger->log(source, level, "[Qt:{}] {}", category, text);
+    if (type == QtFatalMsg)
+    {
+        logger->flush();
+    }
 }
 
 int main(int argc, char* argv[])
 {
-#ifndef _DEBUG
-    qInstallMessageHandler(myMessageHandler);
-#endif
     network::CurlGlobal::instance();
+
     auto exePath = getModulePath();
     QString qExePath = QString::fromStdString(exePath);
     QDir::setCurrent(qExePath);
+
     Logger::setLogDir(SApplication::appDir().toLocal8Bit().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/"));
     Logger::getInstance();
-    DumpColletor::setDumpDir(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string("dump"));
+
+#ifndef _DEBUG
+    qInstallMessageHandler(myMessageHandler);
+#endif
+
     sqlite::SqliteDBManager::setDbPath(SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string(".db"));
+
     auto crashHandler = QStandardPaths::findExecutable("crashpad_handler", QStringList() << qExePath);
 #if defined(_WIN32)
     DumpColletor::initializeCrashpad(crashHandler.toStdWString(),
                                      SApplication::appDir().toStdWString() + (SApplication::appDir().isEmpty() ? L"" : L"/") + std::wstring(L"dump"));
 #else
-    DumpColletor::initializeCrashpad(crashHandler.toStdString(), DumpColletor::dumpDir);
+    DumpColletor::initializeCrashpad(crashHandler.toStdString(),
+                                     SApplication::appDir().toStdString() + (SApplication::appDir().isEmpty() ? "" : "/") + std::string("dump"));
 #endif
     startLog();
 

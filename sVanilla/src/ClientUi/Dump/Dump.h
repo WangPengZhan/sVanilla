@@ -4,8 +4,6 @@
 namespace DumpColletor
 {
 
-extern std::string dumpDir;
-void setDumpDir(const std::string& strDumpDir);
 #ifdef _WIN32
 bool initializeCrashpad(const std::wstring& crashHandler, const std::wstring& tempPath);
 #else

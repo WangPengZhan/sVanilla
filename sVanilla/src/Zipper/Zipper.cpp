@@ -8,10 +8,103 @@
 #include <list>
 #include <utility>
 #include <cstring>
+#include <algorithm>
+#include <cctype>
+#include <cstdint>
+#include <limits>
+#include <vector>
 
 #include "Zipper.h"
 
-constexpr int nMaxPath = 1024;
+namespace
+{
+constexpr std::size_t maxEntryNameSize = std::numeric_limits<std::uint16_t>::max();
+constexpr std::uint64_t maxCompressionRatio = 1000;
+constexpr std::size_t readBufferSize = 1024 * 1024;
+constexpr std::uint64_t zip64SizeThreshold = std::numeric_limits<std::uint32_t>::max();
+
+bool isSymlink(const unz_file_info64& fileInfo)
+{
+    constexpr std::uint32_t unixFileTypeMask = 0170000;
+    constexpr std::uint32_t unixSymlinkType = 0120000;
+    const auto unixMode = static_cast<std::uint32_t>(fileInfo.external_fa >> 16);
+    return (unixMode & unixFileTypeMask) == unixSymlinkType;
+}
+
+bool hasParentComponent(const std::filesystem::path& path)
+{
+    return std::any_of(path.begin(), path.end(), [](const auto& component) {
+        return component == "..";
+    });
+}
+
+bool hasWindowsDrivePrefix(const std::string& entryName)
+{
+    if (entryName.size() < 2 || entryName[1] != ':')
+    {
+        return false;
+    }
+    return std::isalpha(static_cast<unsigned char>(entryName[0])) != 0;
+}
+
+bool validEntryInfo(const unz_file_info64& fileInfo)
+{
+    if (fileInfo.size_filename == 0 || fileInfo.size_filename > maxEntryNameSize)
+    {
+        return false;
+    }
+    if (isSymlink(fileInfo))
+    {
+        return false;
+    }
+    if (fileInfo.uncompressed_size == 0)
+    {
+        return true;
+    }
+    if (fileInfo.compressed_size == 0)
+    {
+        return false;
+    }
+    return fileInfo.uncompressed_size / fileInfo.compressed_size <= maxCompressionRatio;
+}
+
+bool safeOutputPath(const std::filesystem::path& outputRoot, std::string entryName, std::filesystem::path& outputPath)
+{
+    std::replace(entryName.begin(), entryName.end(), '\\', '/');
+    if (entryName.empty() || entryName.front() == '/')
+    {
+        return false;
+    }
+    if (hasWindowsDrivePrefix(entryName))
+    {
+        return false;
+    }
+
+    const std::filesystem::path relativePath(entryName);
+    if (relativePath.is_absolute() || relativePath.has_root_path())
+    {
+        return false;
+    }
+    if (hasParentComponent(relativePath))
+    {
+        return false;
+    }
+
+    std::error_code error;
+    outputPath = std::filesystem::weakly_canonical(outputRoot / relativePath, error);
+    if (error)
+    {
+        return false;
+    }
+
+    const auto relativeOutput = outputPath.lexically_relative(outputRoot);
+    if (relativeOutput.empty() || relativeOutput.is_absolute())
+    {
+        return false;
+    }
+    return !hasParentComponent(relativeOutput);
+}
+}  // namespace
 
 ResourceHelper::ResourceHelper(const std::function<void(void)>& fn)
 {
@@ -91,7 +184,7 @@ bool Zipper::zip()
         return false;
     }
 
-    zipFile zFile = zipOpen(m_strOutputFileName.c_str(), APPEND_STATUS_CREATE);
+    zipFile zFile = zipOpen64(m_strOutputFileName.c_str(), APPEND_STATUS_CREATE);
     if (nullptr == zFile)
     {
         return false;
@@ -126,7 +219,14 @@ bool Zipper::addFileToZip(zipFile zfile, const std::string& fileNameinZip, const
         strFileName += "/";
     }
 
-    int nErr = zipOpenNewFileInZip(zfile, strFileName.c_str(), &zinfo, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+    std::error_code error;
+    const auto fileSize = srcfile.empty() ? 0 : std::filesystem::file_size(srcfile, error);
+    if (error)
+    {
+        return false;
+    }
+    const int zip64 = fileSize >= zip64SizeThreshold ? 1 : 0;
+    int nErr = zipOpenNewFileInZip64(zfile, strFileName.c_str(), &zinfo, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION, zip64);
     if (nErr != ZIP_OK)
     {
         return false;
@@ -219,121 +319,139 @@ const std::string& Unzipper::outputPath() const
 
 bool Unzipper::unzip()
 {
-    if (m_strUnzippedFile.empty() || !std::filesystem::exists(m_strUnzippedFile))
+    std::error_code error;
+    if (m_strUnzippedFile.empty() || m_strOutputPath.empty())
+    {
+        return false;
+    }
+    if (!std::filesystem::is_regular_file(m_strUnzippedFile, error) || error)
     {
         return false;
     }
 
-    if (!std::filesystem::is_directory(m_strOutputPath))
+    const std::filesystem::path requestedOutputPath(m_strOutputPath);
+    if (std::filesystem::exists(requestedOutputPath, error))
+    {
+        if (error || !std::filesystem::is_directory(requestedOutputPath, error))
+        {
+            return false;
+        }
+    }
+    else if (!std::filesystem::create_directories(requestedOutputPath, error) || error)
     {
         return false;
     }
 
-    if (!std::filesystem::exists(m_strOutputPath))
+    const auto outputRoot = std::filesystem::weakly_canonical(requestedOutputPath, error);
+    if (error)
     {
-        std::filesystem::create_directories(m_strOutputPath);
+        return false;
     }
 
-    ResourceHelper resource;
-
-    // 打开zip文件
-    unzFile unzfile = unzOpen(m_strUnzippedFile.c_str());
+    unzFile unzfile = unzOpen64(m_strUnzippedFile.c_str());
     if (unzfile == nullptr)
     {
         return false;
     }
-    resource.addFn([unzfile]() {
+    ResourceHelper resource([unzfile]() {
         unzClose(unzfile);
     });
 
-    // 获取zip文件的信息
-    auto* pGlobalInfo = new unz_global_info;
-    int nReturnValue = unzGetGlobalInfo(unzfile, pGlobalInfo);
-    if (nReturnValue != UNZ_OK)
+    unz_global_info64 globalInfo{};
+    if (unzGetGlobalInfo64(unzfile, &globalInfo) != UNZ_OK)
     {
         return false;
     }
-    resource.addFn([pGlobalInfo]() {
-        delete pGlobalInfo;
-    });
 
-    // 解析zip文件
-    auto* pFileInfo = new unz_file_info;
-    char szZipFName[nMaxPath] = {0};
-    char szExtraName[nMaxPath] = {0};
-    char szCommName[nMaxPath] = {0};
-    resource.addFn([pFileInfo]() {
-        delete pFileInfo;
-    });
-
-    // 存放从zip中解析出来的内部文件名
-    for (int i = 0; i < pGlobalInfo->number_entry; ++i)
+    std::vector<char> readBuffer(readBufferSize);
+    for (std::uint64_t i = 0; i < globalInfo.number_entry; ++i)
     {
-        // 解析得到zip中的文件信息
-        nReturnValue = unzGetCurrentFileInfo(unzfile, pFileInfo, szZipFName, nMaxPath, szExtraName, nMaxPath, szCommName, nMaxPath);
-        if (nReturnValue != UNZ_OK)
+        unz_file_info64 fileInfo{};
+        if (unzGetCurrentFileInfo64(unzfile, &fileInfo, nullptr, 0, nullptr, 0, nullptr, 0) != UNZ_OK)
+        {
+            return false;
+        }
+        if (!validEntryInfo(fileInfo))
         {
             return false;
         }
 
-        std::string strZipFileName = szZipFName;
-        if (strZipFileName.empty())
+        std::vector<char> entryNameBuffer(static_cast<std::size_t>(fileInfo.size_filename) + 1, '\0');
+        if (unzGetCurrentFileInfo64(unzfile, &fileInfo, entryNameBuffer.data(), static_cast<uLong>(entryNameBuffer.size()), nullptr, 0, nullptr, 0) != UNZ_OK)
         {
-            continue;
+            return false;
         }
-        bool bIsDir = strZipFileName.back() == '/' || strZipFileName.back() == '\\';
-        std::filesystem::path strFullFilePath = m_strOutputPath + "/" + szZipFName;
-        if (bIsDir)  // 创建目录
+
+        const std::string entryName(entryNameBuffer.data(), fileInfo.size_filename);
+        const bool isDirectory = entryName.back() == '/' || entryName.back() == '\\';
+        std::filesystem::path outputPath;
+        if (!safeOutputPath(outputRoot, entryName, outputPath))
         {
-            if (std::filesystem::exists(strFullFilePath))
+            return false;
+        }
+
+        if (isDirectory)
+        {
+            if (!std::filesystem::create_directories(outputPath, error) && error)
             {
-                std::filesystem::create_directory(strFullFilePath);
+                return false;
             }
         }
         else
         {
-            // 创建文件
-            if (!std::filesystem::exists(strFullFilePath.parent_path()))
-            {
-                std::filesystem::create_directories(strFullFilePath.parent_path());
-            }
-            std::ofstream stream(strFullFilePath, std::ios::out | std::ios::binary);
-
-            // 打开文件
-            nReturnValue = unzOpenCurrentFile(unzfile);
-            if (nReturnValue != UNZ_OK)
+            if (!std::filesystem::create_directories(outputPath.parent_path(), error) && error)
             {
                 return false;
             }
 
-            resource.addFn([unzfile]() {
-                unzCloseCurrentFile(unzfile);
-            });
+            std::ofstream stream(outputPath, std::ios::out | std::ios::binary | std::ios::trunc);
+            if (!stream)
+            {
+                return false;
+            }
+            if (unzOpenCurrentFile(unzfile) != UNZ_OK)
+            {
+                return false;
+            }
 
-            // 读取文件
-            uLong uFilesize = pFileInfo->uncompressed_size;
-            std::unique_ptr<char[]> szReadBuffer(new char[uFilesize]);
+            bool succeeded = true;
+            std::uint64_t writtenSize = 0;
             while (true)
             {
-                memset(szReadBuffer.get(), 0, uFilesize);
-                int nReadFileSize = unzReadCurrentFile(unzfile, szReadBuffer.get(), uFilesize);
-                if (nReadFileSize < 0)  // 读取文件失败
+                const int readSize = unzReadCurrentFile(unzfile, readBuffer.data(), static_cast<unsigned int>(readBuffer.size()));
+                if (readSize < 0)
                 {
-                    return false;
+                    succeeded = false;
+                    break;
                 }
-                else if (nReadFileSize == 0)  // 读取文件完毕
+                if (readSize == 0)
                 {
                     break;
                 }
-                else  // 写入读取的内容
+
+                writtenSize += static_cast<std::uint64_t>(readSize);
+                if (writtenSize > fileInfo.uncompressed_size)
                 {
-                    stream.write(szReadBuffer.get(), nReadFileSize);
+                    succeeded = false;
+                    break;
                 }
+                stream.write(readBuffer.data(), readSize);
+                succeeded = succeeded && stream.good();
             }
 
             stream.close();
+            succeeded = succeeded && unzCloseCurrentFile(unzfile) == UNZ_OK && writtenSize == fileInfo.uncompressed_size;
+            if (!succeeded)
+            {
+                std::filesystem::remove(outputPath, error);
+                return false;
+            }
         }
-        unzGoToNextFile(unzfile);
+
+        if (i + 1 < globalInfo.number_entry && unzGoToNextFile(unzfile) != UNZ_OK)
+        {
+            return false;
+        }
     }
 
     return true;

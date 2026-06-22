@@ -104,42 +104,45 @@ public:
 PluginProxy::PluginProxy(std::shared_ptr<IPlugin> realPlugin)
     : m_realPlugin(std::move(realPlugin))
 {
+    try
+    {
+        m_pluginMessage = m_realPlugin->pluginMessage();
+        m_valid = true;
+    }
+    catch (const std::exception& e)
+    {
+        PLUGIN_LOG_WARN("failed to read plugin metadata, error: {}", e.what());
+    }
+    catch (...)
+    {
+        PLUGIN_LOG_WARN("failed to read plugin metadata, unknown exception");
+    }
+}
+
+bool PluginProxy::isValid() const
+{
+    return m_valid;
 }
 
 const PluginMessage& PluginProxy::pluginMessage() const
 {
-    try
-    {
-        PLUGIN_LOG_INFO("call pluginMessage, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
-        return m_realPlugin->pluginMessage();
-    }
-    catch (const std::exception& e)
-    {
-        PLUGIN_LOG_WARN("pluginMessage throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
-    }
-    catch (...)
-    {
-        PLUGIN_LOG_WARN("pluginMessage throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
-    }
-
-    static PluginMessage empty;
-    return empty;
+    return m_pluginMessage;
 }
 
 const std::vector<uint8_t>& PluginProxy::websiteIcon()
 {
     try
     {
-        PLUGIN_LOG_INFO("call websiteIcon, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_INFO("call websiteIcon, pluginId: {}", m_pluginMessage.pluginId);
         return m_realPlugin->websiteIcon();
     }
     catch (const std::exception& e)
     {
-        PLUGIN_LOG_WARN("websiteIcon throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("websiteIcon throw exception, msg: {}, pluginId: {}", e.what(), m_pluginMessage.pluginId);
     }
     catch (...)
     {
-        PLUGIN_LOG_WARN("websiteIcon throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("websiteIcon throw unknow exception, pluginId: {}", m_pluginMessage.pluginId);
     }
 
     static std::vector<uint8_t> empty;
@@ -150,16 +153,16 @@ bool PluginProxy::canParseUrl(const std::string& url)
 {
     try
     {
-        PLUGIN_LOG_INFO("call canParseUrl, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_INFO("call canParseUrl, pluginId: {}", m_pluginMessage.pluginId);
         return m_realPlugin->canParseUrl(url);
     }
     catch (const std::exception& e)
     {
-        PLUGIN_LOG_WARN("canParseUrl throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("canParseUrl throw exception, msg: {}, pluginId: {}", e.what(), m_pluginMessage.pluginId);
     }
     catch (...)
     {
-        PLUGIN_LOG_WARN("canParseUrl throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("canParseUrl throw unknow exception, pluginId: {}", m_pluginMessage.pluginId);
     }
     return false;
 }
@@ -168,16 +171,16 @@ adapter::VideoView PluginProxy::getVideoView(const std::string& url)
 {
     try
     {
-        PLUGIN_LOG_INFO("call getVideoView, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_INFO("call getVideoView, pluginId: {}", m_pluginMessage.pluginId);
         return m_realPlugin->getVideoView(url);
     }
     catch (const std::exception& e)
     {
-        PLUGIN_LOG_WARN("getVideoView throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("getVideoView throw exception, msg: {}, pluginId: {}", e.what(), m_pluginMessage.pluginId);
     }
     catch (...)
     {
-        PLUGIN_LOG_WARN("getVideoView throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("getVideoView throw unknow exception, pluginId: {}", m_pluginMessage.pluginId);
     }
     return {};
 }
@@ -186,16 +189,16 @@ std::shared_ptr<download::FileDownloader> PluginProxy::getDownloader(const Video
 {
     try
     {
-        PLUGIN_LOG_INFO("call getDownloader, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_INFO("call getDownloader, pluginId: {}", m_pluginMessage.pluginId);
         return m_realPlugin->getDownloader(videoInfo);
     }
     catch (const std::exception& e)
     {
-        PLUGIN_LOG_WARN("getDownloader throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("getDownloader throw exception, msg: {}, pluginId: {}", e.what(), m_pluginMessage.pluginId);
     }
     catch (...)
     {
-        PLUGIN_LOG_WARN("getDownloader throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("getDownloader throw unknow exception, pluginId: {}", m_pluginMessage.pluginId);
     }
     return {};
 }
@@ -204,16 +207,16 @@ LoginProxy PluginProxy::loginer()
 {
     try
     {
-        PLUGIN_LOG_INFO("call loginer, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_INFO("call loginer, pluginId: {}", m_pluginMessage.pluginId);
         return m_realPlugin->loginer();
     }
     catch (const std::exception& e)
     {
-        PLUGIN_LOG_WARN("loginer throw exception, msg: {}, pluginId: {}", e.what(), m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("loginer throw exception, msg: {}, pluginId: {}", e.what(), m_pluginMessage.pluginId);
     }
     catch (...)
     {
-        PLUGIN_LOG_WARN("loginer throw unknow exception, pluginId: {}", m_realPlugin->pluginMessage().pluginId);
+        PLUGIN_LOG_WARN("loginer throw unknow exception, pluginId: {}", m_pluginMessage.pluginId);
     }
 
     static EmptyLoginApi empty;
@@ -281,7 +284,13 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         return;
     }
 
-    plugin = std::make_shared<PluginProxy>(plugin);
+    auto pluginProxy = std::make_shared<PluginProxy>(plugin);
+    if (!pluginProxy->isValid())
+    {
+        PLUGIN_LOG_WARN("load plugin failed because metadata is unavailable, path: {}", pluginPath);
+        return;
+    }
+    plugin = std::move(pluginProxy);
 
     PluginConfig pluginConfig;
     std::vector<PluginConfig> configs;
