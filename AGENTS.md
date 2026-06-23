@@ -86,9 +86,9 @@
 按风险选择最小相关验证：
 
 ```sh
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST=ON
-cmake --build build --config Debug --parallel --target all
-ctest --test-dir build --build-config Debug --output-on-failure
+cmake -B out/harness -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST=ON
+cmake --build out/harness --config Debug --parallel
+ctest --test-dir out/harness --build-config Debug --output-on-failure
 python scripts/clang_format_all.py
 ```
 
