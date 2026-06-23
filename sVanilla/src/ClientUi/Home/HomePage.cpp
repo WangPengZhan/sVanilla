@@ -35,14 +35,16 @@ bool copyWithAdminPrivileges(const QString& source, const QString& destination)
 
 #ifdef _WIN32
     program = "powershell";
-    QString command = QString("Copy-Item -Path '%1' -Destination '%2' -Force").arg(source).arg(destination);
-    arguments << QString("Start-Process powershell -ArgumentList '-NoProfile', '-ExecutionPolicy Bypass', '-Command', \"%1\" -Verb RunAs").arg(command);
+    arguments << "-NoProfile" << "-ExecutionPolicy" << "Bypass" << "-Command" << "Copy-Item" << "-LiteralPath" << source << "-Destination" << destination
+              << "-Force";
 #elif __linux__
-    program = "sudo";
-    arguments << "-S" << QString("cp \"%1\" \"%2\"").arg(source).arg(destination);
+    program = "pkexec";
+    arguments << "cp" << source << destination;
 #elif __APPLE__
     program = "osascript";
-    arguments << "-e" << QString("do shell script \"cp '%1' '%2'\" with administrator privileges").arg(source).arg(destination);
+    arguments << "-e" << "on run argv"
+              << "-e" << "do shell script \"/bin/cp \" & quoted form of item 1 of argv & \" \" & quoted form of item 2 of argv with administrator privileges"
+              << "-e" << "end run" << source << destination;
 #endif
 
     MLogI(svanilla::cHomeModule, "copyWithAdmin started! command: {}, arguments: {}", program.toStdString(), arguments.join(" ").toStdString());
