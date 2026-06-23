@@ -43,10 +43,12 @@
 配置和测试：
 
 ```bash
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST=ON
-cmake --build build --config Debug --parallel --target all
-ctest --test-dir build --build-config Debug --output-on-failure
+cmake -B out/harness -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST=ON
+cmake --build out/harness --config Debug --parallel
+ctest --test-dir out/harness --build-config Debug --output-on-failure
 ```
+
+Harness/AI 本地验证固定使用 `out/harness/` 构建树，不得复用或清理开发者维护的 `build/`。
 
 格式化：
 
@@ -57,8 +59,8 @@ python3 scripts/clang_format_all.py
 clang-tidy：
 
 ```bash
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DENABLE_CLANG_TIDY=ON
-cmake --build build --config Release --parallel --target all
+cmake -B out/harness/clang-tidy -S . -DCMAKE_BUILD_TYPE=Release -DENABLE_CLANG_TIDY=ON
+cmake --build out/harness/clang-tidy --config Release --parallel
 ```
 
 ## 测试覆盖
