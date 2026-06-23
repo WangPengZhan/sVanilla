@@ -5,6 +5,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QSettings>
+#include <QProcess>
 
 #include "DefaultSettings.h"
 #include "SUI/Tips/TipDialog.h"
@@ -12,6 +13,8 @@
 #include "Config/SingleConfig.h"
 #include "MainWindow/SApplication.h"
 #include "VideoList/VideoData.h"
+#include "ClientLog.h"
+#include "const_string.h"
 
 DefaultSettings::DefaultSettings(QWidget* parent)
     : QWidget(parent)
@@ -248,18 +251,27 @@ void DefaultSettings::autoStartRun(bool isRun)
     autoRun.setValue("Disabled", false);
     autoRun.setValue("RunAtLoad", isRun);
 #elif __linux__
-    std::string appDesktopFile = QCoreApplication::applicationDirPath().toStdString() + "/share/applications/sVanilla.desktop";
-    std::string autoCopyPath = "/etc/xdg/autostart/sVanilla.desktop";
-    std::string cmd;
+    const QString appDesktopFile = QDir::cleanPath(QCoreApplication::applicationDirPath() + QDir::separator() + "share" + QDir::separator() + "applications" +
+                                                   QDir::separator() + "sVanilla.desktop");
+    const QString autoCopyPath = "/etc/xdg/autostart/sVanilla.desktop";
+    QStringList arguments;
     if (isRun)
     {
-        cmd = "pkexec cp " + appDesktopFile + " " + autoCopyPath;
+        arguments << "cp" << appDesktopFile << autoCopyPath;
     }
     else
     {
-        cmd = "pkexec rm " + autoCopyPath;
+        arguments << "rm" << autoCopyPath;
     }
 
-    auto res = system(cmd.c_str());
+    QProcess process;
+    process.setProgram("pkexec");
+    process.setArguments(arguments);
+    process.start();
+    process.waitForFinished();
+    if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0)
+    {
+        MLogE(svanilla::cSettings, "Failed to update startup settings.");
+    }
 #endif
 }
