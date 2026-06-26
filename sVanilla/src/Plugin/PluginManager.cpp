@@ -403,7 +403,7 @@ void PluginManager::loadConfig()
     }
     catch (const std::exception& e)
     {
-        // ...
+        PLUGIN_LOG_WARN("load plugin config failed, path: {}, error: {}", configFilePath(), e.what());
     }
 
     if (m_pluginConfig.empty())
