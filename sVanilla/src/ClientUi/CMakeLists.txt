@@ -169,8 +169,8 @@ endif ()
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
         COMMAND ${CMAKE_COMMAND} -DEXECUTABLE_PATH="$<TARGET_FILE_DIR:${PROJECT_NAME}>/aria/aria2c" -P "${CMAKE_SOURCE_DIR}/cmake/terminate_process.cmake"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CRASHPAD_HANDLER_DIR}  $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${CMAKE_SOURCE_DIR}/sVanilla/resource/style $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${CRASHPAD_HANDLER_DIR}  $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:FFmpeg> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}
@@ -179,7 +179,7 @@ add_custom_command(TARGET ${PROJECT_NAME}
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}
         ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/get_licenses.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
 if(UNIX)
     add_custom_command(TARGET ${PROJECT_NAME}
