@@ -77,7 +77,7 @@ cmake --build out/harness/clang-tidy --config Release --parallel
 | Workflow | 目的 |
 | --- | --- |
 | `ci-linux.yml` | Linux 构建和安装 |
-| `ci-windows.yml` | Windows 构建和安装 |
+| `ci-win.yml` | Windows 构建和安装 |
 | `ci-macos.yml` | macOS 构建和安装 |
 | `ci-clang-format-check.yml` | clang-format 检查 |
 | `ci-clang-tidy.yml` | clang-tidy 构建检查 |
