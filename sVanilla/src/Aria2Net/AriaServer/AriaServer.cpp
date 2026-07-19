@@ -3,6 +3,8 @@
 #include <QDir>
 #include <QProcess>
 
+#include <algorithm>
+#include <cctype>
 #include <memory>
 
 #include "AriaServer.h"
@@ -11,6 +13,22 @@
 
 namespace aria2net
 {
+namespace
+{
+std::string trimmedWhitespace(const std::string& value)
+{
+    const auto isWhitespace = [](unsigned char ch) {
+        return std::isspace(ch);
+    };
+    const auto first = std::find_if_not(value.begin(), value.end(), isWhitespace);
+    if (first == value.end())
+    {
+        return {};
+    }
+    const auto last = std::find_if_not(value.rbegin(), value.rend(), isWhitespace).base();
+    return {first, last};
+}
+}  // namespace
 
 AriaServer::AriaServer()
     : m_aria2Process(nullptr)
@@ -63,12 +81,20 @@ void AriaServer::startLocalServerAsync()
 
         m_aria2Process->setProcessChannelMode(QProcess::MergedChannels);
         QObject::connect(m_aria2Process.get(), &QProcess::readyReadStandardOutput, [&]() {
-            QByteArray output = m_aria2Process->readAllStandardOutput().trimmed();
-            ARIA_LOG_INFO("aria2Process standardOutput: {}", output.toStdString());
+            const std::string rawOutput = m_aria2Process->readAllStandardOutput().toStdString();
+            const std::string output = trimmedWhitespace(rawOutput);
+            if (!output.empty())
+            {
+                ARIA_LOG_INFO("aria2Process standardOutput: {}", rawOutput);
+            }
         });
         QObject::connect(m_aria2Process.get(), &QProcess::readyReadStandardError, [&]() {
-            QByteArray output = m_aria2Process->readAllStandardError().trimmed();
-            ARIA_LOG_ERROR("aria2Process standardError: {}", output.toStdString());
+            const std::string rawOutput = m_aria2Process->readAllStandardError().toStdString();
+            const std::string output = trimmedWhitespace(rawOutput);
+            if (!output.empty())
+            {
+                ARIA_LOG_ERROR("aria2Process standardError: {}", rawOutput);
+            }
         });
 
         // 设置启动的程序名和命令行参数
