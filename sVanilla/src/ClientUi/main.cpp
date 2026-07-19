@@ -50,7 +50,7 @@ void startLog()
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message)
 {
-    const auto logger = Logger::get("Client");
+    const auto logger = Logger::get(Logger::defaultName);
     if (!logger)
     {
         return;
