@@ -83,6 +83,8 @@ cmake --build out/harness/clang-tidy --config Release --parallel
 | `ci-clang-tidy.yml` | clang-tidy 构建检查 |
 | `ci-release.yml` | tag release 打包 |
 
+Release workflow 中官方/第三方 JavaScript action 应优先使用 Node.js 24 兼容版本，例如 `actions/checkout@v5`、`actions/upload-artifact@v6`、`actions/setup-python@v7`、`jurplel/install-qt-action@v4`，以避免 GitHub Actions Node.js 20 弃用告警。
+
 ## 质量约束
 
 - 新增 C++ 源文件应符合 `.clang-format`。
