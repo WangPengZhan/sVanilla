@@ -8,18 +8,21 @@ function(kill_process_by_path executable_path)
 
     get_filename_component(process_name "${executable_path}" NAME)
 
-    if(WIN32)
+    if(CMAKE_HOST_WIN32)
         string(REPLACE "/" "\\" executable_path "${executable_path}.exe")
 
         execute_process(
-            COMMAND powershell -Command "
-                Get-Process -Name '${process_name}' -ErrorAction SilentlyContinue |
-                Stop-Process -Force;
+            COMMAND powershell -NoProfile -Command "
+                $procs = Get-Process -Name '${process_name}' -ErrorAction SilentlyContinue;
+                if ($procs) {
+                    $procs | Stop-Process -Force -ErrorAction Stop;
+                }
+                exit 0;
             "
             RESULT_VARIABLE result
             ERROR_QUIET
         )
-    elseif(APPLE OR UNIX)
+    elseif(CMAKE_HOST_APPLE OR CMAKE_HOST_UNIX)
         if(NOT EXISTS "${executable_path}")
             message("Executable path does not exist: ${executable_path}, skipping process termination.")
             return()
