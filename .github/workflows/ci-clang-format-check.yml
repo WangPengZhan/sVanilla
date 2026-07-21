@@ -16,7 +16,10 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          submodules: false
+          fetch-depth: 1
 
       - name: Install clang-format
         uses: aminya/setup-cpp@v1

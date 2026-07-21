@@ -28,9 +28,10 @@ jobs:
         qt_modules: [qtwebengine qtwebchannel qtpositioning qtpdf qtimageformats qt5compat qtserialport]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
-          submodules: true
+          submodules: recursive
+          fetch-depth: 0
 
       - uses: lukka/get-cmake@latest
 
@@ -42,7 +43,7 @@ jobs:
           vcpkgJsonGlob: '${{ github.workspace }}/vcpkg-configuration.json'
 
       - name: Install Qt Official Build
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: ${{matrix.qt}}
           target: desktop
@@ -84,7 +85,7 @@ jobs:
 
       - name: Upload build logs artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: windows_logs
           path: |
