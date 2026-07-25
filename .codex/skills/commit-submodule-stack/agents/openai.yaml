@@ -1,0 +1,4 @@
+interface:
+  display_name: "多子模块提交"
+  short_description: "Commit and synchronize recursive sVanilla submodules safely"
+  default_prompt: "使用 $commit-submodule-stack 梳理递归子模块依赖，按从叶到根的顺序准备、审批、提交、同步同源副本并推送。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "预提交审查"
+  short_description: "Review, stage, and approve focused sVanilla commits"
+  default_prompt: "使用 $prepare-commit 审查当前改动，准备最小合理提交并在每次提交前等待我批准。"
