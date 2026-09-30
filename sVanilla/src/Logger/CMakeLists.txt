@@ -4,7 +4,7 @@ project(Logger
     VERSION 1.0.0 
     LANGUAGES CXX)
 
-file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "*.cpp" "*.h")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
