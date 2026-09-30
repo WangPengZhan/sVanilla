@@ -20,10 +20,10 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../../sVanilla/src
 )
 
-file(GLOB_RECURSE QTS "src/*.ts")
-file(GLOB_RECURSE QRC "/resource/*.qrc")
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h")
-file(GLOB_RECURSE UI "src/*.ui")
+file(GLOB_RECURSE QTS CONFIGURE_DEPENDS "src/*.ts")
+file(GLOB_RECURSE QRC CONFIGURE_DEPENDS "/resource/*.qrc")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.h")
+file(GLOB_RECURSE UI CONFIGURE_DEPENDS "src/*.ui")
 
 
 if (NOT CMAKE_BUILD_TYPE)
