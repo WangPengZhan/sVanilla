@@ -7,7 +7,7 @@ project(Zipper
 
 find_package(unofficial-minizip CONFIG REQUIRED)
 
-file(GLOB_RECURSE SOURCES "*.cpp" "*.h")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "*.cpp" "*.h")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
