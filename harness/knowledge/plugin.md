@@ -36,3 +36,11 @@
 - `PluginProxy` caches `PluginMessage` once at construction because plugin identity is a stable contract.
 - If the initial metadata call throws, the proxy is invalid and PluginManager rejects the plugin.
 - Proxy logging and catch handlers use only cached metadata. Never call `pluginMessage()` or another plugin method from a catch block.
+
+## 2026-07-27 URL Matching Order Note
+
+- `PluginInterface` measures and logs every `canParseUrl` call using `steady_clock`.
+- Plugins whose latest `canParseUrl` call takes at most one second preserve the current snapshot order.
+- Plugins whose latest call exceeds one second follow normal plugins and are ordered from shorter to longer duration.
+- The duration is runtime-only state and is neither persisted nor part of the plugin ABI.
+- An explicitly selected CLI plugin also participates in original-URL and Location-URL checks so short URLs are resolved before `getVideoView`.

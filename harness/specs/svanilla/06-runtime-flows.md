@@ -43,6 +43,13 @@ HomePage/MainWindow receives URL
 - 没有插件可解析时 UI 应提示失败或保持空状态。
 - 插件解析异常不应中断主程序。
 
+插件选择顺序：
+
+- 每次 `canParseUrl` 调用都记录耗时；未超过 1 秒的插件保持 `PluginManager` 快照中的原始相对顺序。
+- 最近一次调用超过 1 秒的插件排在普通插件之后，并按耗时从短到长排列，避免更慢的候选插件优先阻塞后续匹配。
+- URL 匹配仍采用首个返回 `true` 的插件，原始 URL 无插件支持时再解析 HTTP Location，并对跳转 URL 进行第二轮匹配。
+- CLI 显式指定插件时仍先检查原始 URL；插件不支持原始 URL 时解析 HTTP Location，并将跳转 URL 交给指定插件，不能绕过短链接解析。
+
 ## 下载流程
 
 ```text
