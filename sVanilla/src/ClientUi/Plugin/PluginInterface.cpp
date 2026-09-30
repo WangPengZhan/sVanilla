@@ -1,5 +1,8 @@
 #include <QDateTime>
 
+#include <algorithm>
+#include <chrono>
+
 #include "PluginInterface.h"
 #include "Storage/StorageManager.h"
 #include "Storage/CookiesInfoStorage.h"
@@ -89,16 +92,71 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::getPlugin(int pluginId)
     return m_pluginManager.getPlugin(pluginId);
 }
 
-std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& url, std::string& locationUrl)
+std::vector<std::shared_ptr<plugin::IPlugin>> PluginInterface::orderedPluginsSnapshot() const
+{
+    auto plugins = m_pluginManager.pluginsSnapshot();
+    std::lock_guard lk(m_parseDurationMutex);
+
+    const auto durationFor = [this](const auto& plugin) {
+        const auto duration = m_parseDurations.find(plugin->pluginMessage().pluginId);
+        return duration == m_parseDurations.end() ? std::chrono::steady_clock::duration::zero() : duration->second;
+    };
+    std::stable_sort(plugins.begin(), plugins.end(), [&durationFor](const auto& lhs, const auto& rhs) {
+        const auto lhsDuration = durationFor(lhs);
+        const auto rhsDuration = durationFor(rhs);
+        const bool lhsIsSlow = lhsDuration > std::chrono::seconds(1);
+        const bool rhsIsSlow = rhsDuration > std::chrono::seconds(1);
+        if (lhsIsSlow != rhsIsSlow)
+        {
+            return !lhsIsSlow;
+        }
+        return lhsIsSlow && lhsDuration < rhsDuration;
+    });
+
+    return plugins;
+}
+
+bool PluginInterface::canParseUrl(const std::shared_ptr<plugin::IPlugin>& plugin, const std::string& url)
+{
+    const auto startedAt = std::chrono::steady_clock::now();
+    const bool canParse = plugin->canParseUrl(url);
+    const auto duration = std::chrono::steady_clock::now() - startedAt;
+    const auto pluginId = plugin->pluginMessage().pluginId;
+    {
+        std::lock_guard lk(m_parseDurationMutex);
+        m_parseDurations[pluginId] = duration;
+    }
+
+    MLogI(svanilla::cPluginModule, "canParseUrl completed, pluginId: {}, durationMs: {}, canParse: {}", pluginId,
+          std::chrono::duration_cast<std::chrono::milliseconds>(duration).count(), canParse);
+    return canParse;
+}
+
+std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& url, std::string& locationUrl, int pluginId)
 {
     if (url.empty())
     {
         return {};
     }
 
-    for (auto& plugin : m_pluginManager.pluginsSnapshot())
+    if (pluginId != -1)
     {
-        if (plugin->canParseUrl(url))
+        auto plugin = m_pluginManager.getPlugin(pluginId);
+        if (!plugin || canParseUrl(plugin, url))
+        {
+            return plugin;
+        }
+
+        if (getUrlLocation(url, locationUrl))
+        {
+            canParseUrl(plugin, locationUrl);
+        }
+        return plugin;
+    }
+
+    for (auto& plugin : orderedPluginsSnapshot())
+    {
+        if (canParseUrl(plugin, url))
         {
             return plugin;
         }
@@ -106,9 +164,9 @@ std::shared_ptr<plugin::IPlugin> PluginInterface::parseUrl(const std::string& ur
 
     if (getUrlLocation(url, locationUrl))
     {
-        for (auto& plugin : m_pluginManager.pluginsSnapshot())
+        for (auto& plugin : orderedPluginsSnapshot())
         {
-            if (plugin->canParseUrl(locationUrl))
+            if (canParseUrl(plugin, locationUrl))
             {
                 return plugin;
             }
