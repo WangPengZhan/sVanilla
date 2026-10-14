@@ -1,4 +1,6 @@
 #include <iostream>
+#include <type_traits>
+#include <utility>
 #include <sqlite3.h>
 
 #include "SQLiteStatement.h"
@@ -81,9 +83,10 @@ int32_t SqliteColumn::getInt() const noexcept
 
     std::visit(
         [&res](auto&& elem) {
-            if constexpr (std::is_constructible_v<decltype(elem), int32_t>)
+            using ElemType = std::remove_cvref_t<decltype(elem)>;
+            if constexpr (std::is_arithmetic_v<ElemType>)
             {
-                res = elem;
+                res = static_cast<int32_t>(elem);
             }
         },
         m_value);
@@ -97,9 +100,10 @@ uint32_t SqliteColumn::getUInt() const noexcept
 
     std::visit(
         [&res](auto&& elem) {
-            if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
+            using ElemType = std::remove_cvref_t<decltype(elem)>;
+            if constexpr (std::is_arithmetic_v<ElemType>)
             {
-                res = elem;
+                res = static_cast<uint32_t>(elem);
             }
         },
         m_value);
@@ -113,24 +117,27 @@ int64_t SqliteColumn::getInt64() const noexcept
 
     std::visit(
         [&res](auto&& elem) {
-            if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
+            using ElemType = std::remove_cvref_t<decltype(elem)>;
+            if constexpr (std::is_arithmetic_v<ElemType>)
             {
-                res = elem;
+                res = static_cast<int64_t>(elem);
             }
         },
         m_value);
 
     return res;
 }
+
 double SqliteColumn::getDouble() const noexcept
 {
     double res = 0;
 
     std::visit(
         [&res](auto&& elem) {
-            if constexpr (std::is_constructible_v<decltype(elem), uint32_t>)
+            using ElemType = std::remove_cvref_t<decltype(elem)>;
+            if constexpr (std::is_arithmetic_v<ElemType>)
             {
-                res = elem;
+                res = static_cast<double>(elem);
             }
         },
         m_value);
@@ -143,21 +150,26 @@ std::string SqliteColumn::getText(const std::string& defaultValue) const
     std::string res = defaultValue;
     std::visit(
         [&res](auto&& elem) {
-            if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, std::string>)
+            using ElemType = std::remove_cvref_t<decltype(elem)>;
+            if constexpr (std::is_same_v<ElemType, std::string>)
             {
                 res = elem;
             }
-            else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, std::vector<uint8_t>>)
-            {
-                res = std::string((const char*)(elem.data()), elem.size());
-            }
-            else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, std::monostate>)
+            else if constexpr (std::is_same_v<ElemType, std::vector<uint8_t>>)
             {
                 res.clear();
+                if (!elem.empty())
+                {
+                    res.assign(reinterpret_cast<const char*>(elem.data()), elem.size());
+                }
             }
-            else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, std::monostate>)
+            else if constexpr (std::is_same_v<ElemType, int64_t> || std::is_same_v<ElemType, double>)
             {
                 res = std::to_string(elem);
+            }
+            else if constexpr (std::is_same_v<ElemType, std::monostate>)
+            {
+                res.clear();
             }
         },
         m_value);
@@ -183,24 +195,26 @@ std::string SqliteColumn::getString() const
     std::string res;
     std::visit(
         [&res](auto&& elem) {
-            if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, std::string>)
+            using ElemType = std::remove_cvref_t<decltype(elem)>;
+            if constexpr (std::is_same_v<ElemType, std::string>)
             {
                 res = elem;
             }
-            else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, const std::vector<uint8_t>>)
+            else if constexpr (std::is_same_v<ElemType, std::vector<uint8_t>>)
             {
-                res = std::string(elem.data(), elem.size());
+                if (!elem.empty())
+                {
+                    res.assign(reinterpret_cast<const char*>(elem.data()), elem.size());
+                }
             }
-            else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, const std::monostate>)
-            {
-                res.clear();
-            }
-            else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(elem)>, const int64_t> ||
-                               std::is_same_v<std::remove_cvref_t<decltype(elem)>, const double>)
+            else if constexpr (std::is_same_v<ElemType, int64_t> || std::is_same_v<ElemType, double>)
             {
                 res = std::to_string(elem);
             }
-            return;
+            else if constexpr (std::is_same_v<ElemType, std::monostate>)
+            {
+                res.clear();
+            }
         },
         m_value);
     return res;
@@ -208,28 +222,26 @@ std::string SqliteColumn::getString() const
 
 FieldType SqliteColumn::getType() const noexcept
 {
-    if (m_value.index() == 0)
+    static_assert(std::variant_size_v<SqliteColumnValue> == 5,
+                  "The number of SqliteColumnValue alternatives has changed; update the type mapping below");
+    static_assert(std::is_same_v<std::variant_alternative_t<0, SqliteColumnValue>, std::monostate>, "Index 0 must be std::monostate");
+    static_assert(std::is_same_v<std::variant_alternative_t<1, SqliteColumnValue>, int64_t>, "Index 1 must be int64_t");
+    static_assert(std::is_same_v<std::variant_alternative_t<2, SqliteColumnValue>, double>, "Index 2 must be double");
+    static_assert(std::is_same_v<std::variant_alternative_t<3, SqliteColumnValue>, std::string>, "Index 3 must be std::string");
+    static_assert(std::is_same_v<std::variant_alternative_t<4, SqliteColumnValue>, BlobColumnValue>, "Index 4 must be BlobColumnValue");
+
+    switch (m_value.index())
     {
-        return FieldType::Null;
-    }
-    else if (m_value.index() >= 1 && m_value.index() <= 3)
-    {
+    case 1:
         return FieldType::Integer;
-    }
-    else if (m_value.index() == 4)
-    {
+    case 2:
         return FieldType::Float;
-    }
-    else if (m_value.index() == 5)
-    {
+    case 3:
         return FieldType::Text;
-    }
-    else if (m_value.index() == 6)
-    {
+    case 4:
         return FieldType::Blob;
-    }
-    else
-    {
+    case 0:
+    default:
         return FieldType::Null;
     }
 }

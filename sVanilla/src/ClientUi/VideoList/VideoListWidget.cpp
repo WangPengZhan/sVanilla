@@ -2,6 +2,7 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QScrollBar>
+#include <QItemSelectionModel>
 
 #include "VideoListWidget.h"
 #include "VideoInfoWidget.h"
@@ -126,12 +127,14 @@ void VideoListWidget::mousePressEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton)
     {
         const QPoint point = event->pos();
-        if (auto* const itemClicked = this->itemAt(point); itemClicked == nullptr)
+        if (auto* const itemClicked = itemAt(point); itemClicked == nullptr)
         {
-            this->clearSelection();
+            clearSelection();
         }
         else
         {
+            setFocus(Qt::MouseFocusReason);
+            setCurrentItem(itemClicked, QItemSelectionModel::NoUpdate);
             itemClicked->setSelected(!itemClicked->isSelected());
             return;
         }

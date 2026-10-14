@@ -247,7 +247,7 @@ QList<QMetaMethod> WebBridge::metaMethods(const QMetaObject* object, const QList
 QString WebBridge::genScriptName(const QString& object_name)
 {
     static int id = 1;
-    QString name = QString("%1.injectionscript%1").arg(object_name, id++);
+    QString name = QString("%1.injectionscript%2").arg(object_name).arg(id++);
     return name;
 }
 

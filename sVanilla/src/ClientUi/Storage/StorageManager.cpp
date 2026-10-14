@@ -43,8 +43,8 @@ bool StorageManager::isDownloaded(const std::string& guid) const
 
 std::shared_ptr<DownloadedItemStorage> StorageManager::createFinishedItemStorage(const std::string& tableName)
 {
+    auto writePtr = sqlite::SqliteDBManager::writeDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
-    auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto& tableStruct = sqlite::TableStructInfo<typename DownloadedItemStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
@@ -60,8 +60,8 @@ std::shared_ptr<DownloadedItemStorage> StorageManager::createFinishedItemStorage
 
 std::shared_ptr<DownloadingItemStorage> StorageManager::createDownloadingItemStorage(const std::string& tableName)
 {
+    auto writePtr = sqlite::SqliteDBManager::writeDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
-    auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto& tableStruct = sqlite::TableStructInfo<typename DownloadingItemStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
@@ -77,8 +77,8 @@ std::shared_ptr<DownloadingItemStorage> StorageManager::createDownloadingItemSto
 
 std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage(const std::string& tableName)
 {
+    auto writePtr = sqlite::SqliteDBManager::writeDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
-    auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto& tableStruct = sqlite::TableStructInfo<typename SearchHistoryStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
     std::string limitTrigger = "CREATE TRIGGER IF NOT EXISTS limit_table_size AFTER INSERT ON " + tableName + " ";
@@ -86,7 +86,7 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage
     limitTrigger += tableStruct.url.columnName() + " IN ( ";
     limitTrigger += "SELECT " + tableStruct.url.columnName() + " FROM " + tableName + " ";
     limitTrigger += "ORDER BY " + tableStruct.timestamp.columnName() + " DESC ";
-    limitTrigger += "LIMIT 1 OFFSET " + std::to_string(SearchHistoryStorage::maxNum) + " );";
+    limitTrigger += "LIMIT -1 OFFSET " + std::to_string(SearchHistoryStorage::maxNum) + " );";
     limitTrigger += "END;";
     writePtr->execute(limitTrigger);
 
@@ -102,14 +102,13 @@ std::shared_ptr<SearchHistoryStorage> StorageManager::createSearchHistoryStorage
 
 std::shared_ptr<CookiesInfoStorage> StorageManager::createCookiesInfoStorage(const std::string& tableName)
 {
+    auto writePtr = sqlite::SqliteDBManager::writeDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto readPtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
-    auto writePtr = sqlite::SqliteDBManager::createDBWithMutexPtr(dbPath + "/" + m_dbName);
     auto& tableStruct = sqlite::TableStructInfo<typename CookiesInfoStorage::Entity>::self();
     sqlite::SqliteUtil::createTableIfNotExists(writePtr, tableName, tableStruct);
 
     std::vector<std::string> indexColNames = {tableStruct.updateTimestamp.columnName()};
     std::string indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
-    indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);
     sqlite::SqliteUtil::createIndexIfNotExists(writePtr, tableName, indexName, indexColNames);
     indexColNames = {tableStruct.expires.columnName()};
     indexName = sqlite::SqliteUtil::indexName(tableName, indexColNames);

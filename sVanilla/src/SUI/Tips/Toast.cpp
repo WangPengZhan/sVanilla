@@ -82,7 +82,9 @@ void Toast::hideMessage()
     m_animation->setStartValue(geometry().topLeft());
     m_animation->setEndValue(geometry().topRight());
     m_animation->start();
-    connect(m_animation, &QPropertyAnimation::finished, [&] {
+
+    disconnect(m_hideConnection);
+    m_hideConnection = connect(m_animation, &QPropertyAnimation::finished, this, [this] {
         timer->stop();
         hide();
     });

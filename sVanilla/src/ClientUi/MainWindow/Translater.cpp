@@ -34,7 +34,7 @@ QString Translater::fileDir(Language language) const
         return m_translatesDir + "/zh_CN";
         break;
     case Translater::ChineseTw:
-        return m_translatesDir + "/zh_Tw";
+        return m_translatesDir + "/zh_TW";
         break;
     default:
         break;

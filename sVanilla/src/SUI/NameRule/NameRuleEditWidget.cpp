@@ -50,5 +50,4 @@ void NameRuleEditWidget::appendRule(const QString& rule)
 
     const auto addText = text() + showRule;
     setText(addText);
-    emit textChanged(addText);
 }

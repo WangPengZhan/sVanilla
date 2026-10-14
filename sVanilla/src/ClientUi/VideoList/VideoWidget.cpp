@@ -1,4 +1,5 @@
 #include <tuple>
+#include <algorithm>
 
 #include <QDir>
 #include <QPushButton>
@@ -212,13 +213,16 @@ void VideoWidget::signalsAndSlots()
     connect(ui->videoListWidget, &VideoListWidget::downloandBtnClick, this, &VideoWidget::prepareDownloadTask);
 
     connect(ui->btnDownloadSelected, &QPushButton::clicked, this, &VideoWidget::prepareDownloadTaskList);
-    connect(ui->btnDownloadAll, &QPushButton::clicked, this, [&]() {
-        int count = ui->videoGridWidget->count();
+    connect(ui->btnDownloadAll, &QPushButton::clicked, this, [this]() {
+        const int count = ui->videoGridWidget->count();
         for (int i = 0; i < count; ++i)
         {
-            auto item = ui->videoGridWidget->item(i);
-            auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
-            auto* widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
+            auto* const itemWidget = ui->videoGridWidget->itemWidget(ui->videoGridWidget->item(i));
+            auto* const widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
+            if (widget == nullptr)
+            {
+                continue;
+            }
             prepareDownloadTask(widget->getVideoInfo());
         }
     });
@@ -371,12 +375,23 @@ void VideoWidget::searchItem(const QString& text)
     const auto& list = ui->videoListWidget;
 
     const auto items = grid->getVideoInfo();
-    for (int i = 0; i < items.size(); ++i)
+    const int rows = std::min({static_cast<int>(items.size()), grid->count(), list->count()});
+    for (int i = 0; i < rows; ++i)
     {
+        if (items.at(i) == nullptr)
+        {
+            continue;
+        }
         const auto title = items.at(i)->videoView->Title;
         const auto isFind = title.find(text.toStdString()) != std::string::npos;
-        grid->item(i)->setHidden(!isFind);
-        list->item(i)->setHidden(!isFind);
+        if (auto* const gridItem = grid->item(i))
+        {
+            gridItem->setHidden(!isFind);
+        }
+        if (auto* const listItem = list->item(i))
+        {
+            listItem->setHidden(!isFind);
+        }
     }
 }
 
@@ -385,11 +400,17 @@ void VideoWidget::resetList()
     MLogI(svanilla::cVideoList, "resetList");
     const auto& grid = ui->videoGridWidget;
     const auto& list = ui->videoListWidget;
-    const int rows = grid->count();
+    const int rows = std::min(grid->count(), list->count());
     for (int i = 0; i < rows; ++i)
     {
-        grid->item(i)->setHidden(false);
-        list->item(i)->setHidden(false);
+        if (auto* const gridItem = grid->item(i))
+        {
+            gridItem->setHidden(false);
+        }
+        if (auto* const listItem = list->item(i))
+        {
+            listItem->setHidden(false);
+        }
     }
 
     hideBtnReset();
@@ -404,7 +425,7 @@ void VideoWidget::showSearchLineEdit()
     ui->lineEditSearch->setFocus();
 
     const auto btnFilterAfterPos = ui->btnFilter->pos();
-    const auto btnSortAfterPos = ui->btnFilter->pos();
+    const auto btnSortAfterPos = ui->btnSort->pos();
     util::animate(ui->btnFilter, {btnFilterBeforePos, btnFilterAfterPos});
     util::animate(ui->btnSort, {btnSortBeforePos, btnSortAfterPos});
 
@@ -475,7 +496,11 @@ void VideoWidget::prepareDownloadTaskList()
     for (const auto& item : ui->videoGridWidget->selectedItems())
     {
         auto* const itemWidget = ui->videoGridWidget->itemWidget(item);
-        auto* widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
+        auto* const widget = qobject_cast<VideoGridItemWidget*>(itemWidget);
+        if (widget == nullptr)
+        {
+            continue;
+        }
         prepareDownloadTask(widget->getVideoInfo());
     }
 }

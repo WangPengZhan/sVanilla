@@ -68,6 +68,7 @@ private:
     void createSelectedActionMenu();
 
     void setDownloadingNumber(int number);
+    void setDownloadErrorNumber(int number);
     void setDownloadedNumber(int number);
 
     void onNavigationChanged(int index);

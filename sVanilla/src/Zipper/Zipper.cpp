@@ -264,20 +264,13 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
         return false;
     }
 
-    const std::filesystem::path& filePath = filepath;
-    if (parentdirName.empty())
-    {
-        std::filesystem::current_path(filePath.parent_path());
-    }
-    else
-    {
-        std::filesystem::current_path(parentdirName);
-    }
+
+    const std::filesystem::path baseDir = parentdirName.empty() ? std::filesystem::path(filepath).parent_path() : std::filesystem::path(parentdirName);
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(filepath))
     {
         std::string strAbsolute = std::filesystem::absolute(entry.path()).string();
-        std::string strRelative = std::filesystem::relative(entry.path()).string();
+        std::string strRelative = std::filesystem::relative(entry.path(), baseDir).string();
         if (entry.is_directory())
         {
             addFileToZip(zfile, strRelative, "");

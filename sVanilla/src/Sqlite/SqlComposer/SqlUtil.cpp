@@ -86,7 +86,7 @@ bool SqliteUtil::renameTable(const SqliteWithMutexPtr& db, const std::string& ol
         return false;
     }
 
-    std::string sql = "ALTER TABLE " + oldName + " RENAME" + newName;
+    std::string sql = "ALTER TABLE " + oldName + " RENAME TO " + newName;
     return db->execute(sql);
 }
 

@@ -39,16 +39,23 @@ SQLiteDatabase::SQLiteDatabase(const std::string& path)
 {
     if (sqlite3_initialize() != SQLITE_OK)
     {
-        updateLastError();
+        m_lastError = "sqlite3_initialize failed";
         SQLITE_LOG_ERROR("sqlite3_initialize error: {}", m_lastError);
         return;
     }
 
     SQLITE_LOG_INFO("sqlite3 path: {}", path);
     sqlite3* db = nullptr;
-    if (sqlite3_open(path.c_str(), &db) != SQLITE_OK)
+    const int rc = sqlite3_open(path.c_str(), &db);
+    if (rc != SQLITE_OK)
     {
-        updateLastError();
+        m_lastError = db ? sqlite3_errmsg(db) : "sqlite3_open failed";
+        SQLITE_LOG_ERROR("sqlite3_open error: {}, path: {}", m_lastError, path);
+        if (db)
+        {
+            sqlite3_close(db);
+        }
+        return;
     }
 
     m_db.reset(db);

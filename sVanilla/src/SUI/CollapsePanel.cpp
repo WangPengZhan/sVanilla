@@ -78,6 +78,10 @@ const QValidator* EditableLabel::validator() const
 void EditableLabel::setMaxLength(int nMax)
 {
     m_maxLength = nMax;
+    if (m_pEdit != nullptr)
+    {
+        m_pEdit->setMaxLength(nMax);
+    }
 }
 
 int EditableLabel::maxLength() const
@@ -136,7 +140,6 @@ bool EditableLabel::eventFilter(QObject* obj, QEvent* ev)
             {
                 txt = txt.left(txt.length() - m_suffix.length());
             }
-            m_pEdit->setText(txt);
             m_pEdit->setText(txt);
             m_pEdit->selectAll();
             m_pEdit->setFocus();

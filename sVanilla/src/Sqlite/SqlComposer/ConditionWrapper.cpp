@@ -73,7 +73,7 @@ bool PrepareInfo::valueSetEqual(const std::vector<SqliteColumnValue>& lv, const 
 
 bool PrepareInfo::operator==(const PrepareInfo& other) const
 {
-    return m_columnName == other.m_columnName && m_condition == other.m_condition && m_value == m_value;
+    return m_columnName == other.m_columnName && m_condition == other.m_condition && m_value == other.m_value;
 }
 
 bool PrepareInfo::like(const PrepareInfo& other) const
@@ -276,8 +276,7 @@ ConditionWrapper& ConditionWrapper::addCondition(const ColumnInfo& column, Condi
 
 ConditionWrapper& ConditionWrapper::popCondition(const std::string& colName)
 {
-    bool ret = false;
-    for (auto it = m_conditionInfos.begin(); it != m_conditionInfos.end(); ++it)
+    for (auto it = m_conditionInfos.begin(); it != m_conditionInfos.end();)
     {
         if (it->index() == 0)
         {
@@ -285,7 +284,7 @@ ConditionWrapper& ConditionWrapper::popCondition(const std::string& colName)
             if (prepareInfo.m_columnName == colName)
             {
                 it = m_conditionInfos.erase(it);
-                it--;
+                continue;
             }
         }
         else
@@ -293,6 +292,8 @@ ConditionWrapper& ConditionWrapper::popCondition(const std::string& colName)
             auto& queryWrapper = std::get<ConditionWrapper>(*it);
             queryWrapper.popCondition(colName);
         }
+
+        ++it;
     }
     return *this;
 }
@@ -334,7 +335,25 @@ bool ConditionWrapper::contain(const ColumnInfo& col) const
 
 std::unordered_set<std::string> ConditionWrapper::columnNames() const
 {
-    return std::unordered_set<std::string>();
+    std::unordered_set<std::string> names;
+    for (const auto& conditionInfo : m_conditionInfos)
+    {
+        if (conditionInfo.index() == 0)
+        {
+            const auto& prepareInfo = std::get<PrepareInfo>(conditionInfo);
+            if (!prepareInfo.m_columnName.empty())
+            {
+                names.insert(prepareInfo.m_columnName);
+            }
+        }
+        else
+        {
+            const auto& queryWrapper = std::get<ConditionWrapper>(conditionInfo);
+            const auto subNames = queryWrapper.columnNames();
+            names.insert(subNames.begin(), subNames.end());
+        }
+    }
+    return names;
 }
 
 bool ConditionWrapper::empty() const
@@ -470,10 +489,11 @@ std::stringstream& ConditionWrapper::conditionString(std::stringstream& ss) cons
 
 void sqlite::ConditionWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
 {
-    for (auto it = m_conditionInfos.begin(); it != m_conditionInfos.end(); ++it)
+    for (auto it = m_conditionInfos.begin(); it != m_conditionInfos.end();)
     {
         if (it->index() == 1)
         {
+            ++it;
             continue;
         }
 
@@ -555,7 +575,10 @@ void sqlite::ConditionWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
         if (canMerge)
         {
             it = m_conditionInfos.erase(it);
-            it--;
+        }
+        else
+        {
+            ++it;
         }
     }
 }

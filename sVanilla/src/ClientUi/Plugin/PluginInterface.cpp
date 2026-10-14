@@ -43,10 +43,6 @@ bool getUrlLocation(const std::string& url, std::string& location)
     options.insert({timeout->getOption(), timeout});
     auto acceptEncoding = std::make_shared<network::AcceptEncoding>("gzip");
     options.insert({acceptEncoding->getOption(), acceptEncoding});
-    auto sslVerifyHost = std::make_shared<network::SSLVerifyHost>(false);
-    options.insert({sslVerifyHost->getOption(), sslVerifyHost});
-    auto sslVerifyPeer = std::make_shared<network::SSLVerifyPeer>(false);
-    options.insert({sslVerifyPeer->getOption(), sslVerifyPeer});
     auto verbose = std::make_shared<network::Verbose>(false);
     options.insert({verbose->getOption(), verbose});
 

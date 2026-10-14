@@ -8,6 +8,8 @@
 #include <QShortcut>
 #include <QContextMenuEvent>
 
+#include <algorithm>
+
 #include "VideoGridWidget.h"
 #include "VideoInfoWidget.h"
 #include "ui_VideoGridWidget.h"
@@ -146,10 +148,11 @@ QString VideoGridItemWidget::coverPath()
         dir.mkpath(coverPath);
     }
 
-    QFileInfoList folderList = dir.entryInfoList(QDir::Files, QDir::Time);
+    QFileInfoList folderList = dir.entryInfoList(QDir::Files, QDir::Time | QDir::Reversed);
     if (folderList.size() > coverMaxNum)
     {
-        int removeNum = folderList.size() - 200;
+        const int keepNum = 200;
+        const int removeNum = folderList.size() - keepNum;
 
         for (int i = 0; i < removeNum; ++i)
         {
@@ -367,7 +370,7 @@ void VideoGridWidget::showInfo(QListWidgetItem* item)
 
 QSize VideoGridWidget::calculateItemSize() const
 {
-    const int n = (width() - verticalScrollBar()->width() - 5) / (itemBaseWidth + itemWidthSpacing);
+    const int n = std::max(1, (width() - verticalScrollBar()->width() - 5) / (itemBaseWidth + itemWidthSpacing));
     const int itemWidth = (width() - verticalScrollBar()->width() - 5 - (n - 1) * itemWidthSpacing) / n;
     const int itemHeight = static_cast<int>(static_cast<float>(itemWidth) / aspectRatio);
     return QSize(itemWidth, itemHeight);
