@@ -109,12 +109,6 @@ void DefaultSettings::signalsAndSlots()
         SingleConfig::instance().setSystemTrayConfig(systemTrayConfig);
     });
 
-    connect(ui->checkBoxMinToTray, &QCheckBox::stateChanged, this, [this](int state) {
-        SystemTrayConfig systemTrayConfig = SingleConfig::instance().systemTrayConfig();
-        systemTrayConfig.minimize = state;
-        SingleConfig::instance().setSystemTrayConfig(systemTrayConfig);
-    });
-
     connect(ui->checkBoxOpenStartup, &QCheckBox::stateChanged, this, [this](int state) {
         autoStartRun(state);
         auto startConfig = SingleConfig::instance().startConfig();

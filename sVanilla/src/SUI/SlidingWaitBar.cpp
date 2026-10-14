@@ -7,6 +7,7 @@
 SlidingWaitBar::SlidingWaitBar(QWidget* parent)
     : QWidget(parent)
     , m_offset(0)
+    , m_maxOffset(0)
     , m_forward(true)
 {
     m_timer.setInterval(30);
@@ -20,7 +21,7 @@ void SlidingWaitBar::start()
 }
 void SlidingWaitBar::stop()
 {
-    m_timer.start();
+    m_timer.stop();
 }
 
 void SlidingWaitBar::reStart()

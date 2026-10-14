@@ -255,7 +255,7 @@ void MainWindow::setTheme(const int theme)
     }
     else
     {
-        connect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme);
+        connect(styleAgent, &QWK::StyleAgent::systemThemeChanged, this, &MainWindow::setAutoTheme, Qt::UniqueConnection);
         setAutoTheme();
     }
 }

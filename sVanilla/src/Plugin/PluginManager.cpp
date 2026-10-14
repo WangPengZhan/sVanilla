@@ -319,11 +319,29 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         pluginConfig.version = pluginMessage.version;
         pluginConfig.id = pluginMessage.pluginId;
         pluginConfig.description = pluginMessage.description;
-        std::lock_guard lk(m_pluginsMutex);
-        m_configChanged = true;
-        m_pluginConfig.emplace_back(pluginConfig);
     }
     pluginConfig.isValid = true;
+
+    {
+        std::lock_guard lk(m_pluginsMutex);
+
+        bool updated = false;
+        for (auto& config : m_pluginConfig)
+        {
+            if (config.name == pluginConfig.name)
+            {
+                config = pluginConfig;
+                updated = true;
+                break;
+            }
+        }
+
+        if (!updated)
+        {
+            m_configChanged = true;
+            m_pluginConfig.emplace_back(pluginConfig);
+        }
+    }
 
     if (pluginConfig.enabled)
     {

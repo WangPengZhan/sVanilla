@@ -429,12 +429,15 @@ SqliteColumn SQLiteStatement::getColumnFromStmt(int col) const
     }
     case SQLITE_BLOB:
     {
-        auto len = sqlite3_column_bytes(handle(), col);
-        auto data = static_cast<const uint8_t*>(sqlite3_column_blob(handle(), col));
+        const auto len = sqlite3_column_bytes(handle(), col);
+        const auto* data = static_cast<const uint8_t*>(sqlite3_column_blob(handle(), col));
         std::vector<uint8_t> blob;
-        blob.resize(len);
-        memccpy(blob.data(), data, 0, len);
-        value = blob;
+        if (data != nullptr && len > 0)
+        {
+
+            blob.assign(data, data + len);
+        }
+        value = std::move(blob);
         break;
     }
     case SQLITE_NULL:

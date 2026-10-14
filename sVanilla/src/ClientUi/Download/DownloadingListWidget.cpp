@@ -248,7 +248,7 @@ void DownloadingItemWidget::finishedItem()
           m_downloader->videoInfoFull()->getGuid());
     constexpr auto maxProgress = 100;
     ui->progressBar->setValue(maxProgress);
-    ui->labelStatus->setText("finished");
+    ui->labelStatus->setText(tr("finished"));
 
     if (const auto* item = m_listWidget->itemFromWidget(this))
     {
@@ -552,7 +552,19 @@ void DownloadingListWidget::updateDowningCount()
     {
         if (auto pWidget = qobject_cast<DownloadingItemWidget*>(itemWidget(item(i))))
         {
-            pWidget->downloader()->status() == download::AbstractDownloader::Error ? downloadError++ : downloading++;
+            switch (pWidget->downloader()->status())
+            {
+            case download::AbstractDownloader::Downloading:
+            case download::AbstractDownloader::Resumed:
+            case download::AbstractDownloader::Pause:
+                ++downloading;
+                break;
+            case download::AbstractDownloader::Error:
+                ++downloadError;
+                break;
+            default:
+                break;
+            }
         }
     }
 

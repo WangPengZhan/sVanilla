@@ -88,9 +88,12 @@ std::shared_ptr<IPlugin> DynamicLibLoader::loadPluginSymbol()
 
     if (initDir)
     {
-        const auto& configDir = PluginManager::configDir();
-        std::string dir = (configDir.back() == '/' || configDir.back() == '\\') ? configDir : configDir + "/";
-        initDir(dir.data());
+        std::string dir = PluginManager::configDir();
+        if (!dir.empty() && dir.back() != '/' && dir.back() != '\\')
+        {
+            dir += "/";
+        }
+        initDir(dir.c_str());
     }
 
     if (pluginInit)

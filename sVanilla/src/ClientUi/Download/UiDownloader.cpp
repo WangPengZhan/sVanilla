@@ -118,7 +118,7 @@ void UiDownloader::createDbDownloadingItem()
     item.idType = m_videoInfoFull->videoView->IdType;
     item.title = m_videoInfoFull->videoView->Title;
     item.author = m_videoInfoFull->videoView->Publisher;
-    item.url = "https://www.bilibili.com/video/" + item.id;
+    item.url = uri();
     item.option1 = m_videoInfoFull->videoView->Option1;
     item.option2 = m_videoInfoFull->videoView->Option2;
     item.option3 = m_videoInfoFull->videoView->Option3;
@@ -160,7 +160,7 @@ void UiDownloader::createDbFinishedItem()
     item.idType = m_videoInfoFull->videoView->IdType;
     item.title = m_videoInfoFull->videoView->Title;
     item.author = m_videoInfoFull->videoView->Publisher;
-    item.url = "https://www.bilibili.com/video/" + item.id;
+    item.url = uri();
     item.option1 = m_videoInfoFull->videoView->Option1;
     item.option2 = m_videoInfoFull->videoView->Option2;
     item.option3 = m_videoInfoFull->videoView->Option3;

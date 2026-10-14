@@ -93,9 +93,9 @@ void AdvanceSettings::signalsAndSlots()
         aria2Setting.token = ui->lineEditAria2Token->text();
         SingleConfig::instance().setAriaConfig(aria2Setting);
     });
-    connect(ui->spinBoxAria2Port, &QSpinBox::textChanged, this, [this](const QString& text) {
+    connect(ui->spinBoxAria2Port, &QSpinBox::valueChanged, this, [this](int value) {
         auto aria2Setting = SingleConfig::instance().ariaConfig();
-        aria2Setting.port = std::stoi(text.toStdString());
+        aria2Setting.port = value;
         SingleConfig::instance().setAriaConfig(aria2Setting);
     });
     connect(ui->checkBoxAria2EnableRemote, &QCheckBox::clicked, this, [this]() {

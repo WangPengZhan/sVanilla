@@ -293,7 +293,7 @@ inline int64_t SqliteUtil::updateEntitiesWithOutTrans(const SqliteWithMutexPtr& 
     sql += conditionWrapper.prepareConditionString();
 
     SQLiteStatement stmt(*db, sql);
-    insertEntitiesCore<Entity>(stmt, entities);
+    updateEntitiesCore<Entity>(stmt, entities);
 
     return entities.size();
 }

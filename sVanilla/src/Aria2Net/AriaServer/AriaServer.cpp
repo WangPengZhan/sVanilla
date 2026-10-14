@@ -72,14 +72,15 @@ void AriaServer::startLocalServerAsync()
 
         if (ariaExecutable.isEmpty())
         {
-            ARIA_LOG_INFO("can't find executable file in aria path: ", ariaPath.toStdString());
+            ARIA_LOG_ERROR("can't find executable file in aria path: {}", ariaPath.toStdString());
             if (m_errorFunc)
             {
                 m_errorFunc();
             }
+            return false;
         }
 
-        m_aria2Process->setProcessChannelMode(QProcess::MergedChannels);
+        m_aria2Process->setProcessChannelMode(QProcess::SeparateChannels);
         QObject::connect(m_aria2Process.get(), &QProcess::readyReadStandardOutput, [&]() {
             const std::string rawOutput = m_aria2Process->readAllStandardOutput().toStdString();
             const std::string output = trimmedWhitespace(rawOutput);

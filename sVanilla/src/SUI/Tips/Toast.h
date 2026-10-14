@@ -49,4 +49,5 @@ private:
     Level m_level = Info;
     QTimer* timer;
     Ui::Toast* ui;
+    QMetaObject::Connection m_hideConnection;
 };

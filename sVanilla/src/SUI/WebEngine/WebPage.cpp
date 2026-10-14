@@ -44,8 +44,15 @@ void WebPage::sigalsAndSlots()
 
 void WebPage::handleSelectClientCertificate(QWebEngineClientCertificateSelection selection)
 {
+    const auto certificates = selection.certificates();
+    if (certificates.isEmpty())
+    {
+        selection.selectNone();
+        return;
+    }
+
     // Just select one.
-    selection.select(selection.certificates().at(0));
+    selection.select(certificates.first());
 }
 
 void WebPage::onCookieAdded(const QNetworkCookie& cookie)

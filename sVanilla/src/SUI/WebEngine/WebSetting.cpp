@@ -55,7 +55,9 @@ private:
 
 void initializeWebEngine(const QString& cache_path, const QString& storage_path)
 {
+#ifndef NDEBUG
     qputenv("QTWEBENGINE_REMOTE_DEBUGGING", "9876");
+#endif
     // QWebEngineUrlScheme scheme = QWebEngineUrlScheme("apptemp");
     // scheme.setFlags(QWebEngineUrlScheme::CorsEnabled |
     //                 QWebEngineUrlScheme::LocalAccessAllowed |

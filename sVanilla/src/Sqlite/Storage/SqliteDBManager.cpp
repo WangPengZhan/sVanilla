@@ -66,21 +66,17 @@ SqliteDBPtr SqliteDBManager::createDBPtr(const std::string& path, bool createNew
 {
     init();
 
-    std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
-    SqliteDBPtr db;
-    if (createNew)
+    if (!createNew)
     {
-        db = std::make_shared<SQLiteDatabase>(path);
-        std::lock_guard lk(m_mutex);
-        if (m_defaultWriteDbs.find(fullPath) == m_defaultWriteDbs.end())
-        {
-            m_defaultWriteDbs.insert({fullPath, db});
-            dbInit(db);
-        }
+        return writeDBPtr(path);
     }
-    else
+
+    const std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
+    auto db = std::make_shared<SQLiteDatabase>(path);
     {
-        db = writeDBPtr(path);
+        std::lock_guard lk(m_mutex);
+        dbInit(db);
+        m_defaultWriteDbs.try_emplace(fullPath, db);
     }
 
     return db;
@@ -105,21 +101,18 @@ SqliteDBPtr SqliteDBManager::writeDBPtr(const std::string& path)
 SqliteWithMutexPtr SqliteDBManager::createDBWithMutexPtr(const std::string& path, bool createNew)
 {
     init();
-    std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
-    SqliteWithMutexPtr db;
-    if (createNew)
+
+    if (!createNew)
     {
-        db = std::make_shared<SqliteDbWithMutex>(path);
-        std::lock_guard lk(m_mutex);
-        if (m_defaultWriteDbWtihMutexs.find(fullPath) == m_defaultWriteDbWtihMutexs.end())
-        {
-            m_defaultWriteDbWtihMutexs.insert({fullPath, std::make_shared<SqliteDbWithMutex>(path)});
-            dbInit(db);
-        }
+        return writeDBWithMutexPtr(path);
     }
-    else
+
+    const std::string fullPath = std::filesystem::absolute(utf8ToLocale(path)).string();
+    auto db = std::make_shared<SqliteDbWithMutex>(path);
     {
-        db = writeDBWithMutexPtr(path);
+        std::lock_guard lk(m_mutex);
+        dbInit(db);
+        m_defaultWriteDbWtihMutexs.try_emplace(fullPath, db);
     }
 
     return db;
@@ -152,7 +145,7 @@ void SqliteDBManager::init()
 void SqliteDBManager::dbInit(SQLiteDatabase& db)
 {
     db.execute("PRAGMA journal_mode=WAL;");
-    db.execute("PRAGMA synchronous=OFF;");
+    db.execute("PRAGMA synchronous=NORMAL;");
 }
 
 void SqliteDBManager::dbInit(SqliteDBPtr& db)
