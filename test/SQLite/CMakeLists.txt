@@ -1,4 +1,4 @@
-set(TESTED_LIB SQLite)
+set(TESTED_LIB Sqlite)
 set(TEST_NAME ${TESTED_LIB}_test)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false CONFIGURE_DEPENDS *.h *.cpp)
@@ -10,9 +10,23 @@ add_executable(${TEST_NAME} ${SOURCES})
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 add_compile_definitions(TEST_PROJ_DIR=L"${CMAKE_CURRENT_SOURCE_DIR}")
 
+# Sqlite 库把 include 目录设为 PRIVATE，消费方（本测试）需要自己补上
+target_include_directories(${TEST_NAME}
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/sVanilla/src
+)
+
+# 注意：用 GTest::gtest（不含 main），main() 由本测试提供（sqlite_test_main.cpp），
+# 用于在测试环境启动时注册具名 logger。
 target_link_libraries(${TEST_NAME}
     PRIVATE
-        GTest::gtest_main
+        ${TESTED_LIB}
+        GTest::gtest
         spdlog::spdlog
         unofficial::sqlite3::sqlite3
+)
+
+add_custom_command(TARGET ${TEST_NAME}
+    POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${TEST_NAME}>
 )

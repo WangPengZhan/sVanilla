@@ -1,8 +1,10 @@
+#include <atomic>
 #include <chrono>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <utility>
 
 #include <gtest/gtest.h>
 #include <spdlog/sinks/null_sink.h>
@@ -14,15 +16,6 @@
 
 namespace
 {
-void registerTestLogger(const std::string& name)
-{
-    if (!spdlog::get(name))
-    {
-        auto sink = std::make_shared<spdlog::sinks::null_sink_mt>();
-        spdlog::register_logger(std::make_shared<spdlog::logger>(name, std::move(sink)));
-    }
-}
-
 class ThrowingDownloader : public download::AbstractDownloader
 {
 public:
@@ -51,6 +44,49 @@ public:
     void finish() override
     {
     }
+};
+
+// 记录各回调被调用次数，用于验证 DownloadStatusThread 的状态分派与移除策略。
+class RecordingDownloader : public download::AbstractDownloader
+{
+public:
+    RecordingDownloader(std::string guid, Status initialStatus)
+    {
+        m_guid = std::move(guid);
+        setStatus(initialStatus);
+    }
+
+    void start() override
+    {
+        ++startCalls;
+    }
+    void stop() override
+    {
+        ++stopCalls;
+    }
+    void pause() override
+    {
+        ++pauseCalls;
+    }
+    void resume() override
+    {
+        ++resumeCalls;
+    }
+    void downloadStatus() override
+    {
+        ++statusCalls;
+    }
+    void finish() override
+    {
+        ++finishCalls;
+    }
+
+    std::atomic<int> startCalls{0};
+    std::atomic<int> stopCalls{0};
+    std::atomic<int> pauseCalls{0};
+    std::atomic<int> resumeCalls{0};
+    std::atomic<int> statusCalls{0};
+    std::atomic<int> finishCalls{0};
 };
 
 class MetadataPlugin : public plugin::IPlugin
@@ -108,7 +144,6 @@ private:
 
 TEST(DownloadStatusThreadTest, ConvertsDownloaderExceptionToErrorAndRemovesTask)
 {
-    registerTestLogger("Download");
     download::DownloadStatusThread statusThread;
     auto downloader = std::make_shared<ThrowingDownloader>();
     ASSERT_TRUE(statusThread.addTask(downloader));
@@ -125,7 +160,6 @@ TEST(DownloadStatusThreadTest, ConvertsDownloaderExceptionToErrorAndRemovesTask)
 
 TEST(PluginProxyTest, CachesMetadataAndDoesNotCallPluginFromCatch)
 {
-    registerTestLogger("Plugin");
     auto realPlugin = std::make_shared<MetadataPlugin>(false);
     plugin::PluginProxy proxy(realPlugin);
 
@@ -138,9 +172,93 @@ TEST(PluginProxyTest, CachesMetadataAndDoesNotCallPluginFromCatch)
 
 TEST(PluginProxyTest, InvalidatesPluginWhenInitialMetadataThrows)
 {
-    registerTestLogger("Plugin");
     plugin::PluginProxy proxy(std::make_shared<MetadataPlugin>(true));
 
     EXPECT_FALSE(proxy.isValid());
     EXPECT_EQ(proxy.pluginMessage().pluginId, 0);
+}
+
+TEST(DownloadStatusThreadTest, StartsEmpty)
+{
+    download::DownloadStatusThread statusThread;
+
+    EXPECT_TRUE(statusThread.empty());
+}
+
+TEST(DownloadStatusThreadTest, RejectsDuplicateGuid)
+{
+    download::DownloadStatusThread statusThread;
+
+    // 用 Downloading 状态让任务留在队列里（该状态既不结束也不移除任务）
+    auto downloader = std::make_shared<RecordingDownloader>("duplicated-guid", download::AbstractDownloader::Downloading);
+
+    EXPECT_TRUE(statusThread.addTask(downloader));
+    EXPECT_FALSE(statusThread.addTask(downloader));
+}
+
+TEST(DownloadStatusThreadTest, RemovesTaskAndCallsFinishForFinishedStatus)
+{
+    download::DownloadStatusThread statusThread;
+
+    auto downloader = std::make_shared<RecordingDownloader>("finished-guid", download::AbstractDownloader::Finished);
+    ASSERT_TRUE(statusThread.addTask(downloader));
+
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+    while (!statusThread.empty() && std::chrono::steady_clock::now() < deadline)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    EXPECT_TRUE(statusThread.empty());
+    EXPECT_GE(downloader->finishCalls.load(), 1);
+    EXPECT_EQ(downloader->startCalls.load(), 0);
+}
+
+TEST(DownloadStatusThreadTest, DispatchesCallbacksPerStatus)
+{
+    download::DownloadStatusThread statusThread;
+
+    auto downloader = std::make_shared<RecordingDownloader>("paused-guid", download::AbstractDownloader::Pause);
+    ASSERT_TRUE(statusThread.addTask(downloader));
+
+    // 状态轮询每轮间隔 600ms，这里等到至少发生过一次分派
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (downloader->pauseCalls.load() == 0 && std::chrono::steady_clock::now() < deadline)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    EXPECT_GE(downloader->pauseCalls.load(), 1);
+    // Pause 状态不会移除任务
+    EXPECT_FALSE(statusThread.empty());
+
+    statusThread.stop();
+}
+
+namespace
+{
+// 被测的 DownloadStatusThread / PluginProxy 内部写日志，宏为
+// SPDLOG_LOGGER_CALL(spdlog::get("Xxx"), ...)：spdlog::get() 对未注册的名字返回空
+// shared_ptr 并被宏直接解引用（段错误），因此在测试环境启动时统一注册到 null sink。
+class NullLoggerEnvironment : public ::testing::Environment
+{
+public:
+    void SetUp() override
+    {
+        for (const char* name : {"Download", "Plugin"})
+        {
+            if (!spdlog::get(name))
+            {
+                spdlog::register_logger(std::make_shared<spdlog::logger>(name, std::make_shared<spdlog::sinks::null_sink_mt>()));
+            }
+        }
+    }
+};
+}  // namespace
+
+int main(int argc, char** argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new NullLoggerEnvironment);
+    return RUN_ALL_TESTS();
 }
