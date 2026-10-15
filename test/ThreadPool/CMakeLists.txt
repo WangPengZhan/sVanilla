@@ -29,10 +29,11 @@ foreach (COMPONENTS ${QT_COMPONENTS})
     set(QT_LIBS ${QT_LIBS} Qt${QT_VERSION_MAJOR}::${COMPONENTS})
 endforeach ()
 
+# 注意：用 GTest::gtest（不含 main），main() 由本测试提供，用于在启动时注册具名 logger。
 target_link_libraries(${TEST_NAME}
     PRIVATE
         ${TESTED_LIB}
-        GTest::gtest_main
+        GTest::gtest
         spdlog::spdlog
         ${QT_LIBS}
 )

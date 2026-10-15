@@ -18,7 +18,7 @@ target_link_libraries(${TEST_NAME}
         Plugin
         PluginCommon
         PluginDownload
-        GTest::gtest_main
+        GTest::gtest
         spdlog::spdlog
 )
 

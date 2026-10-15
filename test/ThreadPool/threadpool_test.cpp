@@ -1,53 +1,229 @@
-#include <vector>
+// ThreadPool 的构造与析构都会写日志。日志宏写作 SPDLOG_LOGGER_CALL(spdlog::get("ThreadPool"), ...)，
+// spdlog::get() 对未注册的名字返回空 shared_ptr 并被宏直接解引用（段错误），
+// 因此具名 logger 由文件末尾的 NullLoggerEnvironment 在测试环境启动时注册。
+
+#include <atomic>
 #include <chrono>
+#include <future>
+#include <memory>
+#include <stdexcept>
 #include <thread>
-#include <map>
-#include <any>
+#include <vector>
 
 #include <gtest/gtest.h>
-
+#include <spdlog/sinks/null_sink.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/rotating_file_sink.h>
-#include <spdlog/async.h>
 
-#include <QApplication>
-#include <QTimer>
-
+#include "ThreadPool/Task.h"
 #include "ThreadPool/ThreadPool.h"
-#include "ThreadPool/ThreadPoolLog.h"
 
-TEST(TheadPool_Test, INIT)
+namespace
 {
-    ThreadPool threadPool(std::thread::hardware_concurrency());
-    std::cout << "threadPool.numThreads() = " << threadPool.numThreads() << std::endl;
 
+class CountingTask : public Task
+{
+public:
+    explicit CountingTask(std::atomic<int>& counter)
+        : m_counter(counter)
+    {
+    }
+
+    void Run() override
+    {
+        ++m_counter;
+    }
+
+private:
+    std::atomic<int>& m_counter;
+};
+
+// 注册到 null sink：测试期间不需要真的落盘日志。
+class NullLoggerEnvironment : public ::testing::Environment
+{
+public:
+    void SetUp() override
+    {
+        if (!spdlog::get("ThreadPool"))
+        {
+            spdlog::register_logger(std::make_shared<spdlog::logger>("ThreadPool", std::make_shared<spdlog::sinks::null_sink_mt>()));
+        }
+    }
+};
+
+}  // namespace
+
+TEST(ThreadPoolTest, NumThreadsReportsRequestedCount)
+{
+    ThreadPool threadPool(2);
+    EXPECT_EQ(threadPool.numThreads(), 2u);
+}
+
+TEST(ThreadPoolTest, DefaultConstructorUsesHardwareConcurrency)
+{
+    ThreadPool threadPool;
     EXPECT_EQ(threadPool.numThreads(), std::thread::hardware_concurrency());
 }
 
-TEST(TheadPool_Test, EN)
+TEST(ThreadPoolTest, EnqueueReturnsFutureWithResult)
 {
-    // spdlog::rotating_logger_mt<spdlog::async_factory>("TheadPool", "log/TheadPool.log", 1024 * 1024 * 10, 100);
+    ThreadPool threadPool(2);
 
-    ThreadPool threadPool(std::thread::hardware_concurrency());
-    std::cout << "threadPool.numThreads() = " << threadPool.numThreads() << std::endl;
+    auto future = threadPool.enqueue(
+        [](int a, int b) {
+            return a + b;
+        },
+        2, 3);
+    EXPECT_EQ(future.get(), 5);
+}
 
-    threadPool.enqueue([]() {
-        std::cout << "start task1" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        std::cout << "end task1" << std::endl;
-    });
+TEST(ThreadPoolTest, EnqueueAcceptsTaskSubclass)
+{
+    ThreadPool threadPool(2);
+    std::atomic<int> counter{0};
 
-    class TestTask : public Task
+    auto task = std::make_shared<CountingTask>(counter);
+    threadPool.enqueue(task).wait();
+
+    EXPECT_EQ(counter.load(), 1);
+}
+
+TEST(ThreadPoolTest, RunsEveryQueuedTask)
+{
+    ThreadPool threadPool(4);
+    std::atomic<int> counter{0};
+
+    std::vector<std::future<void>> futures;
+    for (int i = 0; i < 200; ++i)
     {
-    public:
-        void Run() override
+        futures.push_back(threadPool.enqueue([&counter]() {
+            ++counter;
+        }));
+    }
+
+    for (auto& future : futures)
+    {
+        future.wait();
+    }
+
+    EXPECT_EQ(counter.load(), 200);
+}
+
+TEST(ThreadPoolTest, TaskExceptionIsCapturedInFutureAndPoolStaysUsable)
+{
+    ThreadPool threadPool(2);
+
+    auto failing = threadPool.enqueue([]() -> int {
+        throw std::runtime_error("boom");
+    });
+    EXPECT_THROW(failing.get(), std::runtime_error);
+
+    // 异常不会带崩工作线程，后续任务仍能执行
+    auto recovered = threadPool.enqueue([] {
+        return 42;
+    });
+    ASSERT_EQ(recovered.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    EXPECT_EQ(recovered.get(), 42);
+}
+
+TEST(ThreadPoolTest, RunsTwoTasksInParallelWhenWorkersAreAvailable)
+{
+    ThreadPool threadPool(2);
+    std::atomic<int> started{0};
+
+    auto blockingTask = [&started]() {
+        ++started;
+        // 等到两个任务都已经开始。若线程池只有一个工作线程，先执行的任务
+        // 会一直占着唯一的线程，这里必然超时。
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (started.load() < 2 && std::chrono::steady_clock::now() < deadline)
         {
-            std::cout << "start task2" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(2));
-            std::cout << "end task2" << std::endl;
+            std::this_thread::yield();
         }
+        return started.load();
     };
 
-    auto pTask = std::make_shared<TestTask>();
-    threadPool.enqueue(pTask);
+    auto first = threadPool.enqueue(blockingTask);
+    auto second = threadPool.enqueue(blockingTask);
+
+    EXPECT_EQ(first.get(), 2);
+    EXPECT_EQ(second.get(), 2);
+}
+
+TEST(ThreadPoolTest, ThreadNumberMapsWorkerThreadIds)
+{
+    ThreadPool threadPool(2);
+
+    auto workerId = threadPool
+                        .enqueue([] {
+                            return std::this_thread::get_id();
+                        })
+                        .get();
+    EXPECT_GE(threadPool.threadNumber(workerId), 0);
+
+    // 未知线程 id 返回 -1
+    EXPECT_EQ(threadPool.threadNumber(std::thread::id{}), -1);
+}
+
+TEST(ThreadPoolTest, EnqueueAfterStopThrows)
+{
+    ThreadPool threadPool(2);
+    threadPool.stop();
+
+    EXPECT_THROW(threadPool.enqueue([] {}), std::runtime_error);
+}
+
+TEST(ThreadPoolTest, StopIsIdempotentAndAllowsDestruction)
+{
+    ThreadPool threadPool(2);
+    threadPool.stop();
+    EXPECT_NO_THROW(threadPool.stop());
+}
+
+TEST(ThreadPoolTest, DropDiscardsPendingTasksButKeepsPoolWorking)
+{
+    ThreadPool threadPool(1);
+    std::atomic<int> counter{0};
+
+    std::vector<std::future<void>> futures;
+    for (int i = 0; i < 50; ++i)
+    {
+        futures.push_back(threadPool.enqueue([&counter]() {
+            ++counter;
+        }));
+    }
+
+    threadPool.drop();
+    for (auto& future : futures)
+    {
+        future.wait();
+    }
+
+    // drop 只清空队列，已取走的任务仍可能执行，因此计数不会超过总数
+    EXPECT_LE(counter.load(), 50);
+
+    auto afterDrop = threadPool.enqueue([] {
+        return 7;
+    });
+    ASSERT_EQ(afterDrop.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    EXPECT_EQ(afterDrop.get(), 7);
+}
+
+// 记录当前行为：线程数为 0 时线程池不会执行任何任务，任务会被静默积压在队列里。
+// 调用方若传入 0（例如 hardware_concurrency() 在受限环境下返回 0）会表现为"任务永不执行"。
+TEST(ThreadPoolTest, ZeroWorkerPoolNeverRunsQueuedWork)
+{
+    ThreadPool threadPool(0);
+    EXPECT_EQ(threadPool.numThreads(), 0u);
+
+    auto future = threadPool.enqueue([] {
+        return 1;
+    });
+    EXPECT_EQ(future.wait_for(std::chrono::milliseconds(50)), std::future_status::timeout);
+}
+
+int main(int argc, char** argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new NullLoggerEnvironment);
+    return RUN_ALL_TESTS();
 }
