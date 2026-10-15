@@ -222,8 +222,7 @@ std::string SqliteColumn::getString() const
 
 FieldType SqliteColumn::getType() const noexcept
 {
-    static_assert(std::variant_size_v<SqliteColumnValue> == 5,
-                  "The number of SqliteColumnValue alternatives has changed; update the type mapping below");
+    static_assert(std::variant_size_v<SqliteColumnValue> == 5, "The number of SqliteColumnValue alternatives has changed; update the type mapping below");
     static_assert(std::is_same_v<std::variant_alternative_t<0, SqliteColumnValue>, std::monostate>, "Index 0 must be std::monostate");
     static_assert(std::is_same_v<std::variant_alternative_t<1, SqliteColumnValue>, int64_t>, "Index 1 must be int64_t");
     static_assert(std::is_same_v<std::variant_alternative_t<2, SqliteColumnValue>, double>, "Index 2 must be double");

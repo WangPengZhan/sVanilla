@@ -46,6 +46,11 @@ public:
     template <typename Lambda>
     void sendTask(Lambda&& lambda) const
     {
+        if (!enable())
+        {
+            return;
+        }
+
         emit m_sender->sendTask([lambda = std::make_shared<std::remove_reference_t<Lambda>>(std::forward<Lambda>(lambda))]() {
             (*lambda)();
         });

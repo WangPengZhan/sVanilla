@@ -20,6 +20,7 @@ protected:
 
 private:
     void onTimeout();
+    void updateMaxOffset();
 
 private:
     QTimer m_timer;

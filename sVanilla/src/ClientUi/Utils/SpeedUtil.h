@@ -18,11 +18,7 @@ QString formatSize(T bytesPerSec)
     }
     if (bytesPerSec >= Kib)
     {
-        return QString::number(bytesPerSec / Mib, 'f', 2) + "Mib";
-    }
-    if (bytesPerSec >= Kib)
-    {
-        return QString::number(bytesPerSec / Kib, 'f', 2) + "Kib/s";
+        return QString::number(bytesPerSec / Kib, 'f', 2) + "Kib";
     }
 
     return QString::number(bytesPerSec, 'f', 3) + "B";

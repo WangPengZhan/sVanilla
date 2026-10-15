@@ -65,6 +65,7 @@ bool DownloadingItemStorage::isDownload(const std::string& guid) const
     ss << " " << condition.prepareConditionString();
 
     std::string sql = ss.str();
+    std::lock_guard lk(m_readDBPtr->mutex);
     sqlite::SQLiteStatement stmt(*m_readDBPtr, sql);
     condition.bind(stmt);
     stmt.executeStep();

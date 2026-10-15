@@ -2,6 +2,10 @@
 #include <QString>
 #include <QMenu>
 
+#include <functional>
+#include <string>
+#include <vector>
+
 namespace util
 {
 

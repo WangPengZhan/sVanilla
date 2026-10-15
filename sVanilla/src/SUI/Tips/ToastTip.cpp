@@ -70,6 +70,12 @@ void ToastTip::showTip(const QString& tip, Level level, int showTime, bool isSho
 
 void ToastTip::create(QWidget* parent)
 {
+    if (instance)
+    {
+        delete instance;
+        instance = nullptr;
+    }
+
     instance = new ToastTip(false, parent);
 }
 

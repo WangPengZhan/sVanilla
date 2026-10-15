@@ -23,11 +23,22 @@ Toast::Toast(QWidget* parent)
 
 void Toast::showTip(const QString& msg, const Level level)
 {
+    if (nullptr == instance)
+    {
+        return;
+    }
+
     instance->signalShowMessage(msg, level);
 }
 
 void Toast::create(QWidget* parent)
 {
+    if (instance)
+    {
+        delete instance;
+        instance = nullptr;
+    }
+
     instance = new Toast(parent);
 }
 

@@ -112,6 +112,7 @@ namespace std
 template <>
 class hash<plugin::PluginConfig>
 {
+public:
     size_t operator()(const plugin::PluginConfig& pluginInfo) const
     {
         return hash<int>()(pluginInfo.id);

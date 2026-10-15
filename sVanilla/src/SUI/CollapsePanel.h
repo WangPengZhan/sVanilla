@@ -59,7 +59,7 @@ private:
     QLineEdit* m_pEdit;
     QString m_suffix;
     QString m_prefix;
-    bool isEdited;
+    bool m_isEdited;
     bool m_isReadOnly;
     int m_maxLength = 50;
     std::function<bool(QLineEdit*)> m_checkFunc;

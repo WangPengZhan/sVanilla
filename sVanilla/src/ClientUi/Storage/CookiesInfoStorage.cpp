@@ -41,7 +41,7 @@ CookiesInfoStorage::Entity CookiesInfoStorage::getCookiesInfo(int pluginId)
 std::vector<CookiesInfoStorage::Entity> CookiesInfoStorage::allItems()
 {
     std::vector<Entity> vectHistory;
-    std::string sql = "SELECT * FROM " + tableName() + " ORDER BY timestamp DESC ";
+    std::string sql = "SELECT * FROM " + tableName() + " ORDER BY updateTimestamp DESC ";
     vectHistory = sqlite::SqliteUtil::queryEntities<Entity>(m_readDBPtr, sql);
     return vectHistory;
 }

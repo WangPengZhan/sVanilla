@@ -13,6 +13,7 @@ EditableLabel::EditableLabel(const QString& text, bool editable, QWidget* parent
     : QStackedWidget(parent)
     , m_pLabel(new QLabel(text, this))
     , m_pEdit(new QLineEdit(text, this))
+    , m_isEdited(false)
     , m_isReadOnly(!editable)
 {
     setUi();
@@ -22,7 +23,7 @@ EditableLabel::EditableLabel(QWidget* parent)
     : QStackedWidget(parent)
     , m_pLabel(new QLabel(this))
     , m_pEdit(new QLineEdit(this))
-    , isEdited(false)
+    , m_isEdited(false)
     , m_isReadOnly(false)
 {
     setUi();
@@ -130,7 +131,7 @@ bool EditableLabel::eventFilter(QObject* obj, QEvent* ev)
     {
         if (ev->type() == QEvent::MouseButtonDblClick)
         {
-            isEdited = true;
+            m_isEdited = true;
             auto txt = m_pLabel->text();
             if (txt.startsWith(m_prefix, Qt::CaseInsensitive))
             {

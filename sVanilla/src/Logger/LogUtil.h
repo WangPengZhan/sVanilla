@@ -82,7 +82,7 @@ scope_guard(Lambda&&) -> scope_guard<std::remove_reference_t<Lambda>>;
     }
 #define Log_Unique_Timer_1(KEY) Log_Unique_Timer_2(KEY, LogI)
 #define Log_Unique_Timer(...) EXPAND(CAT(Log_Unique_Timer_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
-#define Log_Unique_TimerI() Log_Unique_Timer(KEY_Start))
+#define Log_Unique_TimerI() Log_Unique_Timer(KEY_Start)
 #define Log_Unique_Timer_END(KEY) CAT(KEY, _Unique_Log).~scope_guard();
 #define Log_Unique_TimerI_END() Log_Unique_Timer_END(KEY_Start)
                                                                       

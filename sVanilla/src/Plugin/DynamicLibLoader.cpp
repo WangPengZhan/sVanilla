@@ -11,6 +11,7 @@
 #include <IPlugin.h>
 
 #include "DynamicLibLoader.h"
+#include "PluginLog.h"
 #include "PluginManager.h"
 
 namespace
@@ -172,6 +173,8 @@ void* DynamicLibLoader::loadSymbol(void* handle, const std::string& symbolName)
 #else
             error_message = dlerror();
 #endif
+
+            PLUGIN_LOG_WARN("load symbol failed: {}, reason: {}", symbolName, error_message ? error_message : "no error message");
 
 #ifdef _WIN32
             // Required to release memory allocated by FormatMessageA()

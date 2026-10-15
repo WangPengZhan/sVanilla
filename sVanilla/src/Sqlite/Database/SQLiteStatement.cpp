@@ -434,7 +434,6 @@ SqliteColumn SQLiteStatement::getColumnFromStmt(int col) const
         std::vector<uint8_t> blob;
         if (data != nullptr && len > 0)
         {
-
             blob.assign(data, data + len);
         }
         value = std::move(blob);
