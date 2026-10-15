@@ -2,6 +2,8 @@
 
 #include <QObject>
 #include <any>
+#include <type_traits>
+#include <utility>
 
 class Task
 {

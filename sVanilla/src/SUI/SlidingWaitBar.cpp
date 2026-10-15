@@ -12,6 +12,7 @@ SlidingWaitBar::SlidingWaitBar(QWidget* parent)
 {
     m_timer.setInterval(30);
     connect(&m_timer, &QTimer::timeout, this, &SlidingWaitBar::onTimeout);
+    updateMaxOffset();
     start();
 }
 
@@ -49,6 +50,11 @@ void SlidingWaitBar::paintEvent(QPaintEvent* event)
 void SlidingWaitBar::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
+    updateMaxOffset();
+}
+
+void SlidingWaitBar::updateMaxOffset()
+{
     m_maxOffset = width() - width() / 5;
 }
 

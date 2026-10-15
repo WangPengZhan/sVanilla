@@ -50,7 +50,7 @@ void TipDialog::setLevel(Level level)
     case Warn:
     {
         setWindowTitle(tr("Warn"));
-        ui->labelIcon->setStyleSheet("image: url(:/icon/tip/warn.svg);");
+        ui->labelIcon->setStyleSheet("image: url(:/icon/tip/warning.svg);");
         break;
     }
     case Error:

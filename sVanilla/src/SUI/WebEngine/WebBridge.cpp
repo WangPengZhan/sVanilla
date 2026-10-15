@@ -86,6 +86,10 @@ WebBridge::WebBridge(QWebEnginePage* page, QObject* parent)
     : QObject(parent)
     , m_page(page)
 {
+    if (objectName().isEmpty())
+    {
+        setObjectName(QStringLiteral("WebBridge"));
+    }
 }
 
 WebBridge::~WebBridge()

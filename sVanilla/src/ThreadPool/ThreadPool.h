@@ -2,9 +2,11 @@
 
 #include <vector>
 #include <queue>
+#include <list>
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <condition_variable>
 #include <future>
 #include <functional>

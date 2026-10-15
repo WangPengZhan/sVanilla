@@ -60,8 +60,10 @@ void AriaServer::startLocalServerAsync()
         QString ariaPath = QApplication::applicationDirPath() + "/aria/";
         QString ariaExecutable = QStandardPaths::findExecutable("aria2c", QStringList() << ariaPath);
 
-        QString sessionFile = m_dir + "/aira.session";
-        QString logFile = m_dir + "/aira.log";
+        const QString ariaDir = m_dir.isEmpty() ? QApplication::applicationDirPath() + "/aria" : m_dir;
+
+        QString sessionFile = ariaDir + "/aria.session";
+        QString logFile = ariaDir + "/aria.log";
 
         if (!QFile::exists(sessionFile))
         {
@@ -95,6 +97,13 @@ void AriaServer::startLocalServerAsync()
             if (!output.empty())
             {
                 ARIA_LOG_ERROR("aria2Process standardError: {}", rawOutput);
+            }
+        });
+
+        QObject::connect(m_aria2Process.get(), &QProcess::finished, [&](int, QProcess::ExitStatus) {
+            if (m_closeFunc)
+            {
+                m_closeFunc();
             }
         });
 

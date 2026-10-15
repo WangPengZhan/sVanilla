@@ -292,6 +292,7 @@ inline int64_t SqliteUtil::updateEntitiesWithOutTrans(const SqliteWithMutexPtr& 
     }
     sql += conditionWrapper.prepareConditionString();
 
+    std::lock_guard lk(db->mutex);
     SQLiteStatement stmt(*db, sql);
     updateEntitiesCore<Entity>(stmt, entities);
 
