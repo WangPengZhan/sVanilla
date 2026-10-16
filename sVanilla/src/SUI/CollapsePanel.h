@@ -24,7 +24,7 @@ public:
 
     bool getEditedStatus() const
     {
-        return isEdited;
+        return m_isEdited;
     };
 
     void setReadOnly(bool isReadOnly);

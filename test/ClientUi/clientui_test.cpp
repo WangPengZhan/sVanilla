@@ -74,12 +74,10 @@ TEST(SpeedUtilTest, FormatsMebibytes)
     EXPECT_EQ(formatSize(2 * 1048576LL), QString("2.00Mib"));
 }
 
-// 回归：Kib 分支存在缺陷 —— 它把数值除以 Mib 并标成 "Mib"，
-// 且因为上一个分支已经覆盖 >= Kib，最后那个 "Kib/s" 分支永远不可达。
-TEST(SpeedUtilTest, KibibyteRangeIsFormattedAsMibByMistake)
+TEST(SpeedUtilTest, FormatsKibibytes)
 {
-    EXPECT_EQ(formatSize(1024LL), QString("0.00Mib"));  // 期望应为 1.00 KiB 一类，实际为 0.00Mib
-    EXPECT_EQ(formatSize(2048LL), QString("0.00Mib"));
+    EXPECT_EQ(formatSize(1024LL), QString("1.00Kib"));
+    EXPECT_EQ(formatSize(2048LL), QString("2.00Kib"));
 }
 
 TEST(SpeedUtilTest, FormatsRawBytesBelowKibibyte)

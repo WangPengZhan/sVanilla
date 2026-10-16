@@ -34,6 +34,8 @@
 namespace
 {
 constexpr const char* kTempLoggerName = "sv_logger_test_temp";
+std::atomic<int> timerLogCount{0};
+#define COUNT_TIMER_LOG(...) ++timerLogCount
 
 // 用例独占的临时目录，析构时整体删除，避免在系统 temp 里留下垃圾。
 class ScopedTempDir
@@ -108,6 +110,18 @@ TEST(ScopeGuardTest, MutatesCapturedStateByReference)
     EXPECT_EQ(collected, "done");
 }
 
+TEST(ScopeGuardTest, ReleaseRunsOnceEvenAfterScopeExit)
+{
+    int calls = 0;
+    {
+        scope_guard guard = [&calls] { ++calls; };
+        guard.release();
+        guard.release();
+        EXPECT_EQ(calls, 1);
+    }
+    EXPECT_EQ(calls, 1);
+}
+
 // ---------- Logger 门面 ----------
 
 TEST(LoggerTest, DefaultNameIsLog)
@@ -178,6 +192,27 @@ TEST(LogMacroTest, TimerMacrosRunAtScopeExitWithoutThrowing)
         LogLimitTimeI();  // 默认阈值 100ms，本用例不超时，不产生输出
         LogTimerI();
     });
+}
+
+TEST(LogMacroTest, TimerAlwaysLogsButShortLimitTimerDoesNot)
+{
+    timerLogCount = 0;
+    {
+        LogTimer(COUNT_TIMER_LOG);
+        LogLimitTime(COUNT_TIMER_LOG, 1000000000);
+    }
+    EXPECT_EQ(timerLogCount.load(), 1);
+}
+
+TEST(LogMacroTest, UniqueTimerEndLogsExactlyOnce)
+{
+    timerLogCount = 0;
+    {
+        Log_Unique_Timer(test_timer, COUNT_TIMER_LOG);
+        Log_Unique_Timer_END(test_timer);
+        EXPECT_EQ(timerLogCount.load(), 1);
+    }
+    EXPECT_EQ(timerLogCount.load(), 1);
 }
 
 TEST(LogMacroTest, UniqueTimerWithExplicitKeyRuns)

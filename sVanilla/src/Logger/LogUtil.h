@@ -26,10 +26,15 @@ public:
 
     ~scope_guard()
     {
+        release();
+    }
+
+    void release()
+    {
         if (!isReleased)
         {
-            m_func();
             isReleased = true;
+            m_func();
         }
     }
 
@@ -65,7 +70,7 @@ scope_guard(Lambda&&) -> scope_guard<std::remove_reference_t<Lambda>>;
         LOG("exit function: {}, cost: {} ms", func_name,                                                          \
              std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());                            \
     }
-#define LogTimer(...) EXPAND(CAT(LogLimitTime_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
+#define LogTimer(...) EXPAND(CAT(LogTimer_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
 #define LogTimerI() LogTimer(LogI)
 
 #define Log_Unique_Timer_2(KEY, LOG)                                                                              \
@@ -83,7 +88,7 @@ scope_guard(Lambda&&) -> scope_guard<std::remove_reference_t<Lambda>>;
 #define Log_Unique_Timer_1(KEY) Log_Unique_Timer_2(KEY, LogI)
 #define Log_Unique_Timer(...) EXPAND(CAT(Log_Unique_Timer_, MACRO_COUNT(__VA_ARGS__))(__VA_ARGS__))
 #define Log_Unique_TimerI() Log_Unique_Timer(KEY_Start)
-#define Log_Unique_Timer_END(KEY) CAT(KEY, _Unique_Log).~scope_guard();
+#define Log_Unique_Timer_END(KEY) CAT(KEY, _Unique_Log).release();
 #define Log_Unique_TimerI_END() Log_Unique_Timer_END(KEY_Start)
                                                                       
 #define LogFuncT_1(LOG)                                                                                           \
