@@ -3,14 +3,9 @@
 
 ThreadPool::ThreadPool(size_t threads)
     : m_stop(false)
-    , m_numThreads(threads)
+    , m_numThreads(threads == 0 ? 1 : threads)
 {
-    if (threads == 0)
-    {
-        return;
-    }
-
-    for (size_t i = 0; i < threads; ++i)
+    for (size_t i = 0; i < m_numThreads; ++i)
     {
         m_workers.emplace_back(std::thread(&ThreadPool::workLoop, this));
         THEADPOOL_LOG_INFO("ThreadPool worker {} created", i);

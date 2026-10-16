@@ -132,9 +132,13 @@ void SetCookieDialog::writeCookieToDb(const AbstractLogin& login)
     for (const auto& domain : cookies.keys())
     {
         std::string expireTime = cookies.cookie(domain).expireDatatime();
-        QDateTime dt = QDateTime::fromString(expireTime.c_str(), "ddd, dd-MMM-yyyy HH:mm:ss 'GMT'");
+        QDateTime dt = QDateTime::fromString(expireTime.c_str(), "ddd, dd MMM yyyy HH:mm:ss 'GMT'");
+        if (!dt.isValid())
+        {
+            continue;
+        }
         dt.setTimeSpec(Qt::UTC);
-        if (!earliest.isValid() || (dt.isValid() && dt < earliest))
+        if (!earliest.isValid() || dt < earliest)
         {
             earliest = dt;
             cookiesInfo.expires = expireTime;

@@ -81,7 +81,7 @@ void DownloadTip::mouseMoveEvent(QMouseEvent* event)
 
         if (newPos.y() < moveRect.top())
         {
-            newPos.setY(moveRect.right());
+            newPos.setY(moveRect.top());
         }
         else if (newPos.y() + height() > moveRect.bottom())
         {

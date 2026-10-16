@@ -37,7 +37,8 @@ void WindowBar::setMaxButton(QAbstractButton* btn)
 
 QPushButton* WindowBar::maxButton()
 {
-    return qobject_cast<QPushButton*>(ui->systemBtnLayout->itemAt(1)->widget());
+    auto* item = ui->systemBtnLayout->itemAt(1);
+    return item ? qobject_cast<QPushButton*>(item->widget()) : nullptr;
 }
 
 bool WindowBar::eventFilter(QObject* obj, QEvent* event)
@@ -47,11 +48,11 @@ bool WindowBar::eventFilter(QObject* obj, QEvent* event)
     case QEvent::WindowStateChange:
     {
         QWidget* widget = qobject_cast<QWidget*>(obj);
-        if (widget)
+        if (auto* button = maxButton(); widget && button)
         {
-            widget->isMaximized() ? maxButton()->setIcon(QIcon(":/icon/bar/restore.svg")) : maxButton()->setIcon(QIcon(":/icon/bar/maximize.svg"));
+            button->setIcon(QIcon(widget->isMaximized() ? ":/icon/bar/restore.svg" : ":/icon/bar/maximize.svg"));
         }
-        return true;
+        return false;
     }
     default:
         break;
