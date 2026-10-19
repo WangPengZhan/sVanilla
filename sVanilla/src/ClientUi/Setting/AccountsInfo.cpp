@@ -3,6 +3,7 @@
 
 #include "MainWindow/SApplication.h"
 #include "Plugin/PluginManager.h"
+#include "Login/LoginProxyUtil.h"
 #include "LoginProxy.h"
 
 AccountsInfo::AccountsInfo(QWidget* parent)
@@ -49,7 +50,7 @@ void AccountsInfo::init()
     {
         if (plugin->loginer().isLoggedIn())
         {
-            addUserInfo(std::make_shared<LoginProxy>(plugin->loginer()));
+            addUserInfo(clientui::login::makeSharedLoginProxy(plugin->loginer()));
         }
     }
 }

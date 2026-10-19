@@ -20,6 +20,7 @@
 #include "ClientLog.h"
 #include "const_string.h"
 #include "Login/LoginBubble.h"
+#include "Login/LoginProxyUtil.h"
 #include "Utils/RunTask.h"
 #include "SUI/Tips/Toast.h"
 #include "SUI/Tips/ToastTip.h"
@@ -222,7 +223,7 @@ void HomePage::signalsAndSlots()
                 action->setIcon(icon);
                 menu.addAction(action);
                 connect(action, &QAction::triggered, &menu, [this, plugin]() {
-                    auto loginer = std::make_shared<LoginProxy>(plugin->loginer());
+                    auto loginer = clientui::login::makeSharedLoginProxy(plugin->loginer());
                     showLoginDialog(loginer);
                 });
             }

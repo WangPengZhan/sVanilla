@@ -9,6 +9,7 @@
 #include <nlohmann/json.hpp>
 
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/bundled/base.h>
 
 #include "LicenseInfoWidget.h"
 #include "ui_LicenseInfoWidget.h"
@@ -60,10 +61,6 @@ void LicenseInfoWidget::loadVersion(std::vector<LicenseInfo>& licenses)
         {
             license.version = ZLIB_VERSION;
         }
-        else if (license.name == "breakpad")
-        {
-            license.version = "2022-07-12#4";
-        }
         else if (license.name == "curl")
         {
             license.version = curl_version();
@@ -80,43 +77,15 @@ void LicenseInfoWidget::loadVersion(std::vector<LicenseInfo>& licenses)
         {
             license.version = nlohmann::json::meta()["version"]["string"];
         }
-        else if (license.name == "googletest")
+        else if (license.name == "fmt")
         {
-            license.version = "1.0.0";
-        }
-        else if (license.name == "minizip")
-        {
-            license.version = "1.3";
-        }
-        else if (license.name == "qwindowkit")
-        {
-            license.version = "1.0.1.0";
+            license.version = std::to_string(FMT_VERSION / 10000) + "." + std::to_string((FMT_VERSION / 100) % 100) + "." + std::to_string(FMT_VERSION % 100);
         }
         else if (license.name == "spdlog")
         {
             license.version = std::to_string(SPDLOG_VER_MAJOR) + "." + std::to_string(SPDLOG_VER_MINOR) + "." + std::to_string(SPDLOG_VER_PATCH);
         }
-        else if (license.name == "sVanillaPlugins")
-        {
-            license.version = "1.0.0";
-        }
-        else if (license.name == "vanillastyle")
-        {
-            license.version = "1.0.0";
-        }
-        else if (license.name == "vcpkg")
-        {
-            // license.version = VCPKG_VERSION_STRING;
-        }
-        else if (license.name == "ffmpeg")
-        {
-            // license.version = av_version_info();
-        }
-        else if (license.name == "aria")
-        {
-            // license.version = av_version_info();
-        }
-        else
+        if (license.version.empty())
         {
             license.version = "Unknown";
         }

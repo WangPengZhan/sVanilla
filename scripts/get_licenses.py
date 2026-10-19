@@ -19,9 +19,9 @@ third_party = [
       "website": "-"
     },
     {
-      "name": "breakpad",
-      "github": "https://github.com/google/breakpad",
-      "license": "https://github.com/google/breakpad/blob/master/LICENSE",
+      "name": "crashpad",
+      "github": "https://chromium.googlesource.com/crashpad/crashpad",
+      "license": "https://chromium.googlesource.com/crashpad/crashpad/+/main/LICENSE",
       "website": "-"
     },
     {
@@ -67,6 +67,30 @@ third_party = [
       "website": "-"
     },
     {
+      "name": "fmt",
+      "github": "https://github.com/fmtlib/fmt",
+      "license": "https://github.com/fmtlib/fmt/blob/master/LICENSE",
+      "website": "https://fmt.dev/"
+    },
+    {
+      "name": "libxml2",
+      "github": "https://gitlab.gnome.org/GNOME/libxml2",
+      "license": "https://gitlab.gnome.org/GNOME/libxml2/-/blob/master/Copyright",
+      "website": "https://gnome.pages.gitlab.gnome.org/libxml2/"
+    },
+    {
+      "name": "ftxui",
+      "github": "https://github.com/ArthurSonzogni/FTXUI",
+      "license": "https://github.com/ArthurSonzogni/FTXUI/blob/main/LICENSE",
+      "website": "https://arthursonzogni.com/FTXUI/"
+    },
+    {
+      "name": "indicators",
+      "github": "https://github.com/p-ranav/indicators",
+      "license": "https://github.com/p-ranav/indicators/blob/master/LICENSE",
+      "website": "-"
+    },
+    {
       "name": "spdlog",
       "github": "https://github.com/gabime/spdlog",
       "license": "https://github.com/gabime/spdlog/blob/master/LICENSE",
@@ -76,6 +100,12 @@ third_party = [
       "name": "sVanillaPlugins",
       "github": "https://github.com/WangPengZhan/sVanillaPlugins",
       "license": "https://github.com/WangPengZhan/sVanillaPlugins/blob/dev/LICENSE",
+      "website": "-"
+    },
+    {
+      "name": "sVanillaPluginCommon",
+      "github": "https://github.com/WangPengZhan/sVanillaPluginCommon",
+      "license": "https://github.com/WangPengZhan/sVanillaPluginCommon/blob/dev/LICENSE",
       "website": "-"
     },
     {
@@ -97,7 +127,7 @@ third_party = [
       "website": "https://ffmpeg.org/"
     },
     {
-      "name": "aria",
+      "name": "aria2",
       "github": "https://github.com/aria2/aria2",
       "license": "https://github.com/aria2/aria2/blob/master/COPYING",
       "website": "https://aria2.github.io/"
@@ -299,29 +329,99 @@ def get_owner_and_repo(github_url):
     return owner, repo
 
 
+def load_vcpkg_versions(status_filename):
+    if not status_filename or not os.path.isfile(status_filename):
+        return
+
+    package_names = {
+        "crashpad": "crashpad",
+        "googletest": "gtest",
+        "minizip": "minizip",
+        "qwindowkit": "qwindowkit",
+        "libxml2": "libxml2",
+        "ftxui": "ftxui",
+        "indicators": "indicators",
+        "vanillastyle": "vanillastyle",
+    }
+    packages = {}
+    current_package = None
+    with open(status_filename, "r", encoding="utf-8") as file:
+        for line in file:
+            if line.startswith("Package: "):
+                current_package = line.removeprefix("Package: ").strip()
+            elif line.startswith("Version: ") and current_package:
+                packages[current_package] = line.removeprefix("Version: ").strip()
+            elif not line.strip():
+                current_package = None
+
+    for lib in third_party:
+        package_name = package_names.get(lib["name"])
+        if package_name and package_name in packages:
+            lib["version"] = packages[package_name]
+
+
 def get_licenses():
     for lib in third_party:
-        owner, repo = get_owner_and_repo(lib["github"])
-        if owner == "qt":
+        if lib["name"] == "Qt":
             lib["license"] = qt_license_lgplv3
             continue
+        if lib["name"] == "crashpad":
+            response = requests.get(lib["license"] + "?format=TEXT")
+            if response.status_code == 200:
+                lib["license"] = base64.b64decode(response.content).decode("utf-8")
+            else:
+                print(f"Failed to fetch license content. Url: {lib['license']}. Status code: {response.status_code}")
+                lib["license"] = "-"
+            continue
+        if lib["name"] == "libxml2":
+            license_url = "https://gitlab.gnome.org/GNOME/libxml2/-/raw/master/Copyright"
+            response = requests.get(license_url)
+            if response.status_code == 200:
+                lib["license"] = response.text
+            else:
+                print(f"Failed to fetch license content. Url: {license_url}. Status code: {response.status_code}")
+                lib["license"] = "-"
+            continue
+        owner, repo = get_owner_and_repo(lib["github"])
         lib["license"] = get_license(owner, repo)
         time.sleep(0.001)
 
 
-def write_to_json(filename:str):
-    json_context = json.dumps(third_party, indent=4)
+def write_to_json(filename:str, licenses=None):
+    json_context = json.dumps(third_party if licenses is None else licenses, indent=4)
     with open(filename, "w", encoding="utf-8") as file:
         file.write(json_context)
 
 def main():
     parser = argparse.ArgumentParser(description='Get authors and emails')
     parser.add_argument('json_filename', help='Path to the CSV file to write')
+    parser.add_argument('--vcpkg-status', help='Path to the vcpkg installed status file')
 
     args = parser.parse_args()
+    load_vcpkg_versions(args.vcpkg_status)
 
     if os.path.exists(args.json_filename):
-        return
+        try:
+            with open(args.json_filename, "r", encoding="utf-8") as file:
+                existing_licenses = json.load(file)
+            existing_by_name = {license["name"]: license for license in existing_licenses}
+            existing_names = set(existing_by_name)
+            required_names = {license["name"] for license in third_party}
+            if required_names.issubset(existing_names):
+                updated_licenses = []
+                for license in third_party:
+                    existing = existing_by_name[license["name"]]
+                    updated = {
+                        **existing,
+                        **{key: value for key, value in license.items() if key != "license"},
+                    }
+                    if "version" not in license:
+                        updated.pop("version", None)
+                    updated_licenses.append(updated)
+                write_to_json(args.json_filename, updated_licenses)
+                return
+        except (OSError, json.JSONDecodeError, KeyError, TypeError):
+            pass
 
     get_licenses()
     write_to_json(args.json_filename)

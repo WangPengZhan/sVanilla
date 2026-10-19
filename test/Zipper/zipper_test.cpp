@@ -280,15 +280,15 @@ TEST(ZipperTest, RejectsEmptyOutputFileName)
     EXPECT_FALSE(zipper.zip());
 }
 
-// 记录既有行为（最小化改动前后一致）：源目录不存在时，recursive_directory_iterator
-// 的抛异常重载会把 std::filesystem::filesystem_error 直接抛出 zip()。
-// 即 zip() 虽声明返回 bool，却可能抛异常——调用方需先确保目录存在或自行捕获。
-TEST(ZipperTest, ThrowsForMissingSourceDirectory)
+// 源目录不存在时返回 false，不再抛出 std::filesystem::filesystem_error。
+// 旧行为（抛异常）由 ThrowsForMissingSourceDirectory 固化；collectFileInDirToZip 改为
+// 带 std::error_code 的迭代器重载后，zip() 的失败只通过返回值表达。
+TEST(ZipperTest, ReturnsFalseForMissingSourceDirectory)
 {
     ScopedTempDir temporaryDirectory("zip_missingsrc");
 
     Zipper zipper((temporaryDirectory.path() / "absent").string(), (temporaryDirectory.path() / "out.zip").string());
-    EXPECT_THROW(zipper.zip(), std::filesystem::filesystem_error);
+    EXPECT_FALSE(zipper.zip());
 }
 
 TEST(ZipperTest, SettersAndGettersRoundTrip)

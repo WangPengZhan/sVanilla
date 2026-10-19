@@ -194,6 +194,17 @@ bool Zipper::zip()
         zipClose(zFile, nullptr);
     });
 
+    if (!m_vectZipFiles.empty())
+    {
+        bool succeeded = true;
+        for (const auto& srcFile : m_vectZipFiles)
+        {
+            const std::string nameInZip = std::filesystem::path(srcFile).filename().string();
+            succeeded = addFileToZip(zFile, nameInZip, srcFile) && succeeded;
+        }
+        return succeeded;
+    }
+
     return collectFileInDirToZip(zFile, m_strZipPath, m_strZipPath);
 }
 
@@ -264,24 +275,30 @@ bool Zipper::collectFileInDirToZip(zipFile zfile, const std::string& filepath, c
         return false;
     }
 
-
     const std::filesystem::path baseDir = parentdirName.empty() ? std::filesystem::path(filepath).parent_path() : std::filesystem::path(parentdirName);
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(filepath))
+    bool succeeded = true;
+    std::error_code iterateError;
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(filepath, iterateError))
     {
         std::string strAbsolute = std::filesystem::absolute(entry.path()).string();
         std::string strRelative = std::filesystem::relative(entry.path(), baseDir).string();
         if (entry.is_directory())
         {
-            addFileToZip(zfile, strRelative, "");
+            succeeded = addFileToZip(zfile, strRelative, "") && succeeded;
         }
         else
         {
-            addFileToZip(zfile, strRelative, strAbsolute);
+            succeeded = addFileToZip(zfile, strRelative, strAbsolute) && succeeded;
         }
     }
 
-    return true;
+    if (iterateError)
+    {
+        return false;
+    }
+
+    return succeeded;
 }
 
 Unzipper::Unzipper(std::string strUnzipperFile, std::string strPath)

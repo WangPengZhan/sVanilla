@@ -100,7 +100,8 @@ void AriaServer::startLocalServerAsync()
             }
         });
 
-        QObject::connect(m_aria2Process.get(), &QProcess::finished, [&](int, QProcess::ExitStatus) {
+        const auto finishedSignal = static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished);
+        QObject::connect(m_aria2Process.get(), finishedSignal, [&](int, QProcess::ExitStatus) {
             if (m_closeFunc)
             {
                 m_closeFunc();

@@ -62,7 +62,7 @@ void animate(QObject* obj, AnimationStartEnd change, const QByteArray& propertyN
     animation->setEndValue(change.end);
     if (callback)
     {
-        QObject::connect(animation, &QPropertyAnimation::finished, callback);
+        QObject::connect(animation, &QPropertyAnimation::finished, animation, callback);
     }
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
