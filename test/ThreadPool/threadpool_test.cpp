@@ -2,6 +2,7 @@
 // spdlog::get() 对未注册的名字返回空 shared_ptr 并被宏直接解引用（段错误），
 // 因此具名 logger 由文件末尾的 NullLoggerEnvironment 在测试环境启动时注册。
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <future>
@@ -61,7 +62,7 @@ TEST(ThreadPoolTest, NumThreadsReportsRequestedCount)
 TEST(ThreadPoolTest, DefaultConstructorUsesHardwareConcurrency)
 {
     ThreadPool threadPool;
-    EXPECT_EQ(threadPool.numThreads(), std::thread::hardware_concurrency());
+    EXPECT_EQ(threadPool.numThreads(), std::max(1u, std::thread::hardware_concurrency()));
 }
 
 TEST(ThreadPoolTest, EnqueueReturnsFutureWithResult)
@@ -208,17 +209,16 @@ TEST(ThreadPoolTest, DropDiscardsPendingTasksButKeepsPoolWorking)
     EXPECT_EQ(afterDrop.get(), 7);
 }
 
-// 记录当前行为：线程数为 0 时线程池不会执行任何任务，任务会被静默积压在队列里。
-// 调用方若传入 0（例如 hardware_concurrency() 在受限环境下返回 0）会表现为"任务永不执行"。
-TEST(ThreadPoolTest, ZeroWorkerPoolNeverRunsQueuedWork)
+TEST(ThreadPoolTest, ZeroWorkerCountFallsBackToOne)
 {
     ThreadPool threadPool(0);
-    EXPECT_EQ(threadPool.numThreads(), 0u);
+    EXPECT_EQ(threadPool.numThreads(), 1u);
 
     auto future = threadPool.enqueue([] {
         return 1;
     });
-    EXPECT_EQ(future.wait_for(std::chrono::milliseconds(50)), std::future_status::timeout);
+    ASSERT_EQ(future.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    EXPECT_EQ(future.get(), 1);
 }
 
 int main(int argc, char** argv)

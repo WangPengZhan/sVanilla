@@ -252,6 +252,19 @@ TEST(SqliteTest, RangeConditionsMergeToOneTighterBound)
     EXPECT_NE(looseFirst.conditionString().find("10"), std::string::npos);
 }
 
+TEST(SqliteTest, RangeConditionMixKeepsTighterValueAndItsOperator)
+{
+    sqlite::ConditionWrapper condition;
+    condition.addCondition(columnOf("score"), sqlite::Condition::GT, 10.0);
+    condition.addCondition(columnOf("score"), sqlite::Condition::GE, 30.0);
+
+    EXPECT_EQ(condition.size(), 1u);
+    const std::string sql = condition.conditionString();
+    EXPECT_NE(sql.find("30"), std::string::npos);
+    EXPECT_NE(sql.find(">="), std::string::npos);
+    EXPECT_EQ(sql.find(" > "), std::string::npos);
+}
+
 // ------------------------------------------------------------ 真实数据库行为
 
 namespace

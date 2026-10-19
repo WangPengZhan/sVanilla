@@ -178,6 +178,7 @@ add_custom_command(TARGET ${PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_SOURCE_DIR}
         ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/get_licenses.py "$<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses.json"
+            --vcpkg-status "${VCPKG_INSTALLED_DIR}/vcpkg/status"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${TOOLS_PATH} $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )

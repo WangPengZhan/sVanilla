@@ -156,6 +156,9 @@ private:
 #ifdef _WIN32
 const std::string kSystemLibrary = "kernel32.dll";
 const std::string kKnownSymbol = "GetCurrentProcessId";
+#elif defined(__APPLE__)
+const std::string kSystemLibrary = "libSystem.B.dylib";
+const std::string kKnownSymbol = "malloc";
 #else
 const std::string kSystemLibrary = "libc.so.6";
 const std::string kKnownSymbol = "malloc";

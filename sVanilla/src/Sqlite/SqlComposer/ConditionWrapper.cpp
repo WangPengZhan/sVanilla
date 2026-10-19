@@ -173,7 +173,15 @@ std::stringstream& PrepareInfo::conditionString(std::stringstream& ss) const
     {
         ss << " " << m_columnName << " ";
         ss << " " << getQueryConditionName(m_condition) << " ";
-        sqlite::conditionString(ss, std::get<SqliteColumnValue>(m_value));
+
+        if (m_condition == Condition::IS_NULL || m_condition == Condition::IS_NOT_NULL)
+        {
+            ss << "NULL";
+        }
+        else
+        {
+            sqlite::conditionString(ss, std::get<SqliteColumnValue>(m_value));
+        }
     }
 
     return ss;
@@ -552,7 +560,6 @@ void sqlite::ConditionWrapper::mergeOptimization(PrepareInfo& newPrepareInfo)
                 }
                 else if (newPrepareInfo.m_value > prepareInfo.m_value && m_logicRelation == ConditionLogicRelation::AND)
                 {
-                    newPrepareInfo.m_condition = std::max(newPrepareInfo.m_condition, prepareInfo.m_condition);
                     canMerge = true;
                 }
                 else if (newPrepareInfo.m_value > prepareInfo.m_value && m_logicRelation == ConditionLogicRelation::OR)

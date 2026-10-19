@@ -93,7 +93,7 @@ void AdvanceSettings::signalsAndSlots()
         aria2Setting.token = ui->lineEditAria2Token->text();
         SingleConfig::instance().setAriaConfig(aria2Setting);
     });
-    connect(ui->spinBoxAria2Port, &QSpinBox::valueChanged, this, [this](int value) {
+    connect(ui->spinBoxAria2Port, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this](int value) {
         auto aria2Setting = SingleConfig::instance().ariaConfig();
         aria2Setting.port = value;
         SingleConfig::instance().setAriaConfig(aria2Setting);

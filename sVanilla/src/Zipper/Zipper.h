@@ -16,7 +16,6 @@ public:
     ~ResourceHelper();
 
     void addFn(const std::function<void(void)>& fn);
-    void removeFn(const std::function<void(void)>& fn);
 
 private:
     std::list<std::function<void(void)>> m_fns;

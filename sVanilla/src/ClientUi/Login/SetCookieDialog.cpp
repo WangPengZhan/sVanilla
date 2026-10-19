@@ -13,6 +13,7 @@
 #include "NetWork/CurlCpp/CurlCookie.h"
 #include "SUI/Tips/ToastTip.h"
 #include "Utils/RunTask.h"
+#include "Login/LoginProxyUtil.h"
 #include "LoginProxy.h"
 #include "ClientLog.h"
 #include "const_string.h"
@@ -184,6 +185,6 @@ void SetCookieDialog::slotAccept()
     std::string cookies = loginer.domain() + ": " + "domain=" + loginer.domain() + "; " + ui->textEditCookie->toPlainText().toStdString() + "\r\n";
     loginer.setCookies(cookies);
     writeCookieToDb(loginer);
-    m_loginer = std::make_shared<LoginProxy>(loginer);
+    m_loginer = clientui::login::makeSharedLoginProxy(loginer);
     accept();
 }

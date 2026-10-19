@@ -114,7 +114,9 @@ TEST(ScopeGuardTest, ReleaseRunsOnceEvenAfterScopeExit)
 {
     int calls = 0;
     {
-        scope_guard guard = [&calls] { ++calls; };
+        scope_guard guard = [&calls] {
+            ++calls;
+        };
         guard.release();
         guard.release();
         EXPECT_EQ(calls, 1);
