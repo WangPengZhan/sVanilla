@@ -20,3 +20,5 @@
 - CLI 模式在调用 `execCommandLine()` 前必须等待插件加载完成，否则 URL 解析可能与异步插件加载竞态。
 
 - `-h` / `--help` / `-v` / `--version` 在 CLI 模式下应在 `SApplication::init()` 前短路，否则 Windows 控制台输出可能因为后台启动线程而显得延迟。
+- `DownloadTip::mouseMoveEvent()` 的上边界夹取应使用 `moveRect.top()`；将右边界当作 Y 坐标会把提示窗移出可视区域。
+- Cookie 的标准 Expires 日期使用空格分隔日、月、年；无效日期不能覆盖已找到的有效最早时间。

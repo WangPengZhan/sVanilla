@@ -22,6 +22,7 @@ main
 关键要求：
 
 - 日志记录版本、分支、hash、构建时间、工作目录、应用目录和 OS。
+- `LogTimer` 在作用域结束时记录耗时；`LogLimitTime` 仅在超过指定阈值时记录。提前结束的唯一计时器恰好记录一次。
 - GUI 模式下应做单实例检查。
 - 数据库路径必须在 storage 使用前设置。
 
@@ -70,6 +71,7 @@ User selects media item
 - 下载状态应以 `AbstractDownloader::Status` 为基准。
 - UI 展示状态不得和数据库状态长期不一致。
 - 完成任务必须具备可追踪的 `uniqueId`。
+- 下载提示窗拖拽到上边界时，Y 坐标应夹取到允许区域的顶部。
 - `DownloadStatusThread` 仅在复制任务快照和提交任务删除时持有任务集合锁；状态查询、下载器控制、持久化和信号通知必须在锁外执行。
 - 下载器操作抛出异常时，状态线程必须记录任务 ID 和错误，将任务置为 `Error` 并移出调度容器；异常不得逃出后台线程入口。
 - `Error`、`Stopped` 和 `Finished` 均为调度终态，CLI 不得因 Error 任务残留而无限等待。
@@ -88,6 +90,7 @@ Plugin provides LoginProxy
 
 - Cookie 按插件和 domain 隔离。
 - Cookie 更新应保留更新时间。
+- Cookie 过期时间按 `ddd, dd MMM yyyy HH:mm:ss GMT` 解析；无效日期不参与最早过期时间比较。
 
 ## 插件加载流程
 
@@ -127,6 +130,7 @@ Settings page changes value
 影响面：
 
 - 主题、语言和模糊效果影响 UI。
+- 标题栏更新最大化图标后，应继续将 `WindowStateChange` 事件交给主窗口处理。
 - 下载目录、质量、命名规则影响新建下载任务。
 - aria2 设置影响下载服务连接。
 

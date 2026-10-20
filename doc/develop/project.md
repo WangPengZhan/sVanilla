@@ -193,7 +193,7 @@ sequenceDiagram
 | 路径 | 职责 |
 | --- | --- |
 | `AGENTS.md` | AI 智能体协作总规则和 Harness 工作入口 |
-| `CMakeLists.txt` | 顶层构建入口，设置 vcpkg toolchain、C++20、全局选项和子目录 |
+| `CMakeLists.txt` | 顶层构建入口，设置 vcpkg toolchain、C++20、全局选项和子目录；配置时查找 Python 并安装 `scripts/requirements.txt` |
 | `vcpkg.json` | vcpkg 依赖清单和版本约束 |
 | `vcpkg-configuration.json` | vcpkg baseline、overlay ports、overlay triplets |
 | `.codex/` | Codex 专用命令、提示词和适配说明，不保存共享规范副本 |
@@ -210,6 +210,18 @@ sequenceDiagram
 | `overlay/` | vcpkg overlay ports、triplets、toolchains |
 
 ## 六、源码模块
+
+各模块的文档按**内容类型**分为三套，互不重叠：
+
+| 文档集 | 目录 | 内容 |
+| --- | --- | --- |
+| 架构文档 | [`architecture/`](architecture/README.md) | 各模块的定位、依赖、分层、关键抽象、设计取舍与架构级风险 |
+| 详细设计文档 | [`detailed-design/`](detailed-design/README.md) | 各模块的文件与符号清单、数据结构、SQL/算法细节、时序、边界 |
+| 使用文档 | [`usage/`](usage/README.md) | 各模块的前置条件、示例代码、调用约定与陷阱 |
+
+三套文档中同一模块**同名并存**，`architecture/sqlite.md` 与 `detailed-design/sqlite.md` 是同一模块的两级视角；11 个模块均已有架构、详细设计和使用文档，SQLite 篇是详细设计样板。
+
+下表按模块列出类型与职责：
 
 | 模块 | 类型 | 职责 |
 | --- | --- | --- |
@@ -333,7 +345,7 @@ flowchart TD
     DBManager --> DB[(data.db)]
 ```
 
-更详细的 SQLite 设计见 `doc/develop/sqlite_architecture.md`。
+更详细的 SQLite 设计见 [`architecture/sqlite.md`](architecture/sqlite.md)（分层与取舍）与 [`detailed-design/sqlite.md`](detailed-design/sqlite.md)（实现细节）。
 
 ## 十、构建和测试
 
@@ -347,26 +359,36 @@ flowchart TD
 | `ENABLE_BUILD_EXAMPLE` | `OFF` | 构建示例 |
 | `ENABLE_DEPLOY` | `ON` | `ClientUi` 部署逻辑 |
 
-现有测试目录：
+测试按模块归属维护：
 
-- `test/SQLite`
-- `test/ThreadPool`
-- `test/Zipper`
+| 测试目录 | 覆盖范围 |
+| --- | --- |
+| `test/Aria2Net` | aria2 进程与 RPC 管理 |
+| `test/Base`、`test/BaseQt` | 基础宏、Qt 通用工具 |
+| `test/ClientUi` | ClientUi 纯逻辑组件 |
+| `test/Download` | 下载状态分派、异常回收 |
+| `test/Logger` | 日志工具与宏 |
+| `test/Plugin` | 动态库、插件代理、配置管理与异常隔离 |
+| `test/SQLite` | SQLite 封装、SQL 生成与存储行为 |
+| `test/SUI` | 可复用 UI 组件 |
+| `test/ThreadPool` | 线程池任务与生命周期 |
+| `test/Zipper` | 压缩与解压 |
+
 
 推荐验证命令：
 
 ```bash
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST=ON
-cmake --build build --config Debug --parallel
-ctest --test-dir build --build-config Debug --output-on-failure
+cmake -B out/harness -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST=ON
+cmake --build out/harness --config Debug --parallel
+ctest --test-dir out/harness --build-config Debug --output-on-failure
 ```
 
 格式和静态分析：
 
 ```bash
 python scripts/clang_format_all.py
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DENABLE_CLANG_TIDY=ON
-cmake --build build --config Release --parallel
+cmake -B out/harness/clang-tidy -S . -DCMAKE_BUILD_TYPE=Release -DENABLE_CLANG_TIDY=ON
+cmake --build out/harness/clang-tidy --config Release --parallel
 ```
 
 ## 十一、构建产物流向
