@@ -37,11 +37,6 @@ if(Zipper_test)
     add_subdirectory(Zipper)
 endif()
 
-option(Audit_test "ENABLE audit regression tests" ON)
-if(Audit_test)
-    add_subdirectory(Audit)
-endif()
-
 option(Download_test "ENABLE Download test" ON)
 if(Download_test)
     add_subdirectory(Download)

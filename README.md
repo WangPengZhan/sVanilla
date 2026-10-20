@@ -43,7 +43,7 @@ Hearing is not as good as seeing! see the image below:
 ### Open-source Libraries
 - [Qt](https://github.com/qt/qtbase) ([License](https://github.com/qt/qtbase/blob/dev/LICENSE.LGPLv3), [Website](https://www.qt.io/))
 - [zlib](https://github.com/madler/zlib) ([License](https://github.com/madler/zlib/blob/master/zlib.h))
-- [breakpad](https://github.com/google/breakpad) ([License](https://github.com/google/breakpad/blob/master/LICENSE))
+- [Crashpad](https://chromium.googlesource.com/crashpad/crashpad/) ([License](https://chromium.googlesource.com/crashpad/crashpad/+/main/LICENSE))
 - [curl](https://github.com/curl/curl) ([License](https://github.com/curl/curl/blob/master/COPYING), [Website](https://curl.se/))
 - [sqlite](https://github.com/sqlite/sqlite) ([License](https://github.com/sqlite/sqlite/blob/master/LICENSE.md), [Website](https://www.sqlite.org/))
 - [openssl](https://github.com/openssl/openssl) ([License](https://github.com/openssl/openssl/blob/master/LICENSE), [Website](https://www.openssl.org/))
@@ -51,12 +51,17 @@ Hearing is not as good as seeing! see the image below:
 - [googletest](https://github.com/google/googletest) ([License](https://github.com/google/googletest/blob/master/googletest/LICENSE), [Website](https://github.com/google/googletest))
 - [minizip](https://github.com/nmoinvaz/minizip) ([License](https://github.com/nmoinvaz/minizip/blob/master/LICENSE.md))
 - [qwindowkit](https://github.com/stdware/qwindowkit) ([License](https://github.com/stdware/qwindowkit/blob/main/LICENSE))
+- [fmt](https://github.com/fmtlib/fmt) ([License](https://github.com/fmtlib/fmt/blob/master/LICENSE))
+- [libxml2](https://gitlab.gnome.org/GNOME/libxml2) ([License](https://gitlab.gnome.org/GNOME/libxml2/-/blob/master/Copyright))
+- [FTXUI](https://github.com/ArthurSonzogni/FTXUI) ([License](https://github.com/ArthurSonzogni/FTXUI/blob/main/LICENSE))
+- [indicators](https://github.com/p-ranav/indicators) ([License](https://github.com/p-ranav/indicators/blob/master/LICENSE))
 - [spdlog](https://github.com/gabime/spdlog) ([License](https://github.com/gabime/spdlog/blob/master/LICENSE), [Website](https://github.com/gabime/spdlog))
 - [sVanillaPlugins](https://github.com/WangPengZhan/sVanillaPlugins) ([License](https://github.com/WangPengZhan/sVanillaPlugins/blob/dev/LICENSE))
-- [vanillastyle](https://github.com/AlanusMeminius/VanillaStyle)
+- [sVanillaPluginCommon](https://github.com/WangPengZhan/sVanillaPluginCommon) ([License](https://github.com/WangPengZhan/sVanillaPluginCommon/blob/dev/LICENSE))
+- [VanillaStyle](https://github.com/AlanusMeminius/VanillaStyle) ([License](https://github.com/AlanusMeminius/VanillaStyle/blob/main/LICENSE))
 - [vcpkg](https://github.com/microsoft/vcpkg) ([License](https://github.com/microsoft/vcpkg/blob/master/LICENSE.txt), [Website](https://vcpkg.io/))
 - [ffmpeg](https://github.com/FFmpeg/FFmpeg) ([License](https://github.com/FFmpeg/FFmpeg/blob/master/LICENSE.md), [Website](https://ffmpeg.org/))
-- [aria](https://github.com/aria2/aria2) ([License](https://github.com/aria2/aria2/blob/master/COPYING), [Website](https://aria2.github.io/))
+- [aria2](https://github.com/aria2/aria2) ([License](https://github.com/aria2/aria2/blob/master/COPYING), [Website](https://aria2.github.io/))
 
 ### Contributors
 [![Contributors](https://contributors-img.web.app/image?repo=WangPengZhan/sVanilla&max=114514&columns=15)](https://github.com/WangPengZhan/sVanilla/graphs/contributors)
