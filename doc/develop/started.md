@@ -127,11 +127,6 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-测试目录当前包含：
-
-- `test/SQLite`
-- `test/ThreadPool`
-- `test/Zipper`
 
 ## Python 依赖
 
@@ -166,6 +161,8 @@ sVanilla
 |-- cmake/                          # CMake 辅助脚本与模板
 |-- doc/                            # 文档
 |   |-- develop/                    # 开发文档
+|   |   |-- architecture/           # 各模块的架构（设计方案、机制、取舍）
+|   |   |-- usage/                  # 各模块的使用（示例、调用约定、陷阱）
 |-- example/                        # 示例工程
 |-- harness/                        # 共享规范、SDD、需求与实现知识
 |-- overlay/                        # vcpkg overlay ports/triplets/toolchains

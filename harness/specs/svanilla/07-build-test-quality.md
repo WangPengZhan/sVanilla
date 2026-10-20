@@ -70,7 +70,16 @@ cmake --build out/harness/clang-tidy --config Release --parallel
 | `test/SQLite` | SQLite 封装和 SQL/storage 行为 |
 | `test/ThreadPool` | 线程池 |
 | `test/Zipper` | 压缩和解压 |
-| `test/Audit` | 下载异常边界和插件代理异常隔离 |
+| `test/Base`、`test/Logger`、`test/BaseQt` | 基础工具、日志、Qt 通用工具 |
+| `test/Download`、`test/Plugin`、`test/Aria2Net` | 下载状态与异常回收、插件及代理异常隔离、aria2 进程管理 |
+| `test/SUI`、`test/ClientUi` | UI 组件和 ClientUi 纯逻辑 |
+
+## Third-Party License Disclosure
+
+- `scripts/get_licenses.py` generates `licenses.json` beside the application executable; the About page reads this file to display dependency license text.
+- Keep the generator's library list and `README.md` acknowledgements aligned with `vcpkg.json`, overlay port manifests, bundled tools, and plugin submodules.
+- The generator reads package versions from `${VCPKG_INSTALLED_DIR}/vcpkg/status`; the About page overrides these with runtime/header version APIs when available.
+- Existing `licenses.json` files are refreshed with current package versions without re-fetching license text; missing library entries trigger license generation.
 
 ## CI
 
@@ -90,10 +99,3 @@ cmake --build out/harness/clang-tidy --config Release --parallel
 - 影响 UI 的变更至少说明手动验收路径。
 - 影响插件接口的变更必须同步更新插件规格和兼容性说明。
 - 影响 CMake、vcpkg、CI 的变更必须说明平台影响。
-
-## 2026-06-20 Audit Regression Coverage
-
-- `Audit_test` uses fake downloaders and plugins to verify that downloader exceptions become terminal Error states and plugin catch paths do not call `pluginMessage()` again.
-- `Zipper_test` creates archives in a test-owned temporary directory and covers normal extraction, ZIP64 metadata, `../`, backslash traversal, and Windows absolute paths.
-- Release Qt messages are forwarded to the Client logger; per-logger rotation is limited to 50 MiB per file, one current file, and ten rotated files.
-- The complete configured log upper bound is approximately 4,950 MiB for nine loggers, excluding transient filesystem allocation overhead.

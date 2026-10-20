@@ -20,6 +20,7 @@
 - 插件不应假设 UI 线程执行耗时解析。
 - `pluginId` 必须稳定，否则历史、Cookie、下载记录会错配。
 - `getVideoView` 失败时应可被主程序安全处理。
+- 动态库必须同时导出 `pluginInit` 和 `pluginDeinit` 才能创建并交由宿主持有插件实例；缺少销毁入口的插件应加载失败。
 
 ## BaseVideoView 和 VideoInfoFull
 
@@ -118,6 +119,7 @@ Waiting -> Ready -> Downloading -> Pause/Paused/Resumed -> Finished
 - 支持继承 `Task` 的任务对象。
 - `stop()` 后不得再接受任务。
 - `drop()` 应丢弃待执行任务。
+- 构造时传入 0 个工作线程应退化为 1 个线程。
 
 ## Zipper
 
