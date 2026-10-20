@@ -93,7 +93,7 @@ public:
     const PluginMessage& pluginMessage() const override
     {
         ++metadataCalls;
-        if (metadataThrows)
+        if (metadataThrows || (metadataThrowsAfterFirstCall && metadataCalls > 1))
         {
             throw std::runtime_error("metadata failed");
         }
@@ -144,6 +144,7 @@ public:
 
     mutable int metadataCalls{0};
     bool metadataThrows{false};
+    bool metadataThrowsAfterFirstCall{false};
     bool callbacksThrow{false};
     bool parseResult{true};
 
@@ -278,6 +279,20 @@ TEST(PluginProxyTest, IsInvalidWhenInitialMetadataThrows)
 
     EXPECT_FALSE(proxy.isValid());
     EXPECT_EQ(proxy.pluginMessage().pluginId, 0);
+}
+
+TEST(PluginProxyTest, DoesNotCallPluginMetadataFromCallbackCatch)
+{
+    auto realPlugin = std::make_shared<MockPlugin>();
+    realPlugin->metadataThrowsAfterFirstCall = true;
+    realPlugin->callbacksThrow = true;
+
+    plugin::PluginProxy proxy(realPlugin);
+
+    ASSERT_TRUE(proxy.isValid());
+    EXPECT_EQ(proxy.pluginMessage().pluginId, 99);
+    EXPECT_FALSE(proxy.canParseUrl("https://example.com/video"));
+    EXPECT_EQ(realPlugin->metadataCalls, 1);
 }
 
 TEST(PluginProxyTest, DelegatesCallbacksToRealPlugin)
