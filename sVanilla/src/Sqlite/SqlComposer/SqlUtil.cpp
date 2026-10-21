@@ -228,9 +228,12 @@ bool SqliteUtil::deleteEntities(const SqliteWithMutexPtr& db, const std::string&
         return false;
     }
 
-    std::string sql = "DELETE FROM " + tableName + " " + condition.conditionString();
+    std::string sql = "DELETE FROM " + tableName + " " + condition.prepareConditionString();
     std::lock_guard lk(db->mutex);
-    return db->execute(sql);
+    SQLiteStatement stmt(*db, sql);
+    condition.bind(stmt);
+    stmt.executeStep();
+    return stmt.isDone();
 }
 
 int64_t SqliteUtil::countEntities(const SqliteWithMutexPtr& db, const std::string& tableName, const ConditionWrapper& condition)

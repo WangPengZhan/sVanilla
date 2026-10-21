@@ -36,7 +36,16 @@ std::stringstream& conditionString(std::stringstream& ss, const SqliteColumnValu
             }
             else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(obj)>, std::string>)
             {
-                ss << "'" << obj << "'";
+                ss << "'";
+                for (char ch : obj)
+                {
+                    ss << ch;
+                    if (ch == '\'')
+                    {
+                        ss << '\'';
+                    }
+                }
+                ss << "'";
             }
             else
             {

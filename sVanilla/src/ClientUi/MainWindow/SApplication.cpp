@@ -139,7 +139,9 @@ void SApplication::startServer()
     const auto aria2Config = SingleConfig::instance().ariaConfig();
     if (!aria2Config.isRemote)
     {
-        m_ariaServer.setErrorFunc([] {});
+        m_ariaServer.setErrorFunc([this] {
+            emit ariaServerStartFailed();
+        });
         m_ariaServer.startLocalServerAsync();
     }
 }

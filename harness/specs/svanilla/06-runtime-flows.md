@@ -111,6 +111,8 @@ SApplication owns PluginInterface/PluginManager
 - 插件配置保存后应可在下次启动恢复。
 - PluginProxy 在注册前缓存插件元数据；元数据读取失败的插件不得进入运行时插件集合。
 - 插件调用异常的日志只能使用缓存身份，catch 路径不得再次调用插件代码。
+- 登录网页保留本地存储与全屏支持；本地内容跨源访问、剪贴板、屏幕捕获、不安全内容和脚本开窗权限默认关闭。
+- 本地 aria2 启动失败时通过应用信号通知主窗口，并显示错误 Toast。
 
 ## 2026-06-20 Local Aria2 Security Flow
 

@@ -63,7 +63,7 @@ void VideoGridItemWidget::setVideoInfo(const std::shared_ptr<VideoInfoFull>& inf
     m_infoFull = infoFull;
     updateVideoCard();
 
-    CoverInfo coverInfo{infoFull->videoView->Cover, infoFull->coverPath(), coverPath().toStdString()};
+    CoverInfo coverInfo{infoFull->videoView->Cover, infoFull->getGuid(), coverPath().toStdString()};
     auto taskFunc = [coverInfo]() {
         QPixmap pixmap;
         if (coverInfo.url.starts_with("http"))
@@ -202,9 +202,9 @@ const VideoGridItemWidget::CardInfo& VideoGridItemWidget::getCardInfo() const
     return m_cardInfo;
 }
 
-std::string VideoGridItemWidget::getCoverPath() const
+std::string VideoGridItemWidget::getVideoGuid() const
 {
-    return m_infoFull->coverPath();
+    return m_infoFull->getGuid();
 }
 
 QSize VideoGridItemWidget::sizeHint() const
@@ -380,7 +380,7 @@ VideoGridItemWidget* VideoGridWidget::getItem(const std::string& fileName) const
 {
     for (int i = 0; i < count(); ++i)
     {
-        if (const auto item = getItem(i); item->getCoverPath() == fileName)
+        if (const auto item = getItem(i); item->getVideoGuid() == fileName)
         {
             return item;
         }

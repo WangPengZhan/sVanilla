@@ -166,6 +166,16 @@ TEST_F(TempDatabaseTest, CreateAndDropView)
     EXPECT_FALSE(sqlite::SqliteUtil::createViewIfNotExist(m_db, "", "entity"));
 }
 
+TEST_F(TempDatabaseTest, ViewConditionEscapesQuotedValues)
+{
+    createEntityTable();
+    ASSERT_TRUE(m_db->execute("INSERT INTO entity(id, name, score, payload) VALUES (1, 'O''Brien', 1.0, NULL), (2, 'other', 2.0, NULL);"));
+    sqlite::ConditionWrapper condition;
+    condition.addCondition(Table::self().name, sqlite::Condition::EQUALS, std::string("O'Brien"));
+    ASSERT_TRUE(sqlite::SqliteUtil::createViewIfNotExist(m_db, "quoted_view", "entity", condition));
+    EXPECT_EQ(scalarCount(m_db, "quoted_view"), 1);
+}
+
 // ---------------------------------------------------------------- 实体读写
 
 TEST_F(TempDatabaseTest, InsertAndQueryEntities)
@@ -364,6 +374,16 @@ TEST_F(TempDatabaseTest, DeleteEntitiesRejectsBadArguments)
     EXPECT_FALSE(sqlite::SqliteUtil::deleteEntities(m_db, ""));
     sqlite::SqliteWithMutexPtr nullDb;
     EXPECT_FALSE(sqlite::SqliteUtil::deleteEntities(nullDb, "entity"));
+}
+
+TEST_F(TempDatabaseTest, DeleteEntitiesBindsQuotedValues)
+{
+    createEntityTable();
+    ASSERT_TRUE(m_db->execute("INSERT INTO entity(id, name, score, payload) VALUES (1, 'O''Brien', 1.0, NULL), (2, 'other', 2.0, NULL);"));
+    sqlite::ConditionWrapper condition;
+    condition.addCondition(Table::self().name, sqlite::Condition::EQUALS, std::string("O'Brien"));
+    ASSERT_TRUE(sqlite::SqliteUtil::deleteEntities(m_db, "entity", condition));
+    EXPECT_EQ(scalarCount(m_db, "entity"), 1);
 }
 
 TEST_F(TempDatabaseTest, CountEntitiesUsesCondition)

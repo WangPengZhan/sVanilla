@@ -38,6 +38,7 @@ private:
 
 signals:
     void pluginsLoaded(bool succeeded);
+    void ariaServerStartFailed();
 
 private:
     aria2net::AriaServer m_ariaServer;

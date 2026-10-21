@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 
 #include "PluginManager.h"
 #include "PluginLog.h"
@@ -302,7 +303,7 @@ void PluginManager::addPlugin(const std::string& pluginPath)
 
     for (const auto& config : configs)
     {
-        if (config.name == plugin->pluginMessage().name)
+        if (config.id == plugin->pluginMessage().pluginId)
         {
             pluginConfig = config;
             break;
@@ -320,6 +321,12 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         pluginConfig.id = pluginMessage.pluginId;
         pluginConfig.description = pluginMessage.description;
     }
+
+    pluginConfig.name = pluginMessage.name;
+    pluginConfig.version = pluginMessage.version;
+    pluginConfig.description = pluginMessage.description;
+    pluginConfig.libName = std::filesystem::path(pluginPath).stem().string();
+    pluginConfig.libFile = std::filesystem::path(pluginPath).filename().string();
     pluginConfig.isValid = true;
 
     {
@@ -328,8 +335,11 @@ void PluginManager::addPlugin(const std::string& pluginPath)
         bool updated = false;
         for (auto& config : m_pluginConfig)
         {
-            if (config.name == pluginConfig.name)
+            if (config.id == pluginConfig.id)
             {
+                m_configChanged = m_configChanged || config.name != pluginConfig.name || config.version != pluginConfig.version ||
+                                  config.libName != pluginConfig.libName || config.libFile != pluginConfig.libFile ||
+                                  config.description != pluginConfig.description;
                 config = pluginConfig;
                 updated = true;
                 break;
@@ -433,6 +443,7 @@ void PluginManager::loadConfig()
 
 void PluginManager::saveConfig() const
 {
+    std::lock_guard lk(m_pluginsMutex);
     if (!m_configChanged)
     {
         return;

@@ -32,17 +32,21 @@ bool SearchHistoryStorage::insertOrUpdate(const std::string& url, int pluginId)
     history.url = url;
     history.pluginId = pluginId;
     history.timestamp = ms;
+    history.searchTimes = 1;
 
     if (haveUrl(url))
     {
-        sqlite::SqliteUtil::updateEntities<SearchHistory>(m_writeDBPtr, tableName(), {history});
+        auto& table = sqlite::TableStructInfo<SearchHistory>::self();
+        sqlite::ConditionWrapper condition;
+        condition.addCondition(table.url, sqlite::Condition::EQUALS, url);
+        const sqlite::SqliteColumn pluginIdValue(static_cast<int64_t>(pluginId), -1, table.pluginId.columnName());
+        const sqlite::SqliteColumn timestampValue(static_cast<int64_t>(ms), -1, table.timestamp.columnName());
+        return sqlite::SqliteUtil::updateEntities(m_writeDBPtr, tableName(), {pluginIdValue, timestampValue}, condition) > 0;
     }
     else
     {
-        sqlite::SqliteUtil::insertEntities<SearchHistory>(m_writeDBPtr, tableName(), {history});
+        return sqlite::SqliteUtil::insertEntities<SearchHistory>(m_writeDBPtr, tableName(), {history}) > 0;
     }
-
-    return true;
 }
 
 std::vector<std::string> SearchHistoryStorage::allItems()

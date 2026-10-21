@@ -56,7 +56,7 @@ public:
     void updateCover(const QPixmap& pixmap);
 
     const CardInfo& getCardInfo() const;
-    std::string getCoverPath() const;
+    std::string getVideoGuid() const;
 
     QListWidgetItem* getWidgetItem() const
     {

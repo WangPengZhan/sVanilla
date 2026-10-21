@@ -1,5 +1,4 @@
 #pragma once
-#include <future>
 
 #include <QString>
 
@@ -28,7 +27,6 @@ public:
     void setLogDir(const QString& dir);
 
 private:
-    std::future<bool> m_future;
     std::function<void()> m_errorFunc;
     std::function<void()> m_closeFunc;
     std::unique_ptr<QProcess> m_aria2Process;

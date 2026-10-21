@@ -87,6 +87,7 @@ Waiting -> Ready -> Downloading -> Pause/Paused/Resumed -> Finished
 
 - 插件集合由递归互斥保护。
 - 配置变更由原子标记追踪。
+- 已保存的插件启用状态按稳定 `pluginId` 匹配；名称和版本变动只更新展示元数据。配置写入失败时保留待保存标记。
 
 ## AriaServer
 
