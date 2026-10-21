@@ -1373,5 +1373,9 @@ video corresponding to the link.
         <source>settings</source>
         <translation>设置</translation>
     </message>
+    <message>
+        <source>Failed to start the local download service.</source>
+        <translation>本地下载服务启动失败。</translation>
+    </message>
 </context>
 </TS>

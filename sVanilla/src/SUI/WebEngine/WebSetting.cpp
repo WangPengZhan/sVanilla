@@ -91,16 +91,16 @@ void initializeWebEngine(const QString& cache_path, const QString& storage_path)
 void initDefaultWebSettings(QWebEngineView* view)
 {
     QWebEngineSettings* settings = view->settings();
-    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
-    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, false);
+    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, false);
     settings->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
     settings->setAttribute(QWebEngineSettings::FullScreenSupportEnabled, true);
-    settings->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
-    settings->setAttribute(QWebEngineSettings::JavascriptCanPaste, true);
-    settings->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
-    settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-    settings->setAttribute(QWebEngineSettings::AllowRunningInsecureContent, true);
-    settings->setAttribute(QWebEngineSettings::AllowWindowActivationFromJavaScript, true);
+    settings->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, false);
+    settings->setAttribute(QWebEngineSettings::JavascriptCanPaste, false);
+    settings->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, false);
+    settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, false);
+    settings->setAttribute(QWebEngineSettings::AllowRunningInsecureContent, false);
+    settings->setAttribute(QWebEngineSettings::AllowWindowActivationFromJavaScript, false);
 #ifdef Q_OS_WIN
     static constexpr const char* kMSYaHeiFontFamily = "\345\276\256\350\275\257\351\233\205\351\273\221";
     settings->setFontFamily(QWebEngineSettings::StandardFont, kMSYaHeiFontFamily);

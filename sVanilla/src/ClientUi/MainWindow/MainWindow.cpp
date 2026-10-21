@@ -156,6 +156,10 @@ void MainWindow::signalsAndSlots()
             ToastTip::showTip(tr("Plugins loading failed"), ToastTip::Error);
         }
     });
+    connect(sApp, &SApplication::ariaServerStartFailed, this, [this] {
+        MLogE(svanilla::cMainWindowModule, "local aria2 server startup failed");
+        ToastTip::showTip(tr("Failed to start the local download service."), ToastTip::Error);
+    });
 
     connect(ui->downloadPage, &DownloadWidget::downloadingCountChanged, ui->videoPage, &VideoWidget::setDownloadingNumber);
     connect(ui->downloadPage, &DownloadWidget::downloadedCountChanged, ui->videoPage, &VideoWidget::setDownloadedNumber);

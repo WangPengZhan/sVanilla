@@ -1,4 +1,7 @@
 #include <QUuid>
+#include <charconv>
+#include <limits>
+#include <string_view>
 
 #include <BaseVideoView.h>
 
@@ -7,6 +10,39 @@
 #include "Storage/DownloadedItemStorage.h"
 #include "Storage/DownloadingItemStorage.h"
 #include "VideoList/VideoData.h"
+
+namespace
+{
+int parseDuration(std::string_view duration)
+{
+    if (duration.empty())
+    {
+        return 0;
+    }
+    int64_t total = 0;
+    bool hasComponent = false;
+    do
+    {
+        const auto separator = duration.find(':');
+        const auto part = duration.substr(0, separator);
+        int64_t value = 0;
+        const auto [end, error] = std::from_chars(part.data(), part.data() + part.size(), value);
+        if (error != std::errc{} || end != part.data() + part.size() || value < 0 || value > std::numeric_limits<int>::max() ||
+            total > (std::numeric_limits<int>::max() - value) / (hasComponent ? 60 : 1))
+        {
+            return 0;
+        }
+        total = total * (hasComponent ? 60 : 1) + value;
+        hasComponent = true;
+        if (separator == std::string_view::npos)
+        {
+            break;
+        }
+        duration.remove_prefix(separator + 1);
+    } while (!duration.empty());
+    return duration.empty() ? 0 : static_cast<int>(total);
+}
+}  // namespace
 
 UiDownloader::UiDownloader(std::shared_ptr<AbstractDownloader> downloader, std::shared_ptr<VideoInfoFull> videoInfoFull, QObject* parent)
     : QObject(parent)
@@ -122,7 +158,7 @@ void UiDownloader::createDbDownloadingItem()
     item.option1 = m_videoInfoFull->videoView->Option1;
     item.option2 = m_videoInfoFull->videoView->Option2;
     item.option3 = m_videoInfoFull->videoView->Option3;
-    item.duration = std::stoi(m_videoInfoFull->videoView->Duration);
+    item.duration = parseDuration(m_videoInfoFull->videoView->Duration);
     item.progress = 0;
     item.status = static_cast<int>(status());
     item.fileType = m_videoInfoFull->videoView->fileType;
@@ -164,7 +200,7 @@ void UiDownloader::createDbFinishedItem()
     item.option1 = m_videoInfoFull->videoView->Option1;
     item.option2 = m_videoInfoFull->videoView->Option2;
     item.option3 = m_videoInfoFull->videoView->Option3;
-    item.duration = std::stoll(m_videoInfoFull->videoView->Duration);
+    item.duration = parseDuration(m_videoInfoFull->videoView->Duration);
     item.fileType = m_videoInfoFull->videoView->fileType;
     item.fileExist = true;
     item.fileExtension = m_videoInfoFull->videoView->fileExtension;

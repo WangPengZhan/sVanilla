@@ -50,8 +50,9 @@ bool LoginBubble::eventFilter(QObject* watched, QEvent* event)
 {
     if (event->type() == QEvent::MouseButtonRelease)
     {
-        const auto mouseEvent = dynamic_cast<QMouseEvent*>(event);
-        if (!geometry().contains(mouseEvent->pos()))
+        const auto mouseEvent = static_cast<QMouseEvent*>(event);
+        const auto widget = qobject_cast<QWidget*>(watched);
+        if (widget && !rect().contains(mapFromGlobal(widget->mapToGlobal(mouseEvent->pos()))))
         {
             close();
             return true;

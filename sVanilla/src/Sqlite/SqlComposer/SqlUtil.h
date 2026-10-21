@@ -250,6 +250,11 @@ inline int64_t SqliteUtil::updateEntities(const SqliteWithMutexPtr& db, const st
 
     ConditionWrapper conditionWrapper;
     const auto& uniqueCols = TableStructInfo<Entity>::self().primaryColumnInfos();
+    if (uniqueCols.empty())
+    {
+        return 0;
+    }
+
     for (const auto& uniqueCol : uniqueCols)
     {
         conditionWrapper.addCondition(*uniqueCol, Condition::EQUALS);
@@ -286,6 +291,11 @@ inline int64_t SqliteUtil::updateEntitiesWithOutTrans(const SqliteWithMutexPtr& 
 
     ConditionWrapper conditionWrapper;
     const auto& uniqueCols = TableStructInfo<Entity>::self().primaryColumnInfos();
+    if (uniqueCols.empty())
+    {
+        return 0;
+    }
+
     for (const auto& uniqueCol : uniqueCols)
     {
         conditionWrapper.addCondition(*uniqueCol, Condition::EQUALS);
